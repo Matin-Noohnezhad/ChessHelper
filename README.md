@@ -18,9 +18,12 @@ packages/
                   identification, inheritance, search           ✅ 3,844 lines
   trainer/        sparring engine: repertoire lines, variation
                   rotation, spaced repetition, off-book feedback   ✅ 19 tests
+  imbalances/     static, Silman-style reading of a position       ✅ 8 tests
+  review/         whole-game review: accuracy, phases, and
+                  chess.com-style move classification             ✅ 39 tests
 apps/
   web/            React + Vite: explore board, study panel,
-                  and the training mode                            ✅ runs
+                  the training mode and the game review            ✅ runs
 ```
 
 Nothing in `packages/` imports the DOM, so the same core drives a React Native
@@ -31,7 +34,7 @@ app or a Tauri desktop build later — only `apps/*` changes.
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # 66 tests across core, book, trainer and UI
+npm test           # 119 tests across core, book, trainer, review and UI
 npm run ingest:eco # regenerate the ECO tables from data/*.tsv
 npm run typecheck
 ```
@@ -77,6 +80,38 @@ Line depth scales with what you pick: choosing the Sicilian drills 178 variation
 of 6–12 plies, choosing the Najdorf drills 26 of 14–20. Lines are ordered by how
 much published theory sits beneath them, so main lines come first and the Wing
 Gambit waits its turn.
+
+### Game review
+
+Paste a PGN — annotated with clocks or not, one game or a whole month's export
+— and the game comes back the way chess.com reports it.
+
+- **Accuracy for both sides, and per phase.** Every score is converted to a win
+  expectancy before anything is measured, because half a pawn matters in a level
+  ending and does not when you are up a queen. The per-move numbers are combined
+  with lichess's volatility-weighted and harmonic means, so one catastrophe
+  cannot be averaged away by twenty quiet moves.
+- **Phases from the game, not the move number.** The opening lasts as long as
+  the moves are still in our ECO tables; the endgame starts when the material
+  says so. "82% overall" tells you less than "you are fine until the pieces come
+  off".
+- **Every move labelled** — Brilliant, Great, Best, Excellent, Good, Theory,
+  Forced, Inaccuracy, Mistake, Miss, Blunder — plus tags for sacrifices, only
+  moves, critical moments and moves played in time pressure. A sacrifice is
+  found by static exchange evaluation rather than by eyeballing the eval, and an
+  obvious recapture never counts as a great move.
+- **A one-line verdict per move**, the engine's alternatives with their lines,
+  and a "show me the move I should have played" arrow on the previous position.
+- **Turning points first**, biggest swing at the top, and a win-expectancy graph
+  of the whole game with the phase boundaries marked.
+- **Clocks, when the PGN has them**: time spent per move, longest think, moves
+  played in the last tenth of the clock, and how much worse you played there.
+
+The review runs on the vendored Stockfish build in the browser — one search per
+position, repetitions reused — at Fast, Balanced or Deep. `packages/review`
+itself never touches an engine or the DOM: callers hand it a
+`PositionEvaluator`, which is how the tests review whole games with no search at
+all.
 
 ## The opening data
 
