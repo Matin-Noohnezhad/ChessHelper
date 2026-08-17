@@ -706,6 +706,65 @@ button:disabled {
   max-width: 15rem;
 }
 
+/* -------------------------------------------------------------- engine --- */
+
+.engine-eval {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0.9rem 0 0.2rem;
+}
+.engine-eval__value {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.engine-complexity {
+  margin-top: 0.9rem;
+}
+.engine-complexity__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.engine-complexity__note {
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+}
+.engine-lines {
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+.engine-lines li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.engine-lines li.is-best .engine-lines__eval {
+  color: var(--accent);
+}
+.engine-lines__eval {
+  flex: none;
+  width: 3.6rem;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-weight: 700;
+}
+.engine-lines__pv {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
 /* -------------------------------------------------------------- moves --- */
 
 .moves h3 {

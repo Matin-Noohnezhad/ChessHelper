@@ -3,11 +3,13 @@ import type { PieceSymbol } from '@coh/chess-core';
 import { identifyOpening } from '@coh/opening-book';
 import { Board } from './components/Board.js';
 import type { SquareMark } from './components/Board.js';
+import { EnginePanel } from './components/EnginePanel.js';
 import { MoveList } from './components/MoveList.js';
 import { OpeningPanel } from './components/OpeningPanel.js';
 import { SettingsPanel } from './components/SettingsPanel.js';
 import { TrainerView } from './components/TrainerView.js';
 import { useChessGame } from './hooks/useChessGame.js';
+import { useEngine } from './hooks/useEngine.js';
 import { useSettings } from './hooks/useSettings.js';
 
 type Mode = 'explore' | 'train';
@@ -15,6 +17,9 @@ type Mode = 'explore' | 'train';
 export default function App() {
   const game = useChessGame();
   const settings = useSettings();
+  // Analysis belongs to the explore board only — the trainer is quizzing the
+  // user, and Stockfish's opinion would defeat the point.
+  const engine = useEngine(game.game.fen());
   const [mode, setMode] = useState<Mode>('explore');
   const [marks, setMarks] = useState<SquareMark[]>([]);
   const [copied, setCopied] = useState(false);
@@ -175,6 +180,7 @@ export default function App() {
         </div>
 
         <aside className="app__side">
+          <EnginePanel engine={engine} />
           <OpeningPanel
             match={match}
             plies={played.length}
