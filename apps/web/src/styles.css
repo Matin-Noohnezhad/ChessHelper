@@ -21,6 +21,9 @@
   --sq-selected: rgba(20, 85, 30, 0.55);
   --sq-check: radial-gradient(circle, rgba(219, 68, 45, 0.95) 12%, rgba(219, 68, 45, 0) 72%);
 
+  --eval-white: #eee8db;
+  --eval-black: #2a2722;
+
   --board-size: min(76vh, 620px);
 
   color-scheme: dark;
@@ -98,10 +101,17 @@ button:disabled {
 
 .app__body {
   display: grid;
-  grid-template-columns: var(--board-size) minmax(320px, 1fr);
+  /* max-content, not var(--board-size): the board now shares its column with
+     the eval bar stuck to its side, so the column has to fit both. */
+  grid-template-columns: max-content minmax(320px, 1fr);
   gap: 1.75rem;
   align-items: start;
   padding-top: 1.5rem;
+}
+
+.board-row {
+  display: flex;
+  align-items: flex-start;
 }
 
 @media (max-width: 1020px) {
@@ -114,6 +124,52 @@ button:disabled {
   }
   .app__side {
     width: min(92vw, 620px);
+  }
+}
+
+/* ------------------------------------------------------------ eval bar --- */
+
+.eval-bar {
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: var(--board-size);
+}
+.eval-bar__track {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 5px 0 0 5px;
+  background: var(--eval-black);
+}
+.eval-bar--idle .eval-bar__track {
+  background: var(--surface-2);
+}
+.eval-bar__white {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--eval-white);
+  transition: height 0.4s ease;
+}
+.eval-bar__label {
+  position: absolute;
+  left: 50%;
+  font-size: 0.6rem;
+  font-weight: 700;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 3px;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--text);
+  z-index: 2;
+}
+@media (max-width: 1020px) {
+  .eval-bar {
+    width: 20px;
   }
 }
 

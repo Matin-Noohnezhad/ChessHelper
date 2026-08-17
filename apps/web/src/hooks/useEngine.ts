@@ -43,6 +43,23 @@ export interface PositionComplexity {
   mobility: number;
 }
 
+/** "+0.35", "-1.20", or "#3" / "#-3" for a forced mate — always from White's perspective. */
+export function formatEval({ cpWhite, mateWhite }: Pick<EngineLine, 'cpWhite' | 'mateWhite'>): string {
+  if (mateWhite !== null) return `#${mateWhite}`;
+  const pawns = (cpWhite ?? 0) / 100;
+  return `${pawns > 0 ? '+' : ''}${pawns.toFixed(2)}`;
+}
+
+/**
+ * Squashes an eval into a 0..1 fill fraction for White, for an eval-bar-style
+ * display. A sigmoid rather than a hard cap so huge advantages saturate
+ * smoothly instead of pinning the bar the moment either side is up a queen.
+ */
+export function whiteWinFraction({ cpWhite, mateWhite }: Pick<EngineLine, 'cpWhite' | 'mateWhite'>): number {
+  if (mateWhite !== null) return mateWhite > 0 ? 1 : 0;
+  return 1 / (1 + Math.exp(-(cpWhite ?? 0) / 350));
+}
+
 export interface EngineAnalysis {
   fen: string;
   depth: number;
