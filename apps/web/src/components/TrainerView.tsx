@@ -4,14 +4,16 @@ import type { Side } from '@coh/opening-book';
 import { MASTERY_STREAK, trainableOpenings } from '@coh/trainer';
 import type { RepertoireLine } from '@coh/trainer';
 import { Board } from './Board.js';
+import type { AnnotationThickness } from './Board.js';
 import { useTrainer } from '../hooks/useTrainer.js';
 
 interface TrainerViewProps {
   /** Hands a finished line to the explore board for study. */
   onStudyLine: (moves: string[]) => void;
+  annotationThickness?: AnnotationThickness;
 }
 
-export function TrainerView({ onStudyLine }: TrainerViewProps) {
+export function TrainerView({ onStudyLine, annotationThickness }: TrainerViewProps) {
   const openings = useMemo(() => {
     return [...trainableOpenings()].sort((a, b) => a.name.localeCompare(b.name));
   }, []);
@@ -41,6 +43,7 @@ export function TrainerView({ onStudyLine }: TrainerViewProps) {
           lastMove={trainer.lastMove}
           onMove={handleMove}
           interactive={trainer.isUsersTurn}
+          annotationThickness={annotationThickness}
         />
         <div className="board-bar">
           <span className="status">

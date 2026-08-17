@@ -5,16 +5,20 @@ import { Board } from './components/Board.js';
 import type { SquareMark } from './components/Board.js';
 import { MoveList } from './components/MoveList.js';
 import { OpeningPanel } from './components/OpeningPanel.js';
+import { SettingsPanel } from './components/SettingsPanel.js';
 import { TrainerView } from './components/TrainerView.js';
 import { useChessGame } from './hooks/useChessGame.js';
+import { useSettings } from './hooks/useSettings.js';
 
 type Mode = 'explore' | 'train';
 
 export default function App() {
   const game = useChessGame();
+  const settings = useSettings();
   const [mode, setMode] = useState<Mode>('explore');
   const [marks, setMarks] = useState<SquareMark[]>([]);
   const [copied, setCopied] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   // Identification follows the cursor, not the end of the line, so stepping
   // back through a game replays how the opening was classified move by move.
@@ -116,11 +120,27 @@ export default function App() {
               </button>
             </>
           )}
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            title="Settings"
+            aria-label="Settings"
+          >
+            ⚙
+          </button>
         </div>
       </header>
 
+      {settingsOpen && (
+        <SettingsPanel
+          annotationThickness={settings.annotationThickness}
+          onAnnotationThicknessChange={settings.setAnnotationThickness}
+          onClose={() => setSettingsOpen(false)}
+        />
+      )}
+
       {mode === 'train' ? (
-        <TrainerView onStudyLine={studyLine} />
+        <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : (
       <main className="app__body">
         <div className="app__board">
@@ -130,6 +150,7 @@ export default function App() {
             lastMove={game.lastMove}
             onMove={handleMove}
             marks={marks}
+            annotationThickness={settings.annotationThickness}
           />
           <div className="board-bar">
             <span className={`status${game.game.isCheck() ? ' status--check' : ''}`}>{status}</span>

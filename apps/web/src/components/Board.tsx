@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
 import { Piece } from './Piece.js';
 import type { Orientation } from '../hooks/useChessGame.js';
@@ -15,6 +15,78 @@ function squareNames(orientation: Orientation): string[] {
   return orientation === 'white' ? names : [...names].reverse();
 }
 
+/** Right-click annotations, lichess-style: drag for an arrow, click for a rounded-square mark. */
+type DrawColor = 'green' | 'red' | 'blue' | 'yellow';
+
+const DRAW_COLORS: Record<DrawColor, string> = {
+  green: 'rgba(21, 120, 27, 0.82)',
+  red: 'rgba(200, 45, 45, 0.82)',
+  blue: 'rgba(30, 100, 220, 0.82)',
+  yellow: 'rgba(230, 158, 0, 0.85)',
+};
+
+interface DrawArrow {
+  from: string;
+  to: string;
+  color: DrawColor;
+}
+
+interface DrawCircle {
+  square: string;
+  color: DrawColor;
+}
+
+/** Which annotation color a right-click draws, keyed like lichess: plain/shift/ctrl/alt. */
+function colorForModifiers(event: { shiftKey: boolean; ctrlKey: boolean; altKey: boolean; metaKey: boolean }): DrawColor {
+  if (event.altKey) return 'yellow';
+  if (event.ctrlKey || event.metaKey) return 'blue';
+  if (event.shiftKey) return 'red';
+  return 'green';
+}
+
+/** Percentage-space center of a square, respecting board orientation. */
+function squareCenter(square: string, orientation: Orientation): { x: number; y: number } {
+  const file = FILES.indexOf(square[0]!);
+  const rank = Number(square[1]);
+  let col = file;
+  let row = 8 - rank;
+  if (orientation === 'black') {
+    col = 7 - col;
+    row = 7 - row;
+  }
+  return { x: (col + 0.5) * 12.5, y: (row + 0.5) * 12.5 };
+}
+
+/** Pulls the arrow's end point back toward its start so the arrowhead clears the target square's center. */
+function shortenTowards(
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+  amount: number,
+): { x: number; y: number } {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const len = Math.hypot(dx, dy) || 1;
+  const ratio = Math.max(0, (len - amount) / len);
+  return { x: from.x + dx * ratio, y: from.y + dy * ratio };
+}
+
+export type AnnotationThickness = 'thin' | 'medium' | 'thick' | 'extra';
+
+/** Ordered for a settings picker; label is what the user sees. */
+export const ANNOTATION_THICKNESS_OPTIONS: { key: AnnotationThickness; label: string }[] = [
+  { key: 'thin', label: 'Thin' },
+  { key: 'medium', label: 'Medium' },
+  { key: 'thick', label: 'Thick' },
+  { key: 'extra', label: 'Extra thick' },
+];
+
+const ANNOTATION_SCALE: Record<AnnotationThickness, { arrow: number; circle: number; marker: number }> = {
+  thin: { arrow: 1.4, circle: 1.3, marker: 4.4 },
+  medium: { arrow: 2.2, circle: 2, marker: 6 },
+  thick: { arrow: 3.2, circle: 2.8, marker: 7.6 },
+  extra: { arrow: 4.4, circle: 3.6, marker: 9.2 },
+};
+
 export interface SquareMark {
   square: string;
   kind: 'key' | 'break';
@@ -29,6 +101,8 @@ interface BoardProps {
   interactive?: boolean;
   /** Squares the study panel wants to point at (key squares, break targets). */
   marks?: SquareMark[];
+  /** Stroke weight for drawn arrows and square marks; defaults to 'medium'. */
+  annotationThickness?: AnnotationThickness;
 }
 
 interface Pending {
@@ -43,11 +117,18 @@ export function Board({
   onMove,
   interactive = true,
   marks = [],
+  annotationThickness = 'medium',
 }: BoardProps) {
+  const annotationScale = ANNOTATION_SCALE[annotationThickness];
   const boardRef = useRef<HTMLDivElement>(null);
+  const uid = useId();
   const [selected, setSelected] = useState<string | null>(null);
   const [drag, setDrag] = useState<{ square: string; x: number; y: number } | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
+  const [arrows, setArrows] = useState<DrawArrow[]>([]);
+  const [circles, setCircles] = useState<DrawCircle[]>([]);
+  const [drawStart, setDrawStart] = useState<{ square: string; color: DrawColor } | null>(null);
+  const [drawCurrent, setDrawCurrent] = useState<string | null>(null);
 
   const names = useMemo(() => squareNames(orientation), [orientation]);
   const contents = useMemo(() => {
@@ -111,8 +192,39 @@ export function Board({
     [game, onMove],
   );
 
+  const toggleDrawing = useCallback((from: string, to: string, color: DrawColor) => {
+    if (from === to) {
+      setCircles((prev) => {
+        const existing = prev.find((c) => c.square === from);
+        if (existing?.color === color) return prev.filter((c) => c.square !== from);
+        if (existing) return prev.map((c) => (c.square === from ? { square: from, color } : c));
+        return [...prev, { square: from, color }];
+      });
+      return;
+    }
+    setArrows((prev) => {
+      const existing = prev.find((a) => a.from === from && a.to === to);
+      if (existing?.color === color) return prev.filter((a) => !(a.from === from && a.to === to));
+      if (existing) return prev.map((a) => (a.from === from && a.to === to ? { from, to, color } : a));
+      return [...prev, { from, to, color }];
+    });
+  }, []);
+
   const handlePointerDown = useCallback(
     (event: React.PointerEvent, square: string) => {
+      if (event.button === 2) {
+        event.preventDefault();
+        setDrawStart({ square, color: colorForModifiers(event) });
+        setDrawCurrent(square);
+        (event.target as Element).setPointerCapture?.(event.pointerId);
+        return;
+      }
+      if (event.button !== 0) return;
+      // Any left-button interaction starts a fresh selection, so clear old annotations first.
+      if (arrows.length || circles.length) {
+        setArrows([]);
+        setCircles([]);
+      }
       if (!interactive || pending) return;
       const piece = contents.get(square);
       const isOwn = piece?.color === game.turn();
@@ -131,19 +243,26 @@ export function Board({
       setDrag({ square, x: event.clientX, y: event.clientY });
       (event.target as Element).setPointerCapture?.(event.pointerId);
     },
-    [interactive, pending, contents, game, selected, attemptMove],
+    [interactive, pending, contents, game, selected, attemptMove, arrows, circles],
   );
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent) => {
-      if (!drag) return;
-      setDrag({ ...drag, x: event.clientX, y: event.clientY });
+      if (drag) setDrag({ ...drag, x: event.clientX, y: event.clientY });
+      if (drawStart) setDrawCurrent(squareAtPoint(event.clientX, event.clientY));
     },
-    [drag],
+    [drag, drawStart, squareAtPoint],
   );
 
   const handlePointerUp = useCallback(
     (event: React.PointerEvent) => {
+      if (drawStart) {
+        const end = squareAtPoint(event.clientX, event.clientY);
+        if (end) toggleDrawing(drawStart.square, end, drawStart.color);
+        setDrawStart(null);
+        setDrawCurrent(null);
+        return;
+      }
       if (!drag) return;
       const target = squareAtPoint(event.clientX, event.clientY);
       const from = drag.square;
@@ -153,7 +272,7 @@ export function Board({
       if (!target || target === from) return;
       if (attemptMove(from, target)) setSelected(null);
     },
-    [drag, squareAtPoint, attemptMove],
+    [drag, drawStart, squareAtPoint, attemptMove, toggleDrawing],
   );
 
   const finishPromotion = useCallback(
@@ -168,6 +287,15 @@ export function Board({
 
   const dragPiece = drag ? contents.get(drag.square) : undefined;
 
+  const previewArrow: DrawArrow | null =
+    drawStart && drawCurrent && drawCurrent !== drawStart.square
+      ? { from: drawStart.square, to: drawCurrent, color: drawStart.color }
+      : null;
+  const previewCircle: DrawCircle | null =
+    drawStart && drawCurrent === drawStart.square
+      ? { square: drawStart.square, color: drawStart.color }
+      : null;
+
   return (
     <div className="board-wrap">
       <div
@@ -175,7 +303,12 @@ export function Board({
         ref={boardRef}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerCancel={() => setDrag(null)}
+        onPointerCancel={() => {
+          setDrag(null);
+          setDrawStart(null);
+          setDrawCurrent(null);
+        }}
+        onContextMenu={(event) => event.preventDefault()}
       >
         {names.map((square, index) => {
           const file = index % 8;
@@ -220,6 +353,66 @@ export function Board({
           );
         })}
 
+        <svg className="board-draw" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            {(Object.keys(DRAW_COLORS) as DrawColor[]).map((color) => (
+              <marker
+                key={color}
+                id={`${uid}-arrowhead-${color}`}
+                viewBox="0 0 10 10"
+                refX="8.5"
+                refY="5"
+                markerWidth={annotationScale.marker}
+                markerHeight={annotationScale.marker}
+                markerUnits="userSpaceOnUse"
+                orient="auto"
+              >
+                <path d="M0,0 L10,5 L0,10 z" fill={DRAW_COLORS[color]} />
+              </marker>
+            ))}
+          </defs>
+          {[...arrows, ...(previewArrow ? [previewArrow] : [])].map((arrow, i) => {
+            const start = squareCenter(arrow.from, orientation);
+            const end = shortenTowards(
+              start,
+              squareCenter(arrow.to, orientation),
+              annotationScale.marker * 0.9,
+            );
+            return (
+              <line
+                key={`arrow-${arrow.from}-${arrow.to}-${i}`}
+                x1={start.x}
+                y1={start.y}
+                x2={end.x}
+                y2={end.y}
+                stroke={DRAW_COLORS[arrow.color]}
+                strokeWidth={annotationScale.arrow}
+                strokeLinecap="round"
+                markerEnd={`url(#${uid}-arrowhead-${arrow.color})`}
+              />
+            );
+          })}
+          {[...circles, ...(previewCircle ? [previewCircle] : [])].map((circle, i) => {
+            const { x, y } = squareCenter(circle.square, orientation);
+            const side = 9.6; // a rounded square, not a full circle — squarish highlight with soft corners
+            const radius = side * 0.32;
+            return (
+              <rect
+                key={`circle-${circle.square}-${i}`}
+                x={x - side / 2}
+                y={y - side / 2}
+                width={side}
+                height={side}
+                rx={radius}
+                ry={radius}
+                fill="none"
+                stroke={DRAW_COLORS[circle.color]}
+                strokeWidth={annotationScale.circle}
+              />
+            );
+          })}
+        </svg>
+
         {pending && (
           <div className="promotion" role="dialog" aria-label="Choose promotion piece">
             <div className="promotion__inner">
@@ -244,6 +437,11 @@ export function Board({
           <Piece type={dragPiece.type} color={dragPiece.color} />
         </div>
       )}
+
+      <p className="board-hint">
+        Right-click drag to draw an arrow, right-click a square to mark it — hold{' '}
+        <kbd>Shift</kbd> for red, <kbd>Ctrl</kbd> for blue, <kbd>Alt</kbd> for yellow.
+      </p>
     </div>
   );
 }
