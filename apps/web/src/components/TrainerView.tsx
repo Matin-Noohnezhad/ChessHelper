@@ -1,17 +1,24 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PieceSymbol } from '@coh/chess-core';
 import type { Side } from '@coh/opening-book';
 import { MASTERY_STREAK, trainableOpenings } from '@coh/trainer';
 import type { RepertoireLine } from '@coh/trainer';
 import { Board } from './Board.js';
+import { MaterialBar } from './MaterialBar.js';
 import { useTrainer } from '../hooks/useTrainer.js';
+import { usePrefs } from '../theme/prefs.js';
+import { sanToSpeech } from '../lib/sanSpeech.js';
+import type { Speech } from '../hooks/useSpeech.js';
+import type { Sounds } from '../hooks/useSounds.js';
 
 interface TrainerViewProps {
   /** Hands a finished line to the explore board for study. */
   onStudyLine: (moves: string[]) => void;
+  speech?: Speech;
+  sounds?: Sounds;
 }
 
-export function TrainerView({ onStudyLine }: TrainerViewProps) {
+export function TrainerView({ onStudyLine, speech, sounds }: TrainerViewProps) {
   const openings = useMemo(() => {
     return [...trainableOpenings()].sort((a, b) => a.name.localeCompare(b.name));
   }, []);
@@ -23,18 +30,49 @@ export function TrainerView({ onStudyLine }: TrainerViewProps) {
   const session = useTrainer(rootMoves, side);
   const { trainer, feedback, revealed } = session;
 
+  const { prefs } = usePrefs();
   const summary = trainer.summary();
   const line = trainer.line;
   const complete = trainer.status === 'complete';
   const labels = useMemo(() => lineLabels(session.lines), [session.lines]);
 
+  // Your move and the trainer's reply land in the same render. Both are worth
+  // hearing, so the tail of the history since the last render is announced as
+  // one phrase and the sounds are staggered to match the two moves.
+  const history = trainer.game.history();
+  const heard = useRef<number | null>(null);
+  useEffect(() => {
+    const previous = heard.current;
+    heard.current = history.length;
+    if (previous === null || history.length <= previous) return;
+    const fresh = history.slice(previous);
+    fresh.forEach((san, i) =>
+      i === 0
+        ? sounds?.playForSan(san)
+        : setTimeout(() => sounds?.playForSan(san), 240 * i),
+    );
+    speech?.say(
+      fresh.map((san) => sanToSpeech(san, { phonetic: prefs.speechPhonetic })).join(', '),
+    );
+  }, [history, sounds, speech, prefs.speechPhonetic]);
+
   const handleMove = (from: string, to: string, promotion?: PieceSymbol) => {
     session.submit({ from, to, promotion });
   };
 
+  const top = side === 'white' ? 'b' : 'w';
+  const bottom = side === 'white' ? 'w' : 'b';
+
   return (
     <div className="trainer">
       <div className="trainer__board">
+        {prefs.showMaterial && (
+          <div className="player-strip">
+            <span className={`player-strip__dot${trainer.game.turn() === top ? ' is-turn' : ''}`} />
+            <span className="player-strip__name">{top === 'w' ? 'White' : 'Black'}</span>
+            <MaterialBar game={trainer.game} side={top} />
+          </div>
+        )}
         <Board
           game={trainer.game}
           orientation={side === 'white' ? 'white' : 'black'}
@@ -42,6 +80,15 @@ export function TrainerView({ onStudyLine }: TrainerViewProps) {
           onMove={handleMove}
           interactive={trainer.isUsersTurn}
         />
+        {prefs.showMaterial && (
+          <div className="player-strip">
+            <span
+              className={`player-strip__dot${trainer.game.turn() === bottom ? ' is-turn' : ''}`}
+            />
+            <span className="player-strip__name">{bottom === 'w' ? 'White' : 'Black'}</span>
+            <MaterialBar game={trainer.game} side={bottom} />
+          </div>
+        )}
         <div className="board-bar">
           <span className="status">
             {complete

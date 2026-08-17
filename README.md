@@ -42,8 +42,25 @@ npm run typecheck
   position, kiwipete, and positions 3–6) to depth 4–5. Castling rights, en
   passant, promotion, repetition and insufficient material all included.
 - **Board UI** with drag-and-drop *and* click-to-move, legal-move dots, capture
-  rings, last-move and check highlights, a promotion picker, board flip,
-  coordinates, and arrow-key navigation through the game.
+  rings, last-move and check highlights, sliding piece animation, a promotion
+  picker, board flip, and arrow-key navigation through the game. The board sits
+  in a framed surround with the coordinates on the frame, and shows captured
+  material and the running balance for each side.
+- **Annotation pens**: right-drag to draw an arrow, right-click a square to ring
+  it. Shift, Ctrl and Alt switch between red, blue and yellow. Drawings clear on
+  the next move.
+- **Themes**, all in the settings flyout and remembered between sessions: eight
+  board surfaces (ChessBase Brown, Walnut, Fritz Blue, Tournament Green, Grey
+  Marble, Slate Night, Ice, Newsprint), five piece sets (flat Staunton, two
+  moulded sets, high contrast, and Unicode), four interface skins including two
+  light ones, plus coordinate placement and animation speed.
+- **Board sounds**, synthesised rather than shipped as assets: a wooden knock
+  for a move, a sharper one for a capture, a double click for castling, and
+  distinct sounds for check, promotion and mate.
+- **Spoken moves** through the browser's own synthesiser — "Knight F 3",
+  "Queen takes D 5, check", "Castles kingside" — with a voice picker, speed and
+  volume, an optional phonetic alphabet ("Foxtrot 3"), and an option to announce
+  the opening name as the classification changes.
 - **Live opening identification** as you play across the full ECO tables —
   3,844 named lines, up to 36 plies deep — with ECO code, character
   (sharp / positional / gambit / system) and a suggested rating band.

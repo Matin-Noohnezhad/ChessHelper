@@ -1,13 +1,15 @@
 /*
- * A dark, lichess-flavoured shell. Everything is driven by custom properties so
- * a light theme, a different board palette, or a mobile shell can be dropped in
- * without touching component code.
+ * Everything visual is driven by custom properties, and the theme provider
+ * rewrites them on the document element. The values below are the defaults —
+ * dark shell, ChessBase brown board, Staunton pieces — so a first paint before
+ * any JavaScript runs already looks right.
  */
 
 :root {
   --bg: #14130f;
   --surface: #1e1c17;
   --surface-2: #26241e;
+  --surface-3: #302d25;
   --border: #35322a;
   --text: #ece7dd;
   --muted: #9b948a;
@@ -15,13 +17,30 @@
   --accent-dim: #55743a;
   --danger: #c4553d;
 
-  --sq-light: #ecdab9;
-  --sq-dark: #ae8a68;
-  --sq-last: rgba(155, 199, 0, 0.42);
-  --sq-selected: rgba(20, 85, 30, 0.55);
-  --sq-check: radial-gradient(circle, rgba(219, 68, 45, 0.95) 12%, rgba(219, 68, 45, 0) 72%);
+  --sq-light: #efdfc0;
+  --sq-dark: #b58150;
+  --sq-light-plain: #efdfc0;
+  --sq-dark-plain: #b58150;
+  --sq-last: rgba(255, 196, 60, 0.42);
+  --sq-selected: rgba(255, 235, 130, 0.5);
+  --sq-hint: rgba(38, 28, 16, 0.32);
+  --sq-check: radial-gradient(circle, rgba(226, 62, 42, 0.95) 12%, rgba(226, 62, 42, 0) 72%);
 
-  --board-size: min(76vh, 620px);
+  --board-frame: linear-gradient(160deg, #4a3626, #2e2015);
+  --board-frame-edge: #191009;
+  --board-frame-text: #e6d3b3;
+  --board-texture: radial-gradient(120% 120% at 30% 12%, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.16) 78%);
+
+  --pf-w: #fbfaf6;
+  --ps-w: #14130f;
+  --pd-w: #14130f;
+  --pf-b: #26241d;
+  --ps-b: #0a0908;
+  --pd-b: #ddd9cd;
+  --piece-stroke-w: 1.5;
+
+  --board-size: min(74vh, 600px);
+  --square: calc(var(--board-size) / 8);
 
   color-scheme: dark;
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -50,12 +69,26 @@ button {
   transition: background 0.12s ease, border-color 0.12s ease;
 }
 button:hover:not(:disabled) {
-  background: #302d25;
-  border-color: #494435;
+  background: var(--surface-3);
+  border-color: var(--accent-dim);
 }
 button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+select,
+input[type='range'] {
+  font: inherit;
+  color: inherit;
+  accent-color: var(--accent);
+}
+select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  max-width: 100%;
 }
 
 /* ------------------------------------------------------------- layout --- */
@@ -94,23 +127,24 @@ button:disabled {
 .app__actions {
   display: flex;
   gap: 0.5rem;
+  align-items: flex-start;
 }
 
 .app__body {
   display: grid;
-  grid-template-columns: var(--board-size) minmax(320px, 1fr);
+  grid-template-columns: auto minmax(320px, 1fr);
   gap: 1.75rem;
   align-items: start;
   padding-top: 1.5rem;
 }
 
-@media (max-width: 1020px) {
+@media (max-width: 1080px) {
   .app__body {
     grid-template-columns: 1fr;
     justify-items: center;
   }
   :root {
-    --board-size: min(92vw, 560px);
+    --board-size: min(88vw, 560px);
   }
   .app__side {
     width: min(92vw, 620px);
@@ -123,16 +157,67 @@ button:disabled {
   position: relative;
 }
 
+/*
+ * The frame is a grid whose middle cell is the playing surface; the outer
+ * tracks are the wooden surround the coordinates sit on, the way a ChessBase
+ * board is drawn. Switching the coordinates off simply narrows those tracks to
+ * a bevel.
+ */
+.board-frame {
+  --frame-pad: calc(var(--board-size) * 0.048);
+  display: grid;
+  grid-template-columns: var(--frame-pad) var(--board-size) var(--frame-pad);
+  grid-template-rows: var(--frame-pad) var(--board-size) var(--frame-pad);
+  background: var(--board-frame);
+  border: 1px solid var(--board-frame-edge);
+  border-radius: 7px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 16px 38px rgba(0, 0, 0, 0.5);
+}
+.board-frame--inside,
+.board-frame--none {
+  --frame-pad: calc(var(--board-size) * 0.016);
+}
+
+.frame-coords {
+  display: grid;
+  font-size: calc(var(--board-size) * 0.024);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--board-frame-text);
+  opacity: 0.85;
+  user-select: none;
+}
+.frame-coords span {
+  display: grid;
+  place-items: center;
+}
+.frame-coords--rank {
+  grid-column: 1;
+  grid-row: 2;
+  grid-template-rows: repeat(8, 1fr);
+}
+.frame-coords--file {
+  grid-column: 2;
+  grid-row: 3;
+  grid-template-columns: repeat(8, 1fr);
+}
+
 .board {
+  grid-column: 2;
+  grid-row: 2;
   position: relative;
   width: var(--board-size);
   height: var(--board-size);
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
-  border-radius: 5px;
-  overflow: hidden;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    inset 0 0 22px rgba(0, 0, 0, 0.22);
   touch-action: none;
   user-select: none;
 }
@@ -164,6 +249,16 @@ button:disabled {
   position: absolute;
   inset: 0;
   background: var(--sq-check);
+  z-index: 1;
+}
+/* The square under a dragged piece, so the drop target is never in doubt. */
+.square--over::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 4px solid rgba(255, 255, 255, 0.65);
+  z-index: 1;
+  pointer-events: none;
 }
 .square--mark::after {
   content: '';
@@ -171,6 +266,7 @@ button:disabled {
   inset: 6%;
   border-radius: 4px;
   border: 3px dashed rgba(122, 166, 79, 0.9);
+  z-index: 4;
   pointer-events: none;
 }
 .square--mark-key::after {
@@ -181,10 +277,11 @@ button:disabled {
   position: absolute;
   bottom: 4%;
   right: 6%;
+  z-index: 5;
   font-size: 0.7rem;
   font-weight: 700;
   color: #1d1b16;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.78);
   border-radius: 3px;
   padding: 0 3px;
   pointer-events: none;
@@ -192,65 +289,188 @@ button:disabled {
 
 .coord {
   position: absolute;
-  font-size: 0.62rem;
+  z-index: 4;
+  font-size: calc(var(--board-size) * 0.02);
   font-weight: 700;
-  opacity: 0.65;
-  color: #2b2820;
+  opacity: 0.75;
+  color: var(--sq-dark-plain);
   pointer-events: none;
 }
 .square--dark .coord {
-  color: #f0e2c8;
+  color: var(--sq-light-plain);
 }
 .coord--rank {
-  top: 2px;
-  left: 3px;
+  top: 3%;
+  left: 5%;
 }
 .coord--file {
-  bottom: 1px;
-  right: 4px;
+  bottom: 2%;
+  right: 6%;
 }
 
 .target {
   position: absolute;
+  z-index: 4;
   width: 30%;
   height: 30%;
   border-radius: 50%;
-  background: rgba(20, 20, 20, 0.28);
+  background: var(--sq-hint);
   pointer-events: none;
 }
 .target--capture {
   width: 92%;
   height: 92%;
   background: none;
-  border: 6px solid rgba(20, 20, 20, 0.28);
+  border: 6px solid var(--sq-hint);
+}
+
+/* Depth pass over the whole surface: it sits under the pieces so it shades
+ * the board rather than the men standing on it. */
+.board__texture {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--board-texture);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.board__shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* -------------------------------------------------------------- piece --- */
+
+.piece-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 .piece {
-  font-size: calc(var(--board-size) / 8 * 0.82);
-  line-height: 1;
+  position: relative;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  transform: translateY(-2%);
 }
+.piece svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 calc(var(--square, 60px) * 0.018) calc(var(--square, 60px) * 0.02) rgba(0, 0, 0, 0.4));
+}
+.piece--dragging {
+  opacity: 0.26;
+}
+
 .piece--w {
+  --pf: var(--pf-w);
+  --ps: var(--ps-w);
+  --pd: var(--pd-w);
+  --pdot: var(--pd-w);
+  --sw: var(--piece-stroke-w);
+  --shade: url(#cohShadeW);
+}
+.piece--b {
+  --pf: var(--pf-b);
+  --ps: var(--ps-b);
+  --pd: var(--pd-b);
+  --pdot: var(--pd-b);
+  --sw: var(--piece-stroke-w);
+  --shade: url(#cohShadeB);
+}
+
+.p-fill {
+  fill: var(--pf);
+  stroke: var(--ps);
+  stroke-width: var(--sw);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.p-line {
+  fill: none;
+  stroke: var(--pd);
+  stroke-width: calc(var(--sw) * 0.85);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.p-dot {
+  fill: var(--pdot);
+  stroke: none;
+}
+/* The moulded look: a second pass of the same silhouette, filled with a
+ * highlight-to-shadow ramp and nothing else. */
+.pshade .p-fill {
+  fill: var(--shade);
+  stroke: none;
+}
+.pshade .p-line,
+.pshade .p-dot {
+  display: none;
+}
+
+/* The Unicode set is text, so it needs a type size rather than a box. */
+:root[data-pieces='unicode'] .piece {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--square) * 0.86);
+  line-height: 1;
+}
+:root[data-pieces='unicode'] .piece--w {
   color: #fbfaf7;
   -webkit-text-stroke: 1.6px #23211c;
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.28);
 }
-.piece--b {
+:root[data-pieces='unicode'] .piece--b {
   color: #1e1c18;
   -webkit-text-stroke: 1.2px #0c0b09;
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.22);
 }
-.piece--dragging {
-  opacity: 0.28;
+
+/* ---------------------------------------------------------- animation --- */
+
+@keyframes coh-slide {
+  from {
+    transform: translate(calc(var(--adx) * 100%), calc(var(--ady) * 100%));
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+.square--anim .piece {
+  z-index: 5;
+  animation: coh-slide var(--anim-ms, 180ms) cubic-bezier(0.22, 0.68, 0.4, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .square--anim .piece {
+    animation: none;
+  }
 }
 
 .drag-layer {
   position: fixed;
-  z-index: 30;
+  z-index: 60;
+  width: var(--square);
+  height: var(--square);
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+.drag-layer .piece svg {
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.55));
+}
+
+/* ---------------------------------------------------------- promotion --- */
 
 .promotion {
   position: absolute;
@@ -276,13 +496,71 @@ button:disabled {
   gap: 0.4rem;
 }
 .promotion__choices button {
-  --board-size: 340px; /* scales the glyphs down inside the dialog */
-  padding: 0.3rem 0.55rem;
+  padding: 0.3rem;
   line-height: 1;
+}
+.promotion__choices .piece {
+  width: 46px;
+  height: 46px;
+  font-size: 40px;
 }
 .promotion__cancel {
   margin-top: 0.6rem;
   font-size: 0.8rem;
+}
+
+/* ------------------------------------------------------- board chrome --- */
+
+.player-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.15rem;
+  min-height: 1.9rem;
+}
+.player-strip__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  flex: none;
+}
+.player-strip__dot.is-turn {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(122, 166, 79, 0.18);
+}
+.player-strip__name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.material {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.material__pieces {
+  display: flex;
+  align-items: center;
+}
+.material .piece {
+  width: 19px;
+  height: 19px;
+  font-size: 17px;
+  margin-right: -5px;
+}
+.material .piece svg {
+  filter: none;
+}
+.material__edge {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  margin-left: 0.25rem;
 }
 
 .board-bar {
@@ -290,7 +568,7 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-top: 0.75rem;
+  margin-top: 0.6rem;
 }
 .status {
   font-weight: 600;
@@ -307,6 +585,181 @@ button:disabled {
 }
 .fen {
   font-size: 0.8rem;
+}
+.board-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.76rem;
+}
+
+/* ----------------------------------------------------------- settings --- */
+
+.settings-anchor {
+  position: relative;
+}
+.icon-button {
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.45rem 0.6rem;
+}
+.icon-button.is-active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.settings {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 50;
+  width: min(24rem, 90vw);
+  max-height: min(78vh, 44rem);
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1rem 1rem;
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.5);
+}
+.settings__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+.settings__head h2 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.settings__close {
+  background: none;
+  border: none;
+  padding: 0.2rem 0.35rem;
+  color: var(--muted);
+}
+.settings__group {
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--border);
+}
+.settings__group h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+.settings__group--cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.settings__note {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.settings__test,
+.settings__reset {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+}
+.settings__reset {
+  width: 100%;
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  min-width: 0;
+}
+.setting > span {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.setting--toggle {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding: 0.22rem 0;
+  cursor: pointer;
+}
+.setting--toggle > span {
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+}
+.setting--toggle em {
+  display: block;
+  font-style: normal;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.setting--range {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+}
+.setting--range input {
+  flex: 1;
+  min-width: 0;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.45rem;
+}
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.15rem;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.swatch.is-active {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+.swatch__board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 3px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.swatch__board i {
+  display: block;
+}
+.swatch__piece {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.swatch__piece svg {
+  width: 84%;
+  height: 84%;
+}
+.swatch__piece b {
+  font-size: 2.1rem;
+  line-height: 1;
+}
+.swatch__name {
+  font-size: 0.63rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.15;
 }
 
 /* -------------------------------------------------------------- panel --- */
@@ -491,7 +944,7 @@ button:disabled {
   height: fit-content;
 }
 .break-move--white {
-  color: #f2ede2;
+  color: var(--text);
 }
 .break-move--black {
   color: #8fb4d8;
@@ -562,7 +1015,8 @@ button:disabled {
   aspect-ratio: 1;
   border-radius: 4px;
   overflow: hidden;
-  --board-size: 168px;
+  border: 1px solid var(--board-frame-edge);
+  --square: 21px;
 }
 .mini-square {
   display: flex;
@@ -575,6 +1029,9 @@ button:disabled {
 }
 .mini-square.is-dark {
   background: var(--sq-dark);
+}
+.mini-square .piece svg {
+  filter: none;
 }
 .mini-board figcaption {
   margin-top: 0.35rem;
@@ -600,7 +1057,7 @@ button:disabled {
 }
 .notes code {
   font-size: 0.86rem;
-  color: #c9c2b4;
+  color: var(--muted);
 }
 
 .continuations {
@@ -694,12 +1151,12 @@ button:disabled {
 
 .trainer {
   display: grid;
-  grid-template-columns: var(--board-size) minmax(320px, 1fr);
+  grid-template-columns: auto minmax(320px, 1fr);
   gap: 1.75rem;
   align-items: start;
   padding-top: 1.5rem;
 }
-@media (max-width: 1020px) {
+@media (max-width: 1080px) {
   .trainer {
     grid-template-columns: 1fr;
     justify-items: center;
@@ -733,15 +1190,6 @@ button:disabled {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--muted);
-}
-.trainer__setup select {
-  font: inherit;
-  color: inherit;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.4rem 0.5rem;
-  max-width: 100%;
 }
 
 .segmented {
