@@ -1,0 +1,15 @@
+{
+  "name": "@coh/imbalances",
+  "version": "0.0.1",
+  "description": "Static, Silman-style reading of a position's imbalances: material, minor pieces, pawn structure, space, development, king safety, open files.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@coh/chess-core": "0.0.1"
+  },
+  "sideEffects": false
+}
