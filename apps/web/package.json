@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@coh/chess-core": "0.0.1",
+    "@coh/imbalances": "0.0.1",
     "@coh/opening-book": "0.0.1",
     "@coh/trainer": "0.0.1",
     "react": "^18.3.1",

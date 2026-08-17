@@ -4,6 +4,8 @@ import { identifyOpening } from '@coh/opening-book';
 import { Board } from './components/Board.js';
 import type { SquareMark } from './components/Board.js';
 import { EnginePanel } from './components/EnginePanel.js';
+import { EvalBar } from './components/EvalBar.js';
+import { ImbalancesPanel } from './components/ImbalancesPanel.js';
 import { MoveList } from './components/MoveList.js';
 import { OpeningPanel } from './components/OpeningPanel.js';
 import { SettingsPanel } from './components/SettingsPanel.js';
@@ -149,14 +151,17 @@ export default function App() {
       ) : (
       <main className="app__body">
         <div className="app__board">
-          <Board
-            game={game.game}
-            orientation={game.orientation}
-            lastMove={game.lastMove}
-            onMove={handleMove}
-            marks={marks}
-            annotationThickness={settings.annotationThickness}
-          />
+          <div className="board-row">
+            <EvalBar engine={engine} orientation={game.orientation} />
+            <Board
+              game={game.game}
+              orientation={game.orientation}
+              lastMove={game.lastMove}
+              onMove={handleMove}
+              marks={marks}
+              annotationThickness={settings.annotationThickness}
+            />
+          </div>
           <div className="board-bar">
             <span className={`status${game.game.isCheck() ? ' status--check' : ''}`}>{status}</span>
             <div className="nav">
@@ -181,6 +186,7 @@ export default function App() {
 
         <aside className="app__side">
           <EnginePanel engine={engine} />
+          <ImbalancesPanel game={game.game} />
           <OpeningPanel
             match={match}
             plies={played.length}

@@ -1,4 +1,5 @@
-import type { ComplexityLabel, EngineController, EngineLine } from '../hooks/useEngine.js';
+import { formatEval } from '../hooks/useEngine.js';
+import type { ComplexityLabel, EngineController } from '../hooks/useEngine.js';
 
 const COMPLEXITY_TAG_CLASS: Record<ComplexityLabel, string> = {
   Quiet: 'tag--positional',
@@ -6,12 +7,6 @@ const COMPLEXITY_TAG_CLASS: Record<ComplexityLabel, string> = {
   Sharp: 'tag--sharp',
   Critical: 'tag--gambit',
 };
-
-function formatEval({ cpWhite, mateWhite }: Pick<EngineLine, 'cpWhite' | 'mateWhite'>): string {
-  if (mateWhite !== null) return `#${mateWhite}`;
-  const pawns = (cpWhite ?? 0) / 100;
-  return `${pawns > 0 ? '+' : ''}${pawns.toFixed(2)}`;
-}
 
 interface EnginePanelProps {
   engine: EngineController;
