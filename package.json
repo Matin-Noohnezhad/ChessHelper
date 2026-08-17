@@ -1,0 +1,27 @@
+{
+  "name": "chess-opening-helper",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Opening preparation trainer: plans, pawn structures, breaks, and a sparring partner that rotates variations.",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b",
+    "dev": "npm run dev -w @coh/web",
+    "build": "npm run build --workspaces --if-present",
+    "ingest:eco": "vite-node packages/opening-book/scripts/ingest-eco.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

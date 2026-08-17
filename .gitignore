@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+.vite/
+
+# Opening databases: ~421MB of source PGN, not something git should carry.
+pgn/
