@@ -16,6 +16,7 @@ export default defineConfig({
       '@coh/opening-book': pkg('opening-book'),
       '@coh/trainer': pkg('trainer'),
       '@coh/imbalances': pkg('imbalances'),
+      '@coh/review': pkg('review'),
     },
   },
   build: {

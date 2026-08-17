@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { formatMoveText } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
 import { identifyOpening } from '@coh/opening-book';
 import { Board } from './components/Board.js';
@@ -8,13 +9,14 @@ import { EvalBar } from './components/EvalBar.js';
 import { ImbalancesPanel } from './components/ImbalancesPanel.js';
 import { MoveList } from './components/MoveList.js';
 import { OpeningPanel } from './components/OpeningPanel.js';
+import { ReviewView } from './components/ReviewView.js';
 import { SettingsPanel } from './components/SettingsPanel.js';
 import { TrainerView } from './components/TrainerView.js';
 import { useChessGame } from './hooks/useChessGame.js';
 import { useEngine } from './hooks/useEngine.js';
 import { useSettings } from './hooks/useSettings.js';
 
-type Mode = 'explore' | 'train';
+type Mode = 'explore' | 'train' | 'review';
 
 export default function App() {
   const game = useChessGame();
@@ -31,6 +33,13 @@ export default function App() {
   // back through a game replays how the opening was classified move by move.
   const played = useMemo(() => game.sans.slice(0, game.cursor), [game.sans, game.cursor]);
   const match = useMemo(() => identifyOpening(played), [played]);
+
+  // The whole line, not the cursor's prefix: reviewing "the game on the board"
+  // should cover everything played, wherever the user happens to be looking.
+  const currentGamePgn = useMemo(
+    () => (game.sans.length ? formatMoveText(game.sans, false, '*') : null),
+    [game.sans],
+  );
 
   const handleMove = useCallback(
     (from: string, to: string, promotion?: PieceSymbol) => {
@@ -113,6 +122,13 @@ export default function App() {
             >
               Train
             </button>
+            <button
+              type="button"
+              className={mode === 'review' ? 'is-active' : ''}
+              onClick={() => setMode('review')}
+            >
+              Review
+            </button>
           </div>
           {mode === 'explore' && (
             <>
@@ -148,6 +164,11 @@ export default function App() {
 
       {mode === 'train' ? (
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
+      ) : mode === 'review' ? (
+        <ReviewView
+          currentGamePgn={currentGamePgn}
+          annotationThickness={settings.annotationThickness}
+        />
       ) : (
       <main className="app__body">
         <div className="app__board">

@@ -2,9 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { identifyOpening } from '@coh/opening-book';
 import { Chess } from '@coh/chess-core';
+import { reviewPgn } from '@coh/review';
+import type { PositionEvaluator } from '@coh/review';
 import App from '../App.js';
 import { Board } from '../components/Board.js';
 import { OpeningPanel } from '../components/OpeningPanel.js';
+import { ReviewSetup } from '../components/ReviewSetup.js';
+import { ReviewReport } from '../components/ReviewView.js';
 import { TrainerView } from '../components/TrainerView.js';
 
 /**
@@ -66,5 +70,66 @@ describe('web app renders', () => {
     );
     expect(html).toContain('Mar del Plata');
     expect(html).toContain('Ideas shown for the parent line');
+  });
+});
+
+/**
+ * A flat evaluator: every position is level and every move is one of the
+ * engine's. Enough to exercise the report's layout without a real search —
+ * the numbers themselves are the review package's business.
+ */
+const flatEvaluator: PositionEvaluator = async (fen) => {
+  const game = new Chess(fen);
+  return {
+    fen,
+    depth: 10,
+    candidates: game.legalMoves().slice(0, 3).map((move) => ({
+      uci: move.uci,
+      san: move.san,
+      score: { cp: 0, mate: null },
+      pv: [move.san],
+    })),
+  };
+};
+
+describe('game review UI', () => {
+  const idle = {
+    status: 'idle' as const,
+    progress: { done: 0, total: 0 },
+    review: null,
+    error: null,
+    speed: 'balanced' as const,
+    setSpeed: () => {},
+    start: () => {},
+    cancel: () => {},
+    clear: () => {},
+  };
+
+  it('offers a PGN box, a file picker and the depth presets', () => {
+    const html = renderToStaticMarkup(
+      <ReviewSetup controller={idle} currentGamePgn={'1.e4 e5 *'} />,
+    );
+    expect(html).toContain('Review a game');
+    expect(html).toContain('Open a .pgn file');
+    expect(html).toContain('Use the game on the board');
+    expect(html).toContain('Balanced');
+  });
+
+  it('renders a full report: accuracies, phases, categories and the move list', async () => {
+    const review = await reviewPgn(
+      '[White "Ann"]\n[Black "Ben"]\n[Result "*"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *',
+      { evaluator: flatEvaluator },
+    );
+    const html = renderToStaticMarkup(<ReviewReport review={review} onReset={() => {}} />);
+
+    expect(html).toContain('Ann');
+    expect(html).toContain('Ben');
+    expect(html).toContain('accuracy');
+    expect(html).toContain('Opening');
+    expect(html).toContain('Middlegame');
+    expect(html).toContain('Endgame');
+    // Every move is in the list, and the board still draws all 64 squares.
+    expect(html).toContain('Bb5');
+    expect(html.match(/data-square="/g)).toHaveLength(64);
   });
 });

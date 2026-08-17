@@ -3,20 +3,25 @@ import type { EngineController } from '../hooks/useEngine.js';
 import { formatEval, whiteWinFraction } from '../hooks/useEngine.js';
 
 interface EvalBarProps {
-  engine: EngineController;
+  /** Live analysis of the explore board. */
+  engine?: EngineController;
+  /** A reading the caller already has — the review works from its own report, not a live search. */
+  reading?: { fraction: number; label: string } | null;
   orientation: Orientation;
 }
 
 /**
  * A lichess/chess.com-style vertical eval bar, flush against the board's
- * side. Sits idle (flat, no split) until analysis is switched on in the
- * engine panel, then fills to match the board's current orientation — the
- * White portion grows from whichever end White's side of the board is on.
+ * side. Sits idle (flat, no split) until there is something to show, then
+ * fills to match the board's current orientation — the White portion grows
+ * from whichever end White's side of the board is on.
  */
-export function EvalBar({ engine, orientation }: EvalBarProps) {
-  const best = engine.enabled ? engine.analysis?.lines[0] : undefined;
-  const active = best !== undefined;
-  const fraction = active ? whiteWinFraction(best) : 0.5;
+export function EvalBar({ engine, reading, orientation }: EvalBarProps) {
+  const best = engine?.enabled ? engine.analysis?.lines[0] : undefined;
+  const active = reading ? true : best !== undefined;
+  const fraction = reading ? reading.fraction : best ? whiteWinFraction(best) : 0.5;
+  const label = reading ? reading.label : best ? formatEval(best) : '–';
+
   const whiteAtBottom = orientation === 'white';
   const anchorStyle = whiteAtBottom
     ? { bottom: 0, height: `${fraction * 100}%` }
@@ -31,7 +36,7 @@ export function EvalBar({ engine, orientation }: EvalBarProps) {
         {active && <div className="eval-bar__white" style={anchorStyle} />}
       </div>
       <span className="eval-bar__label" style={labelStyle}>
-        {active ? formatEval(best) : '–'}
+        {active ? label : '–'}
       </span>
     </div>
   );
