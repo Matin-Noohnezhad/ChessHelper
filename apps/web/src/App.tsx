@@ -5,6 +5,7 @@ import { Board } from './components/Board.js';
 import type { SquareMark } from './components/Board.js';
 import { EnginePanel } from './components/EnginePanel.js';
 import { EvalBar } from './components/EvalBar.js';
+import { ImbalancesPanel } from './components/ImbalancesPanel.js';
 import { MoveList } from './components/MoveList.js';
 import { OpeningPanel } from './components/OpeningPanel.js';
 import { SettingsPanel } from './components/SettingsPanel.js';
@@ -185,6 +186,7 @@ export default function App() {
 
         <aside className="app__side">
           <EnginePanel engine={engine} />
+          <ImbalancesPanel game={game.game} />
           <OpeningPanel
             match={match}
             plies={played.length}

@@ -821,6 +821,54 @@ button:disabled {
   color: var(--muted);
 }
 
+/* ---------------------------------------------------------- imbalances --- */
+
+.imbalance-score {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.imbalances-bar {
+  margin-top: 0.6rem;
+}
+.imbalances-empty {
+  margin-top: 0.7rem;
+}
+.imbalances-list {
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.imbalances-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.86rem;
+}
+.imbalances-list li:last-child {
+  border-bottom: none;
+}
+.imbalance-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: none;
+  align-self: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+}
+.imbalance-dot--white {
+  background: var(--eval-white);
+}
+.imbalance-dot--black {
+  background: var(--eval-black);
+}
+.imbalance-dot--both {
+  background: linear-gradient(90deg, var(--eval-white) 50%, var(--eval-black) 50%);
+}
+
 /* -------------------------------------------------------------- moves --- */
 
 .moves h3 {
