@@ -70,6 +70,13 @@ export interface OpeningTheory {
   traps?: string[];
   /** Model games, "Player – Player, Event Year". */
   modelGames?: string[];
+  /**
+   * Where the understanding came from, when it was distilled from annotated
+   * material rather than written from scratch. Titles only, and the entry is
+   * always our own words — the point of recording this is that a reader can
+   * tell which entries rest on somebody else's analysis and go check it.
+   */
+  sources?: string[];
 }
 
 export interface Opening {

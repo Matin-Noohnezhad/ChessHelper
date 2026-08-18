@@ -168,6 +168,17 @@ about a line that currently shows the plans of `1.e4 c5`, eight plies above it.
 A second list covers positions the corpus discusses that the book has no entry
 for at all. Both are written to `.corpus/coverage.json`.
 
+`npm run digest:node -- --rank 1` is the reading step: it gathers everything
+written about one position, collapses the near-duplicates that courses repeat at
+the head of every chapter, and ranks what is left by how much of it is about
+*playing* the position rather than about the author's relationship with the
+opening. A person reads the digest and writes the entry. Nothing is copied —
+what ships is the distillation, in our own words, with the courses it rests on
+recorded in `theory.sources` so a reader can go and check.
+
+That is a loop, not a one-off: write entries, re-run the coverage report, and
+the worklist shrinks by exactly what was written.
+
 Two pieces of the core exist to make this practical. `parseAnnotatedPgn`
 descends into sidelines, hanging each on the move it replaces, because courses
 keep most of their teaching down there. And `resolveSan` resolves notation by

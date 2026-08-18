@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Chess, parseFen, toFen } from '@coh/chess-core';
 import { CURATED_OPENINGS } from '../openings.js';
 import { PAWN_STRUCTURES, getStructure } from '../structures.js';
+import { pawnSkeleton } from '../classify.js';
 import { OPENINGS, bookStats, continuationsFrom, deepestOpening, identifyOpening, searchOpenings } from '../book.js';
 
 /**
@@ -47,6 +48,42 @@ describe('opening data integrity', () => {
     };
     for (const opening of CURATED_OPENINGS) if (opening.theory) check(opening.name, opening.theory.breaks);
     for (const structure of PAWN_STRUCTURES) check(structure.name, structure.breaks);
+  });
+
+  /**
+   * A break has to be a move that side could actually make. Writing plans from
+   * annotated material makes it easy to attribute one to the wrong colour, or
+   * to name a push on a file where that side has no pawn left — the sort of
+   * mistake that reads perfectly well and is simply false. This checks the
+   * cheap half of it: a pawn push needs a pawn of that colour on the file,
+   * behind the square it is being pushed to.
+   */
+  it('every pawn break in an opening is a push that side could make', () => {
+    const push = /^[a-h][1-8]$/;
+
+    for (const opening of CURATED_OPENINGS) {
+      if (!opening.theory) continue;
+      const board = new Chess();
+      for (const san of opening.moves) {
+        expect(board.move(san), `${opening.name}: ${san}`).not.toBeNull();
+      }
+      const skeleton = pawnSkeleton(board.fen());
+
+      for (const brk of opening.theory.breaks) {
+        if (!push.test(brk.move)) continue;
+        const file = brk.move[0]!;
+        const rank = Number(brk.move[1]);
+        const behind = [...Array(8).keys()]
+          .map((index) => index + 1)
+          .filter((candidate) => (brk.side === 'white' ? candidate < rank : candidate > rank));
+
+        const found = behind.some((candidate) => skeleton.has(brk.side, `${file}${candidate}`));
+        expect(
+          found,
+          `${opening.name}: ${brk.side} cannot push to ${brk.move} — no ${brk.side} pawn behind it on the ${file}-file`,
+        ).toBe(true);
+      }
+    }
   });
 
   it('every structure skeleton is a valid position with both kings', () => {
