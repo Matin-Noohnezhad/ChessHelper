@@ -176,6 +176,14 @@ async function main(): Promise<void> {
   console.log(`${line.join(' ')}`);
   console.log(`${opening?.eco ?? '—'} ${opening?.name ?? 'not a named line'}`);
   if (named?.theorySource) console.log(`currently shows theory from: ${named.theorySource.name}`);
+  // Ranks come from coverage.json, which goes stale the moment an entry is
+  // written. Say so rather than let a batch be spent on finished work.
+  if (opening?.theory) {
+    console.log(
+      '\n*** This node already carries its own theory. If you reached it by --rank, ' +
+        're-run `npm run report:coverage` first — the worklist is out of date. ***',
+    );
+  }
   console.log(`position ${targetKey}, depth ${options.depth}, min ${options.minChars} chars\n`);
 
   const byFingerprint = new Map<string, Piece>();

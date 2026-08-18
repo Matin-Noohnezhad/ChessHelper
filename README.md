@@ -177,7 +177,11 @@ what ships is the distillation, in our own words, with the courses it rests on
 recorded in `theory.sources` so a reader can go and check.
 
 That is a loop, not a one-off: write entries, re-run the coverage report, and
-the worklist shrinks by exactly what was written.
+the worklist shrinks by exactly what was written. There is no checklist to keep
+up to date — a node leaves the worklist the moment it has its own theory, so
+progress is read off the data rather than tracked by hand. `.claude/skills/
+distil-openings` carries the runbook, so a fresh session can pick the work up
+with `/distil-openings` and no other context.
 
 Two pieces of the core exist to make this practical. `parseAnnotatedPgn`
 descends into sidelines, hanging each on the move it replaces, because courses
