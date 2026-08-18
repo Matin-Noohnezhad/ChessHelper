@@ -87,6 +87,13 @@ const ANNOTATION_SCALE: Record<AnnotationThickness, { arrow: number; circle: num
   extra: { arrow: 4.4, circle: 3.6, marker: 9.2 },
 };
 
+/** An arrow the app draws itself, e.g. the engine's move in a review. */
+export interface BoardArrow {
+  from: string;
+  to: string;
+  color?: DrawColor;
+}
+
 export interface SquareMark {
   square: string;
   kind: 'key' | 'break';
@@ -101,6 +108,8 @@ interface BoardProps {
   interactive?: boolean;
   /** Squares the study panel wants to point at (key squares, break targets). */
   marks?: SquareMark[];
+  /** Arrows drawn by the app rather than the user; cleared with the position, not by clicking. */
+  hintArrows?: BoardArrow[];
   /** Stroke weight for drawn arrows and square marks; defaults to 'medium'. */
   annotationThickness?: AnnotationThickness;
 }
@@ -117,6 +126,7 @@ export function Board({
   onMove,
   interactive = true,
   marks = [],
+  hintArrows = [],
   annotationThickness = 'medium',
 }: BoardProps) {
   const annotationScale = ANNOTATION_SCALE[annotationThickness];
@@ -371,7 +381,11 @@ export function Board({
               </marker>
             ))}
           </defs>
-          {[...arrows, ...(previewArrow ? [previewArrow] : [])].map((arrow, i) => {
+          {[
+            ...hintArrows.map((arrow) => ({ ...arrow, color: arrow.color ?? 'blue' })),
+            ...arrows,
+            ...(previewArrow ? [previewArrow] : []),
+          ].map((arrow, i) => {
             const start = squareCenter(arrow.from, orientation);
             const end = shortenTowards(
               start,

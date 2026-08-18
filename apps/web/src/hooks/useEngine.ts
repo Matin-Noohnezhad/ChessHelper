@@ -110,7 +110,7 @@ function computeComplexity(lines: RawLine[], mobility: number): PositionComplexi
   return { score, label, gapCp, closeCount, candidateCount: values.length, mobility };
 }
 
-interface ParsedInfo {
+export interface ParsedInfo {
   depth: number;
   multipv: number;
   kind: 'cp' | 'mate';
@@ -119,7 +119,7 @@ interface ParsedInfo {
 }
 
 /** UCI `pv` is always the last field, so anything after it is the line — order of the rest is not guaranteed. */
-function parseInfoLine(line: string): ParsedInfo | null {
+export function parseInfoLine(line: string): ParsedInfo | null {
   if (!line.startsWith('info ') || line.includes('lowerbound') || line.includes('upperbound')) {
     return null;
   }

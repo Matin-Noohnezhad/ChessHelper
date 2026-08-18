@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { Chess } from '../chess.js';
 import { START_FEN, parseFen, toFen } from '../fen.js';
-import { formatMoveText, parseMoveText, parsePgn } from '../pgn.js';
+import {
+  formatMoveText,
+  parseAnnotatedPgn,
+  parseAnnotatedPgnAll,
+  parseMoveText,
+  parsePgn,
+} from '../pgn.js';
 
 describe('FEN', () => {
   it('round-trips a set of positions unchanged', () => {
@@ -159,5 +165,62 @@ describe('PGN', () => {
   it('formats movetext back out', () => {
     expect(formatMoveText(['e4', 'e5', 'Nf3'], false, '*')).toBe('1.e4 e5 2.Nf3 *');
     expect(parseMoveText('1.e4 e5 2.Nf3')).toEqual(['e4', 'e5', 'Nf3']);
+  });
+});
+
+describe('annotated PGN', () => {
+  it('keeps clocks, evals, NAGs and prose per move', () => {
+    const pgn = [
+      '[Event "Rated blitz"]',
+      '[TimeControl "180+2"]',
+      '[Result "0-1"]',
+      '',
+      '1. e4 {[%clk 0:02:58]} e5!? {[%eval 0.31] [%clk 0:02:55] a solid reply}',
+      '2. Nf3?? $4 {[%eval #-4] [%emt 0:00:07]} 0-1',
+    ].join('\n');
+
+    const game = parseAnnotatedPgn(pgn);
+    expect(game.moves.map((m) => m.san)).toEqual(['e4', 'e5', 'Nf3']);
+    expect(game.moves[0]!.clockSeconds).toBe(178);
+    expect(game.moves[1]!.suffix).toBe('!?');
+    expect(game.moves[1]!.evalCp).toBe(31);
+    expect(game.moves[1]!.comment).toBe('a solid reply');
+    expect(game.moves[2]!.nags).toEqual([4]);
+    expect(game.moves[2]!.evalMate).toBe(-4);
+    expect(game.moves[2]!.emtSeconds).toBe(7);
+    expect(game.result).toBe('0-1');
+  });
+
+  it('skips sidelines, including the comments and clocks inside them', () => {
+    const game = parseAnnotatedPgn(
+      '1. e4 e5 (1... c5 {[%clk 0:01:00]} 2. Nf3 (2. Nc3)) 2. Nf3 {[%clk 0:02:00]} Nc6 *',
+    );
+    expect(game.moves.map((m) => m.san)).toEqual(['e4', 'e5', 'Nf3', 'Nc6']);
+    expect(game.moves[1]!.clockSeconds).toBeUndefined();
+    expect(game.moves[2]!.clockSeconds).toBe(120);
+  });
+
+  it('reads a starting position from the FEN header', () => {
+    const game = parseAnnotatedPgn('[SetUp "1"]\n[FEN "8/5k2/8/8/8/4K3/4P3/8 w - - 0 1"]\n\n1. Kd4 Ke6 *');
+    expect(game.startFen).toBe('8/5k2/8/8/8/4K3/4P3/8 w - - 0 1');
+    expect(game.moves.map((m) => m.san)).toEqual(['Kd4', 'Ke6']);
+  });
+
+  it('splits a file of several games', () => {
+    const file = [
+      '[Event "One"]',
+      '',
+      '1. e4 e5 1/2-1/2',
+      '',
+      '[Event "Two"]',
+      '',
+      '1. d4 d5 0-1',
+    ].join('\n');
+
+    const games = parseAnnotatedPgnAll(file);
+    expect(games).toHaveLength(2);
+    expect(games[0]!.headers.Event).toBe('One');
+    expect(games[1]!.moves.map((m) => m.san)).toEqual(['d4', 'd5']);
+    expect(games[1]!.result).toBe('0-1');
   });
 });
