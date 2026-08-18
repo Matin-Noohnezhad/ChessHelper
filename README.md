@@ -188,6 +188,14 @@ whether it came from the Panov, the Tarrasch or the Nimzo. Structures live in
 their own encyclopedia and openings reference them by id, so learning
 transfers the way it does over the board.
 
+**Why structures are recognised, not tagged.** Referencing them by id only
+works if somebody typed the id, which happened for 24 lines out of 3,844 — and
+never for a game that left the book. But a structure is a property of the pawns
+on the board, so `classifyStructure` reads it off the position instead: 519
+book lines now arrive with one, and so does roughly a quarter of any real
+middlegame. A structure held by Black comes back mirrored, with the plans,
+breaks and diagram turned the right way up.
+
 **Two layers in the book.** The imported ECO tables give *coverage* — almost any
 opening sequence has a name. The 118 hand-written entries give *understanding* —
 plans, structures, breaks, traps. They merge into one tree where curated entries

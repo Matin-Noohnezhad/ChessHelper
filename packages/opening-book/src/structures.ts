@@ -53,7 +53,7 @@ export const PAWN_STRUCTURES: PawnStructure[] = [
   {
     id: 'hanging-pawns',
     name: 'Hanging Pawns (c4 + d4)',
-    fen: '4k3/pp3ppp/4p3/8/2PP4/8/PP3PPP/4K3 w - - 0 1',
+    fen: '4k3/pp3ppp/4p3/8/2PP4/8/P4PPP/4K3 w - - 0 1',
     description:
       'Two connected but unsupported pawns abreast on c4 and d4. They control four central squares and can advance as a phalanx, but neither can be defended by another pawn, so pressure down the c- and d-files is permanent.',
     whitePlans: [
@@ -165,7 +165,7 @@ export const PAWN_STRUCTURES: PawnStructure[] = [
   {
     id: 'boleslavsky',
     name: 'Boleslavsky Centre (d6 + e5)',
-    fen: '4k3/1p3ppp/p2p4/4p3/4P3/8/PP3PPP/4K3 w - - 0 1',
+    fen: '4k3/1p3ppp/p2p4/4p3/4P3/8/PPP2PPP/4K3 w - - 0 1',
     description:
       'Black plays ...e5 in an Open Sicilian, taking the d4 square from White’s pieces and accepting a hole on d5 and a backward d-pawn. This is the Najdorf, Sveshnikov and Boleslavsky bargain: a permanent structural concession in return for active pieces and the initiative.',
     whitePlans: [
@@ -194,7 +194,7 @@ export const PAWN_STRUCTURES: PawnStructure[] = [
   {
     id: 'scheveningen',
     name: 'Scheveningen Small Centre (d6 + e6)',
-    fen: '4k3/1p3ppp/p2pp3/8/4P3/8/PP3PPP/4K3 w - - 0 1',
+    fen: '4k3/1p3ppp/p2pp3/8/4P3/8/PPP2PPP/4K3 w - - 0 1',
     description:
       'The most flexible Sicilian formation: pawns on d6 and e6 concede space but create no holes at all. Black keeps both ...d5 and ...e5 in reserve, and White’s attack has to break through a structure with no obvious cracks.',
     whitePlans: [
@@ -306,7 +306,7 @@ export const PAWN_STRUCTURES: PawnStructure[] = [
   {
     id: 'benoni',
     name: 'Modern Benoni',
-    fen: '4k3/pp2pppp/3p4/3P4/2P1P3/8/PP3PPP/4K3 w - - 0 1',
+    fen: '4k3/pp3ppp/3p4/2pP4/4P3/8/PP3PPP/4K3 w - - 0 1',
     description:
       'Black trades the c-pawn for White’s d-pawn, accepting a backward d6 pawn and less space for a half-open c-file, a queenside majority and the ...b5 break. Sharp, unbalanced and unforgiving — it punishes both sides for slow play.',
     whitePlans: [

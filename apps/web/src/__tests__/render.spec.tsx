@@ -8,7 +8,7 @@ import App from '../App.js';
 import { Board } from '../components/Board.js';
 import { OpeningPanel } from '../components/OpeningPanel.js';
 import { ReviewSetup } from '../components/ReviewSetup.js';
-import { ReviewReport } from '../components/ReviewView.js';
+import { ReviewReport, StructureNote } from '../components/ReviewView.js';
 import { TrainerView } from '../components/TrainerView.js';
 
 /**
@@ -16,6 +16,13 @@ import { TrainerView } from '../components/TrainerView.js';
  * not catch a bad hook call, a wrong board index or a crash inside a memo, and
  * those are exactly the failures that make the app show a blank page.
  */
+/** The position a line reaches, which is what the panel reads structures from. */
+function fenAfter(moves: string[]): string {
+  const board = new Chess();
+  for (const san of moves) board.move(san);
+  return board.fen();
+}
+
 describe('web app renders', () => {
   it('mounts the whole app with a full starting board', () => {
     const html = renderToStaticMarkup(<App />);
@@ -39,9 +46,16 @@ describe('web app renders', () => {
   });
 
   it('shows the identified opening with its ideas and breaks', () => {
-    const match = identifyOpening(['e4', 'c5']);
+    const moves = ['e4', 'c5'];
+    const match = identifyOpening(moves);
     const html = renderToStaticMarkup(
-      <OpeningPanel match={match} plies={2} onPlayMove={() => {}} onMarks={() => {}} />,
+      <OpeningPanel
+        match={match}
+        fen={fenAfter(moves)}
+        plies={2}
+        onPlayMove={() => {}}
+        onMarks={() => {}}
+      />,
     );
     expect(html).toContain('Sicilian Defence');
     expect(html).toContain('B20');
@@ -62,14 +76,22 @@ describe('web app renders', () => {
   });
 
   it('renders a deep line by inheriting the parent opening’s theory', () => {
-    const match = identifyOpening(
-      'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7'.split(' '),
-    );
+    const moves = 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7'.split(' ');
+    const match = identifyOpening(moves);
     const html = renderToStaticMarkup(
-      <OpeningPanel match={match} plies={16} onPlayMove={() => {}} onMarks={() => {}} />,
+      <OpeningPanel
+        match={match}
+        fen={fenAfter(moves)}
+        plies={16}
+        onPlayMove={() => {}}
+        onMarks={() => {}}
+      />,
     );
     expect(html).toContain('Mar del Plata');
     expect(html).toContain('Ideas shown for the parent line');
+    // The locked centre is read off the board, not from a tag on the opening,
+    // and the tab says so before you open it.
+    expect(html).toContain('pawn structures on the board');
   });
 });
 
@@ -113,6 +135,24 @@ describe('game review UI', () => {
     expect(html).toContain('Open a .pgn file');
     expect(html).toContain('Use the game on the board');
     expect(html).toContain('Balanced');
+  });
+
+  it('names the pawn structure on the board, from the side to move', () => {
+    // A French Advance: by move four the structure is the useful fact about the
+    // position, and nothing tagged this game with it.
+    const fen = fenAfter('e4 e6 d4 d5 e5 c5 c3 Nc6'.split(' '));
+
+    const black = renderToStaticMarkup(<StructureNote fen={fen} toMove="black" />);
+    expect(black).toContain('French Pawn Chain');
+    expect(black).toContain('Black breaks here');
+    expect(black).toContain('f6'); // ...f6, the break at the head of White's chain
+
+    const white = renderToStaticMarkup(<StructureNote fen={fen} toMove="white" />);
+    expect(white).toContain('White breaks here');
+    expect(white).not.toContain('Black breaks here');
+
+    // Nothing to say about a position with no structure yet.
+    expect(renderToStaticMarkup(<StructureNote fen={fenAfter(['e4'])} toMove="black" />)).toBe('');
   });
 
   it('renders a full report: accuracies, phases, categories and the move list', async () => {

@@ -545,6 +545,19 @@ button:disabled {
   color: var(--text);
   border-bottom-color: var(--accent);
 }
+/* How many structures are on the board right now, so the tab is worth opening. */
+.tabs__count {
+  display: inline-block;
+  min-width: 1.15em;
+  margin-left: 0.35rem;
+  padding: 0 0.25em;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.72em;
+  line-height: 1.5;
+  text-align: center;
+}
 
 .plan-columns {
   display: grid;
@@ -640,6 +653,24 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+/* The structure on the board at a reviewed move — named, with the break the
+   side to move is playing for. */
+.review-detail__structure {
+  margin: 0.9rem 0;
+  padding: 0.65rem 0.8rem;
+  border-left: 2px solid var(--accent);
+  background: var(--panel-alt, rgba(127, 127, 127, 0.08));
+  border-radius: 0 4px 4px 0;
+}
+.review-detail__structure h3 {
+  margin: 0 0 0.3rem;
+  font-size: 0.9rem;
+}
+.review-detail__structure p {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+}
+
 .structure h3 {
   margin: 0 0 0.35rem;
   font-size: 0.98rem;

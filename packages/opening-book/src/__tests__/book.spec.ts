@@ -58,6 +58,23 @@ describe('opening data integrity', () => {
     }
   });
 
+  /**
+   * Four of these diagrams shipped with a pawn missing or on the wrong side —
+   * a Benoni where White kept the c-pawn and Black had none, Sicilians where
+   * White had no c2. Nothing caught it because nothing read them. They are read
+   * now, by the classifier, so the counts are worth pinning: none of these
+   * structures is a gambit, so both sides must have the same number of pawns.
+   */
+  it('every structure skeleton has balanced material', () => {
+    for (const structure of PAWN_STRUCTURES) {
+      const placement = structure.fen.split(' ')[0]!;
+      const white = placement.replace(/[^P]/g, '').length;
+      const black = placement.replace(/[^p]/g, '').length;
+      expect(white, `${structure.name}: ${white} white pawns vs ${black} black`).toBe(black);
+      expect(white, `${structure.name} has too few pawns to be a structure`).toBeGreaterThanOrEqual(5);
+    }
+  });
+
   it('structure cross-references resolve', () => {
     for (const structure of PAWN_STRUCTURES) {
       for (const id of structure.transformsInto ?? []) {

@@ -69,6 +69,17 @@ const EXTENDED_PREFIXES: Set<string> = (() => {
 export { CURATED_OPENINGS };
 export * from './types.js';
 export { PAWN_STRUCTURES, getStructure, getStructures } from './structures.js';
+export {
+  CLASSIFIED_STRUCTURES,
+  UNCLASSIFIED_STRUCTURES,
+  breaksFor,
+  classifyStructure,
+  classifyStructureBest,
+  mirrorFen,
+  pawnSkeleton,
+  plansFor,
+} from './classify.js';
+export type { PawnSkeleton, StructureMatch } from './classify.js';
 
 export function getOpeningByMoves(moves: readonly string[]): Opening | undefined {
   return BY_MOVES.get(key(moves));
