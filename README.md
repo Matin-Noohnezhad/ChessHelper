@@ -159,6 +159,15 @@ often commercial, so `.corpus/` is gitignored and nothing verbatim from it
 belongs in the repository — only distilled content, written in our own words,
 with provenance recorded.
 
+`npm run report:coverage` then joins the index against the book and says where
+the work is. It ranks book nodes by how far their displayed theory was inherited
+from against how much the corpus writes about that exact position — so the top
+of the list is the next thing worth writing rather than a guess. The Classical
+Sicilian heads it: 1,167 substantial pieces of prose from 19 separate sources
+about a line that currently shows the plans of `1.e4 c5`, eight plies above it.
+A second list covers positions the corpus discusses that the book has no entry
+for at all. Both are written to `.corpus/coverage.json`.
+
 Two pieces of the core exist to make this practical. `parseAnnotatedPgn`
 descends into sidelines, hanging each on the move it replaces, because courses
 keep most of their teaching down there. And `resolveSan` resolves notation by
