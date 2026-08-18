@@ -134,6 +134,39 @@ entries read as one list.
 **Hand-written** — `src/openings.ts` and `src/structures.ts`. This is the part
 that cannot be imported and the reason the app exists.
 
+### The annotation index
+
+The hand-written layer is the good part and also the thin part: 31 of 3,826
+lines carry their own theory, 298 inherit none at all, and 72% of the tree
+inherits from a node four or more plies shallower. That is why a deep line can
+show plans written for a position two openings up.
+
+Annotated PGN — repertoire courses, annotated game collections — already says
+the things those lines are missing, in prose attached to a move. `npm run
+index:corpus -- --dir <path>` makes that prose addressable: it replays every
+line in every file, main lines and sidelines alike, and writes each comment out
+keyed by the position it was written about.
+
+```
+.corpus/
+  annotations.jsonl.gz   one record per comment: position hash, SAN path, text
+  games.jsonl.gz         headers per game, so a comment can be cited
+  manifest.json          per-file sha256, counts, and anything unreadable
+```
+
+The index is a **local cache, not a source**. It is derived from files you own,
+often commercial, so `.corpus/` is gitignored and nothing verbatim from it
+belongs in the repository — only distilled content, written in our own words,
+with provenance recorded.
+
+Two pieces of the core exist to make this practical. `parseAnnotatedPgn`
+descends into sidelines, hanging each on the move it replaces, because courses
+keep most of their teaching down there. And `resolveSan` resolves notation by
+reading what it describes and checking only that move for legality, rather than
+rendering SAN for every legal move until one matches — same answer, about ten
+times faster, which is the difference between a four-minute pass over a corpus
+and a forty-minute one.
+
 ## Design notes
 
 **Why our own chess core.** The planned complexity engine needs make/unmake,

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { Chess } from '../chess.js';
-import { START_FEN, parseFen, toFen } from '../fen.js';
+import { START_FEN, loadFen, parseFen, toFen } from '../fen.js';
+import { Position } from '../position.js';
+import { generateLegalMoves } from '../movegen.js';
+import { moveToSan, parseSan, resolveSan } from '../san.js';
 import {
   formatMoveText,
   parseAnnotatedPgn,
@@ -191,13 +194,56 @@ describe('annotated PGN', () => {
     expect(game.result).toBe('0-1');
   });
 
-  it('skips sidelines, including the comments and clocks inside them', () => {
+  it('keeps the main line clear of sidelines and their clocks', () => {
     const game = parseAnnotatedPgn(
       '1. e4 e5 (1... c5 {[%clk 0:01:00]} 2. Nf3 (2. Nc3)) 2. Nf3 {[%clk 0:02:00]} Nc6 *',
     );
     expect(game.moves.map((m) => m.san)).toEqual(['e4', 'e5', 'Nf3', 'Nc6']);
     expect(game.moves[1]!.clockSeconds).toBeUndefined();
     expect(game.moves[2]!.clockSeconds).toBe(120);
+  });
+
+  it('hangs sidelines off the move they replace, nesting and all', () => {
+    const game = parseAnnotatedPgn(
+      '1. e4 e5 (1... c5 {[%clk 0:01:00]} 2. Nf3 (2. Nc3)) 2. Nf3 Nc6 *',
+    );
+    const sicilian = game.moves[1]!.variations![0]!;
+    expect(sicilian.map((m) => m.san)).toEqual(['c5', 'Nf3']);
+    expect(sicilian[0]!.clockSeconds).toBe(60);
+    expect(sicilian[1]!.variations![0]!.map((m) => m.san)).toEqual(['Nc3']);
+    expect(game.moves[0]!.variations).toBeUndefined();
+  });
+
+  it('reads the prose a course writes about a sideline, wherever it sits', () => {
+    const game = parseAnnotatedPgn(
+      '1. d4 Nf6 2. c4 (2. Nf3 {a move-order finesse} e6 $14) (2. Bg5!? {the Trompowsky}) *',
+    );
+    const [reti, tromp] = game.moves[2]!.variations!;
+    expect(reti![0]!.comment).toBe('a move-order finesse');
+    expect(reti![1]!.nags).toEqual([14]);
+    expect(tromp![0]!.suffix).toBe('!?');
+    expect(tromp![0]!.comment).toBe('the Trompowsky');
+  });
+
+  it('attaches a leading comment to the first move of its line', () => {
+    const game = parseAnnotatedPgn('{Welcome to the course.} 1. d4 d5 ({why not} 1... Nf6) *');
+    expect(game.moves[0]!.comment).toBe('Welcome to the course.');
+    expect(game.moves[1]!.variations![0]![0]!.comment).toBe('why not');
+  });
+
+  it('keeps a passed turn rather than dropping it', () => {
+    // ChessBase writes Z0 for "it is now the other side's move"; dropping the
+    // token would put every move after it on the wrong side.
+    const game = parseAnnotatedPgn('1. e4 e5 2. Nf3 Z0 (2... Nc6 3. Bb5) 3. Bc4 *');
+    expect(game.moves.map((m) => m.san)).toEqual(['e4', 'e5', 'Nf3', '--', 'Bc4']);
+    expect(game.moves[3]!.nullMove).toBe(true);
+    expect(game.moves[3]!.variations![0]!.map((m) => m.san)).toEqual(['Nc6', 'Bb5']);
+    expect(game.moves[2]!.nullMove).toBeUndefined();
+    expect(parseAnnotatedPgn('1. e4 -- 2. d4 *').moves.map((m) => m.san)).toEqual([
+      'e4',
+      '--',
+      'd4',
+    ]);
   });
 
   it('reads a starting position from the FEN header', () => {
@@ -222,5 +268,93 @@ describe('annotated PGN', () => {
     expect(games[0]!.headers.Event).toBe('One');
     expect(games[1]!.moves.map((m) => m.san)).toEqual(['d4', 'd5']);
     expect(games[1]!.result).toBe('0-1');
+  });
+});
+
+describe('resolveSan', () => {
+  /**
+   * The fast path exists only because it is interchangeable with parseSan, so
+   * the test that matters is the one that says so. These positions carry the
+   * cases that separate the two: both knights covering a square, a rook pair on
+   * a file and a rank, pinned pieces that remove a disambiguation, promotions,
+   * en passant and castling.
+   */
+  const fens = [
+    START_FEN,
+    'r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1',
+    'r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 0 1',
+    '8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1',
+    'n1n5/PPPk4/8/8/8/8/4Kppp/5N1N b - - 0 1', // promotions both sides
+    'r3k2r/8/8/3N1N2/8/8/8/R3K2R w KQkq - 0 1', // two knights, castling both ways
+    'r6r/1b2k3/8/8/8/8/4K3/R6R w - - 0 1', // rooks sharing rank and file
+    '4k3/8/8/2pP4/8/8/8/4K3 w - c6 0 2', // en passant
+    'rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq d6 0 2',
+    '2r3k1/5ppp/8/8/8/8/2Q2PPP/2R3K1 w - - 0 1', // pinned piece kills a disambiguation
+  ];
+
+  it('returns exactly what parseSan returns, for every legal move', () => {
+    let checked = 0;
+    for (const fen of fens) {
+      const pos = new Position();
+      loadFen(pos, fen);
+      for (const move of generateLegalMoves(pos)) {
+        const san = moveToSan(pos, move);
+        expect(resolveSan(pos, san), `${fen} — ${san}`).toBe(parseSan(pos, san));
+        expect(resolveSan(pos, san), `${fen} — ${san}`).toBe(move);
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThan(250);
+  });
+
+  it('agrees with parseSan on notation the wild writes badly', () => {
+    const pos = new Position();
+    loadFen(pos, START_FEN);
+    for (const san of ['e4', 'E4', 'e2e4', 'Nf3+', 'Nf3!?', 'Ke2', 'Qd4', 'O-O', 'xyz', '']) {
+      expect(resolveSan(pos, san), san).toBe(parseSan(pos, san));
+    }
+  });
+
+  it('accepts disambiguation our own renderer would leave out', () => {
+    // Nc6 is pinned by Bb5, so only one knight legally reaches e7 and moveToSan
+    // writes 'Ne7'. ChessBase disambiguates against the pieces that *could*
+    // move and writes 'Nge7'; both must resolve to the g8 knight.
+    const pos = new Position();
+    loadFen(pos, 'r3kbnr/pp3ppp/2n5/1Bp1p3/8/2P1BN2/PP3PPP/RN1K3R b kq - 0 9');
+    const plain = resolveSan(pos, 'Ne7');
+    expect(plain).not.toBeNull();
+    expect(resolveSan(pos, 'Nge7')).toBe(plain);
+    expect(parseSan(pos, 'Nge7')).toBe(plain);
+    expect(parseSan(pos, 'Nce7')).toBeNull(); // the pinned knight cannot go there
+  });
+
+  it('reads a promotion written without the equals sign', () => {
+    const pos = new Position();
+    loadFen(pos, '4k3/P7/8/8/8/8/8/4K3 w - - 0 1');
+    expect(resolveSan(pos, 'a8Q')).toBe(resolveSan(pos, 'a8=Q'));
+    expect(resolveSan(pos, 'a8=N')).not.toBe(resolveSan(pos, 'a8=Q'));
+  });
+
+  it('replays a full annotated game, sidelines included', () => {
+    const game = parseAnnotatedPgn(
+      '1. e4 c5 (1... e5 2. Nf3 Nc6 3. Bb5) 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 *',
+    );
+    const pos = new Position();
+    loadFen(pos, START_FEN);
+    for (const move of game.moves) {
+      const sideline = move.variations?.[0];
+      if (sideline) {
+        const branch = new Position();
+        loadFen(branch, toFen(pos));
+        for (const alt of sideline) {
+          const resolved = resolveSan(branch, alt.san);
+          expect(resolved, alt.san).not.toBeNull();
+          branch.make(resolved!);
+        }
+      }
+      const resolved = resolveSan(pos, move.san);
+      expect(resolved, move.san).not.toBeNull();
+      pos.make(resolved!);
+    }
   });
 });
