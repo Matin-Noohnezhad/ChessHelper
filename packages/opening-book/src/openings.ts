@@ -67,6 +67,55 @@ export const CURATED_OPENINGS: Opening[] = [
       modelGames: ['Karpov – Unzicker, Nice 1974', 'Kasparov – Karpov, World Championship 1990'],
     },
   },
+  {
+    eco: 'C84',
+    name: 'Ruy Lopez: Closed',
+    moves: line('e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7'),
+    character: 'positional',
+    minRating: 1500,
+    theory: {
+      idea: 'The bishop goes to e7 rather than c5 for one concrete reason: on c5 it would be hit with tempo by the c3 and d4 build-up White is heading for anyway. From e7 it does less and asks less, Black castles next move, and the position settles into the long manoeuvring game the Spanish is famous for. White now has a real threat — Bxc6 followed by Nxe5 — which is what makes ...b5 close to forced rather than merely ambitious.',
+      structures: ['spanish-closed'],
+      whitePlans: [
+        '6.Re1, renewing the threat on e5 and forcing ...b5 before Black would like to play it.',
+        '6.d3, the modern slow set-up: ...b5 comes before White has played c3, so c2 is not yet a square for the bishop.',
+        'Play a4 at the right moment: the b5 pawn is loose, and axb5 opens the a-file for the rook.',
+        'The Spanish knight route Nb1-d2-f1-g3, aimed at f5 once the centre is settled.',
+      ],
+      blackPlans: [
+        '...b5 and ...d6, gaining queenside space and taking the sting out of Bxc6.',
+        'Castle and complete development before choosing between the Chigorin, Breyer and Zaitsev regroupings.',
+        'Aim for ...d5 in one move — the break that ends every Spanish problem at once.',
+        'Meet a4 with ...b4 or ...Rb8, keeping the queenside pawns from becoming targets.',
+      ],
+      breaks: [
+        {
+          move: 'b5',
+          side: 'black',
+          note: 'Necessary and double-edged: it gains space and evicts the bishop, but the pawn becomes a target for a4 and it stops the c-pawn ever guarding c5.',
+        },
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The equaliser. Note the cost of ...b5 first — after ...d5 the c5 square is a hole that nothing can cover.',
+          prerequisites: ['Achievable in one move, with the pieces already placed for it'],
+        },
+        { move: 'a4', side: 'white', note: 'The standard lever against b5. Opening the a-file suits the rook that is already on a1.' },
+        { move: 'd4', side: 'white', note: 'The central advance the c3 build-up prepares; timing decides whether it gains or releases the edge.' },
+      ],
+      keySquares: [
+        { square: 'c5', note: 'Guarded by the d-pawn once ...b5 is played — which is why ...d5 later turns it into a hole.' },
+        { square: 'b5', note: 'Space and a target at the same time. A hundred and fifty years on, nobody has settled which matters more.' },
+      ],
+      routes: ['Nb1-d2-f1-g3', 'Bf1-b5-a4-b3-c2, once c3 has been played'],
+      sources: [
+        'Nils Grandelius — Grand Ruy Lopez',
+        'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
+        'Play 1.e4 with Purpose',
+        'Jeremy Silman — How to Reassess Your Chess',
+      ],
+    },
+  },
   { eco: 'C65', name: 'Ruy Lopez: Berlin Defence', moves: line('e4 e5 Nf3 Nc6 Bb5 Nf6'), character: 'positional' },
   { eco: 'C68', name: 'Ruy Lopez: Exchange Variation', moves: line('e4 e5 Nf3 Nc6 Bb5 a6 Bxc6'), character: 'positional' },
   {
@@ -312,7 +361,53 @@ export const CURATED_OPENINGS: Opening[] = [
       keySquares: [{ square: 'c3', note: 'The target of Black’s entire attack, usually removed by ...Rxc3.' }],
     },
   },
-  { eco: 'B33', name: 'Sicilian Defence: Sveshnikov Variation', moves: line('e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 Nf6 Nc3 e5'), character: 'sharp', minRating: 1800 },
+  {
+    eco: 'B33',
+    name: 'Sicilian Defence: Sveshnikov Variation',
+    moves: line('e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 Nf6 Nc3 e5'),
+    character: 'sharp',
+    minRating: 1800,
+    forSide: 'black',
+    theory: {
+      idea: 'Black kicks the knight and takes d4 away from it, accepting a hole on d5 and a backward d-pawn to do it. For fifty years that was thought to be too much, and the modern verdict rests on two discoveries: the knight White has to send to a3 is offside and costs time, and a knight parked on d5 plugs the d-file, so White cannot both occupy the square and attack the weak pawn. Black gets the bishop pair, a central majority, and — unlike the Dragon or the Najdorf — a king that is rarely in danger.',
+      structures: ['boleslavsky'],
+      whitePlans: [
+        '6.Ndb5 is the only testing move; 6.Nb3 and 6.Nf3 concede equality or worse.',
+        '7.Bg5 a6 8.Na3, heading back toward d5 by whatever route the position allows.',
+        '7.Nd5 for a structural game — but it also solves Black’s two weaknesses at a stroke.',
+        'Occupy d5 and trade the pieces that fight for it, especially the f6 knight.',
+      ],
+      blackPlans: [
+        '6...d6, taking d6 from the knight — nearly forced, and the move the whole variation rests on.',
+        '...a6 and ...b5, gaining time on the offside knight and space on the queenside.',
+        'Play ...f5 to hit e4 and set the central majority moving; this is Black’s main source of play.',
+        'Use the bishop pair as the position opens, and attack on the kingside where the king is safe.',
+      ],
+      breaks: [
+        {
+          move: 'f5',
+          side: 'black',
+          note: 'The defining break. It challenges e4 and gets the central pawn mass rolling; Black is often happy to give up the queenside for it.',
+        },
+        { move: 'b5', side: 'black', note: 'Queenside space, gained with tempo against the knight on a3.' },
+        { move: 'd5', side: 'black', note: 'The pawn the whole structure is supposedly weak on, arriving as a break and ending the argument.' },
+        { move: 'c4', side: 'white', note: 'Clamps the queenside and takes b5 away before Black can gain time with it.' },
+      ],
+      keySquares: [
+        { square: 'd5', note: 'The hole ...e5 concedes. Occupying it blocks the d-file, so White cannot use it and attack d6 at the same time.' },
+        { square: 'a3', note: 'Where White’s knight ends up. Every move it needs to get back is a move Black spends on the queenside.' },
+      ],
+      routes: ['Nd4-b5-a3, and then back via c2 or c4 toward d5'],
+      traps: [
+        'After 7.Bg5 a6 8.Na3 b5 9.Bxf6 the recapture is with the g-pawn: 9...Qxf6 10.Nd5 Qd8 11.c4 leaves Black passive with nothing to show for it.',
+      ],
+      sources: [
+        'Christof Sielecki — Fight Like Magnus: The Sicilian',
+        'The Principled and Practical 1.e4',
+        'Understanding Chess Openings: 1.e4',
+      ],
+    },
+  },
   {
     eco: 'B56',
     name: 'Sicilian Defence: Classical Variation',
@@ -494,7 +589,51 @@ export const CURATED_OPENINGS: Opening[] = [
   { eco: 'B30', name: 'Sicilian Defence: Rossolimo Variation', moves: line('e4 c5 Nf3 Nc6 Bb5'), character: 'positional' },
   { eco: 'B51', name: 'Sicilian Defence: Moscow Variation', moves: line('e4 c5 Nf3 d6 Bb5+'), character: 'positional' },
   { eco: 'B23', name: 'Sicilian Defence: Closed Variation', moves: line('e4 c5 Nc3'), character: 'system' },
-  { eco: 'B40', name: 'Sicilian Defence: Kan Variation', moves: line('e4 c5 Nf3 e6 d4 cxd4 Nxd4 a6'), character: 'balanced' },
+  {
+    eco: 'B40',
+    name: 'Sicilian Defence: Kan Variation',
+    moves: line('e4 c5 Nf3 e6 d4 cxd4 Nxd4 a6'),
+    character: 'balanced',
+    minRating: 1600,
+    forSide: 'black',
+    theory: {
+      idea: 'Black spends the move on ...a6 before developing anything. It looks slow and it buys two real things: White’s pieces are denied b5 for good, and ...b5 is prepared. Nothing else is committed — no knight to c6 or f6, no pawn to d6 — so Black can still choose a Hedgehog, a Scheveningen or a quick ...Bc5 depending on what White does. The Kan is a system for players who would rather react than memorise.',
+      structures: ['hedgehog', 'maroczy', 'scheveningen'],
+      whitePlans: [
+        '5.Bd3, staying flexible: e4 is defended, c4 is still available, and White castles and waits for Black to commit.',
+        '5.c4, the Maróczy bind, taking d5 away before Black can contest it.',
+        'Meet an early ...b5 with a4, when ...b4 leaves holes and ...bxa4 leaves a6 permanently weak.',
+        'Nd2-c4-b6 or a4-a5 to clamp the queenside once Black has spent time on the pawns there.',
+      ],
+      blackPlans: [
+        '...Qc7 to cover e5, prepare ...Nf6 and keep ...b5 in reserve — the most common Kan move by a distance.',
+        '...b5 and ...Bb7, taking the queenside space the a6 move was played for.',
+        '...b6 and ...Bb7 against c4, heading straight into a Hedgehog.',
+        '...Bc5 to hit the d4 knight before ...d6 — active, at the cost of a more exposed kingside.',
+      ],
+      breaks: [
+        {
+          move: 'b5',
+          side: 'black',
+          note: 'The move ...a6 exists for. It gains space and the b7 bishop with it.',
+          prerequisites: ['a4 not available with tempo — played too early it invites a4 and leaves a6 weak'],
+        },
+        { move: 'd5', side: 'black', note: 'The freeing break of every Sicilian, and easier here than usual because nothing is committed to d6.' },
+        { move: 'c4', side: 'white', note: 'The bind. It takes d5 away and turns the game into a squeeze rather than a race.' },
+        { move: 'e5', side: 'white', note: 'The central push, worth playing the moment Black’s development lags behind the pawn moves.' },
+      ],
+      keySquares: [
+        { square: 'b5', note: 'What ...a6 buys: no Nb5, no Bb5, and the pawn advance to follow.' },
+        { square: 'd5', note: 'White plays c4 to own it; Black plays ...b5 and ...Bb7 to fight for it.' },
+      ],
+      routes: ['Nb1-d2-c4-b6 against a slow queenside', 'Bf8-c5 before ...d6, hitting d4 while the option lasts'],
+      sources: [
+        'Play 1.e4 with Purpose',
+        'The Open Sicilian: A Champion’s Guide',
+        'Gustafsson — Aggressive 1.e4',
+      ],
+    },
+  },
   { eco: 'B47', name: 'Sicilian Defence: Taimanov Variation', moves: line('e4 c5 Nf3 e6 d4 cxd4 Nxd4 Nc6'), character: 'balanced' },
 
   // ---------------------------------------------------------------- French ---
@@ -821,6 +960,96 @@ export const CURATED_OPENINGS: Opening[] = [
       ],
     },
   },
+  {
+    eco: 'D15',
+    name: 'Slav Defence: Two Knights Attack',
+    moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 dxc4'),
+    character: 'positional',
+    minRating: 1600,
+    forSide: 'black',
+    theory: {
+      idea: 'Black takes the pawn at exactly this moment so that ...Bf5 can follow without running into Qb3 — the timing is the whole idea, not the pawn. What Black gets is time: White has to spend moves recovering c4, and cxd5 is off the table for good. What Black gives up is the d-file pawn — with the c-pawn already committed, no pawn will ever stand on d5 again, so e4 and c4 become White’s squares to argue over.',
+      structures: [],
+      whitePlans: [
+        '5.a4, stopping ...b5 before it can hold the pawn — at the cost of the b4 square.',
+        'Recover c4 with e3 and Bxc4, then build the centre with e3-e4 or f3 and e4.',
+        '5.e4 at once, taking the centre and treating the pawn as a gambit.',
+        'Play against the light squares e4 and c4, which Black can no longer contest with a pawn.',
+      ],
+      blackPlans: [
+        'Develop the light-squared bishop to f5 or g4 before ...e6 shuts it in — the point of the whole Slav.',
+        'Hold the pawn with ...b5 when White has not played a4, and make White prove the compensation.',
+        'Use the b4 square that a4 concedes: a bishop there can sit for the rest of the game.',
+        'Play ...a5 after a4 so the queenside cannot be opened, which is what makes long castling thinkable.',
+      ],
+      breaks: [
+        { move: 'b5', side: 'black', note: 'Holds the extra pawn and takes queenside space; a4 is what stops it.' },
+        { move: 'e5', side: 'black', note: 'The freeing break, once the bishop is out and the knight has a home.' },
+        { move: 'c5', side: 'black', note: 'The other freeing move, hitting d4 directly once White has committed to e3.' },
+        {
+          move: 'e4',
+          side: 'white',
+          note: 'The centre White is playing for. Black’s whole setup — ...Bf5 in particular — exists to stop it.',
+        },
+      ],
+      keySquares: [
+        { square: 'e4', note: 'The square the opening is about: White wants a pawn there, Black stops it with pieces rather than a pawn.' },
+        { square: 'b4', note: 'Conceded by a4, and permanent. A black bishop lands there and is never evicted.' },
+      ],
+      traps: [
+        'Taking on c4 a move earlier or later is not the same move: the point of doing it here is that ...Bf5 comes next without Qb3 hitting it.',
+      ],
+      sources: [
+        'Nils Grandelius — Lifetime Repertoires: Classical Slav',
+        'Plichta — Lifetime Repertoires: Queen’s Gambit',
+        'The Club Player’s Black Repertoire 1.d4 d5',
+      ],
+    },
+  },
+  {
+    eco: 'D17',
+    name: 'Slav Defence: Czech Variation',
+    moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 dxc4 a4 Bf5'),
+    character: 'positional',
+    minRating: 1600,
+    forSide: 'black',
+    theory: {
+      idea: 'The position the Slav is played for. The light-squared bishop — the piece the Queen’s Gambit Declined leaves entombed behind ...e6 — is outside the pawn chain on f5, eyeing e4, and ...e6 can now be played without regret. White has the extra queenside space and will spend the opening trying to force e2-e4 through anyway; the a4 that made it possible has left b4 permanently soft.',
+      structures: [],
+      whitePlans: [
+        '6.Ne5, the critical try: not really about regaining c4, but about preparing f3 and e4 to embarrass the f5 bishop and the f6 knight.',
+        '6.e3 and Bxc4, a solid recovery of the pawn with a small pull in space.',
+        'Force e4 through in some form — every white plan here is a version of that.',
+        'Open the queenside with a5 or b4 before Black consolidates.',
+      ],
+      blackPlans: [
+        'Follow with ...e6 and develop the dark-squared bishop, often to b4.',
+        'Answer f3 and e4 by hitting the centre before it is finished — ...Nbd7, ...Bb4 and pressure on c3.',
+        'Play ...a5 to freeze the queenside, which is what makes castling long a real option here.',
+        'Keep the f5 bishop on the b1-h7 diagonal; it is the piece that stops e4.',
+      ],
+      breaks: [
+        { move: 'e6', side: 'black', note: 'Not a break so much as the move ...Bf5 bought — the bishop is already out, so this costs nothing.' },
+        { move: 'e5', side: 'black', note: 'The freeing break, played once the pieces are out and White’s centre has not arrived.' },
+        { move: 'c5', side: 'black', note: 'Hits d4 directly and opens the position for the bishop pair.' },
+        {
+          move: 'e4',
+          side: 'white',
+          note: 'The advance the whole variation is built around stopping.',
+          prerequisites: ['f3 played, or the f5 bishop driven off the diagonal first'],
+        },
+      ],
+      keySquares: [
+        { square: 'e4', note: 'White’s ambition and Black’s job. The bishop on f5 is the guard.' },
+        { square: 'b4', note: 'Weakened by a4 for good; a bishop there is a permanent nuisance.' },
+      ],
+      sources: [
+        'Nils Grandelius — Lifetime Repertoires: Classical Slav',
+        'Lifetime Repertoires: Slav',
+        'The Club Player’s Black Repertoire 1.d4 d5',
+      ],
+    },
+  },
   { eco: 'D07', name: 'Chigorin Defence', moves: line('d4 d5 c4 Nc6'), character: 'sharp', forSide: 'black' },
   {
     eco: 'D02',
@@ -1060,7 +1289,6 @@ export const CURATED_OPENINGS: Opening[] = [
   { eco: 'B19', name: 'Caro-Kann Defence: Classical, Main Line', moves: line('e4 c6 d4 d5 Nc3 dxe4 Nxe4 Bf5 Ng3 Bg6 h4 h6 Nf3') },
   { eco: 'D27', name: 'Queen’s Gambit Accepted: Classical', moves: line('d4 d5 c4 dxc4 Nf3 Nf6 e3 e6 Bxc4 c5') },
   { eco: 'D07', name: 'Chigorin Defence: Main Line', moves: line('d4 d5 c4 Nc6 Nf3 Bg4 cxd5 Bxf3 gxf3 Qxd5') },
-  { eco: 'D17', name: 'Slav Defence: Czech Variation', moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 dxc4 a4 Bf5') },
   { eco: 'D47', name: 'Semi-Slav Defence: Meran Variation', moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 e6 e3 Nbd7 Bd3 dxc4 Bxc4 b5'), character: 'sharp' },
   { eco: 'D60', name: 'Queen’s Gambit Declined: Orthodox Defence', moves: line('d4 d5 c4 e6 Nc3 Nf6 Bg5 Be7 e3 O-O') },
   { eco: 'D02', name: 'London System: Main Line', moves: line('d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2 Bd6') },
