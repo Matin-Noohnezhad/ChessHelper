@@ -2864,6 +2864,78 @@ export const CURATED_OPENINGS: Opening[] = [
       ],
     },
   },
+  {
+    eco: 'C10',
+    name: 'French Defence: Hecht-Reefschläger Variation',
+    moves: line('e4 e6 d4 d5 Nc3 Nc6'),
+    character: 'balanced',
+    minRating: 1700,
+    aliases: ['French 3...Nc6'],
+    theory: {
+      idea: 'A second attacker on d4 and, in one move, the abandonment of everything the French normally does. The knight stands in front of the c-pawn, so ...c5 — the break the whole defence exists to play, the move that attacks the base of White’s chain — is gone for as long as the knight stays there. Black is not offering a different route to the same position; he is proposing a different game, in which the centre is undermined with ...f6 rather than ...c5 and the e-pawn is held back for a possible ...e5 instead. The comparison worth carrying is with 1...Nc6 lines, which produce similar structures: there White would like c3 to prop up d4 and has not committed the knight, and here the knight is already on c3 and cannot, which is the one point in Black’s favour. Against it stands the bishop on c8, which in those lines gets out to f5 and here does not. The practical verdict follows from the structure rather than from any line: White should advance in the centre, because it is exactly the closed position in which a knight on c6 has the least to do, and because the usual price of the advance — a long argument about the dark-squared bishops — does not have to be paid here.',
+      structures: ['french-chain'],
+      whitePlans: [
+        'e5 at once. It is the strategically justified move rather than the greedy one: the pawn chain fixes Black’s worst feature, and unlike in most Advance structures White does not need to arrange a trade of dark-squared bishops to make it work.',
+        'Meet the ...f6 undermining head-on. It is Black’s only real plan in the closed structure, and once it is answered the knight on c6 has no second idea.',
+        'Nf3 for those who prefer the open game, with Bd3 and castling. It concedes a pawn in the main line and takes the bishop pair and a lasting initiative for it, and it is a matter of taste rather than of evaluation.',
+        'Answer ...Bb4 with Qg4, provoking ...g6 or ...Kf8. The combination of ...Nc6 and ...Bb4 leaves nothing guarding the dark squares round the black king, and the two moves get in each other’s way.',
+        'Against ...Nge7-f5 play h4, keeping g4 in reserve. The knight on f5 has no stable square and every tempo spent chasing it is a tempo Black cannot spend on the centre.',
+        'Where Black chases the bishop on d3 with ...Nb4, answer e5 and Bg5, trading the dark-squared bishops on Black’s terms rather than avoiding the trade. It is the exchange that leaves the c8 bishop with nothing to do at all.',
+      ],
+      blackPlans: [
+        '...f6, the substitute for ...c5. The knight on c6 was developed to support the pressure this creates against the head of the chain, and without it the whole variation has no counterplay.',
+        'Keep the tension and prepare ...e5, which is the freeing move ...c5 would otherwise have been. It requires the centre to stay unresolved, so ...Nf6 comes before any commitment.',
+        '...Nf6, adding a second attacker to e4 and, if White pushes past, taking the e4 square for the knight instead of retreating to d7.',
+        'Solve the light-squared bishop early. It has no ...b6 and ...Bb7 available while the knight sits on c6, and it does not have the f5 square that the similar structures from 1...Nc6 provide.',
+        'Do not capture on e4 without a reason. The resulting Rubinstein structure is a poor version: ...c5 is unavailable, the queen’s knight is not on d7 to make the recapture on f6 with a piece, and ...b6 and ...Bb7 run into the knight’s own back.',
+      ],
+      breaks: [
+        {
+          move: 'e5',
+          side: 'white',
+          note: 'The advance, and a rare case where it is right without the usual preparation, because the knight on c6 is worse in the closed structure than in any other.',
+        },
+        {
+          move: 'f6',
+          side: 'black',
+          note: 'The undermining break, and the core of Black’s idea. The knight on c6 exists to add weight to the pressure on e5 once the pawn has been challenged.',
+          prerequisites: ['A developed piece ready to recapture on f6, since taking with the queen invites the centre to open on White’s terms', 'The king’s position settled, because the f-file opens towards it'],
+        },
+        {
+          move: 'c5',
+          side: 'black',
+          note: 'The break the French is built on and the one this variation gives up. It becomes available only if the knight leaves c6, and arranging that costs more time than the break is worth.',
+          prerequisites: ['The knight moved off c6, which is the whole objection to the variation'],
+        },
+        {
+          move: 'e5',
+          side: 'black',
+          note: 'The alternative freeing push, which is what the knight on c6 is really supporting. It needs the centre left unresolved, so it disappears the moment White advances.',
+          prerequisites: ['White has not played e5', 'Enough support for the square that the exchange on e5 does not simply cost a pawn'],
+        },
+        { move: 'g4', side: 'white', note: 'The follow-up to h4 against a knight on f5, gaining space and time because the knight has nowhere good to go.' },
+      ],
+      keySquares: [
+        { square: 'c6', note: 'The square the whole assessment rests on. A black knight there blocks the c-pawn, blocks the b7 bishop’s diagonal and removes the recapture on f6 that the Rubinstein relies on — three drawbacks for one attacker on d4.' },
+        { square: 'e5', note: 'Where White wants a pawn and Black wants a break. The pawn chain formed there is more valuable than usual because Black’s counterplay against it is limited to ...f6.' },
+        { square: 'c3', note: 'Occupied by the knight, and therefore unavailable to the c-pawn. It is the reason this structure is a slightly better version for Black than the same one reached from 1...Nc6.' },
+        { square: 'c8', note: 'Where Black’s bishop stays. In the comparable lines it reaches f5 before ...e6 shuts it in; here the pawn is already on e6 and the bishop has no comfortable route out.' },
+        { square: 'f5', note: 'The square Black’s knight from e7 aims for. It is a good square only while it is stable, and h4 followed by g4 is enough to make sure it is not.' },
+      ],
+      routes: ['Ng8-e7-f5, the development that does not block the f-pawn', 'Nc3-e2-f4 or -g3, the regrouping that takes aim at the knight on f5 and at e6'],
+      traps: [
+        'Combining ...Nc6 with ...Bb4 is a hybrid that does not work: Qg4 forces ...g6 or ...Kf8, and the dark squares around the king stay weak for the rest of the game.',
+        'Taking on e4 and heading for a Rubinstein is an inferior version of an already modest system, for three separate reasons the knight on c6 creates at once.',
+        'For White, recapturing on c3 with the b-pawn before dealing with the centre can lose a piece outright — the intermediate capture on d5 has to come first, or the pawn on e4 falls with the knight behind it.',
+      ],
+      sources: [
+        'Pentala Harikrishna — French Toast',
+        'Lifetime Repertoires: Krykun’s 1.e4 — Part 2',
+        'Play 1.e4 with Purpose',
+        'The Energetic 1.e4 — Part 1',
+      ],
+    },
+  },
   { eco: 'C01', name: 'French Defence: Exchange Variation', moves: line('e4 e6 d4 d5 exd5'), character: 'balanced' },
 
   // ------------------------------------------------------------ Caro-Kann ---
