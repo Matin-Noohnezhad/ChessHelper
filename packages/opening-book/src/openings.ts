@@ -184,6 +184,79 @@ const CARO_KANN_MAIN_LINE: OpeningTheory = {
     'The Complete Book of Chess Strategy',
   ],
 };
+const ITALIAN_MODERN_A4: OpeningTheory = {
+  idea: 'The tabiya of the modern Italian, and it exists because of one exchange White does not want to make. Everything in the slow Italian depends on the bishop on c4, and Black’s standard way of removing it is ...Na5 hitting it on b3 or ...Be6 offering the trade; the classical answer, Bb3, meets the first and loses a tempo to the second. a4 answers both at once. It takes b5 from the black pieces, so ...Na5 no longer arrives with a threat, it leaves the bishop where it is until Black actually offers the trade on e6, and it stakes out queenside space that turns into the b2-b4-b5 plan later. The rule attached to it is exact: a4 is a reply to ...a6, not a move played on its own — without ...a6 committed, Black answers a4 with ...a5 and White has weakened b4 for nothing. Black in turn drops the bishop back to a7, where it is out of reach of b4 and points at the one diagonal White can never block, and delays castling, because a king still in the centre makes both of White’s natural kingside moves premature.',
+  structures: ['spanish-closed'],
+  whitePlans: [
+    'Prepare b4 and b5 and then leave it there. The queenside pawns are worth more as a standing question than as an executed plan: with a4 and b4 played, Black must watch b5 permanently, and White uses the free moves to finish the kingside before choosing between b5 and the central break.',
+    'Meet ...Be6 with the immediate trade. The whole point of a4 rather than Bb3 is that this capture costs no tempo, and the resulting structure with a black pawn on e6 is one White is happy to play against with b4 and queenside space.',
+    'Na3 heading for c2 and then e3, offering the trade of the dark-squared bishops. The knight looks badly placed on the rim for exactly one move, and it solves the problem of the bishop on a7 that b4 cannot touch.',
+    'Play d4 at the right moment and drop the bishop back to f1 rather than to b3 or a2. The retreat looks passive and is not: the bishop defends the king from f1 while the centre opens, which is the difference between the break working and the break exposing White.',
+    'Bg5 only once Black has castled. Against a king still on e8 the pin achieves nothing and invites the pawns forward.',
+  ],
+  blackPlans: [
+    '...Ba7, the standard retreat. On a7 the bishop is safe from b4 and keeps the a7-g1 diagonal, which is the compensation for the space White has taken on the other wing.',
+    'Delay castling and punish the two moves White most wants to play. Both O-O with h3 and O-O with Bg5, played before Black has castled, run into ...h6 and ...g5, which gains time against the bishop or the h-pawn and leaves Black’s king perfectly safe where it stands.',
+    'Reroute the knight with ...Ne7-g6, adding a defender to e5 and a piece to the kingside. It is the standard Italian manoeuvre and it becomes the right one precisely when White has committed to trading the dark-squared bishops.',
+    '...O-O, ...Kh8 and ...f5, the kingside expansion. It is Black’s most ambitious plan and it depends on the bishop on a7 staying on the board — once Na3-c2-e3 has traded it off, the dark squares round the king are no longer worth opening.',
+    'Meet the queenside build-up with ...Rb8 and ...b5 at a moment when axb5 axb5 leaves nothing for White’s rook on the a-file.',
+  ],
+  breaks: [
+    {
+      move: 'b4',
+      side: 'white',
+      note: 'The point of a4, and it gains most of its value before it is played. Followed by b5 it drives the knight from c6 and takes the defence away from e5; held back, it keeps Black’s queenside pieces tied to squares they would rather leave.',
+      prerequisites: ['...a6 already committed, so that ...a5 is no longer available as an answer', 'The kingside finished, since the break gives up dark squares White may need'],
+    },
+    {
+      move: 'd4',
+      side: 'white',
+      note: 'The break the whole Italian set-up was built for, and here it is the alternative to the queenside plan rather than an addition to it. It is worth waiting many moves for, and it works best when the light-squared bishop can step back to f1 as the centre opens.',
+      prerequisites: ['Re1 played, or the e-pawn hangs once the centre opens', 'A retreat square arranged for the bishop on c4'],
+    },
+    {
+      move: 'd5',
+      side: 'black',
+      note: 'The freeing break, and it is harder to arrange here than in the lines without a4 because the pawn on a6 has cost a move that the preparation needed.',
+      prerequisites: ['The e5 pawn defended a second time, usually by ...Re8 or a knight on g6', 'White’s pressure on e5 answered, or the break simply opens the file for him'],
+    },
+    {
+      move: 'f5',
+      side: 'black',
+      note: 'The kingside advance, prepared by ...Kh8 and the knight coming to g6. It is the ambitious plan and it should not be started once the bishop on a7 has been exchanged.',
+      prerequisites: ['The king on h8, out of the a7-g1 diagonal and off the f-file', 'The dark-squared bishop still on the board'],
+    },
+    {
+      move: 'g5',
+      side: 'black',
+      note: 'Not a break so much as a rebuke, and available only while Black’s king is still in the centre. Against O-O and h3, or against O-O and Bg5, ...h6 and ...g5 gains time on the kingside without weakening a king that has not gone there.',
+      prerequisites: ['Black’s king still on e8, with the option of going long or staying', 'White already castled short, so the advance is a gain of time rather than a mutual risk'],
+    },
+  ],
+  keySquares: [
+    { square: 'b5', note: 'What a4 buys. With b5 covered, ...Na5 no longer hits anything and the knight’s tour to c4 by way of a5 loses its point; with b4 played as well, the square becomes the entry point of White’s whole queenside plan.' },
+    { square: 'a7', note: 'The bishop’s home once a4 and b4 take b6 and c5 away. It is untouchable there by pawns, which is why White’s serious attempt to trade it goes the long way round with Na3-c2-e3.' },
+    { square: 'e6', note: 'Where Black offers the trade of light-squared bishops. Because the bishop is still on c4 rather than b3, White can take at once, and the pawn that recaptures gives him a queenside target to work against.' },
+    { square: 'e5', note: 'The pawn both plans are ultimately about. b4-b5 attacks it by removing its defender on c6; d4 attacks it directly; ...Ne7-g6 and ...Re8 are Black’s answers to both.' },
+  ],
+  routes: [
+    'Nb1-a3-c2-e3, the knight’s way to offer the trade of the bishop on a7 that no pawn can reach',
+    'Nb1-d2-f1-g3, the older route, kept whenever White prefers the kingside build-up to the queenside one',
+    'Nc6-e7-g6 for Black, adding a defender to e5 and a piece to the kingside in one manoeuvre',
+  ],
+  traps: [
+    'Playing a4 without ...a6 on the board is the standard misapplication. Black answers ...a5, the b4 push is off the table for good, and White has weakened b4 and b3 in a position where he needed neither square touched.',
+    'Castling and then playing h3 or Bg5 while Black’s king is still on e8 hands Black ...h6 and ...g5 with tempo, and the pawns come forward at no cost to a king that simply stays where it is.',
+    'Starting ...f5 after the dark-squared bishops have been traded opens the a7-g1 diagonal and the f-file against a king with nothing left to guard the dark squares round it.',
+  ],
+  sources: [
+    'Kalyan’s Lethal Italian',
+    'Unleash the Bull 1...e5',
+    'Anish Giri — Lifetime Repertoires: 1.e4 — Part 1',
+    'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
+  ],
+};
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -834,6 +907,28 @@ export const CURATED_OPENINGS: Opening[] = [
         'The Dynamic Italian',
       ],
     },
+  },
+  {
+    eco: 'C54',
+    name: 'Italian Game: Classical Variation, Giuoco Pianissimo',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 O-O Nf6 d3 d6 c3 a6 a4'),
+    character: 'positional',
+    minRating: 1500,
+    aliases: ['Modern Italian', 'Italian with a4'],
+    theory: ITALIAN_MODERN_A4,
+  },
+  {
+    // The same position by the c3-first move order, which is how a player who
+    // learned the Giuoco Pianissimo entry above will usually reach it. Theory
+    // is inherited along move-sequence ancestry, so without this address the
+    // route would stop at the parent's ideas; the object is shared rather than
+    // restated, because there is only one position.
+    eco: 'C54',
+    name: 'Italian Game: Classical Variation, Giuoco Pianissimo',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d3 d6 O-O a6 a4'),
+    character: 'positional',
+    minRating: 1500,
+    theory: ITALIAN_MODERN_A4,
   },
   { eco: 'C55', name: 'Italian Game: Two Knights Defence', moves: line('e4 e5 Nf3 Nc6 Bc4 Nf6'), character: 'sharp' },
   {
