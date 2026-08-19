@@ -8,9 +8,60 @@
  * and inherited downwards by every ECO line beneath it.
  */
 
-import type { Opening } from './types.js';
+import type { Opening, OpeningTheory } from './types.js';
 
 const line = (moves: string): string[] => moves.split(' ').filter(Boolean);
+
+const CARO_KANN_CLASSICAL: OpeningTheory = {
+    idea: 'This is what 1...c6 was played for. The bishop leaves the pawn chain before ...e6 can shut it in, and it does so with tempo against the knight on e4. What remains of Black’s opening is very small — ...e6, ...Nd7, ...Ngf6, ...Be7 and castle — and once it is done there is nothing wrong with the position and nothing for White to attack. That is White’s real problem here, and it explains why the main line looks so odd: 5.Ng3 Bg6 6.h4 h6 gains time and space against the one black piece that has already moved, because there is no slower way of making progress. Black’s counterplay is ...c5 and nothing else; every scheme he chooses is a different way of arranging it.',
+    structures: [],
+    whitePlans: [
+      'Ng3 with tempo, then h4-h5 to fix the bishop on h7 and take g6 from the black pieces, and only then Bd3 to trade it off — the trade is worth having once the pawn on h6 is a permanent hook.',
+      'Occupy e5. It is the outpost the structure grants, and most of the theory is about whether Black’s knight reaches d7 in time to challenge it.',
+      'Castle long, put the rooks in the centre and restrain ...c5; a slow bind is more dangerous here than a direct attack.',
+      '7.f4 instead of 7.Nf3, taking more of the centre at the cost of a tempo — which Black promptly spends on getting ...c5 in early.',
+    ],
+    blackPlans: [
+      'Finish the scheme: ...e6, ...Nd7, ...Ngf6, ...Be7 and castle. If White lets it happen, the opening has done its work.',
+      'The modern treatment with ...e6 and the knight left on b8, inviting Ne5 and playing for ...c5 in one go with a knight on f6 rather than d7.',
+      'The queenside set-up ...Qc7, ...Bd6 and long castling, meeting a kingside advance with a central counter rather than a defence.',
+      'Meet h4 with ...h6, not ...h5. The h-pawn move is a concession either way; only one of them gives up a square for good.',
+    ],
+    breaks: [
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The break the whole defence is built on, and Black’s only real source of play — which is why the move-order argument in this variation is entirely about how fast it can be arranged.',
+        prerequisites: ['The king is safe, since the centre opens with it', 'The queen’s knight is either developed or deliberately left on b8, so the break does not cost a tempo'],
+      },
+      {
+        move: 'h5',
+        side: 'white',
+        note: 'Not an attacking move. It makes the space permanent: the bishop is fixed on h7 and g6 belongs to White for the rest of the game.',
+      },
+      { move: 'f4', side: 'white', note: 'The alternative seventh move, claiming the centre. Black gets the tempo back and reaches ...c5 sooner.' },
+    ],
+    keySquares: [
+      { square: 'e5', note: 'The outpost the structure gives White. A knight there is the difference between a pleasant space advantage and nothing at all, and it is why Black spends a move on ...Nd7.' },
+      { square: 'g6', note: 'Once h4-h5 is in, it is White’s. The black bishop, knight and queen all had designs on it.' },
+      { square: 'g5', note: 'Given up for good if Black answers h4 with ...h5. With the light-squared bishops traded, a knight lands there and f7 becomes hard to hold.' },
+      { square: 'f7', note: 'The point every one of White’s pieces is eventually aimed at, because the pawn structure offers him no other target.' },
+    ],
+    routes: ['Ng1-h3-f4 or Ng1-e2-f4, the modern route aiming a second knight at e6 and g6'],
+    traps: [
+      '6...h5 looks like it stops White’s pawn for good and instead concedes g5 permanently; after the light-squared bishops come off, a knight arrives there with pressure on f7 and there is no ...h6 available to chase it.',
+    ],
+    sources: [
+      'Lifetime Repertoires: The Caro-Kann',
+      'Play 1.e4 with Purpose',
+      'The Principled and Practical 1.e4',
+      'Understanding Chess Openings: 1.e4 — Part 1',
+      'Vaporize the Caro-Kann: Alien Gambit',
+      '1.c3 Venom: A Reverse Caro-Kann and London System Repertoire',
+      'The Complete Book of Chess Strategy',
+      'Yasser Seirawan — Winning Chess Openings',
+    ],
+  };
 
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
@@ -2118,56 +2169,20 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 c6 d4 d5 Nc3 dxe4 Nxe4 Bf5'),
     character: 'positional',
     minRating: 1400,
-    theory: {
-      idea: 'This is what 1...c6 was played for. The bishop leaves the pawn chain before ...e6 can shut it in, and it does so with tempo against the knight on e4. What remains of Black’s opening is very small — ...e6, ...Nd7, ...Ngf6, ...Be7 and castle — and once it is done there is nothing wrong with the position and nothing for White to attack. That is White’s real problem here, and it explains why the main line looks so odd: 5.Ng3 Bg6 6.h4 h6 gains time and space against the one black piece that has already moved, because there is no slower way of making progress. Black’s counterplay is ...c5 and nothing else; every scheme he chooses is a different way of arranging it.',
-      structures: [],
-      whitePlans: [
-        'Ng3 with tempo, then h4-h5 to fix the bishop on h7 and take g6 from the black pieces, and only then Bd3 to trade it off — the trade is worth having once the pawn on h6 is a permanent hook.',
-        'Occupy e5. It is the outpost the structure grants, and most of the theory is about whether Black’s knight reaches d7 in time to challenge it.',
-        'Castle long, put the rooks in the centre and restrain ...c5; a slow bind is more dangerous here than a direct attack.',
-        '7.f4 instead of 7.Nf3, taking more of the centre at the cost of a tempo — which Black promptly spends on getting ...c5 in early.',
-      ],
-      blackPlans: [
-        'Finish the scheme: ...e6, ...Nd7, ...Ngf6, ...Be7 and castle. If White lets it happen, the opening has done its work.',
-        'The modern treatment with ...e6 and the knight left on b8, inviting Ne5 and playing for ...c5 in one go with a knight on f6 rather than d7.',
-        'The queenside set-up ...Qc7, ...Bd6 and long castling, meeting a kingside advance with a central counter rather than a defence.',
-        'Meet h4 with ...h6, not ...h5. The h-pawn move is a concession either way; only one of them gives up a square for good.',
-      ],
-      breaks: [
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The break the whole defence is built on, and Black’s only real source of play — which is why the move-order argument in this variation is entirely about how fast it can be arranged.',
-          prerequisites: ['The king is safe, since the centre opens with it', 'The queen’s knight is either developed or deliberately left on b8, so the break does not cost a tempo'],
-        },
-        {
-          move: 'h5',
-          side: 'white',
-          note: 'Not an attacking move. It makes the space permanent: the bishop is fixed on h7 and g6 belongs to White for the rest of the game.',
-        },
-        { move: 'f4', side: 'white', note: 'The alternative seventh move, claiming the centre. Black gets the tempo back and reaches ...c5 sooner.' },
-      ],
-      keySquares: [
-        { square: 'e5', note: 'The outpost the structure gives White. A knight there is the difference between a pleasant space advantage and nothing at all, and it is why Black spends a move on ...Nd7.' },
-        { square: 'g6', note: 'Once h4-h5 is in, it is White’s. The black bishop, knight and queen all had designs on it.' },
-        { square: 'g5', note: 'Given up for good if Black answers h4 with ...h5. With the light-squared bishops traded, a knight lands there and f7 becomes hard to hold.' },
-        { square: 'f7', note: 'The point every one of White’s pieces is eventually aimed at, because the pawn structure offers him no other target.' },
-      ],
-      routes: ['Ng1-h3-f4 or Ng1-e2-f4, the modern route aiming a second knight at e6 and g6'],
-      traps: [
-        '6...h5 looks like it stops White’s pawn for good and instead concedes g5 permanently; after the light-squared bishops come off, a knight arrives there with pressure on f7 and there is no ...h6 available to chase it.',
-      ],
-      sources: [
-        'Lifetime Repertoires: The Caro-Kann',
-        'Play 1.e4 with Purpose',
-        'The Principled and Practical 1.e4',
-        'Understanding Chess Openings: 1.e4 — Part 1',
-        'Vaporize the Caro-Kann: Alien Gambit',
-        '1.c3 Venom: A Reverse Caro-Kann and London System Repertoire',
-        'The Complete Book of Chess Strategy',
-        'Yasser Seirawan — Winning Chess Openings',
-      ],
-    },
+    theory: CARO_KANN_CLASSICAL,
+  },
+  {
+    // Reached through 3.Nd2 instead of 3.Nc3. The two move orders arrive at the
+    // same position, but theory is inherited along move-sequence ancestry, so
+    // without an address here this route would show the plans of the Caro-Kann
+    // root. Sharing the object rather than restating it keeps them honest: there
+    // is only one set of ideas, because there is only one position.
+    eco: 'B18',
+    name: 'Caro-Kann Defence: Classical Variation',
+    moves: line('e4 c6 d4 d5 Nd2 dxe4 Nxe4 Bf5'),
+    character: 'positional',
+    minRating: 1400,
+    theory: CARO_KANN_CLASSICAL,
   },
 
   // ------------------------------------------------- other answers to 1.e4 ---

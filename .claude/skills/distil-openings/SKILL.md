@@ -65,12 +65,21 @@ carry their own theory", "N thin nodes are well supported"). Take the top five
 that are genuinely distinct openings — if two rows are the same variation at
 different depths, prefer the shallower one and skip the other this round.
 
-**One known quirk.** A row can appear because it is the same *position* as an
-entry that already has theory, reached by a different move order — the book
-inherits along move-sequence ancestry, not by position. There are only three such
-positions in the whole book, and the Caro-Kann Classical via 3.Nd2 is the known
-one. If a row turns out to be a transposition into a position that already has
-its own theory, skip it and take the next row; never write a duplicate.
+**Transpositions.** The book inherits theory along move-sequence ancestry, not
+by position, so a position reachable by two move orders needs an address for
+each. Only three positions in the book are like this. When you write one of them,
+add the twin as well and have both point at the *same* theory object rather than
+restating it — hoist it to a named `const` above `CURATED_OPENINGS`, as
+`CARO_KANN_CLASSICAL` shows. One position, one set of ideas.
+
+If a row is a transposition into a position that already carries theory, do not
+write a duplicate: give the row's address the existing theory object, or skip it
+and take the next row.
+
+**A shallow row whose child is already written up needs a different entry, not a
+fuller one.** The Pirc at 3.Nc3 sits one ply above an entry covering 3...g6. The
+right content for the parent is the crossroads — which third move chooses which
+game, and what is common to all of them — not a restatement of the child.
 
 ### 2. Read the material for each
 
