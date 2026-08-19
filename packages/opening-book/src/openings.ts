@@ -625,6 +625,67 @@ export const CURATED_OPENINGS: Opening[] = [
   },
   { eco: 'B50', name: 'Sicilian Defence: Modern Variation', moves: line('e4 c5 Nf3 d6') },
   {
+    eco: 'B54',
+    name: 'Sicilian Defence: Prins Variation',
+    moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 f3'),
+    character: 'positional',
+    minRating: 1600,
+    theory: {
+      idea: 'White defends e4 with a pawn so that the b1 knight stays at home and the c-pawn stays free, and the whole variation follows from that single substitution. With Nc3 unplayed, c4 comes next and the game becomes a Maróczy bind — a structure the Open Sicilian normally never allows, since the knight on c3 has taken the square the c-pawn needs. The practical dividend is large: Black cannot equalise by playing sensible moves, while White can play c4, Nc3, Be3, Qd2, Be2, castle and land a knight on d5 almost without thinking. The price is a tempo, because f3 develops nothing, and Black is entitled to use it to hit the centre at once. Where he does, the bind never arrives and White has spent a move on a pawn that does not develop and can later be a hook near his own king.',
+      structures: ['maroczy', 'boleslavsky'],
+      whitePlans: [
+        'c4 as fast as the position allows. Everything about 5.f3 is an argument for this move, and the lines where Black prevents it are the lines where White has nothing.',
+        'The standing scheme behind the bind: Nc3, Be3, Qd2, Be2, castle, then Nd5. It needs no calculation and it is why the variation is a practical weapon rather than a theoretical one.',
+        'Against ...e5, drive the knight to b3 or check on b5 first — the check clears the way for the kingside pieces, offers a trade of the bishop that is currently restraining Nf5, and gains the time to develop quickly.',
+        'Decline the transposition. Meeting ...Nc6 with Nc3 hands Black the Classical Sicilian, which is exactly the body of theory 5.f3 was played to avoid.',
+      ],
+      blackPlans: [
+        '...e5 at once, the principled use of the free tempo. It takes d4 from the white pieces before c4 can be played, and the critical lines that follow are where the variation’s objective reputation comes from.',
+        '...Nc6 first, keeping options and pressing d4. It is also the move that makes the ...e6 and ...d5 plan work, because the knight covers e5 and stops White answering the break with the pawn advance.',
+        '...e6 and ...d5 as the freeing plan, played in that order and with the knight already on c6.',
+        'Avoid the automatic Najdorf move. Against ...a6 the bind arrives with perfect timing and White gets exactly the game he chose the variation for.',
+      ],
+      breaks: [
+        {
+          move: 'c4',
+          side: 'white',
+          note: 'The point of the whole system: it takes d5 and b5 and turns an Open Sicilian into a bind. If it cannot be played, 5.f3 has bought nothing.',
+          prerequisites: ['Black has not struck with ...e5 first, which takes the d4 square and the time away'],
+        },
+        {
+          move: 'e5',
+          side: 'black',
+          note: 'The critical answer, and it is a tempo argument rather than a structural one — the hole on d5 is accepted precisely because White spent his move on a pawn instead of a piece.',
+        },
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The freeing break, prepared by ...e6.',
+          prerequisites: ['A knight on c6 covering e5, or White simply answers the break by pushing past it'],
+        },
+        { move: 'b5', side: 'black', note: 'The standard way of dissolving a Maróczy bind once it has been allowed, prepared by ...a6 and a rook on b8.' },
+      ],
+      keySquares: [
+        { square: 'd5', note: 'What the bind is for. A knight arrives there by the standard route and Black’s whole game is about either preventing it or preparing the pawn break that fills the square.' },
+        { square: 'e5', note: 'Fought over twice: Black wants a pawn there to take d4 away, and if he pushes ...d5 without covering the square, White’s own e5 answers the break.' },
+        { square: 'f5', note: 'Where the knight would like to go. The bishop on c8 is what stops it, which is why the check on b5 offering that bishop a trade is worth a tempo.' },
+        { square: 'f3', note: 'A pawn on the knight’s square. It holds e4 and it supports the centre, and in the lines where the position opens it is a weakness in front of White’s own king.' },
+      ],
+      routes: ['Nb1-c3-d5, the destination the bind is built to serve', 'Nd4-b3 or Nd4-f5 depending on whether Black has taken d4 away with ...e5'],
+      traps: [
+        'Pushing ...d5 without a knight on c6 lets White reply e5, when the break has opened nothing and the knight on f6 is short of squares.',
+        '5...a6 is the one natural developing move that suits White perfectly: it does nothing about c4 and the bind follows with the timing White wanted.',
+      ],
+      sources: [
+        'Srinath Narayanan — Lifetime Repertoires: Classical Sicilian',
+        'Sam Shankland — Lifetime Repertoires: Classical Sicilian',
+        'Anish Giri — Lifetime Repertoires: Najdorf Sicilian',
+        'Lifetime Repertoires: Dragon Sicilian',
+        'Stomp the Sicilian: The Maróczy Bind',
+      ],
+    },
+  },
+  {
     eco: 'B90',
     name: 'Sicilian Defence: Najdorf Variation',
     moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6'),
