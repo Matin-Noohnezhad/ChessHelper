@@ -1438,6 +1438,59 @@ export const CURATED_OPENINGS: Opening[] = [
     },
   },
   {
+    eco: 'C46',
+    name: 'Three Knights Opening',
+    moves: line('e4 e5 Nf3 Nc6 Nc3'),
+    character: 'balanced',
+    minRating: 1200,
+    theory: {
+      idea: 'The third move that threatens nothing. 3.Bb5 hits the defender of e5, 3.Bc4 hits f7 and 3.d4 hits the pawn itself; the knight to c3 only develops, adds a defender to e4 and hands the move back. That is the whole character of the opening and the reason the burden of breaking the symmetry falls on White rather than on Black — there is no threat to answer, so Black may choose almost anything and most often chooses to copy. What White buys with it is a much smaller book: the Italian and the Spanish are avoided along with their theory, and the game will be a Four Knights, usually the Scotch version with a healthy structure and every piece out by move six. What it costs is fixed at once and cannot be recovered: the knight stands on the square the c-pawn needs, so the slow c3-and-then-d4 build-up that both of those openings are constructed around no longer exists, and White’s pawn centre has to be taken in one move or not at all. Strong players regard the result as dry and hard to win with, which is a fair description and no obstacle at all below master level.',
+      structures: [],
+      whitePlans: [
+        'Follow with d2-d4 against 3...Nf6, the Scotch Four Knights: fast development, sound pawns and no theoretical claim beyond a comfortable game.',
+        'Reach the same position by 3.d4 exd4 4.Nxd4 Nf6 5.Nc3. The knight-first order is the narrower one — it denies Black the 3...exd4 4.Nxd4 Bc5 and 4...Bb4+ options — and the pawn-first order is worth adding once the resulting middlegames are familiar.',
+        'Meet 3...g6 with 4.d4 rather than anything quiet. After 4...exd4 5.Nxd4 the game is a Pirc-like structure a tempo down for Black, where Be3, f3 and long castling are the standard treatment and work as well here as they do against the fianchetto anywhere else.',
+        'Punish 3...Bc5 with 4.Nxe5, which is available because the knight on c3 covers e4 and nothing covers e5.',
+        'Transpose into a Spanish with 4.Bb5 after 3...Nf6, which is a Berlin Defence with the knights already committed — a legitimate way to use the move order in the other direction.',
+      ],
+      blackPlans: [
+        '3...Nf6, keeping the symmetry and leaving White to be the one who has to change something. It is by far the main move and the alternatives are what this position is really about.',
+        'Answer any slow fourth move with ...d5. The break is cheap precisely because the knight is already on c3 and can be traded there, and it is the standing recipe against the whole family of quiet tries.',
+        '3...g6, playing for a Dragon-like set-up without the Sicilian. It is playable and it is not equal: White replies 4.d4 and the pawn on e5 cannot be held.',
+        'Recognise the transposition. 3...Nf6 4.Bb5 is a Berlin, and 4.d4 d6 followed by Bb5 is a Ruy Lopez Steinitz, so what looks like a way of avoiding the Spanish frequently leads straight back into it.',
+      ],
+      breaks: [
+        {
+          move: 'd4',
+          side: 'white',
+          note: 'The only chance at a pawn centre, and it has to be taken in one move. Playing Nc3 gave up the route through c2-c3, so a White who delays this push generally never gets to make it.',
+        },
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The equaliser against everything except d4 and Bb5. The knight on c3 is the sole guard of the square and it is exchangeable, which is what makes the break cost nothing.',
+          prerequisites: ['White’s fourth move has not added a second defender to d5, which a bishop on b5 does by pinning the c6 knight'],
+        },
+      ],
+      keySquares: [
+        { square: 'e5', note: 'The pawn 3.Nc3 declines to attack. Because it is not hit, Black has a free choice on move three, and every one of White’s later plans is an attempt to get at it after all.' },
+        { square: 'c3', note: 'Good for the knight and needed by the c-pawn. Choosing the knight is choosing a shorter opening and a smaller advantage.' },
+      ],
+      traps: [
+        '3...Bc5 loses a pawn to 4.Nxe5. The greedy recapture 4...Bxf2+ 5.Kxf2 Nxe5 6.d4 is worse than the plain one: White has the whole centre and the two bishops, and the exposed king is a temporary complaint rather than a structural one.',
+      ],
+      sources: [
+        'Christof Sielecki — Keep it Simple 1.e4',
+        'Sam Shankland — Lifetime Repertoires: Berlin Defence',
+        'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
+        'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
+        'Sutheraman — 1.e4 e5',
+        'Jan Gustafsson — Aggressive 1.e4, Part 1',
+        'The Principled and Practical 1.e4',
+      ],
+    },
+  },
+  {
     eco: 'C47',
     name: 'Four Knights Game',
     moves: line('e4 e5 Nf3 Nc6 Nc3 Nf6'),
