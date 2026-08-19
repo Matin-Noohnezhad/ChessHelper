@@ -257,6 +257,73 @@ const ITALIAN_MODERN_A4: OpeningTheory = {
   ],
 };
 
+/**
+ * Reachable by two move orders — 7...O-O 8.Qd2 Nc6 and 7...Nc6 8.Qd2 O-O — and
+ * both addresses are in the book, so the ideas are hoisted here and shared
+ * rather than written twice.
+ */
+const DRAGON_YUGOSLAV_CROSSROADS: OpeningTheory = {
+  idea: 'Both sides have finished the part of the Yugoslav Attack that is not a choice, and White now makes the one that decides what kind of game it is. It comes down to a single trade-off. The break ...d5 is what liquidates every Dragon attack, and the only piece that can stop it is the bishop on c4 — which is also the one piece Black’s entire set-up already attacks, since ...Rc8, ...Ne5-c4, ...Nxd4 and ...Be6 all gain time against it and it can never drop back to e2 to hold f3. So 9.Bc4 buys the attack and pays with a target; 9.O-O-O declines to pay, invites 9...d5, and converts the game from a mutual mating race into a technical position where White has the sounder pawns; and 9.g4 is the attempt to have both, since the threat of g5 rules out ...d5 while the bishop stays free for the modest square e2. Underneath the choice the race itself does not change: White trades the g7 bishop with Bh6, opens the h-file with h4-h5 and hxg6, and Black goes down the c-file at c3, with the exchange sacrifice there a standard transaction rather than a desperate one. What has changed in modern practice is the tempo at which the decision is made — White castles first and keeps the bishop at home for one more move, which is what makes several of Black’s traditional ninth moves a move too slow.',
+  structures: ['boleslavsky'],
+  whitePlans: [
+    '9.O-O-O, the modern main line: allow ...d5, meet it by neutralising the activity rather than by grabbing material, and play for the endgame the trades produce.',
+    '9.Bc4, the old main line: take d5 away for good and start h4-h5 at leisure, accepting that every black piece now has a target to develop against.',
+    '9.g4, which stops ...d5 with a threat rather than with a piece and keeps e2 free for the bishop. It concedes Black the extra resource ...Be6, so it is a different game rather than a free lunch.',
+    'Leave the bishop on f1 for as long as Black lets you. The delay is what makes ...Bd7 and ...Rc8 pointless, and it keeps e2 available as a defensive square once the pawns start moving.',
+    'Punish a slow ninth move immediately. Black’s pawn already stands on g6, so h4-h5 has a contact point ready-made and the attack arrives before the queenside play is organised.',
+  ],
+  blackPlans: [
+    '9...d5 against 9.O-O-O, played in the knowledge that it leads to a worse but defensible game rather than to equality — the alternative is to be mated.',
+    '9...Be6 against 9.g4, and only that. It invites Nxe6 and the doubled e-pawns on purpose: the f-file opens against the pawn on f3, which is loose the moment the g-pawn has left, and those tempi are what start the counterplay on the c-file.',
+    'Against 9.Bc4, either the old scheme with ...Bd7, ...Rc8 and ...Ne5-c4 or the modern ...Nxd4 and ...Be6, which develops with a hit on the bishop and starts the queenside two moves sooner.',
+    'Count, do not evaluate. With opposite castling the position is a race, and a tempo spent on a useful-looking move that makes no threat is usually the whole game.',
+  ],
+  breaks: [
+    {
+      move: 'd5',
+      side: 'black',
+      note: 'The freeing break and the reason White has a choice to make at all. It frees the g7 bishop, opens the centre against a king that has just walked to the queenside, and ends the attack.',
+      prerequisites: ['White has not played Bc4 or g4', 'A knight still on c6, so the recapture after exd5 does not simply drop a piece'],
+    },
+    {
+      move: 'g4',
+      side: 'white',
+      note: 'A threat rather than an advance: the point is g4-g5 hitting the knight on f6, which is what makes ...d5 unavailable. The cost is that the pawn on f3 is left loose and the bishop is committed to a slow route.',
+    },
+    {
+      move: 'h5',
+      side: 'white',
+      note: 'The attacking break, aimed at the pawn on g6 that the fianchetto has already fixed as a target. It is the punishment for any ninth move by Black that is not counterplay.',
+      prerequisites: ['Castled long, or the king is still in the middle when the file opens'],
+    },
+    {
+      move: 'b5',
+      side: 'black',
+      note: 'The queenside advance that feeds the pressure on c3 and clears the long diagonal. It has to come before White finds time for a3, and usually before the rooks are arranged.',
+    },
+  ],
+  keySquares: [
+    { square: 'd5', note: 'The square White’s ninth move is really about. A black pawn there ends the attack; a white piece taking there hands Black a healthy structure.' },
+    { square: 'c3', note: 'Where every black rook is pointing and where the exchange sacrifice lands. It shelters the king and guards d5, and removing it does both jobs at once.' },
+    { square: 'f3', note: 'The pawn that holds the centre together and the loose point in every line where White pushes the g-pawn. Black’s tempi against it are what make 9...Be6 playable.' },
+    { square: 'e6', note: 'Where Black’s bishop belongs against g4, and where the doubled pawn stands afterwards. It is worth having: the f-file opens and d5 is covered by a pawn instead of by a piece.' },
+    { square: 'h5', note: 'The contact point the pawn on g6 provides. Any tempo Black spends elsewhere is a tempo White spends getting here.' },
+  ],
+  routes: ['Bf1-e2 rather than to c4, the prophylactic square that holds f3 and stays off the c-file', 'Be3-d4 once the knights are traded, meeting the Dragon bishop head-on'],
+  traps: [
+    '9...a6 is logical and too slow. It prepares the queenside advance and makes no threat, and with the pawn already on g6 White’s h-pawn is faster.',
+    '9...Qa5 comes too early. The queen is exposed there, so White gains time securing the knight on d4 and trades the dark-squared bishops while Black is still arranging the rooks.',
+    '9...Bd7 is played from habit against a bishop that is still on f1: the rook it prepares to bring to c8 attacks nothing, and the tempo is gone for good.',
+    'Against 9.g4, the natural 9...Nxd4 10.Bxd4 Be6 is the same idea one move too late — 11.h4 arrives with the extra tempo, whereas after the immediate 9...Be6 the answer to 10.h4 is 10...d5.',
+  ],
+  sources: [
+    'Lifetime Repertoires: Dragon Sicilian',
+    'Jan Gustafsson — Aggressive 1.e4, Part 2',
+    'The Principled and Practical 1.e4',
+    'The Energetic 1.e4 — Part 2',
+  ],
+};
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -6078,7 +6145,26 @@ export const CURATED_OPENINGS: Opening[] = [
   // 4...Nf6 needs no disambiguation: the d7 knight is pinned by the bishop.
   { eco: 'B51', name: 'Sicilian Defence: Moscow Variation, 3...Nd7', moves: line('e4 c5 Nf3 d6 Bb5+ Nd7 O-O Nf6 Re1') },
   { eco: 'B90', name: 'Sicilian Defence: Najdorf, English Attack', moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6 Be3 e5 Nb3 Be6 f3'), character: 'sharp' },
-  { eco: 'B76', name: 'Sicilian Defence: Dragon, Yugoslav Attack', moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be3 Bg7 f3 O-O Qd2 Nc6'), character: 'sharp' },
+  {
+    eco: 'B76',
+    name: 'Sicilian Defence: Dragon, Yugoslav Attack',
+    moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be3 Bg7 f3 O-O Qd2 Nc6'),
+    character: 'sharp',
+    minRating: 1800,
+    theory: DRAGON_YUGOSLAV_CROSSROADS,
+  },
+  {
+    // The same position by the knight-first order, which is how the Modern
+    // Line entry above is addressed. Theory is inherited along move-sequence
+    // ancestry, so without this address that route would stop at the Dragon
+    // Variation's ideas; the object is shared rather than restated.
+    eco: 'B76',
+    name: 'Sicilian Defence: Dragon, Yugoslav Attack',
+    moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be3 Bg7 f3 Nc6 Qd2 O-O'),
+    character: 'sharp',
+    minRating: 1800,
+    theory: DRAGON_YUGOSLAV_CROSSROADS,
+  },
   { eco: 'B81', name: 'Sicilian Defence: Scheveningen, Keres Attack', moves: line('e4 c5 Nf3 e6 d4 cxd4 Nxd4 Nf6 Nc3 d6 g4'), character: 'sharp' },
   { eco: 'B42', name: 'Sicilian Defence: Kan, Modern Variation', moves: line('e4 c5 Nf3 e6 d4 cxd4 Nxd4 a6 Bd3 Nf6 O-O') },
   { eco: 'B47', name: 'Sicilian Defence: Taimanov, Main Line', moves: line('e4 c5 Nf3 e6 d4 cxd4 Nxd4 Nc6 Nc3 Qc7 Be3 a6') },
