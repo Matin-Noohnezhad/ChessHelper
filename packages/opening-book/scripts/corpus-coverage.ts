@@ -95,6 +95,26 @@ function parseArgs(argv: string[]): Options {
  */
 const CITATION = /^(?:1-0|0-1|1\/2-1\/2|\*)\s*\(\d+\)/;
 
+/**
+ * Rows that clear the numeric bar but cannot be written, with the reason. Both
+ * were read independently by two sessions that reached the same conclusion; the
+ * list exists so a third does not have to spend a batch reaching it again.
+ *
+ * A row belongs here only when the *material* is the problem — the corpus has
+ * nothing to say about the position, or says only what an existing entry
+ * already says. A row that is merely hard, or thin, does not belong here.
+ */
+const UNWRITABLE = new Map<string, string>([
+  [
+    'e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 O-O c3 d5 exd5 Nxd5 Nxe5 Nxe5 Rxe5 c6',
+    'Marshall Modern: the digest returns the same passages from the same courses that the parent Marshall Attack entry already distils, one move earlier. Any entry would restate it.',
+  ],
+  [
+    'e4 e5 Nf3 Nc6 Nc3 Nf6 d4 exd4 Nxd4 Nxe4',
+    'Schmid Defence: the distinct passages are marketing, autobiography and move-frequency statistics from two courses. Depth 3 surfaces nothing further. No plan content exists to distil.',
+  ],
+]);
+
 /** Same near-duplicate key the digest uses, so the two agree on what is one piece. */
 const fingerprint = (text: string): string =>
   text.toLowerCase().replace(/[^a-z0-9 ]/g, '').slice(0, 120);
@@ -332,6 +352,7 @@ async function main(): Promise<void> {
   );
   const candidates = book.nodes.filter(
     (n) =>
+      !UNWRITABLE.has(n.opening.moves.join(' ')) &&
       !coveredPositions.has(n.key) &&
       n.gap >= options.minGap &&
       n.distinct.size >= Math.max(1, options.minProse) &&
@@ -349,7 +370,10 @@ async function main(): Promise<void> {
     (a, b) => b.distinct.size - a.distinct.size || b.sources.size - a.sources.size,
   );
 
-  console.log(`── worklist: thin theory, rich corpus (${worklist.length} positions) ──`);
+  console.log(
+    `── worklist: thin theory, rich corpus (${worklist.length} positions, ` +
+      `${UNWRITABLE.size} set aside as unwritable) ──`,
+  );
   console.log(
     `${pad('prose', 6)}${pad('sub', 7)}${pad('src', 5)}${pad('gap', 5)}${pad('eco', 5)}${pad('name', 44)}inherits from`,
   );
