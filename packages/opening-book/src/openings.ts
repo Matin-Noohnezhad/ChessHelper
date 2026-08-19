@@ -3595,6 +3595,73 @@ export const CURATED_OPENINGS: Opening[] = [
     },
   },
   {
+    eco: 'B03',
+    name: 'Alekhine Defence: Exchange Variation',
+    moves: line('e4 Nf6 e5 Nd5 d4 d6 c4 Nb6 exd6'),
+    character: 'positional',
+    minRating: 1400,
+    theory: {
+      idea: 'This is the answer to the Alekhine for a player who does not want to memorise. Rather than defend the big centre the Four Pawns Attack builds, White simply cashes in the extended pawn for a lasting space advantage — pawns on c4 and d4 against nothing on the fourth rank — and a black knight sitting out of play on b6 with no route back to the centre. There is very little forced material here, and White’s edge is the ordinary kind: more room, better squares, and an opponent who has spent five moves moving one piece. The whole variation then hinges on Black’s choice of recapture, which is a genuine fork in the road rather than a matter of taste. ...cxd6 keeps the game unbalanced: the c-file is half-open, the bishop is going to g7, and Black plays a reversed Sicilian of a kind, having traded his c-pawn for a central pawn. ...exd6 is the safe move and produces a symmetrical structure best understood as a Petrov in which Black’s queen’s knight has been parked on b6; nothing is wrong with Black’s position except that he is a little short of space, and in practice that turns out to matter more than the symmetry suggests.',
+      structures: [],
+      whitePlans: [
+        'Delay Nf3 until h3 has been played. Black’s plan against ...cxd6 is ...Bg7, ...Nc6 and ...Bg4xf3, dismantling the defence of d4; h3 first refuses the trade, and the light-squared bishop White keeps is worth more here than the tempo.',
+        'The Voronezh set-up against ...cxd6 — Nc3, Be3, Rc1 and b3 — which finishes the queenside, unloads the long diagonal and prepares d4-d5 at a moment when the g7 bishop cannot profit from it.',
+        'Against ...exd6, the scheme Nc3, Bd3 and Nge2, which sidesteps ...Bg4 altogether and leaves Black’s light-squared bishop with nothing to do.',
+        'Otherwise develop by rote: Nc3, Nf3, Be2, castle, then Be3, Qd2 and the rooks to d1 and e1, and only afterwards look for the advance. There is no need for anything cleverer.',
+        'Answer ...d5 with c5, which fixes the structure and hands White the e5 square for a knight or bishop.',
+        'Expand once the pieces are out — b4-b5 on the queenside, or h3 and g4 on the kingside — using the extra space rather than trying to force matters in the centre.',
+      ],
+      blackPlans: [
+        '...cxd6 for the fighting game: fianchetto with ...g6 and ...Bg7, develop the queen’s knight to c6 without blocking anything, and put both bishop and knight on d4.',
+        'Exchange on f3 whenever it is allowed, since the pressure on d4 is Black’s entire compensation for the space he has conceded.',
+        '...exd6 for the sound game: castle quickly, put the dark-squared bishop on e7, and develop everything to the centre, accepting a slightly worse but very solid position.',
+        'Break with ...d5 to free the position, understanding that after c5 in reply the game becomes a fight for e5 and the c8 bishop needs a plan.',
+        'Bring the b6 knight back into play. It has no natural square, and until it finds one Black is effectively playing a piece short.',
+      ],
+      breaks: [
+        {
+          move: 'd5',
+          side: 'white',
+          note: 'The central advance the Voronezh set-up exists to prepare. Against a bishop on g7 it must not be rushed: played too soon it opens the long diagonal for Black and hands over d4.',
+          prerequisites: [
+            'The long diagonal is covered — usually by b3 and a bishop on b2, or by pieces on the c-file after Rc1.',
+            'Black cannot answer with a knight landing on d4 or a pin on the f3 knight.',
+          ],
+        },
+        {
+          move: 'c5',
+          side: 'white',
+          note: 'The standing answer to Black’s freeing ...d5 in the symmetrical structure that follows 5...exd6. It fixes the pawns and, more importantly, vacates e5 for a piece that no pawn can drive away.',
+          prerequisites: ['Black has committed the d-pawn to d5, so the advance gains a square rather than merely giving one up.'],
+        },
+        {
+          move: 'b5',
+          side: 'white',
+          note: 'The queenside expansion once development is complete, using the space the exchange on d6 bought.',
+          prerequisites: ['The pieces are developed and the centre is not about to open.'],
+        },
+      ],
+      keySquares: [
+        { square: 'd4', note: 'The pawn Black plays against in the ...cxd6 lines, with ...Bg7, ...Nc6 and ...Bxf3. Every one of White’s early decisions is about keeping it defended.' },
+        { square: 'b6', note: 'Black’s knight has been chased here and has no way home. It is the quiet reason White is better in both recaptures.' },
+        { square: 'e5', note: 'The outpost that appears the moment Black plays ...d5 and White answers c5, and the square a knight or bishop should occupy.' },
+        { square: 'f3', note: 'White’s knight belongs here but must not arrive before h3; on f3 unprotected it invites ...Bg4 and the trade that relieves Black’s position.' },
+      ],
+      routes: ['Nb1-c3 with Bf1-d3 and Ng1-e2 against ...exd6', 'Ra1-c1 with b3 in the Voronezh'],
+      traps: [
+        'Playing Nf3 before h3 against ...cxd6: ...Bg4 follows, and after the exchange on f3 the pressure on d4 from ...Bg7 and ...Nc6 becomes real rather than notional.',
+        'Advancing d4-d5 in the ...cxd6 lines while the long diagonal is still open, which turns Black’s worst-placed bishop into his best piece.',
+      ],
+      sources: [
+        'Christof Sielecki — Keep it Simple 1.e4',
+        'Keep It Simple 1.e4 — 2.0',
+        'The Principled and Practical 1.e4',
+        'Alex Colovic — 1.e4 Simplified',
+        'Yasser Seirawan — Winning Chess Openings',
+      ],
+    },
+  },
+  {
     eco: 'B04',
     name: 'Alekhine Defence: Modern Variation',
     moves: line('e4 Nf6 e5 Nd5 d4 d6 Nf3'),
