@@ -142,13 +142,13 @@ describe('identification', () => {
   });
 
   it('inherits theory from the parent opening', () => {
-    const marDelPlata = identifyOpening(
-      'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7'.split(' '),
+    const classicalSystem = identifyOpening(
+      'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7 Ne1'.split(' '),
     )!;
-    expect(marDelPlata.opening.name).toBe('King’s Indian Defence: Mar del Plata');
-    expect(marDelPlata.opening.theory).toBeUndefined();
-    expect(marDelPlata.theorySource?.name).toBe('King’s Indian Defence');
-    expect(marDelPlata.theory?.structures).toContain('kid-locked');
+    expect(classicalSystem.opening.name).toContain('Classical System');
+    expect(classicalSystem.opening.theory).toBeUndefined();
+    expect(classicalSystem.theorySource?.name).toBe('King’s Indian Defence: Mar del Plata');
+    expect(classicalSystem.theory?.structures).toContain('kid-locked');
   });
 
   it('returns null before any move', () => {
