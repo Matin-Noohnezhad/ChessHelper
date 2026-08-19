@@ -5938,7 +5938,76 @@ export const CURATED_OPENINGS: Opening[] = [
   { eco: 'C41', name: 'Philidor Defence: Main Line', moves: line('e4 e5 Nf3 d6 d4 exd4 Nxd4 Nf6 Nc3') },
   { eco: 'C29', name: 'Vienna Gambit', moves: line('e4 e5 Nc3 Nf6 f4 d5 fxe5 Nxe4'), character: 'gambit' },
   { eco: 'C39', name: 'King’s Gambit Accepted: Kieseritzky', moves: line('e4 e5 f4 exf4 Nf3 g5 h4 g4 Ne5'), character: 'gambit' },
-  { eco: 'C42', name: 'Petrov Defence: Classical Attack', moves: line('e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 d4 d5') },
+  {
+    eco: 'C42',
+    name: 'Petrov Defence: Classical Attack',
+    moves: line('e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 d4 d5'),
+    character: 'positional',
+    minRating: 1700,
+    theory: {
+      idea: 'One piece decides this opening. The knight on e4 has a pawn behind it, so it is not a raider that has to be chased home; Black’s claim is that he will never have to spend a move retreating it, and White’s whole game is to make him spend that move or pay for keeping it in structure. There are exactly two ways of asking: piece pressure with Re1 and Nb1-d2, or c2-c4 against the pawn on d5 that holds it. Which of the two works is settled by where Black puts the dark-squared bishop, and the mechanism is a matter of lines rather than of squares. On d6 the bishop shuts the d-file, so the queen no longer defends d5 and c4 arrives with a genuine threat — but the e-file is clear, ...Re8 adds a defender to the knight and the piece-pressure plan runs out of attackers before Black runs out of guards. On e7 it is the other way round: the d-file stays open, the queen holds d5 and c4 can be answered by ...Nc6 hitting d4, while the bishop itself blocks the rook, so after Re1 and Nbd2 there is nothing left to add and the knight has to go back to d6. So the rule is short and it is the whole opening: against ...Bd6 play c4, against ...Be7 play with the pieces. Choosing the wrong one is the ordinary way for White to reach move fifteen with nothing.',
+      structures: [],
+      whitePlans: [
+        'Bd3 and castle. The bishop belongs there in almost every Petrov: it is a third eye on e4 and it does not obstruct the rook that is going to e1.',
+        'Against ...Bd6, the pawn plan: castle, Re1, and then c4 hitting d5 at the moment the black queen cannot help. Treat ...c6 as the answer to expect rather than as a surprise.',
+        'Against ...Be7, the piece plan: Re1 and Nbd2, adding attackers until the knight is driven to d6, which is a small but permanent gain — the knight is worse there and Black has lost the tempo he was trying to save.',
+        'Answer 7...Nc6 with 8.Nbd2 rather than 8.Re1, which is the one real move-order trap in the line: the rook move allows ...Bg4, and after Nbd2 that bishop has nothing good to do.',
+        'Meet a premature ...Bg4 with c4 even in the ...Be7 lines. It is the exception to the rule above, and it works because the bishop has left the defence of d5 to make a pin that is not worth much.',
+        'Take a black ...f5 as a success. The pawn props the knight up and gives away the a2-g8 diagonal and the e5 square with it; opening the position at once is then the right reply.',
+      ],
+      blackPlans: [
+        '...Bd6, castle, meet c4 with ...c6, then ...Bf5 or ...Bg4 and ...Re8. The most popular scheme at every level and the one that keeps the knight on e4 by force rather than by hope.',
+        '...Be7 with ...Bf5, the modern treatment, where White has so far found nothing: the bishop on e7 keeps d5 defended by the queen, so the c4 break never carries a threat.',
+        '...Nc6 is double-edged and its value depends on White’s pawn. It is well placed when White commits to c4, since it presses d4 and eyes b4; it is misplaced when White answers with c3, which takes both squares away and leaves the knight with no work. It also blocks the c-pawn, so ...c6 is no longer available to hold d5.',
+        'Do not play ...f5 to save the knight. Retreating it to d6 costs a tempo and nothing else, which is far less than the diagonal and the e5 square.',
+      ],
+      breaks: [
+        {
+          move: 'c4',
+          side: 'white',
+          note: 'The undermining break: it attacks the pawn that supports the knight rather than the knight itself, which is the only way to make progress once the pieces have run out of attacking moves.',
+          prerequisites: [
+            'Black’s bishop on d6, so the queen on d8 no longer defends d5 through the file',
+            'Development complete enough that the reply ...Nc6 hitting d4 is not simply good',
+          ],
+        },
+        {
+          move: 'c6',
+          side: 'black',
+          note: 'The standard answer to c4 and the reason ...Bd6 systems hold. It has to be available, which is precisely what an early ...Nc6 gives up.',
+        },
+        {
+          move: 'c5',
+          side: 'white',
+          note: 'Gains space and comes with tempo against a bishop on d6 — one more small reason the bishop is more comfortable on e7, where the same push hits nothing.',
+        },
+        {
+          move: 'f5',
+          side: 'black',
+          note: 'Props up the knight and is almost always the wrong way to do it: the a2-g8 diagonal opens, e5 becomes a permanent hole, and White’s correct response is to open the centre immediately.',
+        },
+      ],
+      keySquares: [
+        { square: 'e4', note: 'The knight’s square and the subject of every move both sides make here. Everything else in the position is an attacker of it or a defender of it.' },
+        { square: 'd5', note: 'The pawn that makes the knight permanent. c4 is played against this square, not against the knight, and ...c6 is what keeps it standing.' },
+        { square: 'e5', note: 'What Black concedes if he is ever pushed into ...f5, and the outpost White plays for once that happens.' },
+        { square: 'd6', note: 'Where the knight ends up when the piece-pressure plan succeeds — an admission rather than a disaster, but the tempo Black was saving has gone.' },
+      ],
+      routes: ['Nb1-d2, the second attacker of e4 and the piece plan in one move'],
+      traps: [
+        '8.Re1 against 7...Nc6 lets Black in with 8...Bg4, developing the last piece actively and pinning the knight that guards d4; 8.Nbd2 first avoids it entirely.',
+        'Playing c4 against a bishop on e7 achieves nothing: ...Nc6 comes with tempo against d4 and d5 is still defended by the queen, so White has weakened d4 for no return.',
+      ],
+      sources: [
+        'The Principled and Practical 1.e4',
+        'Christof Sielecki — Keep it Simple 1.e4 2.0',
+        'Jonas Hacker — The Romantic Italian',
+        'Lifetime Repertoires: Petroff Defence',
+        'Understanding Chess Openings: 1.e4 — Part 2',
+        'The Complete Book of Chess Strategy',
+      ],
+    },
+  },
   { eco: 'C45', name: 'Scotch Game: Main Line', moves: line('e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Nf6 Nxc6 bxc6 e5') },
   {
     eco: 'C53',
