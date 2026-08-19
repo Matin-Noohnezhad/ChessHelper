@@ -26,7 +26,7 @@
  *   --corpus <path>   index directory (default: .corpus/)
  *   --min-chars <n>   what counts as substantial prose (default: 200)
  *   --min-gap <n>     plies below the theory source before a node is "thin" (default: 4)
- *   --min-prose <n>   drop worklist rows with fewer pieces than this (default: 0)
+ *   --min-prose <n>   drop rows with fewer *distinct* passages than this (default: 0)
  *   --min-sources <n> drop worklist rows backed by fewer courses than this (default: 0)
  *   --top <n>         rows to print per list (default: 40)
  */
@@ -95,6 +95,10 @@ function parseArgs(argv: string[]): Options {
  */
 const CITATION = /^(?:1-0|0-1|1\/2-1\/2|\*)\s*\(\d+\)/;
 
+/** Same near-duplicate key the digest uses, so the two agree on what is one piece. */
+const fingerprint = (text: string): string =>
+  text.toLowerCase().replace(/[^a-z0-9 ]/g, '').slice(0, 120);
+
 /* ---------------------------------------------------------------- book --- */
 
 interface Node {
@@ -104,8 +108,16 @@ interface Node {
   gap: number;
   theorySource?: string;
   direct: number;
-  directSubstantial: number;
+  /**
+   * Distinct substantial passages, not occurrences. Courses attach the same
+   * chapter preface to every line in the chapter, so counting occurrences
+   * measures how a course was exported rather than how much it says: one row
+   * advertised 238 pieces and collapsed to eight, none of them about a plan.
+   */
+  distinct: Set<string>;
   subtree: number;
+  /** Occurrences, not distinct — kept raw because deduping every subtree would
+   * mean holding a fingerprint set for every node in the book at once. */
   subtreeSubstantial: number;
   sources: Set<number>;
 }
@@ -148,7 +160,7 @@ function buildBook(): { nodes: Node[]; byKey: Map<string, Node[]>; trie: TrieNod
       gap: source ? opening.moves.length - source.moves.length : opening.moves.length,
       theorySource: source?.name,
       direct: 0,
-      directSubstantial: 0,
+      distinct: new Set(),
       subtree: 0,
       subtreeSubstantial: 0,
       sources: new Set(),
@@ -221,9 +233,10 @@ async function scan(options: Options, book: ReturnType<typeof buildBook>) {
     const exact = byKey.get(rec.key);
     if (exact) {
       onBookDirect++;
+      const print = substantial ? fingerprint(rec.text) : '';
       for (const node of exact) {
         node.direct++;
-        if (substantial) node.directSubstantial++;
+        if (substantial) node.distinct.add(print);
         node.sources.add(rec.src);
       }
     }
@@ -286,7 +299,7 @@ async function main(): Promise<void> {
   );
 
   const withTheory = book.nodes.filter((n) => n.gap === 0);
-  const covered = book.nodes.filter((n) => n.directSubstantial > 0);
+  const covered = book.nodes.filter((n) => n.distinct.size > 0);
   /**
    * The bar below which "distilling" stops meaning anything. One course's single
    * remark about a position is not several strong players agreeing — it is one
@@ -294,13 +307,13 @@ async function main(): Promise<void> {
    * in the book. Reported here so the end of the useful work is visible.
    */
   const wellSupported = book.nodes.filter(
-    (n) => n.gap >= options.minGap && n.directSubstantial >= 20 && n.sources.size >= 3,
+    (n) => n.gap >= options.minGap && n.distinct.size >= 4 && n.sources.size >= 3,
   );
   console.log(
     `book coverage: ${withTheory.length} nodes carry their own theory, ` +
       `${covered.length} have substantial prose written about them in the corpus, ` +
-      `${book.nodes.filter((n) => n.directSubstantial >= 10).length} have ten pieces or more\n` +
-      `${wellSupported.length} thin nodes are well supported (20+ pieces from 3+ courses) — ` +
+      `${book.nodes.filter((n) => n.distinct.size >= 10).length} have ten pieces or more\n` +
+      `${wellSupported.length} thin nodes are well supported (4+ distinct pieces from 3+ courses) — ` +
       `the work that the material actually backs\n`,
   );
 
@@ -310,11 +323,18 @@ async function main(): Promise<void> {
    * position. Deliberately not a weighted score — the two conditions are the
    * whole argument, and a score would only hide which one did the work.
    */
+  // A position can sit in the book twice under different move orders, and theory
+  // is inherited along move-sequence ancestry rather than by position — so the
+  // twin of a written-up node still looks untouched. Three positions in the book
+  // are like this. They are not work; they are the same work already done.
+  const coveredPositions = new Set(
+    book.nodes.filter((n) => n.opening.theory).map((n) => n.key),
+  );
   const candidates = book.nodes.filter(
     (n) =>
+      !coveredPositions.has(n.key) &&
       n.gap >= options.minGap &&
-      n.directSubstantial > 0 &&
-      n.directSubstantial >= options.minProse &&
+      n.distinct.size >= Math.max(1, options.minProse) &&
       n.sources.size >= options.minSources,
   );
   // Several book entries can reach one position by different move orders. They
@@ -326,7 +346,7 @@ async function main(): Promise<void> {
     if (!held || node.opening.moves.length < held.opening.moves.length) byPosition.set(node.key, node);
   }
   const worklist = [...byPosition.values()].sort(
-    (a, b) => b.directSubstantial - a.directSubstantial || b.sources.size - a.sources.size,
+    (a, b) => b.distinct.size - a.distinct.size || b.sources.size - a.sources.size,
   );
 
   console.log(`── worklist: thin theory, rich corpus (${worklist.length} positions) ──`);
@@ -335,7 +355,7 @@ async function main(): Promise<void> {
   );
   for (const node of worklist.slice(0, options.top)) {
     console.log(
-      pad(String(node.directSubstantial), 6) +
+      pad(String(node.distinct.size), 6) +
         pad(String(node.subtreeSubstantial), 7) +
         pad(String(node.sources.size), 5) +
         pad(String(node.gap), 5) +
@@ -384,7 +404,7 @@ async function main(): Promise<void> {
           gap: n.gap,
           theorySource: n.theorySource,
           direct: n.direct,
-          directSubstantial: n.directSubstantial,
+          distinct: n.distinct.size,
           subtree: n.subtree,
           subtreeSubstantial: n.subtreeSubstantial,
           sources: n.sources.size,

@@ -45,13 +45,19 @@ that and the reading blurs together and the writing gets generic.
 ### 1. Refresh the worklist
 
 ```bash
-npm run report:coverage -- --min-prose 20 --min-sources 3 --top 12
+npm run report:coverage -- --min-prose 4 --min-sources 3 --top 12
 ```
 
 The filters restrict the list to positions the corpus supports well enough to
-write from: 20+ pieces of prose, backed by 3+ separate courses. Below that bar an
-entry rests on one person's single remark, which is not distillation. Do not drop
-the filters unless the user asks for the thin tail explicitly.
+write from: 4+ *distinct* passages, backed by 3+ separate courses. Distinct is
+the word that matters — a course attaches its chapter preface to every line in
+the chapter, so raw counts run an order of magnitude high and one row advertised
+238 pieces that collapsed to eight, none about a plan. Below this bar an entry
+rests on one person's single remark, which is not distillation. Do not drop the
+filters unless the user asks for the thin tail explicitly.
+
+Four distinct passages at the node itself is less thin than it sounds, because
+you read with `--depth 2` and pick up everything one or two moves below it too.
 
 Ranks shift every time an entry is written, so **always regenerate before
 picking targets**. The header line tells you where the work stands ("N nodes
