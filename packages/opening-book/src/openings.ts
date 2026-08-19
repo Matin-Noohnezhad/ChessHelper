@@ -1582,6 +1582,70 @@ export const CURATED_OPENINGS: Opening[] = [
 
   // ------------------------------------------------- other answers to 1.e4 ---
   { eco: 'B01', name: 'Scandinavian Defence', moves: line('e4 d5'), character: 'balanced', forSide: 'black' },
+  {
+    eco: 'B01',
+    name: 'Scandinavian Defence: Gubinsky-Melts Defence',
+    moves: line('e4 d5 exd5 Qxd5 Nc3 Qd6'),
+    character: 'balanced',
+    minRating: 1500,
+    aliases: ['Bronstein Variation', 'Scandinavian 3...Qd6', 'Tiviakov Scandinavian'],
+    theory: {
+      idea: 'The whole Scandinavian turns on where the queen goes after it has been chased, and d6 is the compromise square. On d8 she is safe and does nothing; on a5 she is active and gets hit; on d6 she keeps the h2-b8 diagonal, watches d4 and stays out of her own pieces’ way, at the price of remaining within reach of Nb5, Bf4 and the knight tour Nf3-e5-c4. That last one is the modern reason the line is respected rather than dismissed: White’s edge, where it exists, comes from gaining time against the queen while completing development, not from any structural fault, because Black has none. Black accepts moving the same piece repeatedly and still finishing with a sound position — the practical bet is that White finds that harder to play against than it looks.',
+      structures: [],
+      whitePlans: [
+        'Develop naturally with d4 and Nf3, take the extra central space and centralise. The knight’s destination is e5, where it is supported and where it cannot be driven off by a pawn.',
+        'The manoeuvre Nf3-e5-c4, hitting the queen a second time and forcing her to declare. It is the most reliable modern route to an advantage precisely because each move develops as it gains time.',
+        'Nb5, when Black’s queenside is not yet arranged — it attacks the queen and c7 at once, so ...c6 or ...a6 is a move Black must find time for.',
+        'Fianchetto with g3 and Bg2, which has the extra point that the c1 bishop keeps the f4 square free to chase the queen later.',
+        'Meet the queenside castling plan by opening lines there rather than defending d4 passively; the pawn is easier to hold than the king is once the a- and b-files start opening.',
+      ],
+      blackPlans: [
+        'Finish development quickly: ...Nf6, ...c6, ...Bf5 or ...Bg4, then ...e6, ...Nbd7 and a choice of wings for the king. Speed is the whole justification for the queen sortie.',
+        'Fianchetto the dark-squared bishop with ...g6 and ...Bg7. The queen is standing on the diagonal the bishop would otherwise want, and this is the standard way round the problem.',
+        'Castle queenside and lean on d4 with the queen and rook, which is the one plan the queen’s placement on d6 actively enables.',
+        'Prepare for the harassment before it happens: ...c6 takes b5 from the knight and gives the queen c7 to retreat to, which is why it is played early even though it costs a tempo.',
+      ],
+      breaks: [
+        {
+          move: 'e5',
+          side: 'black',
+          note: 'The freeing advance the queen on d6 is supporting from behind. It solves the light-squared bishop and the space problem in one move, and is the reason White works to occupy e5 with a piece first.',
+          prerequisites: ['Pieces developed so the pawn is genuinely supported', 'No white knight already established on e5'],
+        },
+        {
+          move: 'c5',
+          side: 'black',
+          note: 'The alternative freeing break, hitting the base of the centre. It is worth playing in one move where possible, since ...c6 first turns it into a two-move plan and hands White the time he was looking for.',
+          prerequisites: ['The queen off the d-file, or the pin down it becomes uncomfortable after the exchange on c5'],
+        },
+        { move: 'd5', side: 'white', note: 'Gains space and comes with tempo against a black knight on c6, which is one reason that knight belongs elsewhere in this structure.' },
+        { move: 'c4', side: 'white', note: 'Claims the extra central pawn and takes d5 and b5 for good, at the cost of leaving d4 with one defender fewer — worth it once Black has committed to short castling.' },
+      ],
+      keySquares: [
+        { square: 'e5', note: 'The outpost the position hands White. A knight there is safe from pawns and one move from c4, where it hits the queen again.' },
+        { square: 'b5', note: 'The square the knight jumps to when the queen and c7 are both loose. ...c6 rules it out permanently, which is the tempo Black is usually happy to spend.' },
+        { square: 'f4', note: 'The bishop’s post, and the reason White is content to fianchetto the other one. The queen must have somewhere to go before it arrives.' },
+        { square: 'd4', note: 'What the queen is looking at from d6 and the target of the queenside castling plan. If White is ever forced to defend it with pieces, the sortie has paid.' },
+      ],
+      routes: ['Nf3-e5-c4, gaining time on the queen with every move', 'Bf8-g7 via ...g6, since the queen occupies the bishop’s own diagonal'],
+      traps: [
+        'Developing with ...Nc6 is a mistake in most Scandinavian structures and especially with the queen on d6: it blocks the ...c6 that the queen needs, and White gains time by advancing on it.',
+        'Leaving c7 unguarded while the queen still stands on d6 invites Nb5 with a double attack, and the answer is nearly always a tempo Black would rather have spent developing.',
+      ],
+      sources: [
+        'Wesley So — Lifetime Repertoires: 1.e4',
+        'Grzegorz Gajewski — Lifetime Repertoires: 1.e4 — Part 2',
+        'S. P. Sethuraman — Lifetime Repertoires: 1.e4 — Part 1',
+        'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 1',
+        'Anish Giri — Lifetime Repertoires: 1.e4 — Part 2',
+        'Jan Gustafsson — Aggressive 1.e4, Part 1',
+        'The Principled and Practical 1.e4',
+        'Play 1.e4 with Purpose',
+        'Understanding Chess Openings: 1.e4 — Part 1',
+        'Mastering Opening Strategy',
+      ],
+    },
+  },
   { eco: 'B02', name: 'Alekhine Defence', moves: line('e4 Nf6'), character: 'sharp', forSide: 'black' },
   {
     eco: 'B04',
