@@ -33,6 +33,10 @@ npm run index:corpus -- --dir /media/sf_sharedWindows/pgn
 npm run report:coverage
 ```
 
+**Commit as soon as the batch passes its tests.** Background work does not
+survive the session ending, and an early run of this task lost everything it had
+done because it was holding the whole batch until the end.
+
 ## The loop
 
 Do one batch of **five** entries per session unless asked otherwise. More than
@@ -41,14 +45,26 @@ that and the reading blurs together and the writing gets generic.
 ### 1. Refresh the worklist
 
 ```bash
-npm run report:coverage -- --top 12
+npm run report:coverage -- --min-prose 20 --min-sources 3 --top 12
 ```
 
+The filters restrict the list to positions the corpus supports well enough to
+write from: 20+ pieces of prose, backed by 3+ separate courses. Below that bar an
+entry rests on one person's single remark, which is not distillation. Do not drop
+the filters unless the user asks for the thin tail explicitly.
+
 Ranks shift every time an entry is written, so **always regenerate before
-picking targets**. The header line tells you where the work stands
-("N nodes carry their own theory"). Take the top five that are genuinely
-distinct openings — if two rows are the same variation at different depths,
-prefer the shallower one and skip the other this round.
+picking targets**. The header line tells you where the work stands ("N nodes
+carry their own theory", "N thin nodes are well supported"). Take the top five
+that are genuinely distinct openings — if two rows are the same variation at
+different depths, prefer the shallower one and skip the other this round.
+
+**One known quirk.** A row can appear because it is the same *position* as an
+entry that already has theory, reached by a different move order — the book
+inherits along move-sequence ancestry, not by position. There are only three such
+positions in the whole book, and the Caro-Kann Classical via 3.Nd2 is the known
+one. If a row turns out to be a transposition into a position that already has
+its own theory, skip it and take the next row; never write a duplicate.
 
 ### 2. Read the material for each
 
@@ -106,6 +122,11 @@ Shape (see `src/types.ts` for the full contract):
 ```bash
 npx vitest run packages/opening-book
 ```
+
+`npm run typecheck` fails at the root with `TS5083` — there is no root
+`tsconfig.json`, only `tsconfig.base.json`. This is pre-existing and unrelated to
+this work; do not try to fix it and do not report it. Use `npx vitest run
+packages/opening-book`, which is the check that matters here.
 
 The tests are the compiler for this data. In particular one of them checks that
 a break attributed to a side is a push that side could actually make — it has
