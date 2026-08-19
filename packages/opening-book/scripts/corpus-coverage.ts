@@ -26,6 +26,8 @@
  *   --corpus <path>   index directory (default: .corpus/)
  *   --min-chars <n>   what counts as substantial prose (default: 200)
  *   --min-gap <n>     plies below the theory source before a node is "thin" (default: 4)
+ *   --min-prose <n>   drop worklist rows with fewer pieces than this (default: 0)
+ *   --min-sources <n> drop worklist rows backed by fewer courses than this (default: 0)
  *   --top <n>         rows to print per list (default: 40)
  */
 
@@ -42,11 +44,22 @@ interface Options {
   corpus: string;
   minChars: number;
   minGap: number;
+  /** Floor on how much prose a node must have before it is worth writing up. */
+  minProse: number;
+  /** Floor on how many separate courses back it — corroboration, not volume. */
+  minSources: number;
   top: number;
 }
 
 function parseArgs(argv: string[]): Options {
-  const options: Options = { corpus: resolve('.corpus'), minChars: 200, minGap: 4, top: 40 };
+  const options: Options = {
+    corpus: resolve('.corpus'),
+    minChars: 200,
+    minGap: 4,
+    minProse: 0,
+    minSources: 0,
+    top: 40,
+  };
   for (let i = 0; i < argv.length; i += 2) {
     const value = argv[i + 1];
     switch (argv[i]) {
@@ -58,6 +71,12 @@ function parseArgs(argv: string[]): Options {
         break;
       case '--min-gap':
         options.minGap = Number(value);
+        break;
+      case '--min-prose':
+        options.minProse = Number(value);
+        break;
+      case '--min-sources':
+        options.minSources = Number(value);
         break;
       case '--top':
         options.top = Number(value);
@@ -268,10 +287,21 @@ async function main(): Promise<void> {
 
   const withTheory = book.nodes.filter((n) => n.gap === 0);
   const covered = book.nodes.filter((n) => n.directSubstantial > 0);
+  /**
+   * The bar below which "distilling" stops meaning anything. One course's single
+   * remark about a position is not several strong players agreeing — it is one
+   * person, unchecked, and an entry resting on it would be the weakest content
+   * in the book. Reported here so the end of the useful work is visible.
+   */
+  const wellSupported = book.nodes.filter(
+    (n) => n.gap >= options.minGap && n.directSubstantial >= 20 && n.sources.size >= 3,
+  );
   console.log(
     `book coverage: ${withTheory.length} nodes carry their own theory, ` +
       `${covered.length} have substantial prose written about them in the corpus, ` +
-      `${book.nodes.filter((n) => n.directSubstantial >= 10).length} have ten pieces or more\n`,
+      `${book.nodes.filter((n) => n.directSubstantial >= 10).length} have ten pieces or more\n` +
+      `${wellSupported.length} thin nodes are well supported (20+ pieces from 3+ courses) — ` +
+      `the work that the material actually backs\n`,
   );
 
   /**
@@ -280,7 +310,13 @@ async function main(): Promise<void> {
    * position. Deliberately not a weighted score — the two conditions are the
    * whole argument, and a score would only hide which one did the work.
    */
-  const candidates = book.nodes.filter((n) => n.gap >= options.minGap && n.directSubstantial > 0);
+  const candidates = book.nodes.filter(
+    (n) =>
+      n.gap >= options.minGap &&
+      n.directSubstantial > 0 &&
+      n.directSubstantial >= options.minProse &&
+      n.sources.size >= options.minSources,
+  );
   // Several book entries can reach one position by different move orders. They
   // are one piece of work, not three, so the list is collapsed onto the
   // position and the shallowest entry speaks for it.
