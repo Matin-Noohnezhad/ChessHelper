@@ -127,6 +127,63 @@ const CARO_KANN_KARPOV: OpeningTheory = {
   ],
 };
 
+const CARO_KANN_MAIN_LINE: OpeningTheory = {
+  idea: 'The parting of the ways, and the position every main-line Caro-Kann passes through. Black has traded his d-pawn for White’s e-pawn and stands with no weakness anywhere: three pawn islands to White’s two would be the usual complaint, but c6, e7, f7 and the rest are all defensible and none of them can be got at. What Black has not yet solved is the light-squared bishop, and that is the whole content of the position — the Caro-Kann is played rather than the French precisely so that this piece gets out before ...e6, and the three moves available here are three different ways of arranging it. 4...Bf5 does it at once and with tempo. 4...Nf6 declines to move the bishop and changes the structure instead, so that after 5.Nxf6+ exf6 the diagonal opens by itself. 4...Nd7 postpones the question in order to keep the recapture on f6 a piece recapture, and pays by often never solving it at all. White’s side is the same in all three: a spatial edge based on the pawn on d4, the e5 square for a knight, and a long-term majority on the queenside that can produce a passed pawn where Black’s cannot.',
+  structures: [],
+  whitePlans: [
+    'Develop with Nf3, Bd3 or Bc4 and c3, castle, and lean on the extra central space. There is no weakness to attack, so the advantage — where there is one — comes from squares rather than targets.',
+    'Occupy e5. It is the outpost the structure grants, and most of the middlegame is about whether Black’s pieces get to challenge the knight there in time.',
+    'Against 4...Bf5, the space-gaining 5.Ng3 Bg6 6.h4, which is the critical test and where move order matters most.',
+    'Against 4...Nd7, the aggressive schemes with Bc4 and Ng5, aimed at e6 and f7 while the black pieces are still tangled.',
+    'In the long run, c4 and d5 to make the queenside majority tell — the one structural asset that does not expire.',
+  ],
+  blackPlans: [
+    'Choose the fourth move by what is to be done with the c8 bishop, not by taste: out now with ...Bf5, out later through a changed structure with ...Nf6, or left at home for a while with ...Nd7.',
+    'Finish the small scheme — ...e6, ...Nd7, ...Ngf6, ...Be7 and castle — and reach a position where White has more space and nothing to aim at.',
+    '...c5 against d4, which is the only real source of counterplay in every branch and which every other move is a preparation for.',
+    'Trade pieces where the space disadvantage bites, and avoid trading down into pure pawn endings, where the queenside majority decides.',
+  ],
+  breaks: [
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'The break the whole defence is built on. It hits d4, gives the queen’s bishop and rook something to do, and is the move White’s space advantage exists to prevent.',
+      prerequisites: ['The king castled, since the centre opens with it', 'The light-squared bishop resolved one way or the other, or the break simply opens lines for the better-placed side'],
+    },
+    {
+      move: 'e5',
+      side: 'black',
+      note: 'The other freeing move, available when White has spent time on the wing rather than the centre. It solves the bishop more completely than ...c5 and demands more accuracy.',
+    },
+    {
+      move: 'c4',
+      side: 'white',
+      note: 'The start of the majority’s march and a fight for d5 at the same time. It is a winning attempt rather than an equalising one, and it is played late.',
+      prerequisites: ['Development finished, since the pawn stops covering d5 as it advances'],
+    },
+    { move: 'h4', side: 'white', note: 'Space and a hook against the bishop in the 4...Bf5 lines, and the reason ...Bg6 is met by a pawn advance rather than a piece.' },
+  ],
+  keySquares: [
+    { square: 'e5', note: 'The outpost the structure grants White. Whether a knight gets to sit there unchallenged is the practical difference between a pleasant game and nothing at all.' },
+    { square: 'c8', note: 'The bishop that has not moved yet. Every fourth move here is a decision about it, and every subsequent difficulty of Black’s can be traced back to that decision.' },
+    { square: 'd4', note: 'White’s space in one pawn, and what ...c5 is aimed at.' },
+    { square: 'f7', note: 'The only target the structure offers White, which is why the sharpest tries in every branch are the ones with Bc4 and Ng5 behind them.' },
+  ],
+  routes: ['Ne4-g3, gaining time on the bishop in the Classical and keeping the knights on in the Karpov'],
+  traps: [
+    '4...Nf6 5.Nxf6+ gxf6 is a separate opening rather than a slip — the Bronstein-Larsen, where Black takes the open g-file and a wrecked kingside on purpose — and it should be played on purpose or not at all.',
+    'Treating this as a French where the bishop happens to be free leads to ...e6 played early and the bishop entombed anyway, which is the one way to get the worst of both defences.',
+  ],
+  sources: [
+    'Keep It Simple for Black',
+    'Lifetime Repertoires: The Caro-Kann',
+    'Sam Shankland — The Complete Caro',
+    'Starting Out: Caro-Kann',
+    'Understanding Chess Openings: 1.e4 — Part 1',
+    'Vaporize the Caro-Kann: Alien Gambit',
+    'The Complete Book of Chess Strategy',
+  ],
+};
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -3398,6 +3455,26 @@ export const CURATED_OPENINGS: Opening[] = [
         'The Complete Book of Chess Strategy',
       ],
     },
+  },
+  {
+    eco: 'B15',
+    name: 'Caro-Kann Defence: Main Line',
+    moves: line('e4 c6 d4 d5 Nd2 dxe4 Nxe4'),
+    character: 'positional',
+    minRating: 1400,
+    theory: CARO_KANN_MAIN_LINE,
+  },
+  {
+    // The same position by way of 3.Nc3, which is how most games reach it.
+    // Theory is inherited along move-sequence ancestry, so without an address
+    // here this route would show the plans of the Caro-Kann root; the two
+    // entries share one object because they are one position.
+    eco: 'B15',
+    name: 'Caro-Kann Defence: Main Line',
+    moves: line('e4 c6 d4 d5 Nc3 dxe4 Nxe4'),
+    character: 'positional',
+    minRating: 1400,
+    theory: CARO_KANN_MAIN_LINE,
   },
   {
     eco: 'B18',
