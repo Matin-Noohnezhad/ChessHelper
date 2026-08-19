@@ -3456,6 +3456,56 @@ export const CURATED_OPENINGS: Opening[] = [
     },
   },
   {
+    eco: 'C10',
+    name: 'French Defence: Marshall Gambit',
+    moves: line('e4 e6 d4 d5 Nc3 c5'),
+    character: 'sharp',
+    minRating: 1200,
+    forSide: 'white',
+    theory: {
+      idea: 'The right break played against the wrong third move. ...c5 is what the French is for, and against 3.Nd2 it is the main line — but a knight on d2 attacks nothing, while a knight on c3 already looks at d5, and that single difference turns the same move into a lost pawn. The refutation is a sequence rather than a shot: White takes on d5 first, so that Black is left with a lone pawn there instead of a pawn pair; then takes on c5, which opens the d-file to the queen and gives the pawn a second attacker; and only then collects it. Black cannot answer with ...Qxd5 because Nxd5 follows, and cannot hold d5 with the c-pawn because it has been traded off — the two defences the Tarrasch version relies on are both absent. It appears constantly below master level, played by rote or premoved by someone who has learned ...e6, ...d5 and ...c5 as a unit, which is why the whole point of knowing it is knowing how to convert rather than how to reach it.',
+      structures: ['iqp'],
+      whitePlans: [
+        'Take on d5 before touching c5. The move order is the refutation: 4.exd5 exd5 leaves an isolated pawn under fire from the knight already on c3, whereas capturing on c5 first lets Black keep a healthy centre.',
+        'Insert Bb5+ before grabbing anything. Developing with check is worth more than the pawn is worth waiting for, and it anticipates the ...Qe7+ check that follows the capture — with the bishop already off f1 the knight can go to e2 and the position holds together.',
+        'Answer ...Bd7 with Qe2+. The queen on e2 covers b5 down the diagonal, so the bishop is no longer hanging and the pawn on d5 can be taken next move.',
+        'Meet ...d4, the attempt to save the pawn by hitting the knight, by refusing to move the knight and playing Bb5+ and Qe2+ instead. The pawn on d4 has no support, and once it falls Black has neither the pawn nor the tempo.',
+        'Insert Bg5 before finishing development. The threat to take on f6 forces Black’s queen’s knight to d7 to hold the square, which keeps it off c6 and takes away the ...Nb4 jump that is Black’s only source of tempo-gaining counterplay.',
+        'Treat it as a conversion, not an attack. A clean extra centre pawn against no compensation is the whole of White’s advantage, so trade pieces, castle and play the endgame rather than looking for a knockout.',
+      ],
+      blackPlans: [
+        'Recognise that the pawn is gone and play for activity instead. ...Bxc5 and quick castling at least develops; ...d4 and other attempts to keep material tend to lose a second tempo as well.',
+        'If the game continues, aim the queen’s knight at c6 rather than d7 and look for ...Nb4, the one square from which a black piece asks a question. Preventing that is exactly what White’s Bg5 is for.',
+        'Play ...c5 one move earlier or one move later instead. The break belongs against 3.Nd2, where the queen can recapture on d5 unmolested, and against 3.e5, where it is the standard strike at the base of the chain.',
+      ],
+      breaks: [
+        {
+          move: 'd4',
+          side: 'black',
+          note: 'The bid to save the pawn by attacking the c3 knight, and the only independent idea Black has here. It fails because the knight does not have to move: Bb5+ and Qe2+ come first, and the pawn on d4 has nothing behind it.',
+          prerequisites: ['The exchange on d5 has already happened, so the pawn is free to advance'],
+        },
+      ],
+      keySquares: [
+        { square: 'd5', note: 'The pawn White is playing to win. It is attacked by the c3 knight from move three and by the queen as soon as the d-file opens, and the c-pawn that would normally defend it has been exchanged.' },
+        { square: 'b5', note: 'The bishop’s square, from which it checks, develops and gains a move all at once. Every accurate line here begins with it.' },
+        { square: 'e2', note: 'Where the queen goes to defend b5 along the diagonal, and where the knight goes once the bishop has vacated f1. Both jobs are the reason Bb5+ is played before the material is collected.' },
+        { square: 'd7', note: 'Where Black’s queen’s knight is forced to go once Bg5 arrives. It is a worse square than c6, and driving the knight there is worth a tempo of White’s own.' },
+      ],
+      traps: [
+        'Moving the c3 knight to e4 while the bishop stands on b5 and the black queen still has a5: ...Qa5+ then forks the king and the undefended bishop, and the knight has left the square that would block the check. Qe2+ first defends b5 and makes the same manoeuvre safe.',
+      ],
+      sources: [
+        'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 2',
+        'Pentala Harikrishna — French Toast',
+        'The Energetic 1.e4 — Part 1',
+        'Understanding Chess Openings: 1.e4 — Part 1',
+        'Play 1.e4 with Purpose',
+        'The Principled and Practical 1.e4',
+      ],
+    },
+  },
+  {
     eco: 'C07',
     name: 'French Defence: Tarrasch Variation, Open System',
     moves: line('e4 e6 d4 d5 Nd2 c5'),
