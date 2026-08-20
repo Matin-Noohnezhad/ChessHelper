@@ -857,6 +857,158 @@ const MERAN_A6: OpeningTheory = {
     'The Complete Book of Chess Strategy',
   ],
 };
+/**
+ * The Classical Pirc with 6...Bg4, reached by both Pirc move orders — the ECO
+ * tables name only the ...Nf6-first one — so the second address is added here.
+ * One position, one set of ideas.
+ */
+const PIRC_PARMA: OpeningTheory = {
+  idea: 'White has built the least committal set-up in the Pirc: Nf3 and Be2, castle, and refuse to give Black anything to attack. Against that, ...Bg4 is a plan rather than a developing move, and the plan is a trade. The knight on f3 is the piece holding d4 and e5, which are the two squares every Pirc break needs, and Black proposes to swap a bishop for it and then push ...e5 with the defender gone. What he pays is the bishop pair, permanently, and the payment is heavier than the bookkeeping suggests: the structures this variation heads for — pawns fixed on e5 and d6 against d4 and e4 — are genuinely unpleasant for a Black player who has no light-squared bishop, because every square the pawns leave behind is a light one. The other half of the assessment is timing, and it is where the move is usually got wrong. The trade is worth the bishop pair only if the break follows quickly, which means the queen’s knight has to be committed first: with a knight on c6 pressing d4, ...Bxf3 and ...e5 come as one idea, whereas the immediate pin has to wait for the knight and gives White time to answer with h3 on his own terms. That is why a move played in a large share of master games is still regarded as premature.',
+  structures: [],
+  whitePlans: [
+    'h3 at once, forcing the question before Black has arranged the ...e5 break. The bishop has no square worth retreating to, so the trade happens on White’s move rather than Black’s, and the bishop pair is banked while the centre is still White’s.',
+    'Recapture on f3 with the bishop. From there it holds the long diagonal and d5, which is the compensation for the knight that used to hold d4.',
+    'Be3 with Qd2, the flexible treatment: develop, keep the option of Bh6, and let Black decide whether the pin was worth anything.',
+    'a4, taking b5 away before Black gets to the queenside expansion. It is a quiet move with a concrete point — every ...c6 and ...b5 plan in the Pirc dies without that square.',
+    'Accept a little less control of d4 after the trade and overprotect the centre with pieces instead. White is in time to do it, and doing it is what leaves Black holding a bishop pair deficit for nothing.',
+    'Meet ...e5 with dxe5, which trades into a queenless position that is comfortable for White and exactly what a Pirc player does not want.',
+  ],
+  blackPlans: [
+    '...Bxf3 and then ...Nc6 and ...e5, the whole idea: remove the defender of d4 and e5, then take the centre before White reorganises.',
+    'Reduce the space disadvantage by trading pieces. It is the standard remedy in a cramped position and the reason the plan is respectable even though the bishop pair goes.',
+    'Work on the dark squares once the trade is made, d4 above all — the bishop on g7 is the piece the whole set-up is arranged around.',
+    'The alternative preparation is ...c6 first, keeping the bishop at home and playing ...Nbd7 and ...e5. It is slower and it keeps the option of ...b5, and it does not spend the bishop.',
+    'Understand what is being bought before playing ...Bg4. Without a knight on c6 there is no second attacker on d4 and no quick ...e5, and the bishop has been given away for a structure that needed it.',
+  ],
+  breaks: [
+    {
+      move: 'e5',
+      side: 'black',
+      note: 'The break the trade on f3 was made for. With the white knight gone from f3 it is far better supported than it looks, and it is the only move that justifies giving up the bishop.',
+      prerequisites: [
+        '...Nc6 or ...Nbd7 supporting the push',
+        'The knight on f3 already traded, or dxe5 leaves Black with nothing but a slightly worse ending',
+      ],
+    },
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'The other break, at the base of the centre rather than the head of it. It is the choice when White has answered the pin in a way that keeps a firm grip on e5.',
+    },
+    {
+      move: 'h3',
+      side: 'white',
+      note: 'Not a break but the critical move in the position, and it belongs with the pawn advances because it decides the structure. It forces the trade at a moment of White’s choosing, before ...Nc6 and ...e5 are ready.',
+    },
+    {
+      move: 'a4',
+      side: 'white',
+      note: 'The prophylactic advance. It takes b5 and with it the ...c6 and ...b5 counterplay that is Black’s alternative to the centre.',
+    },
+  ],
+  keySquares: [
+    { square: 'f3', note: 'The knight Black is trying to buy. It defends d4 and e5 at once, which is why one bishop is considered a fair price for it.' },
+    { square: 'd4', note: 'What the g7 bishop and the ...c5 break both aim at, and what White has to overprotect with pieces once the knight has been traded off.' },
+    { square: 'e5', note: 'The square the whole variation turns on. Black wants a pawn there; White wants the exchange on e5 and the queenless middlegame that follows it.' },
+    { square: 'b5', note: 'The queenside counterpart. a4 takes it, and with it the ...c6 and ...b5 plan that a Pirc player falls back on when the centre is closed.' },
+    { square: 'g4', note: 'Where the bishop goes, and where h3 asks it a question it has no good answer to — which is why the decision is really taken a move earlier.' },
+  ],
+  routes: [
+    'Bc8-g4xf3, trading a bishop for the knight that holds d4 and e5',
+    'Nb8-c6 before ...e5, so that the break has a second attacker on d4 behind it',
+    'Be2xf3 on the recapture, the bishop taking over the long diagonal and d5',
+  ],
+  traps: [
+    'Playing ...Bg4 as a developing move. The pin is a means to ...e5 and nothing else; without the knight on c6 there is no pressure on d4, the break comes too slowly, and the bishop pair has been given away for a structure that punishes its absence.',
+    'Meeting h3 by retreating. The bishop has nowhere useful to go and the two moves spent on it are worse than the trade it was avoiding.',
+    'Pushing ...e5 immediately, on move six. Engines approve of it and it forces a queenless middlegame after the exchange in which Black is slightly worse with no counterplay — the sort of position a Pirc player picked the opening to avoid.',
+    'Underestimating the structure after the light-squared bishops come off. With pawns fixed on d6 and e5 the holes are all light, and the bishop that used to watch them is on f3 wearing the other colour.',
+  ],
+  sources: [
+    'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 1',
+    'Anish Giri — Lifetime Repertoires: 1.e4 — Part 2',
+    'Jan Gustafsson — Aggressive 1.e4, Part 1',
+    'Mastering Opening Strategy',
+  ],
+};
+/**
+ * The Modern with 3.Nc3, which is also the position that the 1...d6 and 2...g6
+ * Pirc move order reaches after 3...Bg7 — an order the ECO tables do not name at
+ * any depth, so that whole road was showing King’s Pawn theory. One position,
+ * one set of ideas, two addresses.
+ */
+const MODERN_STANDARD: OpeningTheory = {
+    idea: 'The Modern is the Pirc with the king’s knight left at home, and every difference follows from that one omission. With no knight on f6 the advance e4-e5 gains no tempo and often nothing at all, Bg5 pins nothing and can be met by ...f6, and the f4 and e5 plans that make the Austrian Attack frightening lose part of their point. The cost is symmetrical: e4 is not attacked either, so White is under no obligation and can build whatever he likes. The knight on c3 in front of the c-pawn is the detail that shapes Black’s play here — because White can no longer answer with c4 and d5 and transpose to a King’s Indian structure, the plan of ...a6 and ...b5 with ...Bb7, ...Nd7 and ...c5 is sound rather than weakening, and after ...cxd4 Black has a Sicilian-flavoured position with an extra fianchetto. This is the branching point: 3...d6 for the main road, 3...c6 and ...d5 for a Caro-like game, 3...d5 as an immediate offer, 3...b6 for the double fianchetto.',
+    structures: [],
+    whitePlans: [
+      '4.f4, the Austrian Attack, which is the critical test here as it is against the Pirc — the difference being that the e5 advance no longer comes with a tempo attached.',
+      '4.Be3 with Qd2, long castling and Bh6, the Yugoslav plan borrowed whole, usually with h3 slipped in first against ...Ng4 and ...Bg4. There is a move-order reason for h3 before Be3 as well: 4.Be3 invites ...d5 at once.',
+      '4.Bf4, which supports both the e5 advance and the e5-e6 lunge behind it. The drawback is exact: the bishop no longer defends d4 and no longer covers c5, so the ...c5 break becomes easy and should become Black’s whole strategy.',
+      '4.h4, a move earlier than usual. It is committal before Black has shown a hand with ...a6, and the flexibility lost is worth more than the tempo gained.',
+      'Against 3...d5 take the pawn — 4.exd5 — since 4.e5 hands Black exactly the counterplay he came for with ...f6 and ...c5.',
+      'Do not answer an early ...Nc6 with d4-d5. The tempo is real and the concession is bigger: the pawn on d4 is what blocks the g7 bishop, and pushing it past opens the diagonal for good.',
+    ],
+    blackPlans: [
+      '...d6, ...a6 and ...b5, then ...Bb7, ...Nd7 and ...c5 — the modern main plan, aimed at d4 from three directions at once.',
+      '...c5 as the principal strike, and the more so against any set-up whose bishop has left c1 without covering the square.',
+      '...c6 with ...d5, a solid Caro-flavoured version which takes d5 under control at the cost of the diagonal the b7 bishop wanted.',
+      'Castle short before starting on the queenside. The expansion is premature while the king sits in the middle, and it makes e4-e5 far stronger than it should be.',
+      'Transpose to the Pirc with ...Nf6 the moment White’s set-up makes the extra flexibility worthless — the knight is being kept at home for a reason, not on principle.',
+      '...f6 as a resource: against Bg5 it wins time, and against the e5 advance it questions a pawn that is no longer hitting anything.',
+    ],
+    breaks: [
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The main break, at the base of the centre. After ...cxd4 Black has an open c-file and a Sicilian structure in which the fianchettoed bishop is already on its best square.',
+        prerequisites: ['A white bishop that does not cover c5, or enough pressure on d4 that the recapture is not comfortable'],
+      },
+      {
+        move: 'b5',
+        side: 'black',
+        note: 'Queenside expansion prepared by ...a6. It is sound here specifically because the knight on c3 blocks the c-pawn, so White cannot meet it with c4 and d5 and leave ...a6 looking silly.',
+        prerequisites: ['...a6 played', 'The king castled, or e4-e5 arrives while the centre is still open'],
+      },
+      {
+        move: 'd5',
+        side: 'black',
+        note: 'The immediate central challenge, played either at once as a pawn offer — Black regains it with ...Nf6 and ...Nbd7-b6 — or after ...c6 for a solid Caro-like structure.',
+      },
+      {
+        move: 'e5',
+        side: 'white',
+        note: 'The space-gaining advance every White set-up is working towards, and sometimes e5-e6 behind it to wreck the coordination. It is much less forcing than in the Pirc because there is no knight on f6 to gain a tempo on.',
+        prerequisites: ['Black’s king still in the centre, or the advance simply drops a pawn'],
+      },
+      {
+        move: 'h5',
+        side: 'white',
+        note: 'The standard assault on the fianchetto once White has castled long, best prepared once Black has committed himself on the queenside.',
+      },
+    ],
+    keySquares: [
+      { square: 'd4', note: 'What everything Black does is aimed at, and the pawn that blocks his own bishop. Any exchange or advance that removes it improves the g7 bishop, which is why White holds it with pieces rather than pushing past it.' },
+      { square: 'c5', note: 'The square the break needs. A bishop on e3 covers it and makes the whole plan slow; a bishop on f4 or g5 does not, and the break becomes the point of the game.' },
+      { square: 'e5', note: 'The advance Black restrains with ...d6 and ...Nd7 — and the outpost White wants for a piece if the pawn cannot go there.' },
+      { square: 'b5', note: 'Where Black’s counterplay starts, available because White’s own knight stands in front of the pawn that would otherwise stop it.' },
+    ],
+    routes: ['Bc1-e3-h6 with Qd2 behind it, trading the bishop that holds Black’s king position', 'Nb8-d7 with ...c5, so the knight supports the break rather than blocking the bishop'],
+    traps: [
+      'Answering 3...d5 with 4.e5 gives Black ...f6 and ...c5 against a centre with nothing behind it — the one structure the Modern is hoping for.',
+      'Starting ...b5 with the king in the centre invites e4-e5 at the moment Black can least afford lines to open.',
+      'Delaying ...d6 in favour of an immediate ...a6 and ...b5 gains nothing, since without a knight on f6 there was never any pressure on e4 to maintain; and meeting f4 with ...e6 and ...d5 in one go only reaches a French where White is comfortably better.',
+    ],
+    sources: [
+      'The Uncompromising Modern Defense',
+      'Mihail Marin — Play the Modern Defence',
+      'Wesley So — Lifetime Repertoires: 1.e4 — Part 1',
+      'The Energetic 1.e4 — Part 1',
+      'Christof Sielecki — Keep It Simple 1.e4 2.0',
+      'Christof Sielecki — Keep It Simple 1.e4',
+      'The Principled and Practical 1.e4',
+    ],
+};
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -6589,77 +6741,19 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'system',
     minRating: 1600,
     forSide: 'black',
-    theory: {
-      idea: 'The Modern is the Pirc with the king’s knight left at home, and every difference follows from that one omission. With no knight on f6 the advance e4-e5 gains no tempo and often nothing at all, Bg5 pins nothing and can be met by ...f6, and the f4 and e5 plans that make the Austrian Attack frightening lose part of their point. The cost is symmetrical: e4 is not attacked either, so White is under no obligation and can build whatever he likes. The knight on c3 in front of the c-pawn is the detail that shapes Black’s play here — because White can no longer answer with c4 and d5 and transpose to a King’s Indian structure, the plan of ...a6 and ...b5 with ...Bb7, ...Nd7 and ...c5 is sound rather than weakening, and after ...cxd4 Black has a Sicilian-flavoured position with an extra fianchetto. This is the branching point: 3...d6 for the main road, 3...c6 and ...d5 for a Caro-like game, 3...d5 as an immediate offer, 3...b6 for the double fianchetto.',
-      structures: [],
-      whitePlans: [
-        '4.f4, the Austrian Attack, which is the critical test here as it is against the Pirc — the difference being that the e5 advance no longer comes with a tempo attached.',
-        '4.Be3 with Qd2, long castling and Bh6, the Yugoslav plan borrowed whole, usually with h3 slipped in first against ...Ng4 and ...Bg4. There is a move-order reason for h3 before Be3 as well: 4.Be3 invites ...d5 at once.',
-        '4.Bf4, which supports both the e5 advance and the e5-e6 lunge behind it. The drawback is exact: the bishop no longer defends d4 and no longer covers c5, so the ...c5 break becomes easy and should become Black’s whole strategy.',
-        '4.h4, a move earlier than usual. It is committal before Black has shown a hand with ...a6, and the flexibility lost is worth more than the tempo gained.',
-        'Against 3...d5 take the pawn — 4.exd5 — since 4.e5 hands Black exactly the counterplay he came for with ...f6 and ...c5.',
-        'Do not answer an early ...Nc6 with d4-d5. The tempo is real and the concession is bigger: the pawn on d4 is what blocks the g7 bishop, and pushing it past opens the diagonal for good.',
-      ],
-      blackPlans: [
-        '...d6, ...a6 and ...b5, then ...Bb7, ...Nd7 and ...c5 — the modern main plan, aimed at d4 from three directions at once.',
-        '...c5 as the principal strike, and the more so against any set-up whose bishop has left c1 without covering the square.',
-        '...c6 with ...d5, a solid Caro-flavoured version which takes d5 under control at the cost of the diagonal the b7 bishop wanted.',
-        'Castle short before starting on the queenside. The expansion is premature while the king sits in the middle, and it makes e4-e5 far stronger than it should be.',
-        'Transpose to the Pirc with ...Nf6 the moment White’s set-up makes the extra flexibility worthless — the knight is being kept at home for a reason, not on principle.',
-        '...f6 as a resource: against Bg5 it wins time, and against the e5 advance it questions a pawn that is no longer hitting anything.',
-      ],
-      breaks: [
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The main break, at the base of the centre. After ...cxd4 Black has an open c-file and a Sicilian structure in which the fianchettoed bishop is already on its best square.',
-          prerequisites: ['A white bishop that does not cover c5, or enough pressure on d4 that the recapture is not comfortable'],
-        },
-        {
-          move: 'b5',
-          side: 'black',
-          note: 'Queenside expansion prepared by ...a6. It is sound here specifically because the knight on c3 blocks the c-pawn, so White cannot meet it with c4 and d5 and leave ...a6 looking silly.',
-          prerequisites: ['...a6 played', 'The king castled, or e4-e5 arrives while the centre is still open'],
-        },
-        {
-          move: 'd5',
-          side: 'black',
-          note: 'The immediate central challenge, played either at once as a pawn offer — Black regains it with ...Nf6 and ...Nbd7-b6 — or after ...c6 for a solid Caro-like structure.',
-        },
-        {
-          move: 'e5',
-          side: 'white',
-          note: 'The space-gaining advance every White set-up is working towards, and sometimes e5-e6 behind it to wreck the coordination. It is much less forcing than in the Pirc because there is no knight on f6 to gain a tempo on.',
-          prerequisites: ['Black’s king still in the centre, or the advance simply drops a pawn'],
-        },
-        {
-          move: 'h5',
-          side: 'white',
-          note: 'The standard assault on the fianchetto once White has castled long, best prepared once Black has committed himself on the queenside.',
-        },
-      ],
-      keySquares: [
-        { square: 'd4', note: 'What everything Black does is aimed at, and the pawn that blocks his own bishop. Any exchange or advance that removes it improves the g7 bishop, which is why White holds it with pieces rather than pushing past it.' },
-        { square: 'c5', note: 'The square the break needs. A bishop on e3 covers it and makes the whole plan slow; a bishop on f4 or g5 does not, and the break becomes the point of the game.' },
-        { square: 'e5', note: 'The advance Black restrains with ...d6 and ...Nd7 — and the outpost White wants for a piece if the pawn cannot go there.' },
-        { square: 'b5', note: 'Where Black’s counterplay starts, available because White’s own knight stands in front of the pawn that would otherwise stop it.' },
-      ],
-      routes: ['Bc1-e3-h6 with Qd2 behind it, trading the bishop that holds Black’s king position', 'Nb8-d7 with ...c5, so the knight supports the break rather than blocking the bishop'],
-      traps: [
-        'Answering 3...d5 with 4.e5 gives Black ...f6 and ...c5 against a centre with nothing behind it — the one structure the Modern is hoping for.',
-        'Starting ...b5 with the king in the centre invites e4-e5 at the moment Black can least afford lines to open.',
-        'Delaying ...d6 in favour of an immediate ...a6 and ...b5 gains nothing, since without a knight on f6 there was never any pressure on e4 to maintain; and meeting f4 with ...e6 and ...d5 in one go only reaches a French where White is comfortably better.',
-      ],
-      sources: [
-        'The Uncompromising Modern Defense',
-        'Mihail Marin — Play the Modern Defence',
-        'Wesley So — Lifetime Repertoires: 1.e4 — Part 1',
-        'The Energetic 1.e4 — Part 1',
-        'Christof Sielecki — Keep It Simple 1.e4 2.0',
-        'Christof Sielecki — Keep It Simple 1.e4',
-        'The Principled and Practical 1.e4',
-      ],
-    },
+    theory: MODERN_STANDARD,
+  },
+  {
+    // The same position by the 1...d6 and 2...g6 Pirc move order, which the ECO
+    // tables do not name at any depth — without this address that whole move
+    // order was identified three plies in and shown King’s Pawn theory.
+    eco: 'B06',
+    name: 'Modern Defence: Standard Line',
+    moves: line('e4 d6 d4 g6 Nc3 Bg7'),
+    character: 'system',
+    minRating: 1600,
+    forSide: 'black',
+    theory: MODERN_STANDARD,
   },
   {
     eco: 'B07',
@@ -6796,6 +6890,28 @@ export const CURATED_OPENINGS: Opening[] = [
         'The Complete Book of Chess Strategy',
       ],
     },
+  },
+  {
+    eco: 'B08',
+    name: 'Pirc Defence: Classical Variation, Quiet System, Parma Defence',
+    moves: line('e4 d6 d4 Nf6 Nc3 g6 Nf3 Bg7 Be2 O-O O-O Bg4'),
+    character: 'balanced',
+    minRating: 1600,
+    forSide: 'black',
+    aliases: ['Pirc Classical with 6...Bg4', 'Parma Defence'],
+    theory: PIRC_PARMA,
+  },
+  {
+    // The same position by the ...g6-before-...Nf6 order, which is at least as
+    // common a way of playing the Pirc and which the ECO tables do not name.
+    eco: 'B08',
+    name: 'Pirc Defence: Classical Variation, Quiet System, Parma Defence',
+    moves: line('e4 d6 d4 g6 Nc3 Bg7 Nf3 Nf6 Be2 O-O O-O Bg4'),
+    character: 'balanced',
+    minRating: 1600,
+    forSide: 'black',
+    aliases: ['Pirc Classical with 6...Bg4', 'Parma Defence'],
+    theory: PIRC_PARMA,
   },
 
   // ---------------------------------------------------------------- 1.d4 ---
