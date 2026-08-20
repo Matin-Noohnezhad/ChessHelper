@@ -451,6 +451,41 @@ const BISHOPS_OPENING_VIENNA_HYBRID: OpeningTheory = {
     ],
 };
 
+const RICHTER_RAUZER: OpeningTheory = {
+  idea: 'The most testing answer to the Classical, and it arrives before Black has chosen a setup. Richter’s idea was the exchange on f6; Rauzer added the modern plan of Qd2 and queenside castling, which turns the game into a race between White’s kingside pawn storm and Black’s play down the c-file. How Black recaptures on f6 — with the g-pawn or the bishop — shapes everything that follows.',
+  structures: ['scheveningen'],
+  whitePlans: [
+    'Qd2, O-O-O, then f4 and a storm with g4-g5 or h4-h5.',
+    'Take on f6 at the moment Black is obliged to recapture with the g-pawn.',
+    'Use the pressure on f6 to plant a knight on d5.',
+    'Ndb5 ideas against d6 while Black is still slow with ...a6.',
+  ],
+  blackPlans: [
+    'Answer with ...e6 and ...Be7, break the pin, and fight for d5 in the normal way.',
+    'Recapture ...gxf6 when the bishop pair and the central majority are worth a broken kingside — and then castle long, or not at all.',
+    'Counter down the c-file with ...Rc8 and ...Qa5 or ...Qb6, aiming at c3 and a2.',
+    'Meet the pin with ...g6 at once, inviting Bxf6 and heading for a Dragon-flavoured game with two bishops.',
+  ],
+  breaks: [
+    { move: 'd5', side: 'black', note: 'The equaliser, as always; the pin on f6 is what delays it.' },
+    { move: 'b5', side: 'black', note: 'Queenside space, and the first step toward ...b4 driving the knight off the defence of d5.' },
+    { move: 'g4', side: 'white', note: 'The storm that queenside castling was for. It has to arrive before Black’s c-file play does.' },
+    { move: 'f5', side: 'white', note: 'Hits e6 and prises the kingside open.' },
+  ],
+  keySquares: [
+    { square: 'd5', note: 'Removing the f6 knight is how White gets it; ...e6 and ...Be7 are how Black keeps it covered.' },
+    { square: 'd6', note: 'The pawn that makes ...Bxf6 awkward — recapturing with the bishop leaves it undefended.' },
+  ],
+  traps: [
+    'After ...e6, recapturing on f6 with the bishop leaves d6 hanging. The g-pawn recapture is ugly and usually correct.',
+  ],
+  sources: [
+    'Sethuraman — Lifetime Repertoires 1.e4',
+    'Srinath Narayanan — Lifetime Repertoires: Classical Sicilian',
+    'The Energetic 1.e4',
+    'The Open Sicilian: A Champion’s Guide',
+  ],
+};
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -2804,39 +2839,103 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 Nc6 Bg5'),
     character: 'sharp',
     minRating: 1800,
+    theory: RICHTER_RAUZER,
+  },
+  {
+    // The same position by the other Classical move order (2...Nc6 first, ...d6
+    // on move five). Theory is inherited along the move sequence, so without an
+    // address here this whole branch — including the deep Neo-Modern lines —
+    // would show the plans of the Sicilian root instead. One position, one set
+    // of ideas, so both addresses point at the same object.
+    eco: 'B60',
+    name: 'Sicilian Defence: Richter-Rauzer Variation',
+    moves: line('e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 Nf6 Nc3 d6 Bg5'),
+    character: 'sharp',
+    minRating: 1800,
+    theory: RICHTER_RAUZER,
+  },
+  {
+    eco: 'B67',
+    name: 'Sicilian Defence: Richter-Rauzer Variation, Neo-Modern Variation',
+    moves: line('e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 Nf6 Nc3 d6 Bg5 e6 Qd2 a6 O-O-O Bd7'),
+    character: 'sharp',
+    minRating: 1900,
+    aliases: ['Rauzer main line', 'Rauzer 8...Bd7'],
     theory: {
-      idea: 'The most testing answer to the Classical, and it arrives before Black has chosen a setup. Richter’s idea was the exchange on f6; Rauzer added the modern plan of Qd2 and queenside castling, which turns the game into a race between White’s kingside pawn storm and Black’s play down the c-file. How Black recaptures on f6 — with the g-pawn or the bishop — shapes everything that follows.',
+      idea: 'The main line of the Rauzer, and the move order is the content. Black would like ...Be7 to break the pin, but 8...Be7 invites 9.Bxf6, and the bishop cannot take back because d6 hangs the moment the pieces leave f6 — so the recapture is ...gxf6 and White has chosen the structure. Playing 8...Bd7 first refuses to make that concession yet: it develops the piece that will be needed in any case, keeps a second defender on e6, and prepares ...b5, so that ...Be7 can be inserted later on Black’s terms or not at all. It is also why the bishop goes to d7 rather than staying home for ...b5 and ...Bb7. That is the more active square, but in the Rauzer Black’s pawns end up on e6, f6 and f7, and e6 is then the weakness the whole white position aims at; a bishop on b7 has abandoned it. White’s ninth move settles which game is played. 9.f4 is the old main line: it aims at Bxf6 gxf6 and a direct attack, at the price of the dark-squared bishop and with counterchances for Black in every line. 9.f3, and the modern 9.Kb1, keep the bishop and play a Scheveningen — g4, h4, and an English Attack in all but name.',
       structures: ['scheveningen'],
       whitePlans: [
-        'Qd2, O-O-O, then f4 and a storm with g4-g5 or h4-h5.',
-        'Take on f6 at the moment Black is obliged to recapture with the g-pawn.',
-        'Use the pressure on f6 to plant a knight on d5.',
-        'Ndb5 ideas against d6 while Black is still slow with ...a6.',
+        '9.Kb1 first, the modern preference: it usually transposes to the f3 lines, but it takes the king off the c1-h6 diagonal and off the c-file before committing, and it frees c1 as a retreat for the dark-squared bishop.',
+        '9.f3 with Be3, g4 and h4 — the English Attack treatment. White keeps the bishop pair intact and Black’s kingside sound, and plays for the storm rather than for the structure.',
+        '9.f4 with Bxf6 gxf6, the classical plan: ruin the structure, then use e4-e5 and the light squares. It concedes the dark-squared bishop, which is why Black always has something to play with even when the engine disapproves.',
+        'Nxc6 at a moment of White’s choosing, so that Black’s bishop is dragged to c6 rather than left on d7 — and, if the rook has to recapture instead, so much the better, since ...Rxc6 leaves the bishop on d7 with nothing to do.',
+        'After ...h6 Be3, keeping the bishop rather than trading it. With the bishop on e3 the knight trade on d4 can be met by Bxd4, so White is no longer obliged to release the tension himself, and f3-g4-h4 continues unchanged.',
+        'g4-g5 to dislodge the f6 knight and open the g-file, with h4-h5 behind it. Everything rests on getting there before ...b5-b4 arrives.',
       ],
       blackPlans: [
-        'Answer with ...e6 and ...Be7, break the pin, and fight for d5 in the normal way.',
-        'Recapture ...gxf6 when the bishop pair and the central majority are worth a broken kingside — and then castle long, or not at all.',
-        'Counter down the c-file with ...Rc8 and ...Qa5 or ...Qb6, aiming at c3 and a2.',
-        'Meet the pin with ...g6 at once, inviting Bxf6 and heading for a Dragon-flavoured game with two bishops.',
+        '...Nxd4 at once, and this is the point of the modern treatment: after Nxd4 the recapture Qxd4 leaves the queen on a worse square than d2 and leaves Black’s bishop on d7 rather than dragged to c6, which is worth half a tempo compared with allowing Nxc6 Bxc6.',
+        '...Rc8, ...b5 and ...b4, the standard queenside assault. The c-file matters more than the pawns: ...Rxc3 is a permanent resource once the c3 knight is the only thing holding d5 and the king’s cover together.',
+        '...Be7 held in reserve. Once White has spent a move that makes Bxf6 less attractive, the pin can be broken for free; played too early it simply invites the exchange.',
+        '...h6 to ask the bishop the question. Against Bh4 the ...g5 lunge becomes available, and against Be3 Black has at least removed the pin.',
+        'Keep the light-squared bishop near e6. After Bxf6 gxf6 the pawns on e6 and f7 are the position’s only real targets, and the bishop on d7 is what makes them defensible.',
+        '...d5 when the c3 knight has been distracted or removed — the freeing break of every Open Sicilian, and here the reward for surviving the pin.',
       ],
       breaks: [
-        { move: 'd5', side: 'black', note: 'The equaliser, as always; the pin on f6 is what delays it.' },
-        { move: 'b5', side: 'black', note: 'Queenside space, and the first step toward ...b4 driving the knight off the defence of d5.' },
-        { move: 'g4', side: 'white', note: 'The storm that queenside castling was for. It has to arrive before Black’s c-file play does.' },
-        { move: 'f5', side: 'white', note: 'Hits e6 and prises the kingside open.' },
+        {
+          move: 'b5',
+          side: 'black',
+          note: 'The engine of Black’s attack and the reason ...Bd7 comes before ...Be7. It gains queenside space and prepares ...b4, which drives the knight off c3 and takes both d5 and the king’s shelter with it.',
+          prerequisites: ['The rook on c8 or the queen ready to follow down the c-file', 'e6 defensible after the light-squared bishop commits itself'],
+        },
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The equaliser. It needs the pin on f6 dealt with and the c3 knight overworked or gone, which is exactly what ...b4 and ...Rxc3 are for.',
+          prerequisites: ['The f6 knight free to move, so ...d5 is not answered by e4-e5', 'A piece covering e5, or the pawn there simply cramps Black afterwards'],
+        },
+        {
+          move: 'g4',
+          side: 'white',
+          note: 'The storm queenside castling was played for, prepared by f3 or Kb1. It hits f6 and opens the g-file, and the whole f3 treatment exists to make it possible without loosening e4.',
+          prerequisites: ['f3 played, so g4 is supported and e4 stays defended', 'The king on b1, or ...Qb6 and ...b4 arrive with check-like force'],
+        },
+        {
+          move: 'f4',
+          side: 'white',
+          note: 'The old plan, headed for e4-e5 after Bxf6 gxf6. It is the sharper choice and the one that surrenders the dark-squared bishop for structure.',
+          prerequisites: ['A decision taken to trade on f6 — otherwise f4 loosens the king’s diagonal for nothing'],
+        },
+        {
+          move: 'e5',
+          side: 'white',
+          note: 'The follow-up f4 was played for, prising open the centre against a king that has not yet found a home.',
+          prerequisites: ['The f6 knight exchanged or driven off', 'The black king still in the centre or committed to the wrong side'],
+        },
       ],
       keySquares: [
-        { square: 'd5', note: 'Removing the f6 knight is how White gets it; ...e6 and ...Be7 are how Black keeps it covered.' },
-        { square: 'd6', note: 'The pawn that makes ...Bxf6 awkward — recapturing with the bishop leaves it undefended.' },
+        { square: 'e6', note: 'The pawn White is really playing against once Bxf6 gxf6 has been forced. It is why Black’s light-squared bishop belongs on d7 and not on b7.' },
+        { square: 'd5', note: 'The square the pin on f6 is about. White wants a knight there; Black wants the pawn break, and ...b4 driving the c3 knight away is how he gets it.' },
+        { square: 'c3', note: 'The knight that holds d5 and shields the king at the same time. ...Rxc3 is a standing offer, and the reason the c-file is worth more than the pawns spent opening it.' },
+        { square: 'd6', note: 'The pawn that makes ...Bxf6 illegal in effect: with the f6 defender gone, Nxc6 and the queen on d2 both look at it.' },
+        { square: 'b1', note: 'Where the king wants to be before anything is committed — off the c-file, off the c1-h6 diagonal, and out of reach of ...b4 with tempo.' },
+      ],
+      routes: [
+        'Kc1-b1 before f3, so that the g4 storm is not interrupted by the queenside coming with tempo',
+        'Bg5-h4-g3 against ...h6 and ...g5, keeping the bishop and aiming at the weakened dark squares',
+        'Rd1-d3-h3 or the rook lifted to g1 behind the g-pawn',
+        'Bd7-c6 only when White forces it; the bishop is better where it defends e6',
       ],
       traps: [
-        'After ...e6, recapturing on f6 with the bishop leaves d6 hanging. The g-pawn recapture is ugly and usually correct.',
+        '8...Be7 before ...Bd7. After 9.Bxf6 the bishop cannot recapture — d6 falls — so Black gets the ...gxf6 structure at a moment White chose, which is exactly what the main move order is arranged to avoid.',
+        'Leaving the light-squared bishop on c8 for ...b5 and ...Bb7. It is the more active diagonal and it abandons e6, and in the Rauzer e6 is the one pawn the whole white attack is aimed at.',
+        'Racing on the queenside without the rook on c8. ...b5-b4 wins a tempo on the knight and achieves very little if there is nothing behind it on the c-file.',
       ],
       sources: [
-        'Sethuraman — Lifetime Repertoires 1.e4',
-        'Srinath Narayanan — Lifetime Repertoires: Classical Sicilian',
-        'The Energetic 1.e4',
         'The Open Sicilian: A Champion’s Guide',
+        'Anish Giri — Lifetime Repertoires: 1.e4 — Part 3',
+        'Grzegorz Gajewski — Lifetime Repertoires: 1.e4 — Part 2',
+        'The Energetic 1.e4 — Part 2',
+        'Srinath Narayanan — Lifetime Repertoires: Classical Sicilian',
       ],
     },
   },
