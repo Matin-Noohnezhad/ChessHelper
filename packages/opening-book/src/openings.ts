@@ -1172,6 +1172,99 @@ const LONDON_MAIN_TABIYA: OpeningTheory = {
     'Sam Shankland — Lifetime Repertoires: Semi-Slav',
   ],
 };
+
+/**
+ * The Closed Sicilian tabiya after 5.d3. The same position arrives when Black
+ * fianchettoes before developing the knight — 2...g6 3.g3 Bg7 4.Bg2 Nc6 — which
+ * is a small share of the games but an exact transposition, so both addresses
+ * point here rather than sending that order back to the Sicilian root.
+ */
+const CLOSED_SICILIAN_TRADITIONAL: OpeningTheory = {
+  idea: 'White has given up on refuting the Sicilian and is playing a King’s Indian Attack against it with an extra tempo. The pawn on d3 looks modest and is the pivot of the whole set-up: the light-squared bishop is already outside on g2, so putting a pawn on a light square costs nothing, and what it buys is the diagonal for the other bishop, which comes to e3 — the one square that neither blocks the f-pawn nor takes d2 away from the queen. From there the plan writes itself. Black’s kingside pawns sit on light squares, so the bishop on g7 is the only piece guarding the dark ones; White plays Qd2 and Bh6 to trade it off, and the squares that were merely loose become weak. The same trade removes the piece that stares at White’s queenside, which is where Black intends to play. So the game becomes a race on opposite wings: White with f4, an f5 advance and the pieces behind it, Black with ...Rb8 and ...b5-b4 against the knight on c3. Underneath that race there is one square both sides are counting on. A black knight on d4 stops the d3-d4 break, holds up White’s central expansion and is worth a tempo to arrange; without one, White plays d4 himself, and the pawn on d6 that looked so solid becomes an obvious weakness. Most of Black’s move-order choices here are about how to get a knight to d4 without shutting in his own bishop on the way.',
+  structures: [],
+  whitePlans: [
+    'Be3 followed by Qd2 and Bh6. Trading the fianchettoed bishop is the main plan and it is a sound one, because Black’s kingside pawns are all on light squares and nothing else defends the dark ones.',
+    'Keep the g1 knight and the f-pawn uncommitted for a move. Be3 first retains the choice of Nf3, Nh3 or Nge2, and each of those commits White to a different version of the attack.',
+    'f4 and then f5, with the knight routed to h4 and the queen to h5 behind it. The pawn sacrifice on f5 is the point of the whole build-up, and it needs those two pieces to work.',
+    'h3 as prophylaxis once Black has played ...Nf6, taking g4 away before the knight uses it.',
+    'd4, but only when there is no black knight on d4 to stop it. Getting the break in leaves the pawn on d6 backward on a half-open file and changes the character of the game entirely in White’s favour.',
+    'Take on c5 when it is offered, with eyes open. Black’s fastest queenside schemes simply leave the pawn, and grabbing it hands him the open lines he was playing for.',
+  ],
+  blackPlans: [
+    '...e6 and ...Nge7, the most popular scheme. The knight looks passive there and it is doing three jobs: keeping the long diagonal clear, heading for d4, and covering f5 so that White’s advance can be answered by ...f5 at the right moment.',
+    '...Nf6 instead, which develops faster and has a real drawback — it blocks the bishop on g7, and a tempo will have to be spent moving the knight again to get one to d4.',
+    '...e5, the Botvinnik set-up: space in the centre and support for a knight on d4. The price is that d6 becomes weak and the g7 bishop is walled in for a while.',
+    '...Rb8 and ...b5, starting on the queenside before the kingside is even developed. Delaying ...Nf6 has a second point: with the knight still on g8 there is nothing for Bh6 to trade.',
+    '...Nd4 early, as Kasparov played it — postpone development altogether, plug the d-file and get on with the queenside.',
+    'Meet f4 by keeping the tension rather than releasing it, and answer f4-f5 with ...f5 of Black’s own once the knight on e7 supports it.',
+    'Note which square White’s king’s knight goes to. On e2 it is passive after ...e5 and, more to the point, it is the wrong piece for the f5 sacrifice, so the central tension can be kept with a clear conscience.',
+  ],
+  breaks: [
+    {
+      move: 'f4',
+      side: 'white',
+      note: 'The start of the kingside advance and the reason the dark-squared bishop must not stand on the f-file. It is the standard plan rather than an aggressive choice — the alternative is to have no plan at all.',
+      prerequisites: ['The bishop developed to e3 rather than g5, so the pawn has somewhere to go'],
+    },
+    {
+      move: 'f5',
+      side: 'white',
+      note: 'The advance the whole attack is built on, often as a sacrifice. It needs the knight on h4 and the queen on h5 to follow up, which is why the choice of square for the g1 knight decides whether it is available at all.',
+      prerequisites: ['A knight able to reach h4 — from f3 or h3, not from e2', 'The bishop on g7 traded or blunted, so the long diagonal is not answering'],
+    },
+    {
+      move: 'd4',
+      side: 'white',
+      note: 'The central break that most Black schemes exist to prevent. Once it goes in the pawn on d6 is backward and weak, and the game stops being a race on the wings.',
+      prerequisites: ['No black knight on d4', 'The e-pawn adequately covered, since the break opens the centre while White’s king is often committed'],
+    },
+    {
+      move: 'b5',
+      side: 'black',
+      note: 'Black’s half of the race, aimed at the knight on c3 that holds e4 together. It is played without fussing over the pawn on c5, which White may take at his own risk.',
+      prerequisites: ['...Rb8 first in almost every version, so the rook is behind the advance before it starts'],
+    },
+    {
+      move: 'f5',
+      side: 'black',
+      note: 'The answer to White’s advance, timed rather than automatic. Played at the right moment it stops the kingside attack dead; played too early it opens the diagonal towards Black’s own king.',
+      prerequisites: ['A knight on e7 covering the square', 'White committed to f4-f5 rather than still keeping the option'],
+    },
+    {
+      move: 'e5',
+      side: 'black',
+      note: 'The Botvinnik space grab, which claims d4 and takes the sting out of an early f4. It is not free: the pawn on d6 becomes a target and the bishop on g7 is shut in until the position opens.',
+    },
+  ],
+  keySquares: [
+    { square: 'd4', note: 'The square the whole opening turns on. A black knight there stops the d3-d4 break and holds the position together; without one, White gets the break in and d6 becomes a permanent weakness.' },
+    { square: 'h6', note: 'Where the bishop goes to trade off the defender of Black’s dark squares. Preventing that trade is worth a move of prophylaxis, and leaving the king’s knight at home is one way of doing it.' },
+    { square: 'e3', note: 'The only good square for the queen’s bishop: it stays off the f-file so the pawn can advance, and it leaves d2 free for the queen behind it.' },
+    { square: 'f5', note: 'The square both sides are fighting for. White wants a pawn there with pieces behind it; Black wants to put his own pawn there first, which is what the knight on e7 is for.' },
+    { square: 'e2', note: 'The wrong square for White’s king’s knight. It is passive after ...e5 and it cannot reach h4, so the f5 sacrifice never happens and Black can keep the centre closed.' },
+  ],
+  routes: [
+    'Bc1-e3, Qd1-d2 and Be3-h6, the trade that the whole set-up is arranged around',
+    'Ng8-e7 keeping the long diagonal open, then to d4 or back to c6 once the first knight has been traded',
+    'Nc6-d4, the blockading post that stops d3-d4 and is worth a tempo to reach',
+    'Nf3-h4 with Qd1-h5, the pieces the f4-f5 sacrifice needs behind it',
+  ],
+  traps: [
+    'Developing the king’s knight to e2 and then hoping for the kingside attack. The f5 pawn sacrifice needs Nh4 and Qh5, the knight on e2 provides neither, and Black is free to keep the centre closed against f4.',
+    'For Black, playing ...Nf6 without a plan for the bishop behind it. The bishop on g7 is blocked, a tempo has to be found later to bring a knight to d4, and the whole scheme runs a move behind.',
+    'Allowing Bh6 without a reason. Trading dark-squared bishops is not a simplification here — the pawns on g6 and e6 mean the squares the bishop was covering stay weak for the rest of the game.',
+    'Leaving d4 unoccupied while getting on with the queenside. White plays d3-d4 himself, opens the centre against an uncastled or badly-placed king, and the pawn on d6 is left backward.',
+    'Grabbing the pawn on c5 when Black offers it in the ...Rb8 and ...b5 lines. It is not a blunder, but it gives up the closed character that made the whole set-up safe.',
+  ],
+  sources: [
+    'The Patient Closed Sicilian',
+    'Christof Sielecki — Fight Like Magnus: The Sicilian',
+    'Understanding Chess Openings 1.e4 — Part 3',
+    'Srinath Narayanan — Lifetime Repertoires: Classical Sicilian',
+    'The Complete Book of Chess Strategy',
+    'Garry Kasparov — My Great Predecessors, Volume 2',
+  ],
+};
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -9062,7 +9155,27 @@ export const CURATED_OPENINGS: Opening[] = [
   // what a player reaching this position actually needs.
   { eco: 'B22', name: 'Sicilian Defence: Alapin, Barmen Variation', moves: line('e4 c5 c3 d5 exd5 Qxd5 d4 Nf6 Nf3') },
   { eco: 'B22', name: 'Sicilian Defence: Alapin, 2...Nf6', moves: line('e4 c5 c3 Nf6 e5 Nd5 d4 cxd4 Nf3') },
-  { eco: 'B25', name: 'Sicilian Defence: Closed, Traditional', moves: line('e4 c5 Nc3 Nc6 g3 g6 Bg2 Bg7 d3') },
+  {
+    eco: 'B25',
+    name: 'Sicilian Defence: Closed, Traditional',
+    moves: line('e4 c5 Nc3 Nc6 g3 g6 Bg2 Bg7 d3'),
+    character: 'positional',
+    minRating: 1400,
+    aliases: ['Closed Sicilian main tabiya'],
+    theory: CLOSED_SICILIAN_TRADITIONAL,
+  },
+  {
+    // The same position when Black fianchettoes before developing the knight.
+    // Theory is inherited along move-sequence ancestry, so without an address
+    // here this order would be shown the plans of the Sicilian root.
+    eco: 'B25',
+    name: 'Sicilian Defence: Closed, Traditional',
+    moves: line('e4 c5 Nc3 g6 g3 Bg7 Bg2 Nc6 d3'),
+    character: 'positional',
+    minRating: 1400,
+    aliases: ['Closed Sicilian main tabiya (2...g6 move order)'],
+    theory: CLOSED_SICILIAN_TRADITIONAL,
+  },
   { eco: 'B31', name: 'Sicilian Defence: Rossolimo, Fianchetto', moves: line('e4 c5 Nf3 Nc6 Bb5 g6 O-O Bg7 c3') },
   // 4...Nf6 needs no disambiguation: the d7 knight is pinned by the bishop.
   { eco: 'B51', name: 'Sicilian Defence: Moscow Variation, 3...Nd7', moves: line('e4 c5 Nf3 d6 Bb5+ Nd7 O-O Nf6 Re1') },
