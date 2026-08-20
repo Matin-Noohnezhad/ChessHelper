@@ -636,6 +636,87 @@ const SLAV_CHEBANENKO: OpeningTheory = {
     'Plichta — Lifetime Repertoires: Queen’s Gambit',
   ],
 };
+/**
+ * The Meran after 8...a6, White to choose. Reached by both knight orders, and
+ * the ECO tables name only the 3.Nc3 one at this depth — they then switch to
+ * the 3.Nf3 order two moves later for Reynolds’ Variation — so the second
+ * address is added here. One set of ideas, two addresses.
+ */
+const MERAN_A6: OpeningTheory = {
+  idea: 'The Meran’s own tabiya, and a crossroads for White rather than for Black. Black’s plan is already fixed and it is one move long: ...c5. Everything that came before — ...dxc4 to win the tempo, ...b5 to hold the pawn, ...a6 to hold ...b5 — was in service of it, and the undeveloped kingside is precision rather than sloth. With nothing on d6, neither e3-e4 nor Ne4 arrives with a gain of time, so White’s two most natural moves are each a tempo worse than they look, and the tempo goes into the break. What White decides now is which kind of game he wants. 9.e4 takes the centre at once and is the critical try; after 9...c5 the position divides into two openings that share nothing but the move order. 10.d5 makes a passed pawn White has no intention of keeping — the point is the exchange on e6, which spoils Black’s structure and opens the centre while his king is still at home, and the price is a clean queenside majority handed over for the rest of the game. 10.e5 is the forcing treatment, and the positions have the character of a sharp Sicilian: both sides need the moves in memory, not merely the ideas. The quieter ninth moves do not argue with the plan at all — O-O, Qe2 and b3 let ...c5 in and settle for a middlegame — while 9.a4 is the one attempt to make Black commit on the queenside first, played for a small pull rather than for a refutation.',
+  structures: ['semi-slav-triangle'],
+  whitePlans: [
+    '9.e4, the critical move. Take the whole centre while the black kingside is still at home, and accept that ...c5 comes back immediately — the position is then decided by which of the two follow-ups is chosen.',
+    '9.e4 c5 10.d5, the pawn offered as a passer that is meant to be traded. The exchange on e6 damages the structure and opens lines against an uncastled king; what White concedes in return is a healthy black queenside majority, so his play has to be fast and it has to be on the other wing.',
+    '9.e4 c5 10.e5, the direct treatment. The complications are of a different nature — concrete rather than structural — and the resemblance is to the sharpest Sicilians.',
+    '9.a4, forcing a decision on the queenside before ...c5 is ready. It is the most testing of the quiet moves and it aims at a small advantage, which in a line this well analysed is a reasonable ambition.',
+    '9.O-O or 9.Qe2, plain development. Neither challenges Black’s plan, and their practical merit is transposition: the positions arise from the Queen’s Gambit Accepted, the Chebanenko Slav and the Vienna as well, so they are known ground rather than a separate chapter.',
+    '9.O-O c5 10.b3, the refinement — the long diagonal is secured for the dark-squared bishop before Black can take it away. The drawback is in the same move order, which lets Black finish his own ideal set-up unhindered.',
+  ],
+  blackPlans: [
+    'Play ...c5 and arrange everything else around it. It opens the diagonal for the bishop on b7, hits d4 twice and turns the queenside pawns from a target into a majority; miss it and c6 is backward on a half-open file for the rest of the game.',
+    'Leave the f8 bishop at home a little longer. That is the entire difference between 8...a6 and 8...Bd6 — with no target on d6, e4 and Ne4 both come without a threat attached, and the move Black keeps is spent on the break.',
+    '...Bb7 next, so that when the centre opens it opens along a diagonal Black already owns.',
+    'Against e4-e5, play at the pawn rather than around it. ...cxd4 leaves it with no pawn able to defend it, and the square it gave up on d5 does not come back.',
+    'In the 10.d5 structures, push the queenside majority. It is what the passed pawn was traded for, and it is the clock White is playing against.',
+    'Against the quiet ninth moves, take the free hand: ...c5 and ...Bb7 arrive without a fight, and Black has an easy game that needs no preparation.',
+  ],
+  breaks: [
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'The move the whole variation exists to make possible, and the only freeing break in the position. It is worth an accident on the kingside; nothing else is.',
+      prerequisites: [
+        '...b5 is on the board, or the pawn is simply taken',
+        'Black has accepted that the centre may open with the king still on e8 — a calculated risk here rather than an oversight',
+      ],
+    },
+    {
+      move: 'e4',
+      side: 'white',
+      note: 'The advance the bishop on d3 has been supporting since move six. Played here it comes without a gain of time, which is exactly what 8...a6 arranged.',
+    },
+    {
+      move: 'd5',
+      side: 'white',
+      note: 'A passed pawn created in order to be exchanged. The exchange on e6 is the idea — it opens the centre and leaves a structural defect behind — and the standing cost is that Black’s queenside majority becomes a clean one.',
+      prerequisites: ['e4 and ...c5 have been played, so the pawn advances into a position where the exchange on e6 actually opens something'],
+    },
+    {
+      move: 'e5',
+      side: 'white',
+      note: 'The forcing branch. It gains space and hits f6, concedes d5 permanently, and turns the game into a calculation both sides are expected to have done at home.',
+    },
+    {
+      move: 'a4',
+      side: 'white',
+      note: 'The lever at the queenside mass, played before ...c5 is ready so that Black has to fix the structure on White’s terms.',
+    },
+  ],
+  keySquares: [
+    { square: 'c6', note: 'Counterplay and weakness in one pawn. It is either spent on ...c5 or it stands backward on the half-open file with the bishop that used to defend it sitting on b7.' },
+    { square: 'd6', note: 'Deliberately empty. A bishop there would give e4-e5 and Ne4 something to hit, and each of them would then arrive with a tempo.' },
+    { square: 'e6', note: 'Where the d-pawn is going after 10.d5. What the exchange leaves behind — a damaged structure and an open centre against a king that has not castled — is the real point, not the passed pawn.' },
+    { square: 'd5', note: 'Handed over the moment White plays e5, as everywhere in the Meran. A black piece that reaches it is generally worth more than the space that bought it.' },
+    { square: 'd4', note: 'The pawn ...c5 and the b7 bishop are both aimed at, and the reason the break and the fianchetto belong to the same plan.' },
+  ],
+  routes: [
+    'Bc8-b7 by way of ...b5, then ...c5 to open the diagonal in front of it',
+    'Nc3-e4 hitting f6 and d6 — the jump 8...a6 deliberately leaves without a target',
+    'Bd3-c2 and Qd1-d3 behind it once the centre is fixed, White’s standing way of aiming at h7 while the queenside is still unresolved',
+  ],
+  traps: [
+    'Developing the bishop to d6 by habit. It is a perfectly good move and it is a different opening: e4 and Ne4 gain time on it, and the game turns into an Anti-Meran middlegame rather than the race 8...a6 was played for.',
+    'Letting the moment for ...c5 pass. There is no second freeing break — if White is allowed to consolidate the centre with the pawn still on c6, the ending is already unpleasant and no amount of piece play repairs it.',
+    'Treating the passed pawn after 10.d5 as something to blockade. White does not want to keep it; preparing for the exchange on e6 and for the centre to open matters far more than stopping the pawn from advancing.',
+  ],
+  sources: [
+    'Renato Quintillano — The Semi-Slav: A Complete Repertoire for Black',
+    'Arjun Erigaisi — Lifetime Repertoires: Semi-Slav',
+    'Converting an Extra Pawn in Chess',
+    'The Complete Book of Chess Strategy',
+  ],
+};
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -6826,6 +6907,27 @@ export const CURATED_OPENINGS: Opening[] = [
         'The Complete Book of Chess Strategy',
       ],
     },
+  },
+  {
+    eco: 'D48',
+    name: 'Semi-Slav Defence: Meran Variation',
+    moves: line('d4 d5 c4 c6 Nc3 Nf6 e3 e6 Nf3 Nbd7 Bd3 dxc4 Bxc4 b5 Bd3 a6'),
+    character: 'sharp',
+    minRating: 1800,
+    aliases: ['Meran with 8...a6', 'Meran ninth-move crossroads'],
+    theory: MERAN_A6,
+  },
+  {
+    // The same position by the 3.Nf3 order — the order the curated D47 entry
+    // uses, and the one the ECO tables switch to two moves later for
+    // Reynolds’ Variation, yet which they do not name at this depth.
+    eco: 'D48',
+    name: 'Semi-Slav Defence: Meran Variation',
+    moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 e6 e3 Nbd7 Bd3 dxc4 Bxc4 b5 Bd3 a6'),
+    character: 'sharp',
+    minRating: 1800,
+    aliases: ['Meran with 8...a6', 'Meran ninth-move crossroads'],
+    theory: MERAN_A6,
   },
   {
     eco: 'D15',
