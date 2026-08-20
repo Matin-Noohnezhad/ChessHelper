@@ -486,6 +486,77 @@ const RICHTER_RAUZER: OpeningTheory = {
     'The Open Sicilian: A Champion’s Guide',
   ],
 };
+/**
+ * The Blackmar-Diemer with 4...Bf5. The position is reached both from 1.d4 d5
+ * 2.e4 and from 1.e4 d5 2.d4, and the second order had no address at all, so a
+ * player arriving that way was shown the Scandinavian Defence. One set of
+ * ideas, two addresses.
+ */
+const BDG_VIENNA_DEFENCE: OpeningTheory = {
+  idea: 'The gambit buys development, and it buys it entirely with the recapture. After 4...exf3 White takes back with the knight or the queen, the f-file opens toward f7, and the pieces come out at a speed that is worth the pawn — which is why the accepted line is played roughly ten times as often and scores better for White than the decline does. 4...Bf5 refuses the trade. The pawn stays on e4, and it is not merely material: from e4 it denies f3 to the knight and d3 to the bishop, which are the two squares every Blackmar-Diemer set-up is built on, so White has to invent a development scheme rather than play the one he prepared. Black’s own scheme is tiny by comparison. The bishop is already outside the pawn chain — the same reason it goes to f5 before ...e6 in the Caro-Kann — and ...e6, ...Be7 and castling finish the job, at which point Black is simply a healthy pawn up with no weaknesses. White has three tries at getting the pawn back or getting something for it, and all three ask him to spend more time he does not have.',
+  structures: [],
+  whitePlans: [
+    '5.fxe4 Nxe4 6.Qf3, the double attack on the knight and b7. It is the only line in which the pawn comes back by force rather than by agreement, and its cost is that the queen is committed early against a position that is already developed.',
+    '5.g4 Bg6 6.h4, the Caro-Kann space grab. There it works because White has a healthy pawn centre standing behind the advance; here he is a pawn down with the king in the middle and the f-pawn already committed, so the pawns are the thing that needs looking after.',
+    '5.Bg5, adding an attacker to e4 by pinning its defender. It is the move the position’s popular reputation rests on and the one the courses treat as the least troubling of the three.',
+    'Failing all of that, play for the initiative and forget the pawn — open the f-file, castle long, and make Black prove the extra pawn matters.',
+  ],
+  blackPlans: [
+    'Finish the small scheme: ...e6, ...Be7, castle. There is nothing else to arrange, because the one piece that ...e6 would have shut in is already out.',
+    'Leave the pawn on e4 for as long as it is useful. Holding it is not greed — it is what keeps the knight off f3 and the bishop off d3.',
+    'Take on f3 only when the recapture no longer helps White develop. The capture is available all game; the tempo it hands over is not recoverable.',
+    'Treat g4 and h4 as targets. A pawn advance made by the side that is material down and uncastled creates more squares than it takes.',
+    'Answer Bg5 by adding a defender to e4 rather than by fussing over the pin. Defending the pawn is easier than attacking it, and the pin is only worth something if it restores the material.',
+  ],
+  breaks: [
+    {
+      move: 'e6',
+      side: 'black',
+      note: 'The move the whole order was arranged around: played now it shuts in nothing, because the bishop left on the previous move.',
+    },
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'How the extra pawn turns into activity. It hits d4, and with the knight standing on c3 the c-pawn cannot come to its aid, so White has to answer with pieces.',
+      prerequisites: ['Development is finished and the king has castled, since the centre opens', 'The e4 pawn is not hanging once the defenders move'],
+    },
+    {
+      move: 'g4',
+      side: 'white',
+      note: 'The bid for the initiative that admits the pawn is gone. It gains space and asks the bishop a question, and it leaves f4, f3 and h4 to Black’s pieces for the rest of the game.',
+    },
+    {
+      move: 'h5',
+      side: 'white',
+      note: 'The follow-up, taking the bishop’s squares away as in the Caro-Kann. Two more tempi is a lot to spend when the compensation for the pawn was supposed to be time.',
+      prerequisites: ['g4 has already driven the bishop to g6'],
+    },
+  ],
+  keySquares: [
+    { square: 'e4', note: 'The gambit pawn, and the reason declining works. While it stands there, White’s knight has no f3 and his bishop has no d3.' },
+    { square: 'f3', note: 'The square White’s own pawn is occupying. ...exf3 is what clears it, which is precisely why the pawn is left alone.' },
+    { square: 'd3', note: 'The bishop’s square in every Blackmar-Diemer scheme, and unavailable for as long as Black keeps the extra pawn where it is.' },
+    { square: 'f7', note: 'What the open f-file is aimed at once Black has captured. Decline and the file never opens.' },
+    { square: 'b7', note: 'The second prong of Qf3. Without the double attack White has no forcing way back to material equality.' },
+  ],
+  routes: [
+    'Bc8-f5 before ...e6, the Caro-Kann principle applied to a gambit',
+    'Qd1-f3 hitting e4 and b7, White’s one concrete attempt to restore the pawn',
+    'Ng1-f3 and Bf1-d3, the development the gambit was played for and the one the e4 pawn prevents',
+  ],
+  traps: [
+    'Taking on f3 by reflex. It is the single move the whole gambit is played to provoke: it opens the file, gives White a developing recapture, and converts a material deficit into a lead in development.',
+    'Holding the extra pawn past the point where it costs development. The pawn is a means — if keeping it means the king stays in the centre while the f-file opens, the gambit has worked anyway.',
+    'Meeting g4 and h4 with counter-advances on the kingside. The pawns are weak because they are unsupported, and the way to punish them is to develop and open the centre, not to race.',
+  ],
+  sources: [
+    'Sam Shankland — Lifetime Repertoires: Semi-Slav',
+    'Sethuraman — Lifetime Repertoires: Semi-Slav',
+    'Lifetime Repertoires: Nimzo & Bogo-Indian Defence',
+    'Benjamin Gledura — Lifetime Repertoires: Queen’s Gambit Accepted',
+    'Nils Grandelius — Lifetime Repertoires: Classical Slav',
+  ],
+};
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -6330,6 +6401,28 @@ export const CURATED_OPENINGS: Opening[] = [
         { move: 'b5', side: 'white', note: 'The minority attack in Carlsbad structures.' },
       ],
     },
+  },
+  {
+    eco: 'D00',
+    name: 'Blackmar-Diemer Gambit Declined: Vienna Defence',
+    moves: line('d4 d5 e4 dxe4 Nc3 Nf6 f3 Bf5'),
+    character: 'balanced',
+    forSide: 'black',
+    minRating: 1400,
+    aliases: ['BDG Vienna Defence', 'Blackmar-Diemer with 4...Bf5'],
+    theory: BDG_VIENNA_DEFENCE,
+  },
+  {
+    // Same position by the 1.e4 order, which is how most gambiteers reach it —
+    // they are 1.e4 players meeting the Scandinavian with 2.d4.
+    eco: 'D00',
+    name: 'Blackmar-Diemer Gambit Declined: Vienna Defence',
+    moves: line('e4 d5 d4 dxe4 Nc3 Nf6 f3 Bf5'),
+    character: 'balanced',
+    forSide: 'black',
+    minRating: 1400,
+    aliases: ['BDG Vienna Defence', 'Blackmar-Diemer with 4...Bf5'],
+    theory: BDG_VIENNA_DEFENCE,
   },
   {
     eco: 'D30',
