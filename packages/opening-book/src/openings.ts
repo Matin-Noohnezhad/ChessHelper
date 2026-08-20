@@ -1077,6 +1077,101 @@ const NEO_CATALAN_ACCEPTED: OpeningTheory = {
     'Lifetime Repertoires: Neo-Catalan — Part 1',
   ],
 };
+
+/**
+ * The main tabiya of the modern London, after both sides have completed the
+ * standard set-up and White has played c3. The identical position arrives by
+ * the older 2.Bf4 order — 1.d4 d5 2.Bf4 Nf6 3.e3 e6 4.Nf3 c5 5.c3 Nc6 6.Nbd2 —
+ * which the book had no address for, so that route was showing the four-line
+ * beginner’s summary attached to 2.Bf4 instead. Both addresses point here.
+ */
+const LONDON_MAIN_TABIYA: OpeningTheory = {
+  idea: 'The position the whole system is aiming at, and the move that completes it is the least obvious one. c3 supports d4, but its real job is to give the queen’s bishop the square c2: without it, ...c4 would meet Bd3 by shutting the bishop out of the game for good, and with it White answers ...c4 by stepping back to c2 and breaking in the centre instead. From here everything turns on one square. If White gets a knight to e5 and it stays there — propped by the bishop on f4 or g3, backed by the d-pawn — he keeps a small permanent pull, and the attacking schemes with h4, Qf3 and the sacrifice on h7 all grow out of that knight. If Black takes control of e5 and lands ...e6-e5, the position is simply equal, and every one of his six tries here is a different way of arguing about it: ...Bd6 fights for the square directly, ...Be7 prepares to trade whatever lands on it, ...Nh5 goes after the bishop that supports it, ...cxd4 clarifies the centre before doing either, ...c4 changes the subject to the queenside, and ...Qb6 borrows time from the loose pawn on b2. The other thing worth carrying into every one of those lines is the recapture rule: when Black takes on d4 White takes back with the e-pawn almost always, keeping the c3 pawn as a shield and the d4 pawn as a wedge, and takes with the c-pawn only in the narrow structures where the black knight has gone to h5 and the pawn to g6.',
+  structures: [],
+  whitePlans: [
+    'Bd3 and castle, then choose. The set-up is finished, and c3 has already answered the one move — ...c4 — that would make Bd3 a mistake.',
+    'Put a knight on e5 and keep it there. That is the entire positional content of the system; every trade Black offers on that square is worth thinking about twice before accepting it.',
+    'Against ...Bd6, retreat with Bg3 rather than take. It keeps the bishop, and it invites ...Bxg3, when hxg3 opens the h-file straight at the black king — a trade Black should decline and below master level usually does not.',
+    'Recapture on g3 with the h-pawn as a matter of course. fxg3 is a genuine option only when a rook already stands on f1 and there is something concrete to play for; as a structural decision it is a bad one.',
+    'Against ...Nh5, play Bg5 rather than Bg3. The bishop is not running away — it is asking Black to spend moves on ...f6 or ...h6 and ...g5 for the pair, which loosens the king he still has to put somewhere.',
+    'Meet ...Qb6 with Rb1. Whenever the rook move is legal in reply it is close to automatic: the pawn is defended, the rook is doing something useful behind it, and White has not committed his queen.',
+    'Against ...Be7, prefer Ne5 to h3. The habit of making a luft for the bishop is a move too slow here, because ...Bd6 then follows and the Bg3 resource is gone for good.',
+    'Prepare the e4 break with Qe2 and, where the direct push would let Black capture twice on d4, insert dxc5 first. The resulting structures are a French in which White has the better version of both bishops.',
+    'Once the centre opens, the queen’s knight has a route of its own: from d2 to b3 and on to d4 or c5, which is where the queenside pressure in these positions comes from.',
+  ],
+  blackPlans: [
+    '...Bd6, the most popular move and the most direct: it contests e5 and offers the trade of the piece that supports it.',
+    '...Be7 followed by taking on e5 when the knight arrives. The exchange has to happen sooner or later, and doing it before White has built up around the knight costs least.',
+    '...Nh5 to win the bishop pair. It is a real plan rather than a beginner’s one, and combining it with ...Qb6 is the refinement — the attack on b2 buys the time needed for ...h6 and ...g5.',
+    '...c4, taking space and denying White the d3 square. It is committal: the centre is released, so White breaks with e4, and the pawn on c4 becomes a hook for b3 later.',
+    'After ...c4, follow with ...b5 to hold the pawn, and meet an immediate b3 with ...b5 and ...b4 rather than allowing the file to be opened on White’s terms.',
+    'In the ...c4 structures, aim a knight at b4: the threat of ...Nb4 winning the bishop pair is the standing positional idea behind ...Rc8, and White has to spend a move on prophylaxis to stop it.',
+    'Above all, engineer ...e5. It is not a break that needs winning material; playing it under decent conditions is the equaliser, and the reason White spends so much effort on the e5 square.',
+    'Avoid the routine ...cxd4 followed by ...Bd6. Once the position has opened, the bishop on c8 is the piece with no future, and shutting it in behind e6 while the centre is clarified is the standard way of ending up slightly worse for nothing.',
+  ],
+  breaks: [
+    {
+      move: 'e4',
+      side: 'white',
+      note: 'The break the whole set-up is built to make available, and the answer to Black’s queenside play rather than a competing plan of White’s own. Played at the right moment it turns the position into a French with the bad bishop on the other side of the board.',
+      prerequisites: [
+        'The light-squared bishop safe on d3 or, after ...c4, on c2',
+        'The queen off d1 — e2 is the square — so the pawn on e4 is supported',
+        'dxc5 inserted first wherever the immediate push would let Black capture twice on d4',
+      ],
+    },
+    {
+      move: 'e5',
+      side: 'black',
+      note: 'The equalising break and the thing White’s whole set-up exists to prevent. Reaching it under reasonable conditions ends the argument; a knight sitting on e5 is what stops it.',
+      prerequisites: ['Control of e5 established first — usually by trading off whatever White has put there'],
+    },
+    {
+      move: 'c4',
+      side: 'black',
+      note: 'Space, and a way of stopping Bd3 before it is played. The cost is that the centre is no longer contested, so White stops worrying about the queenside and breaks with e4.',
+      prerequisites: ['A follow-up on the queenside worth the released tension — ...b5 and ...b4, or a knight heading for b4'],
+    },
+    {
+      move: 'b3',
+      side: 'white',
+      note: 'The lever against a pawn on c4, using it as a hook. Timing is the whole move: played the instant Black advances it runs into ...b5 and ...b4 with a double-edged game, whereas a move of preparation first makes ...b5 unplayable and leaves Black nothing better than taking on b3.',
+      prerequisites: ['Black’s pawn already committed to c4', 'The queen on c2 rather than d1, so ...b4 can be answered on the c-file'],
+    },
+    {
+      move: 'g5',
+      side: 'black',
+      note: 'The pawn hunt for the London bishop once it has gone to g5 itself. It wins the piece and it costs the shelter of the king, which is why White invites it rather than avoiding it.',
+      prerequisites: ['...h6 played first to force the question', 'A plan for the king that does not involve castling short'],
+    },
+  ],
+  keySquares: [
+    { square: 'e5', note: 'The square the position is about. A white knight that settles there is worth a small edge for the rest of the game; a black pawn that reaches it is equality.' },
+    { square: 'c2', note: 'What c3 was really played for. It is the bishop’s answer to ...c4, and without it the light-squared bishop would have nowhere useful to stand.' },
+    { square: 'g3', note: 'The bishop’s retreat and an invitation rather than a concession. Taking on it opens the h-file towards a king that has not castled yet.' },
+    { square: 'b2', note: 'Loose from the moment the bishop left c1, which is why ...Qb6 appears in every line. Rb1 answers it without weakening anything.' },
+    { square: 'b4', note: 'The square Black’s knight aims at in the ...c4 structures, since arriving there wins the bishop pair. Stopping it is worth a whole tempo of prophylaxis.' },
+  ],
+  routes: [
+    'Nf3-e5, held in place by the bishop on f4 or g3 — the point of the entire system',
+    'Nd2-f3 to replace the knight on e5 once the first one has been traded, rather than recapturing and letting the pressure go',
+    'Nd2-b3-d4 or -c5 once the centre has opened, which is where the queenside play comes from',
+  ],
+  traps: [
+    'Recapturing on d4 with the c-pawn out of habit. The e-pawn is right in almost every position here; taking with the c-pawn is for the narrow lines with ...Nh5 and ...g6 and nothing else.',
+    'Meeting ...Nh5 with Bg3. Black takes on g3 and has the bishop pair and a share of the centre without having done anything for it — the safe-looking move is the one that concedes the argument.',
+    'Meeting ...Be7 with h3. It looks like the same prophylaxis that works elsewhere, but ...Bd6 follows and White no longer has the Bg3 idea that the whole structure relies on.',
+    'Answering ...c4 with b3 immediately. ...b5 and then ...b4 give Black a double-edged position on the queenside, which is exactly what the pawn on c4 was hoping for.',
+    'Pushing e4 against the ...c4 set-up before b3. ...Nh5 hits the bishop, and after Be3 the reply ...f5 threatens ...f4, when the bishop has no square.',
+    'For Black, playing ...h6 after the trade on g3 has opened the h-file. The pawn on c5 hangs to dxc5 at that moment, and it is a common way of losing one for nothing.',
+    'For Black, following ...Nh5 and Bg5 f6 with ...g5. It is the most popular continuation in online games and it loses; the ...f6 and ...g5 pair leaves a king with nowhere safe to go.',
+  ],
+  sources: [
+    'Alex Banzea — London System',
+    'Lifetime Repertoires: Sahaj and Srinath’s London System',
+    'Sam Shankland — Lifetime Repertoires: Semi-Slav',
+  ],
+};
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -7931,6 +8026,28 @@ export const CURATED_OPENINGS: Opening[] = [
         'The Club Player’s Black Repertoire: 1.d4 d5',
       ],
     },
+  },
+  {
+    eco: 'D02',
+    name: 'Queen’s Pawn Game: London System',
+    moves: line('d4 d5 Nf3 Nf6 Bf4 c5 e3 Nc6 Nbd2 e6 c3'),
+    character: 'system',
+    minRating: 1500,
+    aliases: ['London main tabiya', 'London with 6.c3'],
+    theory: LONDON_MAIN_TABIYA,
+  },
+  {
+    // The same position by the older 2.Bf4 move order. Theory is inherited
+    // along move-sequence ancestry, so without this address the classical
+    // London order arrives at the main tabiya and is shown the beginner’s
+    // summary written for 2.Bf4. One position, one set of ideas.
+    eco: 'D02',
+    name: 'Queen’s Pawn Game: London System',
+    moves: line('d4 d5 Bf4 Nf6 e3 e6 Nf3 c5 c3 Nc6 Nbd2'),
+    character: 'system',
+    minRating: 1500,
+    aliases: ['London main tabiya (2.Bf4 move order)'],
+    theory: LONDON_MAIN_TABIYA,
   },
   {
     eco: 'D01',
