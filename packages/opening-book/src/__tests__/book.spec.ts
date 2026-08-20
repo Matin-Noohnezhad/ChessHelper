@@ -102,6 +102,39 @@ describe('opening data integrity', () => {
    * now, by the classifier, so the counts are worth pinning: none of these
    * structures is a gambit, so both sides must have the same number of pawns.
    */
+  /**
+   * An entry once vanished from the array mid-edit — a rewrite consumed a
+   * closing brace, the following entry was absorbed into the one before it, and
+   * the file still parsed. Every test passed. Nothing in a book keyed by move
+   * sequence notices that one of its addresses stopped existing, so this checks
+   * the two things that would have caught it: the count only ever grows, and
+   * the openings a reader is most likely to look up still resolve to real
+   * teaching content.
+   */
+  it('does not quietly lose entries', () => {
+    expect(CURATED_OPENINGS.length).toBeGreaterThanOrEqual(351);
+
+    const landmarks = [
+      'e4',
+      'd4',
+      'e4 c5',
+      'e4 e6',
+      'e4 c6',
+      'e4 e5 Nf3 Nc6 Bb5',
+      'd4 d5 c4',
+      'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6',
+      'e4 c6 d4 d5 exd5 cxd5 c4',
+      'e4 e5 f4',
+    ];
+    // Theory may be the node's own or inherited; what matters is that a reader
+    // looking the opening up is shown some.
+    for (const line of landmarks) {
+      const match = identifyOpening(line.split(' '));
+      expect(match, `nothing identified at "${line}"`).not.toBeNull();
+      expect(match!.theory, `"${line}" (${match!.opening.name}) shows no theory`).toBeDefined();
+    }
+  });
+
   it('every structure skeleton has balanced material', () => {
     for (const structure of PAWN_STRUCTURES) {
       const placement = structure.fen.split(' ')[0]!;
