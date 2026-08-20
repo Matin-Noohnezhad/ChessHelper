@@ -2476,6 +2476,328 @@ const CATALAN_OPEN_CLASSICAL: OpeningTheory = {
     ],
     };
 
+const ITALIAN_GAME: OpeningTheory = {
+    idea: 'The most natural opening in chess: develop a piece, point it at f7, castle. Modern practice plays it slowly with d3 and c3, building the centre with a later d4 — the same structures as the Spanish, reached with far less theory. This is the best first e4 opening for almost every improving player.',
+    structures: ['spanish-closed'],
+    whitePlans: [
+      'The slow build-up c3, d3, Nbd2, Bb3, Re1 and then d4 at the right moment.',
+      'Nbd2-f1-g3 exactly as in the Spanish.',
+      'The Evans Gambit (b4) if you want the sharp version.',
+    ],
+    blackPlans: [
+      'Mirror the setup with ...d6, ...Nf6, ...a6, ...Ba7 and ...0-0.',
+      'The Two Knights (...Nf6) inviting immediate complications.',
+      'Break with ...d5 once White has committed to d3.',
+    ],
+    breaks: [
+      { move: 'd4', side: 'white', note: 'The central break the whole slow setup prepares. Play it when Black cannot answer with a comfortable ...exd4 and ...d5.' },
+      { move: 'd5', side: 'black', note: 'The freeing break, usually after ...Re8 and ...Bf8.' },
+      { move: 'a4', side: 'white', note: 'Standard on the queenside once Black plays ...a6 and ...b5.' },
+    ],
+    keySquares: [{ square: 'f7', note: 'The bishop on c4 points here — the reason early tactics exist in this opening at all.' }],
+    traps: [
+      'Fried Liver: after 3...Nf6 4.Ng5 d5 5.exd5 Nxd5?! 6.Nxf7 White gets a dangerous attack. Black should prefer 5...Na5.',
+      'Never grab the b2 pawn with the queen in the Italian without calculating Rb1 and the tempo loss.',
+    ],
+    modelGames: ['Anand – Carlsen, Grenke 2019'],
+    };
+
+const GIUOCO_PIANISSIMO: OpeningTheory = {
+    idea: 'The quietest move in the Italian and the most popular one at every level, because d3 is not a retreat from the fight for the centre but a postponement of it. The pawn on c3 has already been played for d3-d4; the point of putting the other pawn on d3 first is that the break is then made when every piece is ready rather than on move five, and until it comes there is nothing in the position to go wrong. The pawn on c3 does a second job that is easy to miss: it takes b4 and d4 from the knight on c6, which is the reason that piece remains Black’s awkward one long after everything else has been solved. Black therefore has to choose a plan at move five rather than a move, and the four candidates differ in what they concede — a pawn to a6 or a5 to give the bishop a retreat and rule out b4, ...d6 for the classical Italian structure, or castling first and going for ...d5 in one move, which is principled, costs a tempo and does nothing at all about the knight.',
+    structures: ['spanish-closed'],
+    whitePlans: [
+      'Castle, complete the set-up with Re1 and Nbd2-f1-g3, and only then play d3-d4. The break is the point of c3 and it is worth waiting many moves for.',
+      'a4, the modern move and a better one than it looks: it stops ...b5, it prepares b4 and b5 against a pawn on a6, and above all it gives the bishop a2, so that ...Na5 no longer arrives with a tempo. The older treatment is Bb3, which does the same job less well.',
+      'Bg5 once Black has committed to ...d6, since the bishop on c5 can then no longer be dropped back to e7 to break the pin.',
+      'Against ...a6, open the queenside with a4 and b4-b5: if the a-file comes open it is White who benefits, and a pawn left on a6 becomes a target.',
+      'Meet ...d5 with exd5 and press the e5 pawn along the semi-open file; the loose knight on d5 and the undefended pawn are the price Black pays for the freeing break.',
+    ],
+    blackPlans: [
+      '...a6, the main line: it makes the retreat to a7 available without weakening anything and takes b5 from White’s pieces, at the cost of giving the a4 and b4-b5 plan something to bite on.',
+      '...a5, which stops b4 outright and frees a7 at once, but concedes b5 to a bishop or knight and takes a5 from the knight, so the bishop on b3 is never harassed and Qb3 ideas gain in strength.',
+      '...d6 with ...O-O and ...h6, the classical Italian structure, playing for ...Na5 to trade off White’s good bishop and for ...d5 much later.',
+      '...O-O and then ...d5 in one move, the principled equaliser: a healthy structure and freer pieces, against a tempo spent, an exposed knight on d5 and an e5 pawn that becomes a target down the e-file.',
+      'Expand with ...h6 and ...g5 before castling, since the storm is worth much less once the king has gone to the kingside.',
+    ],
+    breaks: [
+      {
+        move: 'd4',
+        side: 'white',
+        note: 'What c3 and d3 were played for. Timing is the whole skill: released too early it opens the position for the better developed side, which at that moment is usually Black.',
+        prerequisites: ['The pieces mobilised, with the rook on e1 and the knight rerouted', 'The bishop on c4 secured on a2 or b3 so that ...Na5 does not come with tempo'],
+      },
+      {
+        move: 'd5',
+        side: 'black',
+        note: 'The equalising break, and it must come in one move — a pawn that goes to d6 first has conceded the argument. What it does not solve is the knight on c6, which the pawn on c3 still cramps.',
+        prerequisites: ['Castled, so that the e-file pressure after exd5 can be met', 'A concrete answer ready for the attacks on the e5 pawn and on the knight that recaptures on d5'],
+      },
+      {
+        move: 'b4',
+        side: 'white',
+        note: 'The queenside space-gainer, prepared by a4. It hits the bishop on c5 and, against a pawn on a6, threatens b5 opening the file White is better placed to use.',
+        prerequisites: ['a4 played, or the bishop otherwise unable to punish the loosening of c3'],
+      },
+      { move: 'a5', side: 'black', note: 'Stops b4 before it starts, and buys the bishop the a7 square. The permanent cost is the b5 square and the loss of a5 as a route for the knight.' },
+      {
+        move: 'g5',
+        side: 'black',
+        note: 'The kingside advance in the slow ...d6 structures, aimed at the knight on f3 and at space; it is a real plan only while the king is still in the centre.',
+        prerequisites: ['...h6 played to support it', 'Black has not yet castled short', 'The centre closed enough that opening it is not White’s immediate answer'],
+      },
+    ],
+    keySquares: [
+      { square: 'd4', note: 'The square the whole set-up is built around. Everything White does before the break is preparation for occupying it under good conditions.' },
+      { square: 'a2', note: 'Where a4 sends the bishop. From there it is out of reach of ...Na5, which is what makes the modern treatment better than Bb3.' },
+      { square: 'b5', note: 'The square Black’s fifth move decides. ...a6 covers it, ...a5 hands it over.' },
+      { square: 'c3', note: 'A pawn doing quiet damage: it denies b4 and d4 to the knight on c6, and no break in the centre changes that.' },
+      { square: 'e5', note: 'Solid while the d-pawn stands on d6, and a target the moment Black plays ...d5 and opens the e-file.' },
+    ],
+    routes: ['Nb1-d2-f1-g3', 'Bc4-a2 after a4, or the older Bc4-b3', 'Nc6-a5 to trade the light-squared bishop', 'Bc5-a7 behind the a-pawn'],
+    sources: [
+      'The Spicy Italian Game',
+      'Kalyan’s Lethal Italian',
+      'Understanding Chess Openings: 1.e4 — Part 2',
+      'Anish Giri — Lifetime Repertoires: 1.e4 — Part 1',
+      'Sam Shankland — Lifetime Repertoires: Berlin Defence',
+      'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
+    ],
+    };
+
+const ITALIAN_FOUR_KNIGHTS: OpeningTheory = {
+    idea: 'The knight takes the square the c-pawn wants, and that is the whole argument about this move. The point of the ordinary Italian is c3 and then d4: the pawn on c3 controls b4 and d4 and quietly tells the knight on c6 that it has nowhere good to go. With a knight on c3 instead, the d4 break becomes very hard to arrange, and Black’s task of equalising is correspondingly easier. What White gets for it is speed and a symmetrical position in which every tempo counts, plus three specific ideas that do not exist in the c3 lines: Na4 to take the bishop pair, Bg5 and Nd5 working together against a pinned knight, and Be3 inviting a trade that repairs the very problem the knight created. It is the practical choice rather than the theoretical one, and it is much the easier side to play when neither player knows the position well.',
+    structures: [],
+    whitePlans: [
+      'Be3, offering the exchange on that square. Recapturing with the f-pawn opens the f-file, adds a second defender to d4 and hands White back the break the knight on c3 had taken away — the trade Black is invited to make is the one that helps White most.',
+      'Na4 the moment Black plays ...d6, when the bishop on c5 has no comfortable answer and White ends up with the pair.',
+      'Bg5 followed by Nd5, playing on the pin rather than the centre. It is White’s fastest source of trouble and the reason Black’s move order has to be careful.',
+      'Aim at d5 with pieces since the pawn break is awkward — Nd5, Bg5xf6 to remove its defender, and c3 played later once the knight has moved on.',
+      'Keep the symmetry and play for the extra tempo. This is a position where the side that knows the plans wins the game, not the side that knows more moves.',
+    ],
+    blackPlans: [
+      'Judge the pin before allowing it. Bg5 only bites when Black has both castled and played ...d6, because the two together take e7 from the bishop; with either missing, ...h6 and ...g5 gains time.',
+      'Meet Bg5 with ...h6 and ...g5 when the king is still in the centre. The knight sacrifice on g5 has no future — the king walks to the queenside and the rook defends the pinned knight from g8 — and the bishop that retreats to g3 is buried behind the pawns on e5 and g5 for the rest of the game.',
+      'Play for ...d5 in one move. It is the freeing break in every Giuoco Pianissimo, and it is more achievable here because White’s knight on c3 blocks his own preparation for d4.',
+      'Take the position seriously despite the symmetry. Black equalises more comfortably than against c3 and d3, but a tempo thrown away in a symmetrical position is the sort of thing that decides these games.',
+    ],
+    breaks: [
+      {
+        move: 'd4',
+        side: 'white',
+        note: 'The break the Italian is built on, and the one this move order gives up. The knight stands where the supporting pawn belongs, so it only becomes available after Nc3 has moved on or the f-pawn has recaptured on e3.',
+        prerequisites: ['c3 available for the pawn, or a pawn on e3 after the exchange of dark-squared bishops'],
+      },
+      {
+        move: 'd5',
+        side: 'black',
+        note: 'The freeing advance, worth a good deal more than it costs if it can be played in one move rather than two.',
+        prerequisites: ['The d5 square not held by a white knight and the c4 bishop', 'Development finished — the centre opens for both sides at once'],
+      },
+      { move: 'g5', side: 'black', note: 'Not an attacking move but a rebuff: it drives the bishop to g3 where the pawns on e5 and g5 shut it out of the game permanently. Only sound with the king still able to go queenside.' },
+      { move: 'f4', side: 'white', note: 'The follow-up to the exchange on e3, using the half-open file the recapture created and taking e5 as a target rather than a square to be blockaded.' },
+    ],
+    keySquares: [
+      { square: 'd4', note: 'The square the whole variation is about. White’s knight blocks his own route to it, and Black spends the opening making sure that stays true.' },
+      { square: 'd5', note: 'What White plays for instead. A knight there, supported by the removal of the f6 defender, is the substitute for the missing pawn break.' },
+      { square: 'e7', note: 'The retreat that decides whether Bg5 is dangerous. Once Black has castled and played ...d6, the bishop can no longer go there and the pin becomes real.' },
+      { square: 'c5', note: 'The bishop White is hunting with Na4. Whether the pair is worth the time depends on how much the knight’s excursion costs.' },
+    ],
+    routes: ['Nc3-d5, the piece substitute for the pawn break', 'Nc3-a4 collecting the bishop pair once ...d6 is in'],
+    traps: [
+      'Meeting Bg5 with ...h6 and ...g5 is only safe with the king still in the centre. Castled, the same pawns are the reason the sacrifice on g5 works.',
+      'Taking on e3 with the dark-squared bishop repairs White’s position rather than damaging it: doubled e-pawns here mean an extra defender of d4 and an open f-file, which is the opposite of what the trade looks like.',
+    ],
+    sources: [
+      'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
+      'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
+      'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 1',
+      'Sam Shankland — Lifetime Repertoires: Berlin Defence',
+      'Kalyan’s Lethal Italian',
+      'The Dynamic Italian',
+    ],
+    };
+
+const VIENNA_STANLEY: OpeningTheory = {
+    idea: 'The bishop comes out before the king’s knight, which is the Vienna’s standing preference: the f-pawn is meant to advance, so the knight is destined for e2 rather than f3. Against 3...Nc6 and 3...Bc5 White adds d3 and the game becomes the Bishop’s Opening set-up by transposition, which means this move order is chosen — and paid for — for exactly one reason. Delaying d3 leaves e4 undefended, so 3...Nxe4 is available here and is not available after 2.Bc4. The fork trick is principled rather than greedy: 4.Nxe4 d5 hits bishop and knight together, and when the smoke clears Black has the only pawn left in the centre and a free tempo against the recapturing bishop with ...f5. White therefore has to justify the pawn some other way, which is what 4.Qh5 — the Frankenstein-Dracula — and the modern 4.Be2 exist for. Underneath all of it the argument is the Italian one moved a tempo: Black is playing for ...d5, White for f4, and every piece on both sides is placed with those two pushes in mind.',
+    structures: [],
+    whitePlans: [
+      'Meet 3...Nc6 with 4.d3 and play the Bishop’s Opening set-up: Nge2 rather than Nf3, so f2-f4 stays in reserve, and answer ...Na5 by recapturing on c4 with the d-pawn.',
+      '4.Qh5 against the fork trick, the only critical try: mate on f7 and the pawn on e5 are threatened at once, and the knight on e4 still cannot be taken because ...d5 answers it. Black’s knight has to retreat, and the game that follows is a raw material-against-development fight.',
+      '4.Be2, the modern alternative: the bishop steps off the a2-g8 diagonal so that ...d5 no longer comes with tempo, and Black is left holding a knight on e4 with nothing behind it.',
+      'Against 3...Bc5, f4 is the ambitious try and 4.d3 the sound one. The f-pawn advance is a better version than in the Bishop’s Opening only if Black fails to hit back in the centre.',
+      'Against 3...Bb4, develop with Nge2. 4.Nf3 blocks the f-pawn the whole system was arranged around, and 4.Nd5 releases the tension into a reversed Berlin with nothing left to play for.',
+    ],
+    blackPlans: [
+      '3...Nxe4, the fork trick, and the reason this move order is worth meeting head-on. It is objectively the best reply and by a distance the least played, which makes it the line White is least ready for.',
+      '3...Nc6 and a transposition into the Bishop’s Opening, where ...Na5 removes the bishop that stares at f7 and ...Bb4 pins the knight that guards d5.',
+      '3...Bc5, the practical choice and an awkward one to face: White cannot steer into a comfortable Italian because the b8 knight is not yet committed to c6, which in those structures is Black’s worst-placed piece. Against a slow White set-up Black builds with ...d6, ...c6, ...O-O and ...a5.',
+      'Answer f4 in the centre with ...d5 rather than taking on f4. With a bishop already on c5 and the white king still on e1, the pawn is worth offering to open the position.',
+      'Keep ...d5 as the object in every branch. It is the move White’s knight on c3 and bishop on c4 are jointly placed to stop.',
+    ],
+    breaks: [
+      {
+        move: 'd5',
+        side: 'black',
+        note: 'The freeing break, and the tactical point of the fork trick — after 3...Nxe4 4.Nxe4 it attacks bishop and knight at once and wins the piece straight back.',
+        prerequisites: [
+          'The queen still standing behind the pawn on d8, which is why 4.Qh5 Qe7 loses a piece to Nxe4',
+          'In the slow lines, the c4 bishop traded off or the c3 knight pinned, since between them they hold the square',
+        ],
+      },
+      {
+        move: 'f4',
+        side: 'white',
+        note: 'The Vienna advance, and the whole reason the king’s knight is left at home. Played early against a bishop on c5 it opens the e1-h4 diagonal while the king is still on it, which is precisely what ...d5 is offered for.',
+        prerequisites: ['Nge2 rather than Nf3', 'The a7-g1 and e1-h4 diagonals both accounted for before the pawn leaves f2'],
+      },
+    ],
+    keySquares: [
+      { square: 'f7', note: 'Where the bishop is aimed and where 4.Qh5 threatens mate. Defending it with the knight instead of dealing with the queen is mate in one.' },
+      { square: 'e4', note: 'The pawn Black takes and the square his knight cannot hold. Every white fourth move after 3...Nxe4 is a different answer to how the material comes back without the initiative going with it.' },
+      { square: 'd5', note: 'Black’s break and White’s outpost. The knight on c3 guards it; ...Bb4 and ...Na5 are the two standard ways of removing a guard.' },
+      { square: 'f4', note: 'Kept available by leaving the king’s knight on g1 — the difference between a Vienna and an Italian, and the reason to accept the awkward bishop.' },
+    ],
+    routes: ['Ng1-e2-g3, the Vienna developing scheme that keeps f2-f4 in reserve'],
+    traps: [
+      '3...Nxe4 4.Qh5 Nf6 is mate on f7 in one move — the single most common way this position is lost.',
+      '4.Qh5 Qe7 defends f7 and loses a piece: the queen no longer stands behind the d-pawn, so Nxe4 is simply good.',
+      '4.Nxe4 gives Black the game he wants. ...d5 forks bishop and knight, and after the recapture Black has the only central pawn left and drives the bishop again with ...f5.',
+      'Meeting 3...Bc5 with 4.f4 and no plan for the diagonals is the fast way to lose: Black gives the pawn back with ...d5 and the king on e1 is the piece that pays.',
+    ],
+    sources: [
+      'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 1',
+      'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
+      'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
+      'Lifetime Repertoires: Petroff Defence',
+      'Unleash the Bull: 1...e5',
+      'Understanding Chess Openings: 1.e4 — Part 2',
+    ],
+    };
+
+const FOUR_KNIGHTS_GAME: OpeningTheory = {
+    idea: 'Four developing moves, complete symmetry, and a decision on move four that decides what kind of game it is. The move that shapes everything is White’s third: the knight on c3 is well placed and defends e4, but it stands on the square the c-pawn needs, so the c3-and-then-d4 build-up that the Italian and the Ruy Lopez are entirely constructed around is no longer available. White therefore has to strike with d2-d4 in one move or not at all, or else change the character with the bishop. Black’s side of the bargain is simpler than it looks: symmetry is a defence, because whoever breaks it first has to justify doing so, and against any fourth move that does not fight for the centre the answer is ...d5 — a break that works precisely because the knight already sits on c3 and can be traded there. The Four Knights is consequently a sound, low-risk opening for both sides that only becomes sharp when someone deliberately makes it so.',
+    structures: [],
+    whitePlans: [
+      '4.d4, the Scotch Four Knights: the pawn centre has to come now or never, and it buys quick development and a healthy structure at the cost of any real theoretical claim.',
+      '4.Bb5, the Spanish Four Knights, which is a Berlin Defence with Nc3 and ...Nf6 already inserted. The pin makes ...d5 awkward to arrange and Bxc6 followed by Nxe5 has to be watched.',
+      '4.d4 exd4 5.Nd5, the Belgrade Gambit: a pawn given for nothing more sophisticated than destroying the symmetry, which is a fair description of what the whole opening needs.',
+      '4.d4 Bb4 5.d5, gaining space and closing the position. The resulting play resembles a Nimzo-Indian in which the bishop pair matters little and White’s pawn structure is the long-term liability.',
+      'Slow fourth moves — 4.a3, 4.h3, 4.g3, 4.Be2 — which wait for Black to put the f8 bishop somewhere other than b4 so that d2-d4 gains in value. They concede Black an easy ...d5 and are played for the game, not the advantage.',
+    ],
+    blackPlans: [
+      'Keep copying. Meeting Bb5 with ...Bb4 and d4 with ...exd4 leaves White to break the symmetry first, and Black is always a move away from doing something about it when he does.',
+      '...d5 as the standing answer to any fourth move that is not d4 or Bb5. After exd5 Nxd5 the knight on c3 can be exchanged, and Black has equalised without memorising anything.',
+      '4.Bb5 Nd4, the Rubinstein: the knight on c6 is Black’s worst piece in these structures — it blocks the c-pawn and almost never reaches d4 — so it is traded at the one moment when the move gains time on the bishop.',
+      '4.Bb5 Bc5, the double-edged alternative to the Rubinstein, keeping pieces on for a game rather than a handshake.',
+      '4.d4 d6, transposing to a Ruy Lopez Steinitz once White plays Bb5 — solid, passive and a legitimate way to sidestep the Scotch Four Knights entirely.',
+    ],
+    breaks: [
+      {
+        move: 'd4',
+        side: 'white',
+        note: 'The one chance at a pawn centre. Playing Nc3 gave up the slow route through c2-c3, so the push has to be made in a single move while Black’s bishop is still at home.',
+      },
+      {
+        move: 'd5',
+        side: 'black',
+        note: 'The freeing break and the reason the Four Knights is easy to meet. It is cheap here because the knight on c3 is the only piece holding the square and it can be traded there.',
+        prerequisites: [
+          'White’s fourth move did not add a second defender to d5 — after 4.Bb5 the pin makes ...d5 a concession rather than a break',
+          'A follow-up in hand, usually ...Nxc3 or ...Be6, so the knight recapturing on d5 is not simply chased about',
+        ],
+      },
+      {
+        move: 'd5',
+        side: 'white',
+        note: 'The space-gaining push after 4.d4 Bb4. It closes the centre and hands White a Nimzo-Indian-like game with the structural risk on his own side.',
+      },
+    ],
+    keySquares: [
+      { square: 'd4', note: 'What White wants a pawn on and Black wants a knight on. Both of the main fourth moves are about it.' },
+      { square: 'd5', note: 'The square Nc3 controls and the square Black’s whole set-up is aimed at. Removing the c3 knight is usually the same thing as reaching the break.' },
+      { square: 'c3', note: 'Well placed for the knight and badly needed by the c-pawn. The tension between those two facts is the opening’s whole character.' },
+    ],
+    routes: ['Nc6-d4, the Rubinstein trade of Black’s problem piece', 'Nc3-d5 after d4 and ...exd4, the Belgrade jump'],
+    traps: [
+      'Against a slow fourth move, ...Bc5 invites Nxe5 followed by d2-d4, forking bishop and knight. It is the standard reason to prefer ...d5 when White plays on the wing.',
+      'The Belgrade Gambit is what happens to a player following the symmetry on autopilot: after 4.d4 exd4 5.Nd5 the position stops being quiet immediately, and a line has to be known or the gambit declined.',
+    ],
+    sources: [
+      'Christof Sielecki — Keep it Simple 1.e4',
+      'Sam Shankland — Lifetime Repertoires: Berlin Defence',
+      'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
+      'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
+      'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
+      'Sutheraman — 1.e4 e5',
+      'Unleash the Bull: 1...e5',
+      'Berlin Simplified',
+    ],
+    };
+
+const PETROV_CLASSICAL_ATTACK: OpeningTheory = {
+    idea: 'One piece decides this opening. The knight on e4 has a pawn behind it, so it is not a raider that has to be chased home; Black’s claim is that he will never have to spend a move retreating it, and White’s whole game is to make him spend that move or pay for keeping it in structure. There are exactly two ways of asking: piece pressure with Re1 and Nb1-d2, or c2-c4 against the pawn on d5 that holds it. Which of the two works is settled by where Black puts the dark-squared bishop, and the mechanism is a matter of lines rather than of squares. On d6 the bishop shuts the d-file, so the queen no longer defends d5 and c4 arrives with a genuine threat — but the e-file is clear, ...Re8 adds a defender to the knight and the piece-pressure plan runs out of attackers before Black runs out of guards. On e7 it is the other way round: the d-file stays open, the queen holds d5 and c4 can be answered by ...Nc6 hitting d4, while the bishop itself blocks the rook, so after Re1 and Nbd2 there is nothing left to add and the knight has to go back to d6. So the rule is short and it is the whole opening: against ...Bd6 play c4, against ...Be7 play with the pieces. Choosing the wrong one is the ordinary way for White to reach move fifteen with nothing.',
+    structures: [],
+    whitePlans: [
+      'Bd3 and castle. The bishop belongs there in almost every Petrov: it is a third eye on e4 and it does not obstruct the rook that is going to e1.',
+      'Against ...Bd6, the pawn plan: castle, Re1, and then c4 hitting d5 at the moment the black queen cannot help. Treat ...c6 as the answer to expect rather than as a surprise.',
+      'Against ...Be7, the piece plan: Re1 and Nbd2, adding attackers until the knight is driven to d6, which is a small but permanent gain — the knight is worse there and Black has lost the tempo he was trying to save.',
+      'Answer 7...Nc6 with 8.Nbd2 rather than 8.Re1, which is the one real move-order trap in the line: the rook move allows ...Bg4, and after Nbd2 that bishop has nothing good to do.',
+      'Meet a premature ...Bg4 with c4 even in the ...Be7 lines. It is the exception to the rule above, and it works because the bishop has left the defence of d5 to make a pin that is not worth much.',
+      'Take a black ...f5 as a success. The pawn props the knight up and gives away the a2-g8 diagonal and the e5 square with it; opening the position at once is then the right reply.',
+    ],
+    blackPlans: [
+      '...Bd6, castle, meet c4 with ...c6, then ...Bf5 or ...Bg4 and ...Re8. The most popular scheme at every level and the one that keeps the knight on e4 by force rather than by hope.',
+      '...Be7 with ...Bf5, the modern treatment, where White has so far found nothing: the bishop on e7 keeps d5 defended by the queen, so the c4 break never carries a threat.',
+      '...Nc6 is double-edged and its value depends on White’s pawn. It is well placed when White commits to c4, since it presses d4 and eyes b4; it is misplaced when White answers with c3, which takes both squares away and leaves the knight with no work. It also blocks the c-pawn, so ...c6 is no longer available to hold d5.',
+      'Do not play ...f5 to save the knight. Retreating it to d6 costs a tempo and nothing else, which is far less than the diagonal and the e5 square.',
+    ],
+    breaks: [
+      {
+        move: 'c4',
+        side: 'white',
+        note: 'The undermining break: it attacks the pawn that supports the knight rather than the knight itself, which is the only way to make progress once the pieces have run out of attacking moves.',
+        prerequisites: [
+          'Black’s bishop on d6, so the queen on d8 no longer defends d5 through the file',
+          'Development complete enough that the reply ...Nc6 hitting d4 is not simply good',
+        ],
+      },
+      {
+        move: 'c6',
+        side: 'black',
+        note: 'The standard answer to c4 and the reason ...Bd6 systems hold. It has to be available, which is precisely what an early ...Nc6 gives up.',
+      },
+      {
+        move: 'c5',
+        side: 'white',
+        note: 'Gains space and comes with tempo against a bishop on d6 — one more small reason the bishop is more comfortable on e7, where the same push hits nothing.',
+      },
+      {
+        move: 'f5',
+        side: 'black',
+        note: 'Props up the knight and is almost always the wrong way to do it: the a2-g8 diagonal opens, e5 becomes a permanent hole, and White’s correct response is to open the centre immediately.',
+      },
+    ],
+    keySquares: [
+      { square: 'e4', note: 'The knight’s square and the subject of every move both sides make here. Everything else in the position is an attacker of it or a defender of it.' },
+      { square: 'd5', note: 'The pawn that makes the knight permanent. c4 is played against this square, not against the knight, and ...c6 is what keeps it standing.' },
+      { square: 'e5', note: 'What Black concedes if he is ever pushed into ...f5, and the outpost White plays for once that happens.' },
+      { square: 'd6', note: 'Where the knight ends up when the piece-pressure plan succeeds — an admission rather than a disaster, but the tempo Black was saving has gone.' },
+    ],
+    routes: ['Nb1-d2, the second attacker of e4 and the piece plan in one move'],
+    traps: [
+      '8.Re1 against 7...Nc6 lets Black in with 8...Bg4, developing the last piece actively and pinning the knight that guards d4; 8.Nbd2 first avoids it entirely.',
+      'Playing c4 against a bishop on e7 achieves nothing: ...Nc6 comes with tempo against d4 and d5 is still defended by the queen, so White has weakened d4 for no return.',
+    ],
+    sources: [
+      'The Principled and Practical 1.e4',
+      'Christof Sielecki — Keep it Simple 1.e4 2.0',
+      'Jonas Hacker — The Romantic Italian',
+      'Lifetime Repertoires: Petroff Defence',
+      'Understanding Chess Openings: 1.e4 — Part 2',
+      'The Complete Book of Chess Strategy',
+    ],
+    };
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -3496,31 +3818,17 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 e5 Nf3 Nc6 Bc4'),
     character: 'balanced',
     minRating: 800,
-    theory: {
-      idea: 'The most natural opening in chess: develop a piece, point it at f7, castle. Modern practice plays it slowly with d3 and c3, building the centre with a later d4 — the same structures as the Spanish, reached with far less theory. This is the best first e4 opening for almost every improving player.',
-      structures: ['spanish-closed'],
-      whitePlans: [
-        'The slow build-up c3, d3, Nbd2, Bb3, Re1 and then d4 at the right moment.',
-        'Nbd2-f1-g3 exactly as in the Spanish.',
-        'The Evans Gambit (b4) if you want the sharp version.',
-      ],
-      blackPlans: [
-        'Mirror the setup with ...d6, ...Nf6, ...a6, ...Ba7 and ...0-0.',
-        'The Two Knights (...Nf6) inviting immediate complications.',
-        'Break with ...d5 once White has committed to d3.',
-      ],
-      breaks: [
-        { move: 'd4', side: 'white', note: 'The central break the whole slow setup prepares. Play it when Black cannot answer with a comfortable ...exd4 and ...d5.' },
-        { move: 'd5', side: 'black', note: 'The freeing break, usually after ...Re8 and ...Bf8.' },
-        { move: 'a4', side: 'white', note: 'Standard on the queenside once Black plays ...a6 and ...b5.' },
-      ],
-      keySquares: [{ square: 'f7', note: 'The bishop on c4 points here — the reason early tactics exist in this opening at all.' }],
-      traps: [
-        'Fried Liver: after 3...Nf6 4.Ng5 d5 5.exd5 Nxd5?! 6.Nxf7 White gets a dangerous attack. Black should prefer 5...Na5.',
-        'Never grab the b2 pawn with the queen in the Italian without calculating Rb1 and the tempo loss.',
-      ],
-      modelGames: ['Anand – Carlsen, Grenke 2019'],
-    },
+    theory: ITALIAN_GAME,
+  },
+  {
+    // The Bishop’s Opening order, 2.Bc4 and Nf3 afterwards. It reaches the
+    // Italian and was being shown the King’s Pawn Opening four plies above.
+    eco: 'C50',
+    name: 'Italian Game',
+    moves: line('e4 e5 Bc4 Nc6 Nf3'),
+    character: 'balanced',
+    minRating: 800,
+    theory: ITALIAN_GAME,
   },
   { eco: 'C53', name: 'Italian Game: Giuoco Piano', moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 c3') },
   {
@@ -3529,58 +3837,25 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 d3 Nf6 Nc3'),
     character: 'balanced',
     minRating: 1400,
-    theory: {
-      idea: 'The knight takes the square the c-pawn wants, and that is the whole argument about this move. The point of the ordinary Italian is c3 and then d4: the pawn on c3 controls b4 and d4 and quietly tells the knight on c6 that it has nowhere good to go. With a knight on c3 instead, the d4 break becomes very hard to arrange, and Black’s task of equalising is correspondingly easier. What White gets for it is speed and a symmetrical position in which every tempo counts, plus three specific ideas that do not exist in the c3 lines: Na4 to take the bishop pair, Bg5 and Nd5 working together against a pinned knight, and Be3 inviting a trade that repairs the very problem the knight created. It is the practical choice rather than the theoretical one, and it is much the easier side to play when neither player knows the position well.',
-      structures: [],
-      whitePlans: [
-        'Be3, offering the exchange on that square. Recapturing with the f-pawn opens the f-file, adds a second defender to d4 and hands White back the break the knight on c3 had taken away — the trade Black is invited to make is the one that helps White most.',
-        'Na4 the moment Black plays ...d6, when the bishop on c5 has no comfortable answer and White ends up with the pair.',
-        'Bg5 followed by Nd5, playing on the pin rather than the centre. It is White’s fastest source of trouble and the reason Black’s move order has to be careful.',
-        'Aim at d5 with pieces since the pawn break is awkward — Nd5, Bg5xf6 to remove its defender, and c3 played later once the knight has moved on.',
-        'Keep the symmetry and play for the extra tempo. This is a position where the side that knows the plans wins the game, not the side that knows more moves.',
-      ],
-      blackPlans: [
-        'Judge the pin before allowing it. Bg5 only bites when Black has both castled and played ...d6, because the two together take e7 from the bishop; with either missing, ...h6 and ...g5 gains time.',
-        'Meet Bg5 with ...h6 and ...g5 when the king is still in the centre. The knight sacrifice on g5 has no future — the king walks to the queenside and the rook defends the pinned knight from g8 — and the bishop that retreats to g3 is buried behind the pawns on e5 and g5 for the rest of the game.',
-        'Play for ...d5 in one move. It is the freeing break in every Giuoco Pianissimo, and it is more achievable here because White’s knight on c3 blocks his own preparation for d4.',
-        'Take the position seriously despite the symmetry. Black equalises more comfortably than against c3 and d3, but a tempo thrown away in a symmetrical position is the sort of thing that decides these games.',
-      ],
-      breaks: [
-        {
-          move: 'd4',
-          side: 'white',
-          note: 'The break the Italian is built on, and the one this move order gives up. The knight stands where the supporting pawn belongs, so it only becomes available after Nc3 has moved on or the f-pawn has recaptured on e3.',
-          prerequisites: ['c3 available for the pawn, or a pawn on e3 after the exchange of dark-squared bishops'],
-        },
-        {
-          move: 'd5',
-          side: 'black',
-          note: 'The freeing advance, worth a good deal more than it costs if it can be played in one move rather than two.',
-          prerequisites: ['The d5 square not held by a white knight and the c4 bishop', 'Development finished — the centre opens for both sides at once'],
-        },
-        { move: 'g5', side: 'black', note: 'Not an attacking move but a rebuff: it drives the bishop to g3 where the pawns on e5 and g5 shut it out of the game permanently. Only sound with the king still able to go queenside.' },
-        { move: 'f4', side: 'white', note: 'The follow-up to the exchange on e3, using the half-open file the recapture created and taking e5 as a target rather than a square to be blockaded.' },
-      ],
-      keySquares: [
-        { square: 'd4', note: 'The square the whole variation is about. White’s knight blocks his own route to it, and Black spends the opening making sure that stays true.' },
-        { square: 'd5', note: 'What White plays for instead. A knight there, supported by the removal of the f6 defender, is the substitute for the missing pawn break.' },
-        { square: 'e7', note: 'The retreat that decides whether Bg5 is dangerous. Once Black has castled and played ...d6, the bishop can no longer go there and the pin becomes real.' },
-        { square: 'c5', note: 'The bishop White is hunting with Na4. Whether the pair is worth the time depends on how much the knight’s excursion costs.' },
-      ],
-      routes: ['Nc3-d5, the piece substitute for the pawn break', 'Nc3-a4 collecting the bishop pair once ...d6 is in'],
-      traps: [
-        'Meeting Bg5 with ...h6 and ...g5 is only safe with the king still in the centre. Castled, the same pawns are the reason the sacrifice on g5 works.',
-        'Taking on e3 with the dark-squared bishop repairs White’s position rather than damaging it: doubled e-pawns here mean an extra defender of d4 and an open f-file, which is the opposite of what the trade looks like.',
-      ],
-      sources: [
-        'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
-        'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
-        'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 1',
-        'Sam Shankland — Lifetime Repertoires: Berlin Defence',
-        'Kalyan’s Lethal Italian',
-        'The Dynamic Italian',
-      ],
-    },
+    theory: ITALIAN_FOUR_KNIGHTS,
+  },
+  {
+    // Nc3 before d3, the same position a move later.
+    eco: 'C50',
+    name: 'Italian Game: Giuoco Pianissimo, Italian Four Knights Variation',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 Nc3 Nf6 d3'),
+    character: 'balanced',
+    minRating: 1400,
+    theory: ITALIAN_FOUR_KNIGHTS,
+  },
+  {
+    // ...Nf6 before ...Bc5, transposing after d3.
+    eco: 'C50',
+    name: 'Italian Game: Giuoco Pianissimo, Italian Four Knights Variation',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Nf6 d3 Bc5 Nc3'),
+    character: 'balanced',
+    minRating: 1400,
+    theory: ITALIAN_FOUR_KNIGHTS,
   },
   {
     eco: 'C54',
@@ -3602,6 +3877,24 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: ITALIAN_A6_CROSSROADS,
   },
   {
+    // ...a6 before ...d6 as well, which is a third route to the same tabiya.
+    eco: 'C54',
+    name: 'Italian Game: Classical Variation, Giuoco Pianissimo',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Nf6 d3 Bc5 c3 a6 O-O d6'),
+    character: 'positional',
+    minRating: 1500,
+    theory: ITALIAN_A6_CROSSROADS,
+  },
+  {
+    // The Two Knights order into the same crossroads.
+    eco: 'C54',
+    name: 'Italian Game: Classical Variation, Giuoco Pianissimo',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Nf6 d3 Bc5 c3 d6 O-O a6'),
+    character: 'positional',
+    minRating: 1500,
+    theory: ITALIAN_A6_CROSSROADS,
+  },
+  {
     eco: 'C54',
     name: 'Italian Game: Classical Variation, Giuoco Pianissimo',
     moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 O-O Nf6 d3 d6 c3 a6 a4'),
@@ -3614,11 +3907,29 @@ export const CURATED_OPENINGS: Opening[] = [
     // The same position by the c3-first move order, which is how a player who
     // learned the Giuoco Pianissimo entry above will usually reach it. Theory
     // is inherited along move-sequence ancestry, so without this address the
-    // route would stop at the parent's ideas; the object is shared rather than
+    // route would stop at the parent’s ideas; the object is shared rather than
     // restated, because there is only one position.
     eco: 'C54',
     name: 'Italian Game: Classical Variation, Giuoco Pianissimo',
     moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d3 d6 O-O a6 a4'),
+    character: 'positional',
+    minRating: 1500,
+    theory: ITALIAN_MODERN_A4,
+  },
+  {
+    // ...a6 before ...d6, reaching the same position.
+    eco: 'C54',
+    name: 'Italian Game: Classical Variation, Giuoco Pianissimo',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Nf6 d3 Bc5 c3 a6 O-O d6 a4'),
+    character: 'positional',
+    minRating: 1500,
+    theory: ITALIAN_MODERN_A4,
+  },
+  {
+    // The Two Knights order into the a4 tabiya.
+    eco: 'C54',
+    name: 'Italian Game: Classical Variation, Giuoco Pianissimo',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Nf6 d3 Bc5 c3 d6 O-O a6 a4'),
     character: 'positional',
     minRating: 1500,
     theory: ITALIAN_MODERN_A4,
@@ -4209,65 +4520,18 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 e5 Nf3 Nc6 Nc3 Nf6'),
     character: 'balanced',
     minRating: 1200,
-    theory: {
-      idea: 'Four developing moves, complete symmetry, and a decision on move four that decides what kind of game it is. The move that shapes everything is White’s third: the knight on c3 is well placed and defends e4, but it stands on the square the c-pawn needs, so the c3-and-then-d4 build-up that the Italian and the Ruy Lopez are entirely constructed around is no longer available. White therefore has to strike with d2-d4 in one move or not at all, or else change the character with the bishop. Black’s side of the bargain is simpler than it looks: symmetry is a defence, because whoever breaks it first has to justify doing so, and against any fourth move that does not fight for the centre the answer is ...d5 — a break that works precisely because the knight already sits on c3 and can be traded there. The Four Knights is consequently a sound, low-risk opening for both sides that only becomes sharp when someone deliberately makes it so.',
-      structures: [],
-      whitePlans: [
-        '4.d4, the Scotch Four Knights: the pawn centre has to come now or never, and it buys quick development and a healthy structure at the cost of any real theoretical claim.',
-        '4.Bb5, the Spanish Four Knights, which is a Berlin Defence with Nc3 and ...Nf6 already inserted. The pin makes ...d5 awkward to arrange and Bxc6 followed by Nxe5 has to be watched.',
-        '4.d4 exd4 5.Nd5, the Belgrade Gambit: a pawn given for nothing more sophisticated than destroying the symmetry, which is a fair description of what the whole opening needs.',
-        '4.d4 Bb4 5.d5, gaining space and closing the position. The resulting play resembles a Nimzo-Indian in which the bishop pair matters little and White’s pawn structure is the long-term liability.',
-        'Slow fourth moves — 4.a3, 4.h3, 4.g3, 4.Be2 — which wait for Black to put the f8 bishop somewhere other than b4 so that d2-d4 gains in value. They concede Black an easy ...d5 and are played for the game, not the advantage.',
-      ],
-      blackPlans: [
-        'Keep copying. Meeting Bb5 with ...Bb4 and d4 with ...exd4 leaves White to break the symmetry first, and Black is always a move away from doing something about it when he does.',
-        '...d5 as the standing answer to any fourth move that is not d4 or Bb5. After exd5 Nxd5 the knight on c3 can be exchanged, and Black has equalised without memorising anything.',
-        '4.Bb5 Nd4, the Rubinstein: the knight on c6 is Black’s worst piece in these structures — it blocks the c-pawn and almost never reaches d4 — so it is traded at the one moment when the move gains time on the bishop.',
-        '4.Bb5 Bc5, the double-edged alternative to the Rubinstein, keeping pieces on for a game rather than a handshake.',
-        '4.d4 d6, transposing to a Ruy Lopez Steinitz once White plays Bb5 — solid, passive and a legitimate way to sidestep the Scotch Four Knights entirely.',
-      ],
-      breaks: [
-        {
-          move: 'd4',
-          side: 'white',
-          note: 'The one chance at a pawn centre. Playing Nc3 gave up the slow route through c2-c3, so the push has to be made in a single move while Black’s bishop is still at home.',
-        },
-        {
-          move: 'd5',
-          side: 'black',
-          note: 'The freeing break and the reason the Four Knights is easy to meet. It is cheap here because the knight on c3 is the only piece holding the square and it can be traded there.',
-          prerequisites: [
-            'White’s fourth move did not add a second defender to d5 — after 4.Bb5 the pin makes ...d5 a concession rather than a break',
-            'A follow-up in hand, usually ...Nxc3 or ...Be6, so the knight recapturing on d5 is not simply chased about',
-          ],
-        },
-        {
-          move: 'd5',
-          side: 'white',
-          note: 'The space-gaining push after 4.d4 Bb4. It closes the centre and hands White a Nimzo-Indian-like game with the structural risk on his own side.',
-        },
-      ],
-      keySquares: [
-        { square: 'd4', note: 'What White wants a pawn on and Black wants a knight on. Both of the main fourth moves are about it.' },
-        { square: 'd5', note: 'The square Nc3 controls and the square Black’s whole set-up is aimed at. Removing the c3 knight is usually the same thing as reaching the break.' },
-        { square: 'c3', note: 'Well placed for the knight and badly needed by the c-pawn. The tension between those two facts is the opening’s whole character.' },
-      ],
-      routes: ['Nc6-d4, the Rubinstein trade of Black’s problem piece', 'Nc3-d5 after d4 and ...exd4, the Belgrade jump'],
-      traps: [
-        'Against a slow fourth move, ...Bc5 invites Nxe5 followed by d2-d4, forking bishop and knight. It is the standard reason to prefer ...d5 when White plays on the wing.',
-        'The Belgrade Gambit is what happens to a player following the symmetry on autopilot: after 4.d4 exd4 5.Nd5 the position stops being quiet immediately, and a line has to be known or the gambit declined.',
-      ],
-      sources: [
-        'Christof Sielecki — Keep it Simple 1.e4',
-        'Sam Shankland — Lifetime Repertoires: Berlin Defence',
-        'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
-        'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
-        'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
-        'Sutheraman — 1.e4 e5',
-        'Unleash the Bull: 1...e5',
-        'Berlin Simplified',
-      ],
-    },
+    theory: FOUR_KNIGHTS_GAME,
+  },
+  {
+    // The Petrov order: ...Nf6 on move two, ...Nc6 on move three. Until now
+    // this route was shown the Petrov Defence, which is a different opening —
+    // the point of ...Nc6 here is that Black has declined it.
+    eco: 'C47',
+    name: 'Four Knights Game',
+    moves: line('e4 e5 Nf3 Nf6 Nc3 Nc6'),
+    character: 'balanced',
+    minRating: 1200,
+    theory: FOUR_KNIGHTS_GAME,
   },
   { eco: 'C25', name: 'Vienna Game', moves: line('e4 e5 Nc3') },
   {
@@ -4340,62 +4604,17 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'sharp',
     minRating: 1400,
     aliases: ['Vienna Game with 3.Bc4'],
-    theory: {
-      idea: 'The bishop comes out before the king’s knight, which is the Vienna’s standing preference: the f-pawn is meant to advance, so the knight is destined for e2 rather than f3. Against 3...Nc6 and 3...Bc5 White adds d3 and the game becomes the Bishop’s Opening set-up by transposition, which means this move order is chosen — and paid for — for exactly one reason. Delaying d3 leaves e4 undefended, so 3...Nxe4 is available here and is not available after 2.Bc4. The fork trick is principled rather than greedy: 4.Nxe4 d5 hits bishop and knight together, and when the smoke clears Black has the only pawn left in the centre and a free tempo against the recapturing bishop with ...f5. White therefore has to justify the pawn some other way, which is what 4.Qh5 — the Frankenstein-Dracula — and the modern 4.Be2 exist for. Underneath all of it the argument is the Italian one moved a tempo: Black is playing for ...d5, White for f4, and every piece on both sides is placed with those two pushes in mind.',
-      structures: [],
-      whitePlans: [
-        'Meet 3...Nc6 with 4.d3 and play the Bishop’s Opening set-up: Nge2 rather than Nf3, so f2-f4 stays in reserve, and answer ...Na5 by recapturing on c4 with the d-pawn.',
-        '4.Qh5 against the fork trick, the only critical try: mate on f7 and the pawn on e5 are threatened at once, and the knight on e4 still cannot be taken because ...d5 answers it. Black’s knight has to retreat, and the game that follows is a raw material-against-development fight.',
-        '4.Be2, the modern alternative: the bishop steps off the a2-g8 diagonal so that ...d5 no longer comes with tempo, and Black is left holding a knight on e4 with nothing behind it.',
-        'Against 3...Bc5, f4 is the ambitious try and 4.d3 the sound one. The f-pawn advance is a better version than in the Bishop’s Opening only if Black fails to hit back in the centre.',
-        'Against 3...Bb4, develop with Nge2. 4.Nf3 blocks the f-pawn the whole system was arranged around, and 4.Nd5 releases the tension into a reversed Berlin with nothing left to play for.',
-      ],
-      blackPlans: [
-        '3...Nxe4, the fork trick, and the reason this move order is worth meeting head-on. It is objectively the best reply and by a distance the least played, which makes it the line White is least ready for.',
-        '3...Nc6 and a transposition into the Bishop’s Opening, where ...Na5 removes the bishop that stares at f7 and ...Bb4 pins the knight that guards d5.',
-        '3...Bc5, the practical choice and an awkward one to face: White cannot steer into a comfortable Italian because the b8 knight is not yet committed to c6, which in those structures is Black’s worst-placed piece. Against a slow White set-up Black builds with ...d6, ...c6, ...O-O and ...a5.',
-        'Answer f4 in the centre with ...d5 rather than taking on f4. With a bishop already on c5 and the white king still on e1, the pawn is worth offering to open the position.',
-        'Keep ...d5 as the object in every branch. It is the move White’s knight on c3 and bishop on c4 are jointly placed to stop.',
-      ],
-      breaks: [
-        {
-          move: 'd5',
-          side: 'black',
-          note: 'The freeing break, and the tactical point of the fork trick — after 3...Nxe4 4.Nxe4 it attacks bishop and knight at once and wins the piece straight back.',
-          prerequisites: [
-            'The queen still standing behind the pawn on d8, which is why 4.Qh5 Qe7 loses a piece to Nxe4',
-            'In the slow lines, the c4 bishop traded off or the c3 knight pinned, since between them they hold the square',
-          ],
-        },
-        {
-          move: 'f4',
-          side: 'white',
-          note: 'The Vienna advance, and the whole reason the king’s knight is left at home. Played early against a bishop on c5 it opens the e1-h4 diagonal while the king is still on it, which is precisely what ...d5 is offered for.',
-          prerequisites: ['Nge2 rather than Nf3', 'The a7-g1 and e1-h4 diagonals both accounted for before the pawn leaves f2'],
-        },
-      ],
-      keySquares: [
-        { square: 'f7', note: 'Where the bishop is aimed and where 4.Qh5 threatens mate. Defending it with the knight instead of dealing with the queen is mate in one.' },
-        { square: 'e4', note: 'The pawn Black takes and the square his knight cannot hold. Every white fourth move after 3...Nxe4 is a different answer to how the material comes back without the initiative going with it.' },
-        { square: 'd5', note: 'Black’s break and White’s outpost. The knight on c3 guards it; ...Bb4 and ...Na5 are the two standard ways of removing a guard.' },
-        { square: 'f4', note: 'Kept available by leaving the king’s knight on g1 — the difference between a Vienna and an Italian, and the reason to accept the awkward bishop.' },
-      ],
-      routes: ['Ng1-e2-g3, the Vienna developing scheme that keeps f2-f4 in reserve'],
-      traps: [
-        '3...Nxe4 4.Qh5 Nf6 is mate on f7 in one move — the single most common way this position is lost.',
-        '4.Qh5 Qe7 defends f7 and loses a piece: the queen no longer stands behind the d-pawn, so Nxe4 is simply good.',
-        '4.Nxe4 gives Black the game he wants. ...d5 forks bishop and knight, and after the recapture Black has the only central pawn left and drives the bishop again with ...f5.',
-        'Meeting 3...Bc5 with 4.f4 and no plan for the diagonals is the fast way to lose: Black gives the pawn back with ...d5 and the king on e1 is the piece that pays.',
-      ],
-      sources: [
-        'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 1',
-        'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
-        'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
-        'Lifetime Repertoires: Petroff Defence',
-        'Unleash the Bull: 1...e5',
-        'Understanding Chess Openings: 1.e4 — Part 2',
-      ],
-    },
+    theory: VIENNA_STANLEY,
+  },
+  {
+    // The Bishop’s Opening order. It reaches the Stanley Variation and was
+    // being shown the King’s Pawn Opening four plies above.
+    eco: 'C26',
+    name: 'Vienna Game: Stanley Variation',
+    moves: line('e4 e5 Bc4 Nf6 Nc3'),
+    character: 'sharp',
+    minRating: 1400,
+    theory: VIENNA_STANLEY,
   },
   {
     eco: 'C24',
@@ -4511,6 +4730,17 @@ export const CURATED_OPENINGS: Opening[] = [
     eco: 'C26',
     name: 'Vienna Game: Stanley Variation, Bishop’s Opening Hybrid',
     moves: line('e4 e5 Nc3 Nf6 Bc4 Nc6 d3'),
+    character: 'positional',
+    minRating: 1400,
+    theory: BISHOPS_OPENING_VIENNA_HYBRID,
+  },
+  {
+    // 2.Bc4 with ...Nc6 first — the third order into the hybrid, and the one
+    // the ECO tables leave unnamed. It inherited from the King’s Pawn Opening
+    // six plies above.
+    eco: 'C26',
+    name: 'Vienna Game: Stanley Variation, Bishop’s Opening Hybrid',
+    moves: line('e4 e5 Bc4 Nc6 Nc3 Nf6 d3'),
     character: 'positional',
     minRating: 1400,
     theory: BISHOPS_OPENING_VIENNA_HYBRID,
@@ -10379,7 +10609,7 @@ export const CURATED_OPENINGS: Opening[] = [
   // ------------------------------------------------- deeper main lines ---
   // Named continuations of the entries above, carrying the tree far enough
   // that a training session is a real line rather than two moves. They hold no
-  // theory of their own on purpose: each inherits its parent's ideas, which is
+  // theory of their own on purpose: each inherits its parent’s ideas, which is
   // what a player reaching this position actually needs.
   { eco: 'B22', name: 'Sicilian Defence: Alapin, Barmen Variation', moves: line('e4 c5 c3 d5 exd5 Qxd5 d4 Nf6 Nf3') },
   { eco: 'B22', name: 'Sicilian Defence: Alapin, 2...Nf6', moves: line('e4 c5 c3 Nf6 e5 Nd5 d4 cxd4 Nf3') },
@@ -10514,69 +10744,17 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 d4 d5'),
     character: 'positional',
     minRating: 1700,
-    theory: {
-      idea: 'One piece decides this opening. The knight on e4 has a pawn behind it, so it is not a raider that has to be chased home; Black’s claim is that he will never have to spend a move retreating it, and White’s whole game is to make him spend that move or pay for keeping it in structure. There are exactly two ways of asking: piece pressure with Re1 and Nb1-d2, or c2-c4 against the pawn on d5 that holds it. Which of the two works is settled by where Black puts the dark-squared bishop, and the mechanism is a matter of lines rather than of squares. On d6 the bishop shuts the d-file, so the queen no longer defends d5 and c4 arrives with a genuine threat — but the e-file is clear, ...Re8 adds a defender to the knight and the piece-pressure plan runs out of attackers before Black runs out of guards. On e7 it is the other way round: the d-file stays open, the queen holds d5 and c4 can be answered by ...Nc6 hitting d4, while the bishop itself blocks the rook, so after Re1 and Nbd2 there is nothing left to add and the knight has to go back to d6. So the rule is short and it is the whole opening: against ...Bd6 play c4, against ...Be7 play with the pieces. Choosing the wrong one is the ordinary way for White to reach move fifteen with nothing.',
-      structures: [],
-      whitePlans: [
-        'Bd3 and castle. The bishop belongs there in almost every Petrov: it is a third eye on e4 and it does not obstruct the rook that is going to e1.',
-        'Against ...Bd6, the pawn plan: castle, Re1, and then c4 hitting d5 at the moment the black queen cannot help. Treat ...c6 as the answer to expect rather than as a surprise.',
-        'Against ...Be7, the piece plan: Re1 and Nbd2, adding attackers until the knight is driven to d6, which is a small but permanent gain — the knight is worse there and Black has lost the tempo he was trying to save.',
-        'Answer 7...Nc6 with 8.Nbd2 rather than 8.Re1, which is the one real move-order trap in the line: the rook move allows ...Bg4, and after Nbd2 that bishop has nothing good to do.',
-        'Meet a premature ...Bg4 with c4 even in the ...Be7 lines. It is the exception to the rule above, and it works because the bishop has left the defence of d5 to make a pin that is not worth much.',
-        'Take a black ...f5 as a success. The pawn props the knight up and gives away the a2-g8 diagonal and the e5 square with it; opening the position at once is then the right reply.',
-      ],
-      blackPlans: [
-        '...Bd6, castle, meet c4 with ...c6, then ...Bf5 or ...Bg4 and ...Re8. The most popular scheme at every level and the one that keeps the knight on e4 by force rather than by hope.',
-        '...Be7 with ...Bf5, the modern treatment, where White has so far found nothing: the bishop on e7 keeps d5 defended by the queen, so the c4 break never carries a threat.',
-        '...Nc6 is double-edged and its value depends on White’s pawn. It is well placed when White commits to c4, since it presses d4 and eyes b4; it is misplaced when White answers with c3, which takes both squares away and leaves the knight with no work. It also blocks the c-pawn, so ...c6 is no longer available to hold d5.',
-        'Do not play ...f5 to save the knight. Retreating it to d6 costs a tempo and nothing else, which is far less than the diagonal and the e5 square.',
-      ],
-      breaks: [
-        {
-          move: 'c4',
-          side: 'white',
-          note: 'The undermining break: it attacks the pawn that supports the knight rather than the knight itself, which is the only way to make progress once the pieces have run out of attacking moves.',
-          prerequisites: [
-            'Black’s bishop on d6, so the queen on d8 no longer defends d5 through the file',
-            'Development complete enough that the reply ...Nc6 hitting d4 is not simply good',
-          ],
-        },
-        {
-          move: 'c6',
-          side: 'black',
-          note: 'The standard answer to c4 and the reason ...Bd6 systems hold. It has to be available, which is precisely what an early ...Nc6 gives up.',
-        },
-        {
-          move: 'c5',
-          side: 'white',
-          note: 'Gains space and comes with tempo against a bishop on d6 — one more small reason the bishop is more comfortable on e7, where the same push hits nothing.',
-        },
-        {
-          move: 'f5',
-          side: 'black',
-          note: 'Props up the knight and is almost always the wrong way to do it: the a2-g8 diagonal opens, e5 becomes a permanent hole, and White’s correct response is to open the centre immediately.',
-        },
-      ],
-      keySquares: [
-        { square: 'e4', note: 'The knight’s square and the subject of every move both sides make here. Everything else in the position is an attacker of it or a defender of it.' },
-        { square: 'd5', note: 'The pawn that makes the knight permanent. c4 is played against this square, not against the knight, and ...c6 is what keeps it standing.' },
-        { square: 'e5', note: 'What Black concedes if he is ever pushed into ...f5, and the outpost White plays for once that happens.' },
-        { square: 'd6', note: 'Where the knight ends up when the piece-pressure plan succeeds — an admission rather than a disaster, but the tempo Black was saving has gone.' },
-      ],
-      routes: ['Nb1-d2, the second attacker of e4 and the piece plan in one move'],
-      traps: [
-        '8.Re1 against 7...Nc6 lets Black in with 8...Bg4, developing the last piece actively and pinning the knight that guards d4; 8.Nbd2 first avoids it entirely.',
-        'Playing c4 against a bishop on e7 achieves nothing: ...Nc6 comes with tempo against d4 and d5 is still defended by the queen, so White has weakened d4 for no return.',
-      ],
-      sources: [
-        'The Principled and Practical 1.e4',
-        'Christof Sielecki — Keep it Simple 1.e4 2.0',
-        'Jonas Hacker — The Romantic Italian',
-        'Lifetime Repertoires: Petroff Defence',
-        'Understanding Chess Openings: 1.e4 — Part 2',
-        'The Complete Book of Chess Strategy',
-      ],
-    },
+    theory: PETROV_CLASSICAL_ATTACK,
+  },
+  {
+    // The 3.d4 order, which transposes into the Classical Attack rather than
+    // the Steinitz lines it is usually played for.
+    eco: 'C42',
+    name: 'Petrov Defence: Classical Attack',
+    moves: line('e4 e5 Nf3 Nf6 d4 Nxe4 Nxe5 d6 Nf3 d5'),
+    character: 'positional',
+    minRating: 1700,
+    theory: PETROV_CLASSICAL_ATTACK,
   },
   {
     eco: 'C43',
@@ -10713,67 +10891,19 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d3'),
     character: 'positional',
     minRating: 1200,
-    theory: {
-      idea: 'The quietest move in the Italian and the most popular one at every level, because d3 is not a retreat from the fight for the centre but a postponement of it. The pawn on c3 has already been played for d3-d4; the point of putting the other pawn on d3 first is that the break is then made when every piece is ready rather than on move five, and until it comes there is nothing in the position to go wrong. The pawn on c3 does a second job that is easy to miss: it takes b4 and d4 from the knight on c6, which is the reason that piece remains Black’s awkward one long after everything else has been solved. Black therefore has to choose a plan at move five rather than a move, and the four candidates differ in what they concede — a pawn to a6 or a5 to give the bishop a retreat and rule out b4, ...d6 for the classical Italian structure, or castling first and going for ...d5 in one move, which is principled, costs a tempo and does nothing at all about the knight.',
-      structures: ['spanish-closed'],
-      whitePlans: [
-        'Castle, complete the set-up with Re1 and Nbd2-f1-g3, and only then play d3-d4. The break is the point of c3 and it is worth waiting many moves for.',
-        'a4, the modern move and a better one than it looks: it stops ...b5, it prepares b4 and b5 against a pawn on a6, and above all it gives the bishop a2, so that ...Na5 no longer arrives with a tempo. The older treatment is Bb3, which does the same job less well.',
-        'Bg5 once Black has committed to ...d6, since the bishop on c5 can then no longer be dropped back to e7 to break the pin.',
-        'Against ...a6, open the queenside with a4 and b4-b5: if the a-file comes open it is White who benefits, and a pawn left on a6 becomes a target.',
-        'Meet ...d5 with exd5 and press the e5 pawn along the semi-open file; the loose knight on d5 and the undefended pawn are the price Black pays for the freeing break.',
-      ],
-      blackPlans: [
-        '...a6, the main line: it makes the retreat to a7 available without weakening anything and takes b5 from White’s pieces, at the cost of giving the a4 and b4-b5 plan something to bite on.',
-        '...a5, which stops b4 outright and frees a7 at once, but concedes b5 to a bishop or knight and takes a5 from the knight, so the bishop on b3 is never harassed and Qb3 ideas gain in strength.',
-        '...d6 with ...O-O and ...h6, the classical Italian structure, playing for ...Na5 to trade off White’s good bishop and for ...d5 much later.',
-        '...O-O and then ...d5 in one move, the principled equaliser: a healthy structure and freer pieces, against a tempo spent, an exposed knight on d5 and an e5 pawn that becomes a target down the e-file.',
-        'Expand with ...h6 and ...g5 before castling, since the storm is worth much less once the king has gone to the kingside.',
-      ],
-      breaks: [
-        {
-          move: 'd4',
-          side: 'white',
-          note: 'What c3 and d3 were played for. Timing is the whole skill: released too early it opens the position for the better developed side, which at that moment is usually Black.',
-          prerequisites: ['The pieces mobilised, with the rook on e1 and the knight rerouted', 'The bishop on c4 secured on a2 or b3 so that ...Na5 does not come with tempo'],
-        },
-        {
-          move: 'd5',
-          side: 'black',
-          note: 'The equalising break, and it must come in one move — a pawn that goes to d6 first has conceded the argument. What it does not solve is the knight on c6, which the pawn on c3 still cramps.',
-          prerequisites: ['Castled, so that the e-file pressure after exd5 can be met', 'A concrete answer ready for the attacks on the e5 pawn and on the knight that recaptures on d5'],
-        },
-        {
-          move: 'b4',
-          side: 'white',
-          note: 'The queenside space-gainer, prepared by a4. It hits the bishop on c5 and, against a pawn on a6, threatens b5 opening the file White is better placed to use.',
-          prerequisites: ['a4 played, or the bishop otherwise unable to punish the loosening of c3'],
-        },
-        { move: 'a5', side: 'black', note: 'Stops b4 before it starts, and buys the bishop the a7 square. The permanent cost is the b5 square and the loss of a5 as a route for the knight.' },
-        {
-          move: 'g5',
-          side: 'black',
-          note: 'The kingside advance in the slow ...d6 structures, aimed at the knight on f3 and at space; it is a real plan only while the king is still in the centre.',
-          prerequisites: ['...h6 played to support it', 'Black has not yet castled short', 'The centre closed enough that opening it is not White’s immediate answer'],
-        },
-      ],
-      keySquares: [
-        { square: 'd4', note: 'The square the whole set-up is built around. Everything White does before the break is preparation for occupying it under good conditions.' },
-        { square: 'a2', note: 'Where a4 sends the bishop. From there it is out of reach of ...Na5, which is what makes the modern treatment better than Bb3.' },
-        { square: 'b5', note: 'The square Black’s fifth move decides. ...a6 covers it, ...a5 hands it over.' },
-        { square: 'c3', note: 'A pawn doing quiet damage: it denies b4 and d4 to the knight on c6, and no break in the centre changes that.' },
-        { square: 'e5', note: 'Solid while the d-pawn stands on d6, and a target the moment Black plays ...d5 and opens the e-file.' },
-      ],
-      routes: ['Nb1-d2-f1-g3', 'Bc4-a2 after a4, or the older Bc4-b3', 'Nc6-a5 to trade the light-squared bishop', 'Bc5-a7 behind the a-pawn'],
-      sources: [
-        'The Spicy Italian Game',
-        'Kalyan’s Lethal Italian',
-        'Understanding Chess Openings: 1.e4 — Part 2',
-        'Anish Giri — Lifetime Repertoires: 1.e4 — Part 1',
-        'Sam Shankland — Lifetime Repertoires: Berlin Defence',
-        'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
-      ],
-    },
+    theory: GIUOCO_PIANISSIMO,
+  },
+  {
+    // ...Nf6 before ...Bc5 — a Two Knights move order that transposes once
+    // White answers d3 rather than Ng5. Theory is inherited along
+    // move-sequence ancestry, so this route stopped at the Italian Game four
+    // plies above; the object is shared rather than restated.
+    eco: 'C53',
+    name: 'Italian Game: Giuoco Pianissimo',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Nf6 d3 Bc5 c3'),
+    character: 'positional',
+    minRating: 1200,
+    theory: GIUOCO_PIANISSIMO,
   },
   { eco: 'C51', name: 'Evans Gambit Accepted', moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 b4 Bxb4 c3 Ba5'), character: 'gambit' },
   { eco: 'C01', name: 'French Defence: Exchange, Main Line', moves: line('e4 e6 d4 d5 exd5 exd5 Nf3 Nf6 Bd3') },
