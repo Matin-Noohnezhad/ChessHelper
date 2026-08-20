@@ -557,6 +557,85 @@ const BDG_VIENNA_DEFENCE: OpeningTheory = {
     'Nils Grandelius — Lifetime Repertoires: Classical Slav',
   ],
 };
+/**
+ * The Chebanenko Slav. Reached by both knight orders — 3.Nf3 Nf6 4.Nc3 a6 and
+ * 3.Nc3 Nf6 4.Nf3 a6 — and only the first is in the ECO tables, so the second
+ * had no address of its own. One set of ideas, two addresses.
+ */
+const SLAV_CHEBANENKO: OpeningTheory = {
+  idea: 'A move that looks like a waiting move and is in fact the enabling move for the one thing the Slav exists to do: get the light-squared bishop outside the pawn chain without surrendering the centre. Played immediately, 4...Bf5 is met by cxd5 and Qb3, hitting b7 and d5 at the same time, and Black has no comfortable way to hold both. With a pawn on a6 the objection disappears, because b7 can be defended by ...b5 or by the odd-looking ...Ra7, so the bishop goes to f5 or g4 a move later with nothing wrong. The same pawn does two further jobs. It makes ...dxc4 a real threat rather than a bluff, since ...b5 will hold the extra pawn; and it commits nothing, so White has to declare his set-up first. What it costs is on the queenside dark squares. The hole on b6 is permanent, and more concretely a pawn that has already left a7 can never recapture on b6 — which is exactly why 5.c5 is a serious try here and a dubious one against the Slav with the pawn at home, where ...b6 and ...axb6 open the a-file and leave White short of central pawns. That single difference is worth more than it sounds: it is the reason the main test of the Chebanenko is a space-grabbing pawn move rather than a piece.',
+  structures: [],
+  whitePlans: [
+    '5.c5, the critical test. It takes queenside space, fixes b6, and needs no b2-b4 to support it because Black’s a-pawn can no longer recapture there. White follows with Bf4, h3, e3 and Bd3, and meets the freeing ...e5 with dxe5 and Na4 — a knight that holds c5 while covering b6 and d4.',
+    '5.a4, stopping ...b5 before it starts. It is the standard antidote and it has a standing price: b4 is conceded for the rest of the game.',
+    '5.cxd5, transposing into the Exchange Slav. The least ambitious answer and a genuinely practical one — the Chebanenko punishes improvisation, so a transposition into a structure already known beats an invented set-up.',
+    '5.g3 and Bg2, the Catalan treatment. It is comfortable for Black in one specific respect: a bishop on g2 does not look down the f1-a6 diagonal, so the queenside expansion cannot be attacked and ...b5 comes with a clear conscience.',
+    '5.e3, the simplest move on the board. It defends c4 and prepares Bd3, b3 and Bb2 — modest, and not to be underestimated.',
+    'Guard c4 with the queen. 5.Qb3 does it directly, and 5.Qd3 becomes the same position once Black takes on c4.',
+  ],
+  blackPlans: [
+    'The primary plan and the one everything else falls back from: ...Bf5 or ...Bg4 first, then ...e6, ...Nbd7, ...Be7 or ...Bd6, and castle. That set-up is the Slav in its plainest form, and 4...a6 is what makes it legal.',
+    'Where the bishop cannot get out, fianchetto the other one with ...g6 rather than shutting the c8-h3 diagonal with ...e6.',
+    '...e6 with ...dxc4 and ...b5, giving up on f5 and developing the bishop on b7 instead, with ...c5 to follow.',
+    '...e6 with ...c5 and ...Nc6, pressing d4 head-on rather than manoeuvring around it.',
+    'Against 5.a4, play ...e6 first. It is the one line where Black shuts in his own bishop on purpose, and it is necessary because the positional threat of a5 has to be answered; the pawn on e6 then defends d5, which is what makes ...c5 possible.',
+    'Against 5.a4, the alternative is ...a5, fixing b4 as a permanent square for a knight or a bishop and taking the queenside off the agenda.',
+    'Against 5.c5, either ...Nbd7 — which blocks the bishop but prepares ...e5 and is useful against Bf4 — or ...b6 and ...Bf5, getting the bishop out while the queenside is still fluid.',
+  ],
+  breaks: [
+    {
+      move: 'c5',
+      side: 'white',
+      note: 'The main test. It closes the queenside, makes b6 a hole, and gains space against a black position that has spent a move on a pawn rather than a piece. It works without preparation here for one reason: the recapture ...axb6 no longer exists.',
+    },
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'Black’s own advance and the point of the whole structure — it gives him the central pawn majority and undoes White’s queenside space in one move.',
+      prerequisites: ['d5 is defended, usually by ...e6, or the break simply drops the d-pawn'],
+    },
+    {
+      move: 'e5',
+      side: 'black',
+      note: 'The liberating push in the closed positions after c5, and the move White spends time preventing. Its sting is that the pawn on c5 becomes loose the moment White’s grip on d4 slips.',
+      prerequisites: ['...Nbd7 played so the push is supported', 'An answer ready to dxe5 followed by Na4, which is how White holds c5'],
+    },
+    {
+      move: 'b5',
+      side: 'black',
+      note: 'What ...a6 was played for. It holds the pawn after ...dxc4 and takes queenside space, and it is most comfortable against a fianchetto, where no white piece looks at the f1-a6 diagonal.',
+      prerequisites: ['a4 has not been played'],
+    },
+    {
+      move: 'a4',
+      side: 'white',
+      note: 'The standing answer to ...b5, played before it happens. It stops the expansion and hands over b4 permanently, which is a fair trade only if White has a use for the queenside.',
+    },
+  ],
+  keySquares: [
+    { square: 'b7', note: 'The pawn that makes an immediate ...Bf5 impossible, because cxd5 and Qb3 attack it and d5 at once. ...a6 gives it two defences — ...b5 and ...Ra7 — and that is the entire justification for the move.' },
+    { square: 'b5', note: 'What the pawn move buys: with the square controlled, ...dxc4 followed by ...b5 is a genuine attempt to keep the pawn rather than a bluff.' },
+    { square: 'b6', note: 'The hole ...a6 leaves behind. White’s c5 advance fixes it and the knight route to a4 watches it, and it is the reason the space grab is more dangerous here than elsewhere in the Slav.' },
+    { square: 'b4', note: 'Conceded the moment a4 is played, and never recovered. A black knight or bishop takes up residence and the a4 pawn cannot chase it.' },
+    { square: 'e5', note: 'Black’s freeing square in the closed structures, which is why White’s bishop heads for f4 and why so much of his play is about controlling it.' },
+  ],
+  routes: [
+    'Bc8-f5 or Bc8-g4 before ...e6 — the point of the variation, and the thing the Semi-Slav and the Classical Slav each give up in a different way',
+    'Ra8-a7 defending b7 along the second rank, the resource that only exists once the a-pawn has moved',
+    'Nc3-a4 holding c5 while covering b6 and d4, White’s standard reply to the ...e5 break',
+  ],
+  traps: [
+    'Playing ...Bf5 a move too early. cxd5 cxd5 and Qb3 hits b7 and d5 together, and the whole reason ...a6 comes first is that there is no good answer.',
+    'Improvising against 5.c5. The advance is stronger against the Chebanenko than against the Slav proper for a reason that is easy to miss at the board: ...b6 cannot be answered with ...axb6, so the undermining does not open the a-file and Black is left playing against the space rather than dissolving it.',
+    'Meeting the ...b5 formation with Ne5 and a raid on c6. ...Qb6 hits the knight and ...Bb7 follows, and White finds he has traded his best piece for a queenside he was never going to hold.',
+    'Choosing a set-up before White has chosen his. The variation is a small repertoire of five schemes rather than a line, and which one applies is decided by White’s fifth move — a natural move borrowed from the wrong scheme is how the thread gets lost.',
+  ],
+  sources: [
+    'Chebanenko Slav',
+    'Alvar Alonso — Lifetime Repertoires: The Catalan',
+    'Plichta — Lifetime Repertoires: Queen’s Gambit',
+  ],
+};
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -6793,6 +6872,28 @@ export const CURATED_OPENINGS: Opening[] = [
         'The Club Player’s Black Repertoire 1.d4 d5',
       ],
     },
+  },
+  {
+    eco: 'D15',
+    name: 'Slav Defence: Chebanenko Variation',
+    moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 a6'),
+    character: 'positional',
+    minRating: 1600,
+    forSide: 'black',
+    aliases: ['Chebanenko Slav', '...a6 Slav'],
+    theory: SLAV_CHEBANENKO,
+  },
+  {
+    // The same position by the other knight order, which the ECO tables do not
+    // name — without this address the line falls back on the Slav Defence root.
+    eco: 'D15',
+    name: 'Slav Defence: Chebanenko Variation',
+    moves: line('d4 d5 c4 c6 Nc3 Nf6 Nf3 a6'),
+    character: 'positional',
+    minRating: 1600,
+    forSide: 'black',
+    aliases: ['Chebanenko Slav', '...a6 Slav'],
+    theory: SLAV_CHEBANENKO,
   },
   {
     eco: 'D17',
