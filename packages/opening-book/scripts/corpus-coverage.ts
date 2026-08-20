@@ -113,6 +113,14 @@ const UNWRITABLE = new Map<string, string>([
     'e4 e5 Nf3 Nc6 Nc3 Nf6 d4 exd4 Nxd4 Nxe4',
     'Schmid Defence: the distinct passages are marketing, autobiography and move-frequency statistics from two courses. Depth 3 surfaces nothing further. No plan content exists to distil.',
   ],
+  [
+    'e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 Nf6 Nc3 d6 Bc4 e6',
+    'Sozin Leonhardt: the distinct passages are chapter prefaces from two courses, each announcing that 6...e6 is the most popular reply and blunts the bishop on c4. The one plan sentence among them — Black follows with ...Be7 and short castling — is already in the Classical Variation entry four plies above. Depth 3 and a 90-character floor surface nothing further.',
+  ],
+  [
+    'e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 c4',
+    'Petrov Kaufmann Attack: four passages that survive deduplication are four phrasings of one sentence from a single course — free piece play as in the main lines, without the theory, followed by d3, d4, Nc3 and Bd3. One course saying one thing is not corroboration, and the sentence itself is a move list.',
+  ],
 ]);
 
 /** Same near-duplicate key the digest uses, so the two agree on what is one piece. */
