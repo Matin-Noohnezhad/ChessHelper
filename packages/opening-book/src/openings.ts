@@ -2338,6 +2338,144 @@ const QGA_CLASSICAL_MAIN: OpeningTheory = {
     ],
     };
 
+const CATALAN_OPEN_C6: OpeningTheory = {
+    idea: 'Everywhere else in the Open Catalan the pawn on c4 is a charge rather than a prize: Black takes it to make White spend time collecting it, and expects to give it back. Here he means to keep it. The whole variation is built on one small move, and the move is worth understanding rather than memorising. Black wants ...b5, because a pawn on b5 is what actually holds c4; the problem with ...b5 in every other version is that the white queen comes to a4 and takes it along the diagonal from a4 through b5 to d7. A pawn on c6 answers that in advance — it defends b5, so the queen sortie no longer wins anything, and the whole structure c6-b5-c4 stands up. The second thing ...c6 does is sit on the long diagonal in front of the bishop on g2, which is the piece the entire opening is about. What it costs is real and should be counted: the freeing break ...c5 now needs two moves instead of one, the b8 knight loses its natural square, and Black is committing to a passive-looking Slav shape in return for a pawn he still has to prove he can hold. The resemblance to the Slav and to the Triangle is not accidental, and a player who knows those structures will recognise the pawn skeleton at once. White’s answers divide into two concepts rather than a list of moves. He can go after the pawn immediately — the knight to e5 heading for c4, or a4 played before ...b5 ever appears — or he can leave it alone and treat it as a gambit, playing for the diagonal, the centre and a lead in development that Black’s pawn moves have paid for. Both are respectable, and the second is what makes the line dangerous rather than merely greedy.',
+    structures: [],
+    whitePlans: [
+      'Ne5, the most common choice and the one that fits the rest of a Catalan repertoire: the knight heads for c4 and recovers the pawn without the queen having to leave the back rank early.',
+      'a4 before ...b5 arrives, which is the cheapest way to make the whole scheme fail — the pawn chain Black is building needs b5, and a pawn already on a4 means it can never be built.',
+      'O-O first, declining to chase anything. The pawn is not going anywhere and the moves Black is spending on it are moves he is not spending on development.',
+      'Treat the pawn as a gambit and play for the position: the bishop on the long diagonal, e2-e4 in the centre, and pieces out while Black shuffles pawns on the queenside.',
+      'Aim at the squares the queenside advance leaves behind. Once ...b5 has been played the pawn on c6 cannot be defended by another pawn from the b-file, and a knight or a bishop settling on e5 or a5 makes that count.',
+    ],
+    blackPlans: [
+      '...b5 next, which is the entire point. The pawn is defended by c6, so the queen check on a4 no longer collects it, and c4 finally has a defender that is not a piece.',
+      '...Bb7 behind the pawns, joining the argument on the long diagonal that ...c6 has already started.',
+      '...a6 to hold the b5 pawn a second time, because a4 is coming and the chain has to survive it.',
+      '...Nbd7 rather than ...Nc6, since the natural square is occupied. From d7 the knight supports both ...b5 and, later, ...c5 or ...e5.',
+      'Get the extra pawn traded for something concrete rather than clung to. A pawn held for twenty moves while the bishop on g2 rakes the board is not an advantage, and the queenside majority it eventually produces is.',
+      'Keep the option of ...c5 alive. It is two moves away rather than one, but it is still the move that frees the position, and a version of this line where Black never plays it is a version he is losing.',
+    ],
+    breaks: [
+      {
+        move: 'b5',
+        side: 'black',
+        note: 'The follow-up ...c6 exists to make possible. It is what actually holds the pawn on c4: the queen on a4 hits b5 along the a4-d7 diagonal, and the pawn on c6 is the answer.',
+        prerequisites: ['The pawn already on c6, or the advance simply loses material to Qa4', 'White not having played a4 first'],
+      },
+      {
+        move: 'a4',
+        side: 'white',
+        note: 'The undermining move, and it is a race rather than a plan — played before ...b5 it prevents the whole structure, played after it, it forces Black to find another defender for the chain.',
+      },
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The Catalan’s freeing break, and here it costs two moves instead of one. That is the price of ...c6, and it is why the extra pawn has to be worth something before the position is ready to open.',
+        prerequisites: ['The queenside settled, since the break gives up the pawn that was holding c4', 'A knight on d7 or a rook on c8 behind it'],
+      },
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'The bind that turns a gambited pawn into a position. With Black’s pieces still at home and his pawns on the queenside, the centre is the one place he is not looking.',
+        prerequisites: ['Development completed first — the advance is a reward for the tempi Black spent, not a way of winning them'],
+      },
+    ],
+    keySquares: [
+      { square: 'b5', note: 'The square the variation is decided on. Black needs a pawn there to hold c4, and every White plan is a way of making sure it never arrives or does not survive.' },
+      { square: 'c6', note: 'Doing three jobs and paying for two of them: it defends b5, it blocks the g2 bishop’s diagonal, and it takes the knight’s square and delays ...c5.' },
+      { square: 'c4', note: 'The pawn itself. It is worth keeping only for as long as keeping it costs less than the development being given up for it.' },
+      { square: 'e5', note: 'Where White’s knight goes to reach c4, and the hole Black’s queenside pawn moves quietly leave behind.' },
+    ],
+    routes: [
+      'Nf3-e5-c4, the recapture that keeps every other white piece where it wants to be',
+      'Nb8-d7 rather than to c6, which the pawn has taken',
+    ],
+    traps: [
+      'Playing ...b5 before ...c6 in the analogous Open Catalan positions and expecting it to hold: without the c6 pawn behind it the advance runs into Qa4, and the whole point of this move order is that it does not.',
+      'Holding the pawn on c4 as a matter of principle. Every course that recommends the line says the same thing about it — the material is a bargaining chip, and a Black player who refuses to spend it ends up defending a Catalan a pawn up and several tempi down.',
+    ],
+    sources: [
+      'Srinath Narayanan — Lifetime Repertoires: The Catalan',
+      'Alvar Alonso — Lifetime Repertoires: The Catalan',
+      'Lifetime Repertoires: Benko Gambit',
+    ],
+    };
+
+const CATALAN_OPEN_CLASSICAL: OpeningTheory = {
+    idea: 'The main tabia of the Open Catalan, and the position to understand if the opening is to be understood at all. Two facts organise everything. The first is that the bishop on g2 is White’s most important piece; the second is that Black frees himself with ...c5 or ...e5 and with nothing else. Those two facts pull against each other, because both breaks open the centre and an open centre is what the bishop on the long diagonal is waiting for — so challenging the centre before the diagonal has been answered is the standing error here, and the whole of Black’s seventh move is about answering it. The pawn on c4 is not the point. Black is not trying to keep it; he is trying to make White spend time collecting it, and to use that time on ...a6 and ...b5, or ...b6 and ...Bb7, or the bishop’s march to c6, each of which is a different answer to the same question. White in turn recovers the pawn in the way that concedes least: the queen to c2 taking directly, the knight to e5 taking with activity, or the knight to a3 heading for c4. What makes the position hard for both sides is that every recapture and every defence carries a structural price, and the price is usually paid on a square rather than in material.',
+    structures: [],
+    whitePlans: [
+      'Qc2 and take on c4 at once. Preparing it with a4 first looks tidy and is worse: Black replies ...b6 and ...Bb7, wins the diagonal without weakening anything, and gets ...c5 in for free.',
+      'Ne5, regaining the pawn actively. If Black challenges with ...Nc6 the recapture has to be made with the bishop rather than the knight — taking with the knight and then on c6 leaves the queen and the bishop on c1 with nothing to do while Black’s rook and bishop take over the b-file and the diagonal.',
+      'Na3 heading for c4, the line Carlsen revived. It sidesteps the ...b5 systems at the price of allowing the exchange on a3, so White gives up a clean structure for the bishop pair, open lines and the half-open b-file.',
+      'Play a4 when Black commits to ...a6, and know what it costs: the b4 square. It stops ...b5 and it hands Black’s queen’s knight a permanent outpost, which is exactly the trade Black had in mind when he played ...a6 rather than developing the bishop directly.',
+      'Aim for e4 once the pawn is back and the queenside is settled. The bishop on g2 supports it, and a full centre with the long diagonal open is the bind the whole opening exists to reach.',
+    ],
+    blackPlans: [
+      '...a6 with ...b5 to follow. It defends the pawn a second time, prepares ...Bb7, and provokes a4, which is a concession worth having even though it stops the advance.',
+      '...b5 at once, the fashionable treatment since the 2021 world championship match. Holding the pawn forces White into concessions to win it back, and the cost is honest: the long diagonal opens and Black’s remaining choices narrow.',
+      '...b6 and ...Bb7, the direct fight for the diagonal, and the reason an early a4 by White is inaccurate.',
+      '...Bd7 heading for c6, which is a good plan with ...a6 and a4 already inserted and a much weaker one without them. Without that exchange Black has no b4 square and White keeps every queenside option open.',
+      '...c6, holding the extra pawn in the simplest way. It is solid and it postpones the freeing break indefinitely, which is the trade-off the whole variation turns on.',
+      'Do not play ...c5 before the diagonal has been answered. Opening the centre while the bishop on g2 is unopposed is how Black loses these positions from a comfortable-looking start.',
+    ],
+    breaks: [
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The freeing break, and the position is about the conditions for it rather than the move itself. Played with the diagonal still open it hands White exactly the game he wants.',
+        prerequisites: ['The long diagonal answered — a bishop on b7, a pawn on c6, or the light-squared bishops traded', 'The queenside development finished, since the break invites the exchange of a defender'],
+      },
+      {
+        move: 'e5',
+        side: 'black',
+        note: 'The other release, available in the setups where the knight comes to d7 and the rook to e8. It has the advantage of not opening the diagonal the bishop on g2 stands on.',
+        prerequisites: ['A knight on d7 supporting the push', 'The pawn on c4 already returned, or the queenside collapses while the centre is opening'],
+      },
+      {
+        move: 'b5',
+        side: 'black',
+        note: 'The queenside advance that holds the extra pawn, and the modern main line. It buys time and clarity in exchange for opening the diagonal it was meant to contest.',
+        prerequisites: ['...a6 played, or a4 simply undermines the chain at once'],
+      },
+      {
+        move: 'a4',
+        side: 'white',
+        note: 'The standard undermining move against the ...b5 systems, and never free: it concedes b4 to the black knight and leaves the queenside structure fixed in a way that suits Black’s pieces.',
+        prerequisites: ['Black committed to ...a6 or ...b5, so the advance has something to attack'],
+      },
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'The bind. Once the pawn is recovered and Black has not achieved a break, the central advance turns long-term pressure into a spatial advantage that does not go away.',
+        prerequisites: ['The c4 pawn recovered', 'Black’s ...c5 and ...e5 both prevented or answered'],
+      },
+    ],
+    keySquares: [
+      { square: 'c4', note: 'A pawn to be collected rather than a pawn to be won. What matters is how many moves the collection takes and what Black does with them.' },
+      { square: 'b7', note: 'The square the whole variation argues about. A black bishop there answers the long diagonal, and every White move order here is judged by whether it arrives before the bishop does.' },
+      { square: 'b4', note: 'What a4 costs. The knight from b8 or d7 sits there permanently, and it is the reason Black plays ...a6 before developing the bishop.' },
+      { square: 'e5', note: 'The knight’s active post, from which the pawn on c4 is recovered with tempo — and the square Black’s own break aims to take away.' },
+      { square: 'c6', note: 'Where Black’s bishop or c-pawn goes to block the diagonal. Which of the two occupies it decides whether Black is playing for the break or for solidity.' },
+    ],
+    routes: [
+      'Bc8-d7-c6 to block the long diagonal, worth a tempo only once a4 has been provoked',
+      'Nb1-a3-c4, White’s way of recovering the pawn while keeping the queen at home',
+      'Nb8-d7-b6 or ...Nb8-a6-b4, the knight’s routes to the squares the queenside advances create',
+    ],
+    traps: [
+      'Recapturing on c6 with the knight in the Ne5 lines and then taking on c6 with the bishop looks like a free pawn and is not: the rook comes to b8, the queen and the bishop on c1 are both tied down, and the pressure on the b- and d-files is worth more than the doubled pawns.',
+      'Preparing the recapture with a4 rather than taking on c4 immediately gives Black time for ...b6 and ...Bb7, which solves his hardest problem for nothing.',
+      '...Bd7 without ...a6 and a4 having been exchanged is a move order slip rather than a plan: the bishop reaches c6 and Black still has no square for the knight and no queenside counterplay.',
+    ],
+    sources: [
+      'Alvar Alonso — Lifetime Repertoires: The Catalan',
+      'Srinath Narayanan — Lifetime Repertoires: The Catalan',
+      'Ivan Cheparinov — Top Level Catalan Repertoire for White, Part 2',
+    ],
+    };
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -9965,6 +10103,28 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: CATALAN_MAIN,
   },
   {
+    // c4 held back until move three, a Réti-flavoured order into the same
+    // position. It fell back on the Queen’s Pawn Opening six plies above.
+    eco: 'E00',
+    name: 'Catalan Opening',
+    moves: line('d4 Nf6 Nf3 d5 c4 e6 g3'),
+    character: 'positional',
+    minRating: 1600,
+    theory: CATALAN_MAIN,
+  },
+  {
+    // The 1...d5 order, and by volume the largest single hole in the report:
+    // 635 annotations from eight courses arrived here and were shown the
+    // Queen’s Gambit Declined, three plies above, because g3 is what stops the
+    // position being a Queen’s Gambit Declined.
+    eco: 'E00',
+    name: 'Catalan Opening',
+    moves: line('d4 d5 c4 e6 Nf3 Nf6 g3'),
+    character: 'positional',
+    minRating: 1600,
+    theory: CATALAN_MAIN,
+  },
+  {
     eco: 'E04',
     name: 'Catalan Opening: Open Defence',
     moves: line('d4 Nf6 c4 e6 Nf3 d5 g3 c6 Bg2 dxc4'),
@@ -9972,69 +10132,43 @@ export const CURATED_OPENINGS: Opening[] = [
     minRating: 1800,
     forSide: 'black',
     aliases: ['Open Catalan with 5...c6', 'Keres Variation'],
-    theory: {
-      idea: 'Everywhere else in the Open Catalan the pawn on c4 is a charge rather than a prize: Black takes it to make White spend time collecting it, and expects to give it back. Here he means to keep it. The whole variation is built on one small move, and the move is worth understanding rather than memorising. Black wants ...b5, because a pawn on b5 is what actually holds c4; the problem with ...b5 in every other version is that the white queen comes to a4 and takes it along the diagonal from a4 through b5 to d7. A pawn on c6 answers that in advance — it defends b5, so the queen sortie no longer wins anything, and the whole structure c6-b5-c4 stands up. The second thing ...c6 does is sit on the long diagonal in front of the bishop on g2, which is the piece the entire opening is about. What it costs is real and should be counted: the freeing break ...c5 now needs two moves instead of one, the b8 knight loses its natural square, and Black is committing to a passive-looking Slav shape in return for a pawn he still has to prove he can hold. The resemblance to the Slav and to the Triangle is not accidental, and a player who knows those structures will recognise the pawn skeleton at once. White’s answers divide into two concepts rather than a list of moves. He can go after the pawn immediately — the knight to e5 heading for c4, or a4 played before ...b5 ever appears — or he can leave it alone and treat it as a gambit, playing for the diagonal, the centre and a lead in development that Black’s pawn moves have paid for. Both are respectable, and the second is what makes the line dangerous rather than merely greedy.',
-      structures: [],
-      whitePlans: [
-        'Ne5, the most common choice and the one that fits the rest of a Catalan repertoire: the knight heads for c4 and recovers the pawn without the queen having to leave the back rank early.',
-        'a4 before ...b5 arrives, which is the cheapest way to make the whole scheme fail — the pawn chain Black is building needs b5, and a pawn already on a4 means it can never be built.',
-        'O-O first, declining to chase anything. The pawn is not going anywhere and the moves Black is spending on it are moves he is not spending on development.',
-        'Treat the pawn as a gambit and play for the position: the bishop on the long diagonal, e2-e4 in the centre, and pieces out while Black shuffles pawns on the queenside.',
-        'Aim at the squares the queenside advance leaves behind. Once ...b5 has been played the pawn on c6 cannot be defended by another pawn from the b-file, and a knight or a bishop settling on e5 or a5 makes that count.',
-      ],
-      blackPlans: [
-        '...b5 next, which is the entire point. The pawn is defended by c6, so the queen check on a4 no longer collects it, and c4 finally has a defender that is not a piece.',
-        '...Bb7 behind the pawns, joining the argument on the long diagonal that ...c6 has already started.',
-        '...a6 to hold the b5 pawn a second time, because a4 is coming and the chain has to survive it.',
-        '...Nbd7 rather than ...Nc6, since the natural square is occupied. From d7 the knight supports both ...b5 and, later, ...c5 or ...e5.',
-        'Get the extra pawn traded for something concrete rather than clung to. A pawn held for twenty moves while the bishop on g2 rakes the board is not an advantage, and the queenside majority it eventually produces is.',
-        'Keep the option of ...c5 alive. It is two moves away rather than one, but it is still the move that frees the position, and a version of this line where Black never plays it is a version he is losing.',
-      ],
-      breaks: [
-        {
-          move: 'b5',
-          side: 'black',
-          note: 'The follow-up ...c6 exists to make possible. It is what actually holds the pawn on c4: the queen on a4 hits b5 along the a4-d7 diagonal, and the pawn on c6 is the answer.',
-          prerequisites: ['The pawn already on c6, or the advance simply loses material to Qa4', 'White not having played a4 first'],
-        },
-        {
-          move: 'a4',
-          side: 'white',
-          note: 'The undermining move, and it is a race rather than a plan — played before ...b5 it prevents the whole structure, played after it, it forces Black to find another defender for the chain.',
-        },
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The Catalan’s freeing break, and here it costs two moves instead of one. That is the price of ...c6, and it is why the extra pawn has to be worth something before the position is ready to open.',
-          prerequisites: ['The queenside settled, since the break gives up the pawn that was holding c4', 'A knight on d7 or a rook on c8 behind it'],
-        },
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'The bind that turns a gambited pawn into a position. With Black’s pieces still at home and his pawns on the queenside, the centre is the one place he is not looking.',
-          prerequisites: ['Development completed first — the advance is a reward for the tempi Black spent, not a way of winning them'],
-        },
-      ],
-      keySquares: [
-        { square: 'b5', note: 'The square the variation is decided on. Black needs a pawn there to hold c4, and every White plan is a way of making sure it never arrives or does not survive.' },
-        { square: 'c6', note: 'Doing three jobs and paying for two of them: it defends b5, it blocks the g2 bishop’s diagonal, and it takes the knight’s square and delays ...c5.' },
-        { square: 'c4', note: 'The pawn itself. It is worth keeping only for as long as keeping it costs less than the development being given up for it.' },
-        { square: 'e5', note: 'Where White’s knight goes to reach c4, and the hole Black’s queenside pawn moves quietly leave behind.' },
-      ],
-      routes: [
-        'Nf3-e5-c4, the recapture that keeps every other white piece where it wants to be',
-        'Nb8-d7 rather than to c6, which the pawn has taken',
-      ],
-      traps: [
-        'Playing ...b5 before ...c6 in the analogous Open Catalan positions and expecting it to hold: without the c6 pawn behind it the advance runs into Qa4, and the whole point of this move order is that it does not.',
-        'Holding the pawn on c4 as a matter of principle. Every course that recommends the line says the same thing about it — the material is a bargaining chip, and a Black player who refuses to spend it ends up defending a Catalan a pawn up and several tempi down.',
-      ],
-      sources: [
-        'Srinath Narayanan — Lifetime Repertoires: The Catalan',
-        'Alvar Alonso — Lifetime Repertoires: The Catalan',
-        'Lifetime Repertoires: Benko Gambit',
-      ],
-    },
+    theory: CATALAN_OPEN_C6,
+  },
+  {
+    // A Réti-flavoured order with c4 delayed, which inherited from the Queen’s
+    // Pawn Opening nine plies above.
+    eco: 'E04',
+    name: 'Catalan Opening: Open Defence',
+    moves: line('d4 Nf6 Nf3 d5 c4 e6 g3 dxc4 Bg2 c6'),
+    character: 'sharp',
+    minRating: 1800,
+    forSide: 'black',
+    aliases: ['Open Catalan with 5...c6 (2.Nf3 order)'],
+    theory: CATALAN_OPEN_C6,
+  },
+  {
+    // g3 on move three, Nf3 held back — the order that avoids the ...Bb4+
+    // lines. Same position.
+    eco: 'E04',
+    name: 'Catalan Opening: Open Defence',
+    moves: line('d4 Nf6 c4 e6 g3 d5 Bg2 dxc4 Nf3 c6'),
+    character: 'sharp',
+    minRating: 1800,
+    forSide: 'black',
+    aliases: ['Open Catalan with 5...c6 (3.g3 order)'],
+    theory: CATALAN_OPEN_C6,
+  },
+  {
+    // ...dxc4 before ...c6, which is the usual way of reaching it: the pawn is
+    // taken while White’s bishop is still on f1 and only then held with ...c6.
+    eco: 'E04',
+    name: 'Catalan Opening: Open Defence',
+    moves: line('d4 Nf6 c4 e6 Nf3 d5 g3 dxc4 Bg2 c6'),
+    character: 'sharp',
+    minRating: 1800,
+    forSide: 'black',
+    aliases: ['Open Catalan with 5...c6 (...dxc4 first)'],
+    theory: CATALAN_OPEN_C6,
   },
   {
     eco: 'E05',
@@ -10042,79 +10176,28 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('d4 Nf6 c4 e6 Nf3 d5 g3 Be7 Bg2 O-O O-O dxc4'),
     character: 'positional',
     minRating: 1800,
-    theory: {
-      idea: 'The main tabia of the Open Catalan, and the position to understand if the opening is to be understood at all. Two facts organise everything. The first is that the bishop on g2 is White’s most important piece; the second is that Black frees himself with ...c5 or ...e5 and with nothing else. Those two facts pull against each other, because both breaks open the centre and an open centre is what the bishop on the long diagonal is waiting for — so challenging the centre before the diagonal has been answered is the standing error here, and the whole of Black’s seventh move is about answering it. The pawn on c4 is not the point. Black is not trying to keep it; he is trying to make White spend time collecting it, and to use that time on ...a6 and ...b5, or ...b6 and ...Bb7, or the bishop’s march to c6, each of which is a different answer to the same question. White in turn recovers the pawn in the way that concedes least: the queen to c2 taking directly, the knight to e5 taking with activity, or the knight to a3 heading for c4. What makes the position hard for both sides is that every recapture and every defence carries a structural price, and the price is usually paid on a square rather than in material.',
-      structures: [],
-      whitePlans: [
-        'Qc2 and take on c4 at once. Preparing it with a4 first looks tidy and is worse: Black replies ...b6 and ...Bb7, wins the diagonal without weakening anything, and gets ...c5 in for free.',
-        'Ne5, regaining the pawn actively. If Black challenges with ...Nc6 the recapture has to be made with the bishop rather than the knight — taking with the knight and then on c6 leaves the queen and the bishop on c1 with nothing to do while Black’s rook and bishop take over the b-file and the diagonal.',
-        'Na3 heading for c4, the line Carlsen revived. It sidesteps the ...b5 systems at the price of allowing the exchange on a3, so White gives up a clean structure for the bishop pair, open lines and the half-open b-file.',
-        'Play a4 when Black commits to ...a6, and know what it costs: the b4 square. It stops ...b5 and it hands Black’s queen’s knight a permanent outpost, which is exactly the trade Black had in mind when he played ...a6 rather than developing the bishop directly.',
-        'Aim for e4 once the pawn is back and the queenside is settled. The bishop on g2 supports it, and a full centre with the long diagonal open is the bind the whole opening exists to reach.',
-      ],
-      blackPlans: [
-        '...a6 with ...b5 to follow. It defends the pawn a second time, prepares ...Bb7, and provokes a4, which is a concession worth having even though it stops the advance.',
-        '...b5 at once, the fashionable treatment since the 2021 world championship match. Holding the pawn forces White into concessions to win it back, and the cost is honest: the long diagonal opens and Black’s remaining choices narrow.',
-        '...b6 and ...Bb7, the direct fight for the diagonal, and the reason an early a4 by White is inaccurate.',
-        '...Bd7 heading for c6, which is a good plan with ...a6 and a4 already inserted and a much weaker one without them. Without that exchange Black has no b4 square and White keeps every queenside option open.',
-        '...c6, holding the extra pawn in the simplest way. It is solid and it postpones the freeing break indefinitely, which is the trade-off the whole variation turns on.',
-        'Do not play ...c5 before the diagonal has been answered. Opening the centre while the bishop on g2 is unopposed is how Black loses these positions from a comfortable-looking start.',
-      ],
-      breaks: [
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The freeing break, and the position is about the conditions for it rather than the move itself. Played with the diagonal still open it hands White exactly the game he wants.',
-          prerequisites: ['The long diagonal answered — a bishop on b7, a pawn on c6, or the light-squared bishops traded', 'The queenside development finished, since the break invites the exchange of a defender'],
-        },
-        {
-          move: 'e5',
-          side: 'black',
-          note: 'The other release, available in the setups where the knight comes to d7 and the rook to e8. It has the advantage of not opening the diagonal the bishop on g2 stands on.',
-          prerequisites: ['A knight on d7 supporting the push', 'The pawn on c4 already returned, or the queenside collapses while the centre is opening'],
-        },
-        {
-          move: 'b5',
-          side: 'black',
-          note: 'The queenside advance that holds the extra pawn, and the modern main line. It buys time and clarity in exchange for opening the diagonal it was meant to contest.',
-          prerequisites: ['...a6 played, or a4 simply undermines the chain at once'],
-        },
-        {
-          move: 'a4',
-          side: 'white',
-          note: 'The standard undermining move against the ...b5 systems, and never free: it concedes b4 to the black knight and leaves the queenside structure fixed in a way that suits Black’s pieces.',
-          prerequisites: ['Black committed to ...a6 or ...b5, so the advance has something to attack'],
-        },
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'The bind. Once the pawn is recovered and Black has not achieved a break, the central advance turns long-term pressure into a spatial advantage that does not go away.',
-          prerequisites: ['The c4 pawn recovered', 'Black’s ...c5 and ...e5 both prevented or answered'],
-        },
-      ],
-      keySquares: [
-        { square: 'c4', note: 'A pawn to be collected rather than a pawn to be won. What matters is how many moves the collection takes and what Black does with them.' },
-        { square: 'b7', note: 'The square the whole variation argues about. A black bishop there answers the long diagonal, and every White move order here is judged by whether it arrives before the bishop does.' },
-        { square: 'b4', note: 'What a4 costs. The knight from b8 or d7 sits there permanently, and it is the reason Black plays ...a6 before developing the bishop.' },
-        { square: 'e5', note: 'The knight’s active post, from which the pawn on c4 is recovered with tempo — and the square Black’s own break aims to take away.' },
-        { square: 'c6', note: 'Where Black’s bishop or c-pawn goes to block the diagonal. Which of the two occupies it decides whether Black is playing for the break or for solidity.' },
-      ],
-      routes: [
-        'Bc8-d7-c6 to block the long diagonal, worth a tempo only once a4 has been provoked',
-        'Nb1-a3-c4, White’s way of recovering the pawn while keeping the queen at home',
-        'Nb8-d7-b6 or ...Nb8-a6-b4, the knight’s routes to the squares the queenside advances create',
-      ],
-      traps: [
-        'Recapturing on c6 with the knight in the Ne5 lines and then taking on c6 with the bishop looks like a free pawn and is not: the rook comes to b8, the queen and the bishop on c1 are both tied down, and the pressure on the b- and d-files is worth more than the doubled pawns.',
-        'Preparing the recapture with a4 rather than taking on c4 immediately gives Black time for ...b6 and ...Bb7, which solves his hardest problem for nothing.',
-        '...Bd7 without ...a6 and a4 having been exchanged is a move order slip rather than a plan: the bishop reaches c6 and Black still has no square for the knight and no queenside counterplay.',
-      ],
-      sources: [
-        'Alvar Alonso — Lifetime Repertoires: The Catalan',
-        'Srinath Narayanan — Lifetime Repertoires: The Catalan',
-        'Ivan Cheparinov — Top Level Catalan Repertoire for White, Part 2',
-      ],
-    },
+    theory: CATALAN_OPEN_CLASSICAL,
+  },
+  {
+    // c4 played last of all, the Pseudo-Catalan order — which is exactly what
+    // it was being shown, an entry about declining to play c4 early rather
+    // than about the position after it arrives.
+    eco: 'E05',
+    name: 'Catalan Opening: Open Defence, Classical Line',
+    moves: line('d4 d5 Nf3 Nf6 g3 e6 Bg2 Be7 O-O O-O c4 dxc4'),
+    character: 'positional',
+    minRating: 1800,
+    theory: CATALAN_OPEN_CLASSICAL,
+  },
+  {
+    // 3.g3 before Nf3, the order that sidesteps ...Bb4+. The same tabiya, and
+    // without an address here it stopped at the Catalan root seven plies up.
+    eco: 'E05',
+    name: 'Catalan Opening: Open Defence, Classical Line',
+    moves: line('d4 Nf6 c4 e6 g3 d5 Bg2 Be7 Nf3 O-O O-O dxc4'),
+    character: 'positional',
+    minRating: 1800,
+    theory: CATALAN_OPEN_CLASSICAL,
   },
 
   // ------------------------------------------------------- Dutch and flank ---
@@ -10266,6 +10349,27 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'positional',
     minRating: 1700,
     aliases: ['Neo-Catalan Accepted', 'Open Catalan without d4'],
+    theory: NEO_CATALAN_ACCEPTED,
+  },
+  {
+    // 1.c4 with Nf3 on move two — the same position again.
+    eco: 'A13',
+    name: 'English Opening: Agincourt Defence, Catalan Defence Accepted',
+    moves: line('c4 e6 Nf3 d5 g3 Nf6 Bg2 dxc4'),
+    character: 'positional',
+    minRating: 1700,
+    aliases: ['Neo-Catalan Accepted (1.c4, 2.Nf3 order)'],
+    theory: NEO_CATALAN_ACCEPTED,
+  },
+  {
+    // The English order, 1.c4 e6, which reaches the same position and was
+    // being shown the English Opening seven plies above.
+    eco: 'A13',
+    name: 'English Opening: Agincourt Defence, Catalan Defence Accepted',
+    moves: line('c4 e6 g3 d5 Bg2 Nf6 Nf3 dxc4'),
+    character: 'positional',
+    minRating: 1700,
+    aliases: ['Neo-Catalan Accepted (1.c4 order)'],
     theory: NEO_CATALAN_ACCEPTED,
   },
   { eco: 'A04', name: 'Réti Opening', moves: line('Nf3'), character: 'positional' },
