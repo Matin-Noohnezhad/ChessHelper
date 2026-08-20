@@ -2176,6 +2176,83 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: BISHOPS_OPENING_VIENNA_HYBRID,
   },
   {
+    eco: 'C26',
+    name: 'Vienna Game: Mieses Variation',
+    moves: line('e4 e5 Nc3 Nf6 g3'),
+    character: 'positional',
+    minRating: 1500,
+    aliases: ['Glek System', 'Vienna 3.g3'],
+    theory: {
+      idea: 'A system rather than a variation, and the same one Glek made respectable in the Four Knights: Bg2, Nge2, O-O, d3, and then h3, Kh2 and f2-f4, building an attack out of a position that started as a quiet fianchetto. The knight goes to e2 rather than f3 for the one reason that matters here — on f3 it stands in front of the f-pawn, and f4 is the whole point of the set-up. What White is really doing is playing a reversed closed Sicilian with an extra tempo, and the resulting middlegames have more in common with the English than with anything else in the 1.e4 e5 repertoire. Black’s antidote follows from the diagnosis: the system is slow, so it has to be answered before it is built. 3...d5 strikes at once and generally transposes to the Four Knights after 4.exd5 Nxd5 5.Bg2, where White’s pawns are doubled on the c-file after ...Nxc3 and there is nothing left to attack with. The rule worth remembering is that the recapture is always with the knight: ...c6 looks tempting here and does not work in the several near-identical positions reached by other move orders, so one recapture for all of them is cheaper than remembering which is which. The ambitious alternative is 3...Bc5, which declines the transposition and prepares ...c6 and ...d5, keeping a pawn in the centre rather than trading it.',
+      structures: [],
+      whitePlans: [
+        'The full set-up: Bg2, Nge2, O-O, d3, h3, Kh2, f4. Each move is small and the sum of them is a kingside attack, which is why Black is advised to strike before it is assembled.',
+        'Nge2 rather than Nf3, keeping the f-pawn free. Even against a Four Knights transposition the knight on e2 is the version that makes f2-f4 easy.',
+        'Meet 3...d5 with 4.exd5 and Bg2, playing against the knight on d5 and, after ...Nxc3 bxc3, using the half-open b-file as compensation for the doubled pawns.',
+        'Treat the position as a reversed closed Sicilian: the space is on the kingside, the break is f4, and the centre stays closed while it is being prepared.',
+        'd3 and not d4. The pawn on d3 supports e4 and f4 both, and the whole system collapses into an ordinary open game the moment White pushes two squares.',
+      ],
+      blackPlans: [
+        '3...d5 at once. It is the standard reply to g3 in every version of this structure and it usually leads back into the Four Knights, which is a comfortable place to be.',
+        'Always recapture ...Nxd5 with the knight. ...c6 is playable here and unplayable in the sister positions, so the uniform rule is worth more than the extra option.',
+        '3...Bc5, declining to trade in the centre. It prepares ...c6 and ...d5 so that Black keeps a pawn there, and it avoids handing White the version of the Four Knights he wanted.',
+        'Trade on c3 after ...Nxd5, giving White doubled pawns and taking away the piece that defends e4 and supports d5.',
+        'Do not let the game slow down. Every move White spends on h3 and Kh2 is worth a move of central play, and Black loses this system by drifting rather than by being outplayed.',
+      ],
+      breaks: [
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The answer to g3 wherever it appears. It resolves the centre before White’s slow set-up is finished, and after the exchange on d5 the knight comes to a good square instead of a pawn to a loose one.',
+          prerequisites: ['Played early — once White has Nge2 and O-O in, ...d5 costs more than it gains'],
+        },
+        {
+          move: 'f4',
+          side: 'white',
+          note: 'The point of the whole system. It only exists because the king’s knight went to e2, and it comes with h3 and Kh2 already played so the attack does not stall.',
+          prerequisites: ['The knight on e2 rather than f3', 'The centre stable — with the position already open f4 loosens the king for nothing'],
+        },
+        {
+          move: 'c6',
+          side: 'black',
+          note: 'The preparation behind 3...Bc5: it supports ...d5 so the pawn can stay in the centre rather than be traded off.',
+          prerequisites: ['The bishop already on c5, otherwise the move is slow and the d5 push arrives too late'],
+        },
+        {
+          move: 'd4',
+          side: 'white',
+          note: 'Available when Black has spent time on ...c6, opening the centre against a bishop on c5 and a king still at home. It is the exception to the system’s own rule of d3.',
+          prerequisites: ['Black committed to ...c6 and not yet castled'],
+        },
+      ],
+      keySquares: [
+        { square: 'e2', note: 'Where the king’s knight belongs. It looks worse than f3 and it is the square that makes f2-f4 possible, which is the whole argument of the variation.' },
+        { square: 'd5', note: 'What Black plays for and what White plays against. The exchange on d5 defines the game, and recapturing with the knight is the rule.' },
+        { square: 'f4', note: 'The break the fianchetto is building towards, and the reason this is a kingside attacking system dressed as a quiet one.' },
+        { square: 'c3', note: 'The knight Black trades to double the pawns; after bxc3 the compensation is the half-open b-file and a broader centre.' },
+      ],
+      routes: [
+        'Ng1-e2 with h3 and Kh2, clearing the f-pawn’s path and tucking the king before f4',
+        'Nc3-e2-f4 or Ne2-g3 in lines where the pawn stays home',
+        'Bf8-c5 with ...c6 and ...d5, Black’s way of keeping a pawn in the centre instead of trading it',
+      ],
+      traps: [
+        'Recapturing with 4...c6 out of habit. It is defensible in this exact position and fails in the same structure reached through the Four Knights and through the d3 move orders, which makes it a poor thing to learn.',
+        '3...Ng4 as an attempt at activity. After 4.d4 exd4 the knight on the rim comes into it and the whole adventure is more trouble than the tempo is worth.',
+        'Allowing White the complete set-up. Once h3, Kh2 and f4 are all in, Black’s central counterplay has usually run out of time and the attack plays itself.',
+      ],
+      sources: [
+        'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
+        'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
+        'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
+        'Understanding Chess Openings: 1.e4 — Part 2',
+        'Sam Shankland — Lifetime Repertoires: Berlin Defence',
+        'Sutheraman — 1.e4 e5',
+        'Johan Hellsten — Mastering Opening Strategy',
+      ],
+    },
+  },
+  {
     // The same position by the Vienna move order — 3.Bc4 first and d3 only
     // once Black has committed to ...Nc6. Theory is inherited along
     // move-sequence ancestry, so without this address a player arriving here
