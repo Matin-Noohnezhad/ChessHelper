@@ -7468,7 +7468,7 @@ export const CURATED_OPENINGS: Opening[] = [
     minRating: 1400,
     forSide: 'black',
     theory: {
-      idea: 'Black attacks e4 at once and asks White to resolve the centre, which is exactly what most French players want: 4.e5 locks the chains and produces the position the defence is built for. What makes this version different from the Advance is that the knight already stands on c3, so White can no longer prop up d4 with c2-c3 — and ...c5 against the base of the chain therefore hits much harder.',
+      idea: 'Black attacks e4 at once and asks White to resolve the centre, which is exactly what most French players want: 4.e5 locks the chains and produces the position the defence is built for. What makes this version different from the Advance is that the knight already stands on c3, so d4 cannot be propped up by c2-c3 without first moving it — Na4 and Nc3-d1 are the usual routes, and both cost time. That is a tempo, not a prohibition, but it is the tempo ...c5 and ...Qb6 are aimed at, and it is why the break against the base of the chain hits harder here than in the Advance.',
       structures: ['french-chain'],
       whitePlans: [
         '4.e5 (Steinitz): take the space, then f4 and Nf3, and defend d4 with pieces because c2-c3 is unavailable.',
@@ -7486,7 +7486,7 @@ export const CURATED_OPENINGS: Opening[] = [
         {
           move: 'c5',
           side: 'black',
-          note: 'The main break, against d4. Stronger here than in the Advance, because Nc3 has taken c2-c3 away from White.',
+          note: 'The main break, against d4. Stronger here than in the Advance, because the knight on c3 has to move before c2-c3 can support the pawn.',
         },
         {
           move: 'f6',
@@ -7501,7 +7501,7 @@ export const CURATED_OPENINGS: Opening[] = [
         { square: 'e5', note: 'The wedge that keeps Black passive; White holds it with f4 and Nf3.' },
       ],
       traps: [
-        'Leaving d4 to fend for itself is the standard way to lose this position from White’s side: with the knight on c3 there is no c2-c3, so ...c5 and ...Qb6 have to be met with pieces, and promptly.',
+        'Leaving d4 to fend for itself is the standard way to lose this position from White’s side. c2-c3 is available only after the knight leaves — Na4 hitting the queen is the usual way of buying it — so until then the pawn has to be held by pieces, and promptly.',
       ],
       sources: [
         'Krykun — Lifetime Repertoires 1.e4',
