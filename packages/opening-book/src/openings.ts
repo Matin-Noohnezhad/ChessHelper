@@ -1009,6 +1009,74 @@ const MODERN_STANDARD: OpeningTheory = {
     ],
 };
 
+/**
+ * The Neo-Catalan Accepted. The same position arrives by the Réti order
+ * 1.Nf3 Nf6 2.c4 e6 3.g3 d5 4.Bg2 dxc4, which the ECO tables do not name — it
+ * was being identified as a Zukertort Opening two plies in — so both addresses
+ * are here, pointing at one set of ideas.
+ */
+const NEO_CATALAN_ACCEPTED: OpeningTheory = {
+  idea: 'A Catalan in which White has not played d4, and the missing pawn changes what the capture is for. Black is not trying to keep the extra pawn and should not arrange his pieces as though he were; he is charging White a tempo to collect it, and the tempo is spent stopping d2-d4. That is the whole variation. Every method White has of recovering the pawn costs him something specific, and the cost is always measured against the advance. A queen to a4 or c2 takes it back cleanly and steps away from supporting d2-d4, which is exactly the moment for ...c5 and ...Nc6: with two pieces and a pawn on the square, the centre stays shut and White has spent his opening on a pawn. The knight route from a3 to c4 is the dangerous one, because it recovers the pawn while every other piece stays where it wants to be — after which d2-d4 comes with full support, the game opens, and two bishops on an open board are worth more than the structure Black has left. So the rule that runs through the line is about which recapture is allowed: a knight coming to c4 must be stopped unless the white queen has already committed herself, and it is worth ...Bxa3 to stop it. The timing of the capture matters as much as the follow-up, because this is the last comfortable moment for it — after ...Be7 and castling, White plays b3 and has a Closed Catalan in which his own bishop was never provoked to the awkward square d2.',
+  structures: [],
+  whitePlans: [
+    'Qa4+ and take on c4, the most common recovery. It is clean and it is slow, and the queen is no longer behind the d-pawn when Black clamps d4.',
+    'Qc2, or castling first and playing Qc2 next — the same idea with the check saved and the same concession made.',
+    'Na3 heading for c4, the recovery that costs no time at all. If it is allowed, d2-d4 follows with everything defended and the two bishops get the open position they want.',
+    'Ne5, hitting c4 with the knight instead. It works when the capture on c4 is available at once and is answered by ...Qd4 when it is not.',
+    'd2-d4 the moment it is unopposed. The whole point of the set-up is to reach a Catalan with the extra pawn recovered and the centre taken; a White player who never gets the pawn to d4 has played a slow English.',
+    'Against the quieter treatments, b3 and Bb2 with a Closed Catalan structure — the reward for Black having declined the capture a move too long.',
+  ],
+  blackPlans: [
+    '...c5 and, when it is allowed, ...Nc6. Together with the pawn on e6 they hold d4 against everything, and holding d4 is what the captured pawn was traded for.',
+    'Watch the white queen. The moment she leaves d1 to fetch the pawn she stops supporting the advance, and that is the signal to take the square rather than defend the pawn.',
+    'Stop Na3-c4 while the queen is still at home. ...Bxa3 does it at the cost of the bishop pair, and the trade is right because it is d2-d4, not the bishop, that decides the game.',
+    'After ...a6, answer Na3 with ...b5, which holds the pawn and takes c4 from the knight in one move.',
+    '...Qd4 against an early Ne5, but only when the knight cannot take on c4 in reply — the difference between a strong centralising move and a wasted one is a single tempo.',
+    'Give the pawn back without regret once d4 is under control. The compensation is the square, not the material, and Black who defends the pawn with ...b5 and ...Bb7 at the wrong moment ends up with neither.',
+  ],
+  breaks: [
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'The move the whole line is built around. It takes d4 away from the white pawn and gives the bishop on f8 a diagonal, and it is played as early as the recapture on c4 allows.',
+      prerequisites: ['A knight ready for c6 behind it, or White simply plays d2-d4 anyway with a good Catalan'],
+    },
+    {
+      move: 'd4',
+      side: 'white',
+      note: 'The advance everything on both sides is measured against. Played with support it gives White the true Catalan he wanted; prevented, it leaves him a tempo down in a slow English.',
+      prerequisites: ['The pawn on c4 recovered by a piece rather than by the queen, so the advance still has its backing'],
+    },
+    {
+      move: 'b5',
+      side: 'black',
+      note: 'The pawn that holds the extra pawn. Its more important job is to take c4 away from the knight on a3, which is why it belongs with ...a6 rather than with a plan of ...Bb7.',
+      prerequisites: ['...a6 already played'],
+    },
+  ],
+  keySquares: [
+    { square: 'd4', note: 'The square the variation is about, not the pawn on c4. Black spends the extra pawn on controlling it and White spends his opening on occupying it.' },
+    { square: 'c4', note: 'A hostage rather than a possession. What matters is how many moves White pays for it and which of his pieces has to do the collecting.' },
+    { square: 'a3', note: 'Where the knight goes to recover the pawn without costing a tempo, and the reason ...Bxa3 is a good move rather than a concession — the bishop pair is cheaper than the d4 advance.' },
+    { square: 'e5', note: 'The other route to c4. A knight arriving there is met by ...Qd4 whenever the capture on c4 is not available in reply.' },
+  ],
+  routes: [
+    'Nb1-a3xc4, the recovery that costs nothing and therefore has to be stopped',
+    'Qd1-a4+ or Qd1-c2, the recovery that costs the support of d2-d4',
+    'Nf3-e5 at c4, answered by ...Qd4 when the knight cannot take at once',
+  ],
+  traps: [
+    'Meeting Na3 with ...c5 by reflex. The knight takes on c4 with everything else in place, d2-d4 cannot be stopped, and the bishops come alive on a board Black opened himself.',
+    '...Qd4 played against Ne5 without checking whether the knight can answer by taking on c4. With the white queen already on c2 the move achieves nothing and the queen has to come back.',
+    'Delaying the capture. This is the last comfortable moment for it — a move later White has b3 and a Closed Catalan in which his dark-squared bishop was never provoked to d2.',
+    'Treating the position as a pawn to be defended. Every course that recommends the capture recommends returning the pawn once d4 is held; hanging on to it with ...b5 and ...Bb7 at the wrong moment loses the centre and the pawn both.',
+  ],
+  sources: [
+    'Keep It Simple for Black',
+    'Ivan Cheparinov — Play the Réti, Part 1',
+    'Lifetime Repertoires: Neo-Catalan — Part 1',
+  ],
+};
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -8706,6 +8774,27 @@ export const CURATED_OPENINGS: Opening[] = [
         { move: 'b4', side: 'white', note: 'Queenside expansion, often supported by a3 and Rb1.' },
       ],
     },
+  },
+  {
+    eco: 'A13',
+    name: 'English Opening: Agincourt Defence, Catalan Defence Accepted',
+    moves: line('c4 e6 Nf3 Nf6 g3 d5 Bg2 dxc4'),
+    character: 'positional',
+    minRating: 1700,
+    aliases: ['Neo-Catalan Accepted', 'Open Catalan without d4'],
+    theory: NEO_CATALAN_ACCEPTED,
+  },
+  {
+    // The same position by the Réti order, which the ECO tables do not name —
+    // 1.Nf3 is the standard way into this line and it was being identified as a
+    // Zukertort Opening two plies in.
+    eco: 'A13',
+    name: 'English Opening: Agincourt Defence, Catalan Defence Accepted',
+    moves: line('Nf3 Nf6 c4 e6 g3 d5 Bg2 dxc4'),
+    character: 'positional',
+    minRating: 1700,
+    aliases: ['Neo-Catalan Accepted', 'Open Catalan without d4'],
+    theory: NEO_CATALAN_ACCEPTED,
   },
   { eco: 'A04', name: 'Réti Opening', moves: line('Nf3'), character: 'positional' },
   { eco: 'A01', name: 'Nimzo-Larsen Attack', moves: line('b3'), character: 'system' },
