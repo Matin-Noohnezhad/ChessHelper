@@ -2981,14 +2981,68 @@ const PIRC_DEFENCE: OpeningTheory = {
     };
 
 const FRENCH_ADVANCE: OpeningTheory = {
-    idea: 'White locks the centre at once and stakes everything on the kingside. Play is completely schematic: Black hammers d4, White defends it and plays for f4-f5. It is the clearest illustration of pawn-chain theory in the whole opening repertoire.',
+    idea: 'White settles the central question on move three instead of arguing about it: the pawns lock, White has the space, and the bishop on c8 is shut behind its own pawns for the foreseeable future. From then on the position is read off the chains. White’s runs b2-c3-d4-e5 and points at the black king, so the pieces come to the kingside almost by themselves — e5 has taken f6 and d6 from the black minor pieces, and Nf3-g5, Bd3 and Qg4 or Qh5 need no preparation. Black’s runs f7-e6-d5 and points at the queenside, so that is where he plays. The one flaw in 3.e5 is that it attacks nothing, so Black gets a free move to start, and he spends it on ...c5 against the base of the chain. What follows is the clearest illustration of pawn-chain play in the whole repertoire — but it is not a fixed script: White can also take on c5 and put a piece on d4, and Black can open the position with a well-timed ...f6.',
     structures: ['french-chain'],
-    whitePlans: ['Defend d4 with c3, Nf3, Be3 and sometimes Qd2 and Ne2', 'Attack with f4-f5, Qg4, Bd3 and Ng5', 'Meet ...Qb6 pressure on b2 without weakening the chain'],
-    blackPlans: ['...c5, ...Nc6, ...Qb6 and ...Nge7-f5 piling on d4', 'Trade the bad bishop with ...Bd7-b5 or ...b6 and ...Ba6', 'Win d4 or force a favourable release of the tension'],
+    whitePlans: [
+      'Defend the base with c3, and add Nf3, Be2 or Bd3, and castling. The chain holds or it does not, and almost every white plan starts from d4 being secure.',
+      'Attack on the kingside, where the chain points: f4 and f5, the queen to g4 or h5, Bd3 and a knight to g5. The e5 pawn does half the work by denying f6 and d6 to the defenders.',
+      'Take on c5 at the right moment and occupy d4 with a piece instead of a pawn. It concedes the pawn chain but leaves Black’s pieces attacking a square that is no longer a target.',
+      'Reroute the queen’s knight with Na3-c2, which adds a defender to d4 without moving anything that matters.',
+      'Play on the queenside when Black closes with ...c4, since the pawn advance ends the pressure on d4 and frees White to choose his wing.',
+    ],
+    blackPlans: [
+      'Hit the base at once with ...c5, then pile on with ...Nc6, ...Qb6 and the knight route to f5. It is a genuine team effort against one pawn, and it is the whole point of the defence.',
+      'Play ...Bd7 and ...Rc8 as well, so that the c-file is ready the moment the pawns come off on d4.',
+      'Break at the head of the chain with ...f6 once the king is safe. Played early it achieves nothing — White is not obliged to defend e5 and simply develops — but played at the right moment it is the move that opens the position.',
+      'Solve the bad bishop. The slow ...b6 and ...Ba6 trades it directly at the cost of time; ...Bd7-b5 does the same job faster where it is available.',
+      'Advance with ...c4 and ...b5-b4 only when the position is genuinely closed. It gains space and files, and it also releases the pressure on d4 that the whole opening was built to apply.',
+    ],
     breaks: [
-      { move: 'c5', side: 'black', note: 'Immediate and near-automatic; the point of the whole setup.' },
-      { move: 'f6', side: 'black', note: 'The second break, once the king is safe and e6 is defensible.' },
-      { move: 'f5', side: 'white', note: 'Opens the kingside where White has the extra space.' },
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'Immediate and near-automatic: the base of the chain is the only part of it that is not defended by a pawn, and 3.e5 gains no tempo, so Black has the move to spare.',
+      },
+      {
+        move: 'f6',
+        side: 'black',
+        note: 'The second break, at the head of the chain. It is the counterplay when White commits his pieces to one wing, and it needs preparation — too early and it just loses time.',
+        prerequisites: ['The king is castled, since the f-file opens onto it', 'e6 has a defender, because it is left backward once the exchange happens'],
+      },
+      { move: 'f5', side: 'white', note: 'The advance the space advantage is for. It opens lines on the side where White has more pieces and where the chain has been pointing since move three.' },
+      {
+        move: 'c4',
+        side: 'black',
+        note: 'The decision to close. It takes space and prepares ...b5-b4, and it hands d4 back to White for good, so it wants a concrete reason — usually a loose b3 square left behind by a3 or b3.',
+        prerequisites: ['White has weakened b3, or the queenside pawn storm is genuinely faster than f4-f5'],
+      },
+    ],
+    keySquares: [
+      { square: 'd4', note: 'The base of the chain and the subject of the opening. Every black piece that comes out has a route to it, and White’s whole set-up is about holding it or giving it up on his own terms.' },
+      { square: 'e5', note: 'What the space is worth: it denies f6 and d6 to the black knights and bishop, which is why White’s attacking pieces arrive so easily.' },
+      { square: 'f5', note: 'Where the black knight is heading from e7 or h6, and where White wants a pawn instead.' },
+      { square: 'c8', note: 'The bishop’s problem. Whether it is traded, developed via d7 and b5, or left at home, is often the whole difference between a good French and a bad one.' },
+    ],
+    routes: [
+      'Ng8-e7-f5, the knight’s route to the pressure on d4 without blocking the f-pawn.',
+      'Nb1-a3-c2, White’s spare defender of d4.',
+      'Bc8-d7-b5 or ...b6 and ...Ba6, the two ways of getting the bad bishop out of the pawn chain.',
+    ],
+    traps: [
+      '3...f6 immediately does not work. White is not obliged to defend e5, so he develops instead and Black has weakened his king for nothing; the break belongs after ...c5 has done its work.',
+      'Releasing the tension with ...cxd4 before White has been forced to resolve it hands the c3 square to the queen’s knight, which then goes to a4 with gain of time against b6 and c5.',
+    ],
+    sources: [
+      'Anish Giri — Lifetime Repertoires: 1.e4 — Part 2',
+      'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 2',
+      'Yuriy Krykun — The Unexplored French Defence',
+      'Jan Gustafsson — Aggressive 1.e4, Part 2',
+      'Lifetime Repertoires: Plichta’s French Defence',
+      'Master the French Defense',
+      'Alex Colovic — 1.e4 Simplified',
+      'Yasser Seirawan — Winning Chess Openings',
+      'Jeremy Silman — How to Reassess Your Chess',
+      'Johan Hellsten — Mastering Opening Strategy',
     ],
     };
 
@@ -5784,15 +5838,66 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 e5 f4'),
     character: 'gambit',
     theory: {
-      idea: 'White gives a pawn to deflect the e5 pawn and seize the centre with d4, plus a half-open f-file for the attack. Objectively risky, practically dangerous, and an outstanding way to learn attacking chess.',
+      idea: 'The pawn is not offered for development — it is offered to drag the e5 pawn off the board so that d4 can follow, giving White the whole centre and a half-open f-file pointed at f7. That is the trade the opening lives on, and the bill for it is the diagonal that has just been opened onto White’s own king: ...Qh4+ hangs over almost every line and dictates White’s move order. Modern assessment is unsentimental — a pawn and a weakened king for a centre that Black is usually allowed to challenge is not full compensation — but the practical picture is different, because the positions are unlike anything else in the Open Games and the side that knows them has an enormous advantage. Black’s three answers are to take the pawn and try to hold it with ...g5, to take it and give it back for development, or to decline and play in the centre.',
       structures: [],
-      whitePlans: ['Take the centre with d4 and develop with Nf3 and Bc4', 'Attack down the f-file after castling short', 'Regain the gambit pawn only when it costs nothing'],
-      blackPlans: ['Accept and hold the pawn with ...g5 — critical but committal', 'Decline with 2...Bc5, taking aim at the weakened a7-g1 diagonal', 'Counter in the centre with 2...d5, the Falkbeer'],
-      breaks: [
-        { move: 'd4', side: 'white', note: 'The move that justifies the pawn sacrifice.' },
-        { move: 'd5', side: 'black', note: 'The standard central counter-strike against any gambit.' },
+      whitePlans: [
+        'Build the centre with d4 and develop with Nf3, Bc4 and Nc3. The pawn matters far less than whether the centre gets built; regaining it early usually costs the initiative that paid for it.',
+        'Attack f7 and the f-file. Once the black f4 pawn is removed or exchanged, the rook on f1 does the work the gambit was played for.',
+        'Undermine the g5-f4 chain rather than attack it. h4 forces ...g4 at a moment when the knight can move without allowing ...Qh4+, and g3 in the Nc3 lines attacks the chain at its head.',
+        'The Quaade treatment with Nc3: the knight eyes d5, White follows with Be3, Qd2 and castling long, and then hits the advanced black pawns with h3.',
+        'Against the declined lines with ...Bc5, play c3 and d4 and build the big centre — the bishop on the a7-g1 diagonal has stopped short castling but done nothing about the pawns.',
       ],
-      traps: ['After 3.Nf3 g5 4.h4 g4 5.Ne5 (Kieseritzky) the position is razor-sharp — do not enter it unprepared from either side.'],
+      blackPlans: [
+        'Take and hold with ...g5. It keeps the extra pawn and the pawn on f4 blocks the very file White opened, which is the point that is usually missed. It is also the most committal choice available.',
+        'Follow with ...g4, driving the knight off f3 so that ...Qh4+ becomes real, and often leaving a pawn on f3 wedged in front of the white king.',
+        'Fischer’s 3...d6, taking e5 away from the white knight before preparing ...g5. It is the line White enjoys least, precisely because it removes his best square.',
+        'Give the pawn back for development with ...d5, the Falkbeer, opening lines while White is still arranging his kingside.',
+        'Decline with 2...Bc5, taking the a7-g1 diagonal and simply preventing White from castling into the attack.',
+        'Remember that every white pawn move on that wing is permanent. h4 and g4 leave holes on g3 and around the king that no piece can repair.',
+      ],
+      breaks: [
+        { move: 'd4', side: 'white', note: 'The move the pawn was paid for. Without it the gambit is just a pawn down with a draughty king.' },
+        {
+          move: 'h4',
+          side: 'white',
+          note: 'The standard undermining move against ...g5: it forces the pawn to g4 at a moment of White’s choosing, so the f3 knight can step away without ...Qh4+ landing with effect.',
+          prerequisites: ['A knight on f3 that has a good square to go to', 'The g3 hole it creates is one White can live with'],
+        },
+        { move: 'g3', side: 'white', note: 'The other way at the chain, hitting f4 at the head rather than g5 at the base, and the main idea behind the Nc3 lines.' },
+        {
+          move: 'g5',
+          side: 'black',
+          note: 'The critical defence of the extra pawn. It also plugs the f-file, which is what White opened the position for — the drawback is that the pawns cannot come back.',
+          prerequisites: ['Ready to answer h4 with ...g4 rather than defending the pawn again', 'The dark squares round the black king can be covered by pieces afterwards'],
+        },
+        { move: 'g4', side: 'black', note: 'The follow-up: it evicts the f3 knight, revives the ...Qh4+ threat and often leaves a pawn on f3 that cramps White for the rest of the game.' },
+        { move: 'd5', side: 'black', note: 'The universal answer to a gambit — return the material and open the centre while the gambiteer’s king is still in it. The Falkbeer is this idea played at once.' },
+      ],
+      keySquares: [
+        { square: 'h4', note: 'The check that shapes the whole opening. It is why 3.Nf3 is played before anything else, and why the knight leaving f3 is always a concession.' },
+        { square: 'f7', note: 'The target the open file and the bishop on c4 are aimed at, and the reason the gambit is dangerous however dubious it is.' },
+        { square: 'e5', note: 'The square the white knight wants after ...g5 and ...g4. Fischer’s 3...d6 exists to take it away.' },
+        { square: 'g3', note: 'The hole left behind by h4, and permanently weak once the pawns have advanced. Any white pawn move on this wing has to be worth its cost.' },
+        { square: 'd5', note: 'Where the c3 knight is heading in the Quaade lines, and where Black’s counter-break lands in the Falkbeer.' },
+      ],
+      routes: [
+        'Nb1-c3-d5 with Be3, Qd2 and long castling, the modern way of playing the accepted gambit for an attack rather than for the pawn.',
+      ],
+      traps: [
+        '3.Bc4 permits 3...Qh4+ on purpose: after 4.Kf1 the king is safe because the bishop has already left f1, and the queen becomes a target instead of an attacker.',
+        'In the Nc3 lines, taking on h1 is the standard way to lose. After 4...g4 5.Ne5 Qh4+ 6.g3 fxg3 7.Qxg4 the rook is poisoned, and White’s attack arrives first.',
+        'After 3.Nf3 g5 4.h4 g4 5.Ne5, the Kieseritzky, the position is razor-sharp and neither side can improvise in it.',
+      ],
+      sources: [
+        'Ian Nepomniachtchi — Long Live the King’s Gambit',
+        'Sutheraman — 1.e4 e5',
+        'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
+        'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
+        'Jan Gustafsson — Lifetime Repertoires 1.e4 e5',
+        'Lifetime Repertoires: Petroff Defence',
+        'Garry Kasparov — My Great Predecessors, Volume 1',
+        'The Complete Book of Chess Strategy',
+      ],
     },
   },
 
