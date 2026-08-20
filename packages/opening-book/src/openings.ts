@@ -451,6 +451,74 @@ const BISHOPS_OPENING_VIENNA_HYBRID: OpeningTheory = {
     ],
 };
 
+/**
+ * The Bishop's Opening with 3...c6, reached by the 2...c6 move order as well.
+ * One position, one set of ideas, two addresses.
+ */
+const BISHOPS_OPENING_PAULSEN: OpeningTheory = {
+  idea: 'The move exists because White has left the king’s knight at home. Nothing attacks e5, so Black owes the centre no defensive move and can spend the tempo preparing ...d5 instead — and when the break comes it arrives as a pawn hitting the bishop on c4, which gains a move rather than costing one. That is the variation in a sentence, and it is why players who answer 2.Nf3 with the Petroff tend to meet 2.Bc4 this way: it is the line where Black takes the centre rather than copying it. What has to be understood is that the loose pawn on e5 is a bookkeeping problem and not a real one. While the black d-pawn is still at home, capturing on e5 simply loses a piece to ...Qa5+, which is check and attacks the knight along the fifth rank — the same pawn move that prepared the break opened the diagonal for it. Nor does exd5 followed by Bb5+ win anything, since ...Bd7 answers the check and the recapture with the queen’s knight leaves e5 defended. So White’s real play is not against the pawn but against the square in front of it. d5 has to be attacked, and Nc3 is the piece that does it, which is why every fifth move Black has here — ...Bb4+, ...a5, ...Bd6 — is arranged around that knight rather than around the pawn.',
+  structures: [],
+  whitePlans: [
+    'Nf3, and understand it as development rather than as an attack on e5 — the capture there is unavailable for as long as ...Qa5+ answers it.',
+    'Retreat the bishop to b3 when ...d5 comes, keeping the a2-g8 diagonal and leaving Black to solve the e5 pawn himself. Taking on d5 instead releases the tension and gives the pressure away for nothing.',
+    'Bring a knight to c3 and attack d5. It is the square the whole black set-up rests on, and White’s next two moves are usually about getting the knight there before Black can make it impossible.',
+    'Castle, put a rook on e1 and prepare d3-d4 behind it. The centre is opened once the pieces are out, not before — the pawn on d3 is also what makes e4 safe.',
+    'Answer ...Bg4 with h3. The pin guards e5, and forcing the question wins the bishop pair before Black has anything in the centre to show for it.',
+    'Treat c2-c3, when ...Bb4+ provokes it, as a trade rather than a concession: the knight loses c3, and the bishop gains c2, where the queenside pawns can never reach it.',
+  ],
+  blackPlans: [
+    '...d5 as soon as it is ready. Everything else is preparation for it, and a Black player who never plays it has an inferior Italian with the knight missing from c6.',
+    'Check on b4 before developing the bishop to d6. The check provokes c3, and with a pawn on c3 the knight cannot go there, so d5 is free of the one piece that was going to attack it; ...Bd6 first allows Nc3 and wastes the whole point.',
+    '...a5 and ...a4, taking queenside space and hunting the bishop. It is not a central move and it works for a central reason — White has to answer it, and the answer is a move he wanted for development.',
+    '...Bd6, ...O-O and ...Re8, the plain plan: two pawns abreast in the centre and the e-pawn defended by a rook rather than by an awkward piece.',
+    'The quiet alternative is ...d6 and ...Be7 with ...O-O, transposing to the lines where Black never fights for d5. It is solid, and it concedes the centre that ...c6 was played to take.',
+    'Be suspicious of the two natural ways to defend e5. The queen on c7 leaves d5 undefended, and the knight on d7 shuts in the c8 bishop and cuts the queen’s own line to d5.',
+  ],
+  breaks: [
+    {
+      move: 'd5',
+      side: 'black',
+      note: 'The break the variation is named for. It takes the centre and gains a tempo on the bishop at the same time, which is the compensation for having spent a move on a pawn that develops nothing.',
+      prerequisites: ['...c6 is on the board, so the pawn is supported and arrives with a threat', 'An answer ready for the e5 pawn, which is loose the moment the centre opens'],
+    },
+    {
+      move: 'd4',
+      side: 'white',
+      note: 'The advance that turns White’s extra move into something concrete. It waits for development, because the pawn on d3 is also what defends e4.',
+      prerequisites: ['Castled, with the pieces out — pushed early it hands Black ...Bg4 and pressure on a centre White cannot yet support'],
+    },
+    {
+      move: 'a5',
+      side: 'black',
+      note: 'The same idea by other means. The bishop on b3 is the piece holding White’s grip on d5 and f7, and driving it buys Black the move he needs in the centre.',
+      prerequisites: ['The bishop has already gone to b3, where c2 is not yet available to it'],
+    },
+  ],
+  keySquares: [
+    { square: 'd5', note: 'The square the variation is about. The pawn on c6 supports the break, and White’s pressure on it — the knight to c3 above all — is what Black’s fifth move is arranged to prevent.' },
+    { square: 'e5', note: 'The pawn Black leaves loose on purpose. It cannot in fact be taken for a long time, and knowing exactly why is what separates this line from a pawn grab.' },
+    { square: 'b3', note: 'Where the bishop goes and where it is short of air. ...a5-a4 is aimed at it and the pawn on c2 blocks the natural retreat, which is why ...Bb4+ provoking c3 changes the picture so much.' },
+    { square: 'f7', note: 'What the bishop is pointing at, and the reason Black cannot arrange the centre while ignoring it.' },
+  ],
+  routes: [
+    'Bf1-c4-b3, and on to c2 once ...Bb4+ has provoked c3',
+    'Nb1-c3 aiming at d5 — the manoeuvre Black’s fifth move exists to prevent',
+  ],
+  traps: [
+    'Capturing on e5 while the black d-pawn is still at home. ...Qa5+ is check and takes the knight, and the diagonal was opened by the same pawn move that prepared ...d5.',
+    'Trying to win the pawn by exchanging on d5 and checking on b5. ...Bd7 answers it, and after the trade the queen’s knight recaptures on d7 and defends e5 from there.',
+    '...Nbd7 played as a developing move. It defends e5 and pays for it twice: the bishop on c8 is shut in and the queen no longer looks at d5.',
+    '...Bg4 to guard e5 by the pin. h3 forces the question, and the bishop pair is gone before the centre is settled.',
+    'Answering 3.d3 with 3...Nc6 out of habit. It is a good move and a different opening — Nc3 follows and the game becomes the Vienna Hybrid, in which the ...d5 break has no pawn behind it.',
+  ],
+  sources: [
+    'Milos Perunovic — Butcher 1...e5: The Bishop’s Opening',
+    'Understanding Chess Openings: 1.e4 — Part 2',
+    'Jan Gustafsson — Aggressive 1.e4, Part 1',
+    'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
+  ],
+};
+
 const RICHTER_RAUZER: OpeningTheory = {
   idea: 'The most testing answer to the Classical, and it arrives before Black has chosen a setup. Richter’s idea was the exchange on f6; Rauzer added the modern plan of Qd2 and queenside castling, which turns the game into a race between White’s kingside pawn storm and Black’s play down the c-file. How Black recaptures on f6 — with the g-pawn or the bishop — shapes everything that follows.',
   structures: ['scheveningen'],
@@ -2478,6 +2546,26 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'positional',
     minRating: 1400,
     theory: BISHOPS_OPENING_VIENNA_HYBRID,
+  },
+  {
+    eco: 'C24',
+    name: 'Bishop’s Opening: Paulsen Defence',
+    moves: line('e4 e5 Bc4 Nf6 d3 c6'),
+    character: 'balanced',
+    minRating: 1600,
+    aliases: ['Bishop’s Opening with 3...c6', 'Paulsen Defence'],
+    theory: BISHOPS_OPENING_PAULSEN,
+  },
+  {
+    // The same position by the 2...c6 order, which is how players who have
+    // decided on ...d5 in advance usually get there.
+    eco: 'C24',
+    name: 'Bishop’s Opening: Paulsen Defence',
+    moves: line('e4 e5 Bc4 c6 d3 Nf6'),
+    character: 'balanced',
+    minRating: 1600,
+    aliases: ['Bishop’s Opening with 3...c6', 'Paulsen Defence'],
+    theory: BISHOPS_OPENING_PAULSEN,
   },
   {
     eco: 'C26',
