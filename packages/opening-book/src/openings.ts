@@ -3611,6 +3611,144 @@ const RUY_BREYER_TABIYA: OpeningTheory = {
     ],
     };
 
+/**
+ * The Yugoslav Attack after 9.O-O-O, addressed twice. Black's eighth and ninth
+ * moves — ...Nc6 and ...O-O — are played in either order and the courses split
+ * about evenly between them, so both routes reach this position and both must
+ * find it. The object is shared rather than restated.
+ */
+const DRAGON_YUGOSLAV_MODERN: OpeningTheory = {
+      idea: 'The main tabiya of the Dragon, and the move order that changed what the opening is. For fifty years White stopped ...d5 with 9.Bc4 and both sides simply raced; modern practice castles at once and invites the break. The reasoning is not that 9...d5 is unsound but that it is what White wants: the centre opens, a great many pieces come off, and the game turns from a mutual mating attack into a technical one in which White has the sounder pawns. 9.Bc4 puts the bishop on precisely the square Black’s whole set-up is aimed at — ...Rc8 and the exchange sacrifice on c3 both gain in value — and from c4 or b3 it can never drop back to e2 to hold f3. 9.g4 is the attempt to have both, since the threat of g5 rules out ...d5 while the bishop stays free for e2, but committing the pawn gives Black the extra option of ...Be6 with comfortable play. The practical consequence for Black is unwelcome: the romantic Dragon is not on offer here, and what remains is a slightly worse position to be defended accurately.',
+      structures: [],
+      whitePlans: [
+        'Allow 9...d5, meet it with 10.exd5 Nxd5 11.Nxc6 bxc6, and then place the bishop on d4: neutralise the activity first, and let the doubled c-pawns and Black’s homeless light-squared bishop decide the game afterwards.',
+        'Refuse to capture on d5 with a piece even when it wins a pawn — the recapture ...cxd5 repairs the queenside and gives the c8 bishop a life. Most of the games White throws away in this line are thrown away by taking.',
+        'Where Black avoids the break, revert to the old plan: h4-h5, Bh6 to trade the Dragon bishop, hxg6 and the h-file.',
+        'The alternative treatment of the break, 10.Nxc6 bxc6 11.Bh6 with h4-h5 to follow, which keeps far more pieces on and aims at the king rather than at the structure.',
+        'Do not hurry with the bishop. Leaving it on f1 for one more move is what makes 9...Bd7 pointless and keeps e2 available as a defensive square for it.',
+      ],
+      blackPlans: [
+        '9...d5 immediately, which is the entire justification for allowing White to castle first. It is played in the knowledge that it leads to a worse but defensible game rather than to equality by force.',
+        '9...Nxd4 10.Bxd4 followed by ...Be6 and ...Qa5, which is a comfortable set-up when White has spent a move on g4 — and is the reason White prefers not to.',
+        'Where White allows it, the traditional counterplay is unchanged: ...Rc8, ...Ne5-c4, ...Qa5 and the exchange sacrifice on c3.',
+        'Think about the light-squared bishop before recapturing with ...bxc6. In the simplified positions it is the piece with nowhere to go, and Black’s defensive task is mostly the task of finding it a square.',
+      ],
+      breaks: [
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The break the modern move order concedes on purpose. It frees the g7 bishop and liquidates the attack, and it is the only move that stops White simply playing h4-h5 with a free hand.',
+          prerequisites: ['White has not played Bc4 or g4', 'A knight on c6, so the recapture after exd5 does not lose material'],
+        },
+        {
+          move: 'h5',
+          side: 'white',
+          note: 'The attacking break of the older Yugoslav. It is what Black is buying his way out of with ...d5, and it remains the punishment for any slow ninth move.',
+        },
+        {
+          move: 'e5',
+          side: 'black',
+          note: 'The freeing push in the lines where White answers ...d5 with a queen move rather than a capture; it hits the knight on d4 and settles the centre before White is organised.',
+          prerequisites: ['White has left the tension rather than taking on d5'],
+        },
+      ],
+      keySquares: [
+        { square: 'd5', note: 'The square the whole variation turns on. If Black gets a pawn there the attack is over; if White is provoked into taking there with a piece, Black straightens his pawns and the advantage goes with them.' },
+        { square: 'd4', note: 'Where White’s dark-squared bishop returns once the knight has left. It faces down the Dragon bishop and offers a trade that Black, with no attack left, can rarely accept.' },
+        { square: 'c6', note: 'The doubled pawn after ...bxc6. It is not weak in itself; what it costs Black is the b-file, the light squares around it and any prospect of the queenside majority marching.' },
+        { square: 'c3', note: 'Still the target of every Dragon rook, which is why the lines where mass trades happen are a relief to White and a disappointment to Black.' },
+      ],
+      routes: ['Be3-d4 after Nxc6, meeting the fianchettoed bishop head-on'],
+      traps: [
+        '9...Bd7 is played from habit: it prepares ...Rc8 against a bishop on c4, and here that bishop is still on f1, so the rook attacks nothing and the tempo is gone.',
+        'Winning the d5 pawn with a piece in the main line hands Black the one thing he needs — a healthy pawn structure — in return for material White cannot hold on to anyway.',
+        'Treating the position as the old race and playing h4 before the centre is resolved runs into ...d5 with the h-pawn committed and the file not yet open.',
+      ],
+      sources: [
+        'Chessable — Lifetime Repertoires: Dragon Sicilian',
+        'Grzegorz Gajewski — Lifetime Repertoires: 1.e4 — Part 2',
+        'S. P. Sethuraman — Lifetime Repertoires: 1.e4 — Part 2',
+        'Anish Giri — Lifetime Repertoires: 1.e4 — Part 3',
+        'Jan Gustafsson — Aggressive 1.e4, Part 2',
+        'The Principled and Practical 1.e4',
+        'The Energetic 1.e4 — Part 2',
+        'Understanding Chess Openings: 1.e4 — Part 3',
+        'The Open Sicilian: A Champion’s Guide',
+      ],
+    };
+
+/**
+ * The classical Yugoslav with 9.Bc4, addressed twice for the same reason as
+ * the 9.O-O-O line above: ...Nc6 and ...O-O transpose, and an entry filed
+ * under one order is invisible to the other.
+ */
+const DRAGON_YUGOSLAV_BC4: OpeningTheory = {
+      idea: 'The bishop is developed before the king is tucked away, and the order is the whole content of the move. On c4 it adds a third guard to d5, so ...d5 — the break that liquidates every Dragon attack — is simply unavailable, and White can take his time about castling long and starting h4-h5 knowing that Black has no way to change the structure. That is why this was the main line for half a century. What it costs is that the bishop stands on the wrong side of the board. Every black piece in the Dragon already points at the queenside, and c4 gives them a target: ...Rc8 and ...Ne5-c4 hit it, ...Nxd4 followed by ...Be6 offers a trade of it, ...b5 gains time on it, and it can never return to e2 to hold f3. The modern verdict is that this is a real cost rather than a nuisance, which is why strong players now prefer to castle at once and let ...d5 be played. Black has two ways of handling it: the old scheme with ...Bd7, ...Rc8 and ...Ne5, which is a straight race and where the theory has gone badly for him, and the rehabilitated ...Nxd4 and ...Be6, which develops with tempo against the bishop and starts the queenside play immediately rather than after four preparatory moves.',
+      structures: [],
+      whitePlans: [
+        'Castle long, then h4-h5 and Bh6 to trade the Dragon bishop, hxg6 and mate down the h-file. The plan does not change; what Bc4 buys is the certainty that Black cannot interrupt it with ...d5.',
+        'Bb3, keeping the bishop out of the way of ...Rc8 and ...Ne5-c4 while it goes on covering d5 and eyeing f7.',
+        'Kb1, which is worth a tempo in almost every line: it steps off the c1-h6 diagonal and out of the c-file, and it sets up the Nd5 intermezzo whenever the queens are on the d2-a5 diagonal together.',
+        'Meet ...b5 with a3 rather than with a capture. Stopping ...b4 is what holds the queenside, and it is the move that took the sting out of the ...Rfc8 and ...b5 treatment.',
+        'Accept the exchange on c3 when it comes and use the time: with a bishop the extra material is real, provided the king finds a square where the open lines do not reach it.',
+      ],
+      blackPlans: [
+        '9...Nxd4 10.Bxd4 Be6, the modern treatment. The knight is traded before White has castled, ...Be6 comes with a threat against the bishop, and Black is playing on the queenside two moves earlier than in the old lines.',
+        '...Qa5, the standard square: it covers b5 and d5, presses the knight on c3 and at times the pawn on a2, and it is the move that gets the queenside going.',
+        'After ...Qa5, play ...b5 at once rather than preparing it with ...Rfc8. The rook move gives White time for a3, and it is the immediate ...b5 and ...b4 that produces the counterplay.',
+        'The old plan: ...Bd7, ...Rc8, ...Ne5 and ...Nc4, followed by the exchange sacrifice on c3 to strip the king’s cover and open the long diagonal.',
+        'Where White answers ...Be6 with the trade, recapture with the f-pawn. The pawn on e6 covers d5 for good, which leaves the knight on c3 without a job and hands Black the f-file and the pressure down the c-file.',
+        'Meet h4 with ...h5, the Soltis idea: the file stays shut, and White has to find a piece sacrifice on h5 or g5 to open it at all.',
+      ],
+      breaks: [
+        {
+          move: 'h5',
+          side: 'white',
+          note: 'The attacking break, and with Bc4 played it can be prepared at leisure because Black has no central counter to hurry White with.',
+          prerequisites: ['Castled long, or the pawn advance leaves the king in the middle', 'A plan for the answer ...h5, since the file then has to be opened with a piece'],
+        },
+        {
+          move: 'b5',
+          side: 'black',
+          note: 'The counterplay in the modern lines, hitting the bishop’s retreat squares and clearing the way for ...b4 against the knight that guards d5. Played at once, before the rooks are arranged, or a3 stops it for good.',
+          prerequisites: ['The queen on a5 or the rook on c8, so that ...b4 comes with real force', 'The Nd5 intermezzo checked, since the queen on a5 and the queen on d2 share a diagonal'],
+        },
+        { move: 'b4', side: 'black', note: 'The follow-up and the real point: it drives the knight from c3 and the guard on d5 goes with it.' },
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The freeing break of the whole Dragon, and it is exactly what Bc4 is played to prevent. Its absence is the difference between this variation and the modern 9.O-O-O.',
+          prerequisites: ['The bishop driven from the a2-g8 diagonal or traded, which is why ...Be6 and ...b5 are worth so much here'],
+        },
+        { move: 'h5', side: 'black', note: 'The Soltis defence rather than an attack: the pawn stops h5 and forces White to invest a piece for the h-file.' },
+      ],
+      keySquares: [
+        { square: 'd5', note: 'Everything hangs on it. The bishop on c4 is a third defender of the square, and every black idea in the variation is a way of removing one of them.' },
+        { square: 'c4', note: 'A square Black wants for a knight from e5 as much as White wants it for the bishop. The tension between those two claims is what makes the old main line a race rather than a manoeuvring game.' },
+        { square: 'c3', note: 'Where the exchange sacrifice lands, and the knight the queenside pawns are aimed at. Removing it removes the cover of the king and a defender of d5 in one move.' },
+        { square: 'b3', note: 'Where the bishop belongs, and where it stays after ...Bxb3. Recapturing with the c-pawn looks ugly and is in fact excellent: the pawns on a2, b2 and b3 give the black pieces nothing to attack, at the price of an endgame White never intends to reach.' },
+        { square: 'e6', note: 'After the trade of light-squared bishops, the doubled pawn there is a strength: it takes d5 away permanently and the knight on c3 is left with nowhere to go.' },
+      ],
+      routes: [
+        'Nc6-e5-c4, the old route, played to force a decision about the bishop',
+        'Bc4-b3, out of reach of the rook and the knight while keeping the diagonal',
+        'Be3-d4 once the knights are traded, meeting the Dragon bishop head-on',
+      ],
+      traps: [
+        'The Nd5 intermezzo. With the white queen on d2 and the black queen on a5 there is an x-ray through the knight, so Nd5 can answer almost anything: ...Qxd2 is met by Nxe7+ and the queen is recovered with interest. Kb1 is often played for no other reason than to make this work.',
+        'Preparing ...b5 with ...Rfc8 gives White the tempo for a3, and once the pawn cannot come to b4 Black’s queenside play is over before it starts.',
+        'Castling short with White throws away the variation. Black replies ...Qa5, trades the bishop on d4 by way of ...Nd7 or ...Nh5, and takes over the c-file against a king that is now on the side Black was already attacking.',
+      ],
+      sources: [
+        'Lifetime Repertoires: Dragon Sicilian',
+        'Jan Gustafsson — Aggressive 1.e4, Part 2',
+        'Understanding Chess Openings: 1.e4 — Part 3',
+        'The Energetic 1.e4 — Part 2',
+        'Mastering Positional Sacrifices',
+        'Garry Kasparov — My Great Predecessors',
+      ],
+    };
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -5819,65 +5957,17 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'sharp',
     minRating: 1800,
     aliases: ['Yugoslav Attack with 9.O-O-O'],
-    theory: {
-      idea: 'The main tabiya of the Dragon, and the move order that changed what the opening is. For fifty years White stopped ...d5 with 9.Bc4 and both sides simply raced; modern practice castles at once and invites the break. The reasoning is not that 9...d5 is unsound but that it is what White wants: the centre opens, a great many pieces come off, and the game turns from a mutual mating attack into a technical one in which White has the sounder pawns. 9.Bc4 puts the bishop on precisely the square Black’s whole set-up is aimed at — ...Rc8 and the exchange sacrifice on c3 both gain in value — and from c4 or b3 it can never drop back to e2 to hold f3. 9.g4 is the attempt to have both, since the threat of g5 rules out ...d5 while the bishop stays free for e2, but committing the pawn gives Black the extra option of ...Be6 with comfortable play. The practical consequence for Black is unwelcome: the romantic Dragon is not on offer here, and what remains is a slightly worse position to be defended accurately.',
-      structures: [],
-      whitePlans: [
-        'Allow 9...d5, meet it with 10.exd5 Nxd5 11.Nxc6 bxc6, and then place the bishop on d4: neutralise the activity first, and let the doubled c-pawns and Black’s homeless light-squared bishop decide the game afterwards.',
-        'Refuse to capture on d5 with a piece even when it wins a pawn — the recapture ...cxd5 repairs the queenside and gives the c8 bishop a life. Most of the games White throws away in this line are thrown away by taking.',
-        'Where Black avoids the break, revert to the old plan: h4-h5, Bh6 to trade the Dragon bishop, hxg6 and the h-file.',
-        'The alternative treatment of the break, 10.Nxc6 bxc6 11.Bh6 with h4-h5 to follow, which keeps far more pieces on and aims at the king rather than at the structure.',
-        'Do not hurry with the bishop. Leaving it on f1 for one more move is what makes 9...Bd7 pointless and keeps e2 available as a defensive square for it.',
-      ],
-      blackPlans: [
-        '9...d5 immediately, which is the entire justification for allowing White to castle first. It is played in the knowledge that it leads to a worse but defensible game rather than to equality by force.',
-        '9...Nxd4 10.Bxd4 followed by ...Be6 and ...Qa5, which is a comfortable set-up when White has spent a move on g4 — and is the reason White prefers not to.',
-        'Where White allows it, the traditional counterplay is unchanged: ...Rc8, ...Ne5-c4, ...Qa5 and the exchange sacrifice on c3.',
-        'Think about the light-squared bishop before recapturing with ...bxc6. In the simplified positions it is the piece with nowhere to go, and Black’s defensive task is mostly the task of finding it a square.',
-      ],
-      breaks: [
-        {
-          move: 'd5',
-          side: 'black',
-          note: 'The break the modern move order concedes on purpose. It frees the g7 bishop and liquidates the attack, and it is the only move that stops White simply playing h4-h5 with a free hand.',
-          prerequisites: ['White has not played Bc4 or g4', 'A knight on c6, so the recapture after exd5 does not lose material'],
-        },
-        {
-          move: 'h5',
-          side: 'white',
-          note: 'The attacking break of the older Yugoslav. It is what Black is buying his way out of with ...d5, and it remains the punishment for any slow ninth move.',
-        },
-        {
-          move: 'e5',
-          side: 'black',
-          note: 'The freeing push in the lines where White answers ...d5 with a queen move rather than a capture; it hits the knight on d4 and settles the centre before White is organised.',
-          prerequisites: ['White has left the tension rather than taking on d5'],
-        },
-      ],
-      keySquares: [
-        { square: 'd5', note: 'The square the whole variation turns on. If Black gets a pawn there the attack is over; if White is provoked into taking there with a piece, Black straightens his pawns and the advantage goes with them.' },
-        { square: 'd4', note: 'Where White’s dark-squared bishop returns once the knight has left. It faces down the Dragon bishop and offers a trade that Black, with no attack left, can rarely accept.' },
-        { square: 'c6', note: 'The doubled pawn after ...bxc6. It is not weak in itself; what it costs Black is the b-file, the light squares around it and any prospect of the queenside majority marching.' },
-        { square: 'c3', note: 'Still the target of every Dragon rook, which is why the lines where mass trades happen are a relief to White and a disappointment to Black.' },
-      ],
-      routes: ['Be3-d4 after Nxc6, meeting the fianchettoed bishop head-on'],
-      traps: [
-        '9...Bd7 is played from habit: it prepares ...Rc8 against a bishop on c4, and here that bishop is still on f1, so the rook attacks nothing and the tempo is gone.',
-        'Winning the d5 pawn with a piece in the main line hands Black the one thing he needs — a healthy pawn structure — in return for material White cannot hold on to anyway.',
-        'Treating the position as the old race and playing h4 before the centre is resolved runs into ...d5 with the h-pawn committed and the file not yet open.',
-      ],
-      sources: [
-        'Chessable — Lifetime Repertoires: Dragon Sicilian',
-        'Grzegorz Gajewski — Lifetime Repertoires: 1.e4 — Part 2',
-        'S. P. Sethuraman — Lifetime Repertoires: 1.e4 — Part 2',
-        'Anish Giri — Lifetime Repertoires: 1.e4 — Part 3',
-        'Jan Gustafsson — Aggressive 1.e4, Part 2',
-        'The Principled and Practical 1.e4',
-        'The Energetic 1.e4 — Part 2',
-        'Understanding Chess Openings: 1.e4 — Part 3',
-        'The Open Sicilian: A Champion’s Guide',
-      ],
-    },
+    theory: DRAGON_YUGOSLAV_MODERN,
+  },
+  {
+    // The same position by the other order of ...Nc6 and ...O-O.
+    eco: 'B76',
+    name: 'Sicilian Defence: Dragon Variation, Yugoslav Attack, Modern Line',
+    moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be3 Bg7 f3 O-O Qd2 Nc6 O-O-O'),
+    character: 'sharp',
+    minRating: 1800,
+    aliases: ['Yugoslav Attack with 9.O-O-O'],
+    theory: DRAGON_YUGOSLAV_MODERN,
   },
   {
     eco: 'B77',
@@ -5885,72 +5975,16 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be3 Bg7 f3 O-O Qd2 Nc6 Bc4'),
     character: 'sharp',
     minRating: 1900,
-    theory: {
-      idea: 'The bishop is developed before the king is tucked away, and the order is the whole content of the move. On c4 it adds a third guard to d5, so ...d5 — the break that liquidates every Dragon attack — is simply unavailable, and White can take his time about castling long and starting h4-h5 knowing that Black has no way to change the structure. That is why this was the main line for half a century. What it costs is that the bishop stands on the wrong side of the board. Every black piece in the Dragon already points at the queenside, and c4 gives them a target: ...Rc8 and ...Ne5-c4 hit it, ...Nxd4 followed by ...Be6 offers a trade of it, ...b5 gains time on it, and it can never return to e2 to hold f3. The modern verdict is that this is a real cost rather than a nuisance, which is why strong players now prefer to castle at once and let ...d5 be played. Black has two ways of handling it: the old scheme with ...Bd7, ...Rc8 and ...Ne5, which is a straight race and where the theory has gone badly for him, and the rehabilitated ...Nxd4 and ...Be6, which develops with tempo against the bishop and starts the queenside play immediately rather than after four preparatory moves.',
-      structures: [],
-      whitePlans: [
-        'Castle long, then h4-h5 and Bh6 to trade the Dragon bishop, hxg6 and mate down the h-file. The plan does not change; what Bc4 buys is the certainty that Black cannot interrupt it with ...d5.',
-        'Bb3, keeping the bishop out of the way of ...Rc8 and ...Ne5-c4 while it goes on covering d5 and eyeing f7.',
-        'Kb1, which is worth a tempo in almost every line: it steps off the c1-h6 diagonal and out of the c-file, and it sets up the Nd5 intermezzo whenever the queens are on the d2-a5 diagonal together.',
-        'Meet ...b5 with a3 rather than with a capture. Stopping ...b4 is what holds the queenside, and it is the move that took the sting out of the ...Rfc8 and ...b5 treatment.',
-        'Accept the exchange on c3 when it comes and use the time: with a bishop the extra material is real, provided the king finds a square where the open lines do not reach it.',
-      ],
-      blackPlans: [
-        '9...Nxd4 10.Bxd4 Be6, the modern treatment. The knight is traded before White has castled, ...Be6 comes with a threat against the bishop, and Black is playing on the queenside two moves earlier than in the old lines.',
-        '...Qa5, the standard square: it covers b5 and d5, presses the knight on c3 and at times the pawn on a2, and it is the move that gets the queenside going.',
-        'After ...Qa5, play ...b5 at once rather than preparing it with ...Rfc8. The rook move gives White time for a3, and it is the immediate ...b5 and ...b4 that produces the counterplay.',
-        'The old plan: ...Bd7, ...Rc8, ...Ne5 and ...Nc4, followed by the exchange sacrifice on c3 to strip the king’s cover and open the long diagonal.',
-        'Where White answers ...Be6 with the trade, recapture with the f-pawn. The pawn on e6 covers d5 for good, which leaves the knight on c3 without a job and hands Black the f-file and the pressure down the c-file.',
-        'Meet h4 with ...h5, the Soltis idea: the file stays shut, and White has to find a piece sacrifice on h5 or g5 to open it at all.',
-      ],
-      breaks: [
-        {
-          move: 'h5',
-          side: 'white',
-          note: 'The attacking break, and with Bc4 played it can be prepared at leisure because Black has no central counter to hurry White with.',
-          prerequisites: ['Castled long, or the pawn advance leaves the king in the middle', 'A plan for the answer ...h5, since the file then has to be opened with a piece'],
-        },
-        {
-          move: 'b5',
-          side: 'black',
-          note: 'The counterplay in the modern lines, hitting the bishop’s retreat squares and clearing the way for ...b4 against the knight that guards d5. Played at once, before the rooks are arranged, or a3 stops it for good.',
-          prerequisites: ['The queen on a5 or the rook on c8, so that ...b4 comes with real force', 'The Nd5 intermezzo checked, since the queen on a5 and the queen on d2 share a diagonal'],
-        },
-        { move: 'b4', side: 'black', note: 'The follow-up and the real point: it drives the knight from c3 and the guard on d5 goes with it.' },
-        {
-          move: 'd5',
-          side: 'black',
-          note: 'The freeing break of the whole Dragon, and it is exactly what Bc4 is played to prevent. Its absence is the difference between this variation and the modern 9.O-O-O.',
-          prerequisites: ['The bishop driven from the a2-g8 diagonal or traded, which is why ...Be6 and ...b5 are worth so much here'],
-        },
-        { move: 'h5', side: 'black', note: 'The Soltis defence rather than an attack: the pawn stops h5 and forces White to invest a piece for the h-file.' },
-      ],
-      keySquares: [
-        { square: 'd5', note: 'Everything hangs on it. The bishop on c4 is a third defender of the square, and every black idea in the variation is a way of removing one of them.' },
-        { square: 'c4', note: 'A square Black wants for a knight from e5 as much as White wants it for the bishop. The tension between those two claims is what makes the old main line a race rather than a manoeuvring game.' },
-        { square: 'c3', note: 'Where the exchange sacrifice lands, and the knight the queenside pawns are aimed at. Removing it removes the cover of the king and a defender of d5 in one move.' },
-        { square: 'b3', note: 'Where the bishop belongs, and where it stays after ...Bxb3. Recapturing with the c-pawn looks ugly and is in fact excellent: the pawns on a2, b2 and b3 give the black pieces nothing to attack, at the price of an endgame White never intends to reach.' },
-        { square: 'e6', note: 'After the trade of light-squared bishops, the doubled pawn there is a strength: it takes d5 away permanently and the knight on c3 is left with nowhere to go.' },
-      ],
-      routes: [
-        'Nc6-e5-c4, the old route, played to force a decision about the bishop',
-        'Bc4-b3, out of reach of the rook and the knight while keeping the diagonal',
-        'Be3-d4 once the knights are traded, meeting the Dragon bishop head-on',
-      ],
-      traps: [
-        'The Nd5 intermezzo. With the white queen on d2 and the black queen on a5 there is an x-ray through the knight, so Nd5 can answer almost anything: ...Qxd2 is met by Nxe7+ and the queen is recovered with interest. Kb1 is often played for no other reason than to make this work.',
-        'Preparing ...b5 with ...Rfc8 gives White the tempo for a3, and once the pawn cannot come to b4 Black’s queenside play is over before it starts.',
-        'Castling short with White throws away the variation. Black replies ...Qa5, trades the bishop on d4 by way of ...Nd7 or ...Nh5, and takes over the c-file against a king that is now on the side Black was already attacking.',
-      ],
-      sources: [
-        'Lifetime Repertoires: Dragon Sicilian',
-        'Jan Gustafsson — Aggressive 1.e4, Part 2',
-        'Understanding Chess Openings: 1.e4 — Part 3',
-        'The Energetic 1.e4 — Part 2',
-        'Mastering Positional Sacrifices',
-        'Garry Kasparov — My Great Predecessors',
-      ],
-    },
+    theory: DRAGON_YUGOSLAV_BC4,
+  },
+  {
+    // The same position by the other order of ...Nc6 and ...O-O.
+    eco: 'B77',
+    name: 'Sicilian Defence: Dragon Variation, Yugoslav Attack, Main Line',
+    moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be3 Bg7 f3 Nc6 Qd2 O-O Bc4'),
+    character: 'sharp',
+    minRating: 1900,
+    theory: DRAGON_YUGOSLAV_BC4,
   },
   {
     eco: 'B30',
