@@ -76,19 +76,22 @@ describe('web app renders', () => {
   });
 
   it('renders a deep line by inheriting the parent opening’s theory', () => {
-    const moves = 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7'.split(' ');
+    // One ply past the Mar del Plata, which carries its own theory, so what is
+    // shown here has to have been inherited from it.
+    const moves = 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7 Ne1'.split(' ');
     const match = identifyOpening(moves);
     const html = renderToStaticMarkup(
       <OpeningPanel
         match={match}
         fen={fenAfter(moves)}
-        plies={16}
+        plies={17}
         onPlayMove={() => {}}
         onMarks={() => {}}
       />,
     );
-    expect(html).toContain('Mar del Plata');
+    expect(html).toContain('Classical System');
     expect(html).toContain('Ideas shown for the parent line');
+    expect(html).toContain('Mar del Plata'); // the parent it was inherited from
     // The locked centre is read off the board, not from a tag on the opening,
     // and the tab says so before you open it.
     expect(html).toContain('pawn structures on the board');

@@ -135,8 +135,15 @@ Shape (see `src/types.ts` for the full contract):
 ### 4. Verify, then commit
 
 ```bash
-npx vitest run packages/opening-book
+npx vitest run packages/opening-book   # while working
+npx vitest run                          # before the last commit of a batch
 ```
+
+Run the **whole** suite at least once before finishing. Entries reach further than
+the book package: a render test in `apps/web` asserted that a King's Indian line
+*inherits* its theory, and writing that node's own entry made the assertion
+false. Nothing caught it for several batches, because every batch had run only
+the opening-book tests.
 
 `npm run typecheck` fails at the root with `TS5083` — there is no root
 `tsconfig.json`, only `tsconfig.base.json`. This is pre-existing and unrelated to
