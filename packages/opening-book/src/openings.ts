@@ -1953,6 +1953,391 @@ const RAUZER_NEO_MODERN: OpeningTheory = {
     ],
     };
 
+const SEMI_SLAV: OpeningTheory = {
+    idea: 'Black builds the c6/d5/e6 triangle — as solid as the Queen’s Gambit Declined and as flexible as the Slav — and pays for it by shutting in the light-squared bishop. Everything afterwards is about freeing that bishop: either slowly, with ...b6 and ...Bb7, or sharply, by taking on c4 and holding the pawn with ...b5. Because ...c6 is already played, the capture on c4 is backed by a real threat rather than a bluff, and that is what makes the opening as sharp as it is.',
+    structures: ['semi-slav-triangle'],
+    whitePlans: [
+      '5.e3, the Meran and Anti-Meran complex: c4 is defended, at the cost of blocking in the dark-squared bishop.',
+      '5.Bg5, provoking ...dxc4 or ...h6 and heading for the Botvinnik and Moscow complications.',
+      'Build toward e3-e4; every Semi-Slav plan is measured by whether it stops that or allows it.',
+      '5.g3 is playable but blunt here — the knight defends c4 better from d2 than from c3.',
+    ],
+    blackPlans: [
+      'Free the light-squared bishop, by ...b6 and ...Bb7 or by ...dxc4 and ...b5.',
+      'Take on c4 only after White has moved the f1 bishop, so that recapturing costs a tempo.',
+      'Hold the extra pawn with ...b5 and ...a6 and make White demonstrate the compensation.',
+      'Play ...b5-b4 to drive the c3 knight away from the defence of c4 and d5.',
+    ],
+    breaks: [
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The standard freeing move; with ...dxc4 and ...b5 it is the Meran in one line.',
+        prerequisites: ['The light-squared bishop out, or about to be'],
+      },
+      { move: 'e5', side: 'black', note: 'The other way out, usually after ...Nbd7 and a rook to e8.' },
+      { move: 'e4', side: 'white', note: 'The centre White is building toward, and often worth a pawn on the queenside to achieve.' },
+    ],
+    keySquares: [
+      { square: 'c4', note: 'The pawn the whole opening argues about: whether Black can take it and keep it.' },
+      { square: 'e4', note: 'White’s ambition, and the yardstick for every black plan.' },
+    ],
+    traps: [
+      'Taking on c4 before White has moved the f1 bishop simply loses a tempo — Bxc4 comes in one move instead of two, and the concession has bought nothing.',
+    ],
+    sources: [
+      'Arjun Erigaisi — Lifetime Repertoires: Semi-Slav',
+      'Sam Shankland — Lifetime Repertoires: Semi-Slav',
+      'Sethuraman — Lifetime Repertoires: Semi-Slav',
+    ],
+    };
+
+const SEMI_SLAV_E3: OpeningTheory = {
+    idea: 'The starting position of the e3 Semi-Slav, and everything after it is an argument about one tempo. White has defended c4 with the pawn on e3 and the knight on f3, and the plan is Bd3 followed by e4 — but the instant the bishop steps to d3, ...dxc4 makes it move a second time, and that single move is the Meran. White’s sixth move is therefore not a developing choice but a decision about whether to pay: Bd3 pays and buys the fastest possible build-up, while Qc2, Be2, a4, a3 and b3 each decline in a different currency. Whichever branch is taken, the set-up has one standing cost, and it is the c1 bishop. The pawn on e3 stands in front of it, so it is the last piece White develops, and the whole of Black’s play is timed against that fact: the counterplay has to arrive before the centre does.',
+    structures: ['semi-slav-triangle'],
+    whitePlans: [
+      '6.Bd3, the Meran. The bishop takes the best square it has, pointing at the kingside and holding the most control of the centre, and it is the quickest route to e4. The price is admitted openly: ...dxc4 now gains a move.',
+      '6.Qc2, the Anti-Meran. The queen occupies the diagonal the bishop wants without committing the bishop, so the capture on c4 no longer wins a tempo. Its popularity dates from the Kramnik–Anand match at Bonn in 2008, after which White players stopped walking into the Meran on principle.',
+      '6.Be2, the modern flexible treatment. It looks modest, and the point only becomes clear if Black exchanges on c4: the recapture takes one move rather than two. The middlegames are the same as the Meran’s, so the finesses are about order rather than plan.',
+      '6.a4, removing ...dxc4 and ...b5 by force rather than by finesse. The pawn also takes queenside space and can go further later, which is the part of the idea that outlives the prophylaxis.',
+      '6.a3, the most multi-purpose and the most patient: it anticipates ...b5-b4, gives the bishop a2 to retreat to, and above all leaves White’s set-up undefined for one more move. Very subtle, and in practice Black gets a free tempo compared with the same structures elsewhere.',
+      '6.b3, the most common of the remaining moves. It solves the c1 bishop by fianchetto and avoids the Meran altogether, but it hands Black a comfortable version of the positions he was aiming for anyway.',
+      'Play e3-e4. It is the object of all six moves, and the disagreement between them is only about the price.',
+    ],
+    blackPlans: [
+      '5...Nbd7, the standard move: it keeps ...dxc4 and ...b5 in reserve and forces White to declare on move six, which is the whole point of the move order.',
+      '5...a6, the flexible alternative. It takes the sting out of a4, and it keeps ...c5 with ...Nc6 available instead of the usual ...Nbd7 development — a different game rather than a different order. The concession is the hole on b6, which White can play c5 to use.',
+      'Judge every White sixth move by one question: after ...dxc4, does the pawn come back in one move or two? That answer decides whether the ...b5 plan is worth playing at all.',
+      'Against the slow moves, develop and pocket the tempo. Against a3 and b3 in particular Black reaches known structures a move to the good, which is worth more than any specific line.',
+      'Free the light-squared bishop — ...dxc4 and ...b5 against the Meran, ...b6 and ...Bb7 against the quiet systems. The choice of method follows from White’s sixth move, not from taste.',
+      'Aim for ...c5 or ...e5. The triangle is solid and passive until one of them lands, and every plan Black has is a way of preparing one of the two.',
+    ],
+    breaks: [
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'What the whole set-up is for. Getting it in under good circumstances is worth a queenside pawn, and every one of White’s sixth moves is a different estimate of how much preparation it needs.',
+        prerequisites: ['The f1 bishop developed and the king castled', 'Black’s ...dxc4 and ...b5 counterplay either prevented or already answered'],
+      },
+      {
+        move: 'b5',
+        side: 'black',
+        note: 'The move that holds the pawn on c4 and starts the queenside expansion. It is the reason ...c6 was played on move two, and it is only worth the weakening when the capture has already cost White a move.',
+        prerequisites: ['...dxc4 played', 'White’s light-squared bishop already committed to d3, so recapturing takes a second move'],
+      },
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The freeing break. Once it lands the b7 bishop is looking down an open diagonal and the whole Semi-Slav has justified itself; until then the c6 pawn is a weakness with nothing to defend it.',
+      },
+      {
+        move: 'a4',
+        side: 'white',
+        note: 'Prophylaxis before it is needed, taking ...b5 away before ...dxc4 makes it possible. It costs a tempo and the b4 square, and it gains space that a further a5 can make permanent.',
+      },
+    ],
+    keySquares: [
+      { square: 'c4', note: 'The pawn the entire opening argues about — not whether Black can win it, but whether taking it makes White’s bishop move twice.' },
+      { square: 'd3', note: 'The square the bishop wants and hesitates over. Every White alternative on move six is a way of not going there yet, and every one of them is worse for the bishop.' },
+      { square: 'e4', note: 'White’s ambition and the yardstick for everything Black does. A Semi-Slav in which White gets a pawn there for free has gone wrong.' },
+      { square: 'c1', note: 'Where the dark-squared bishop is still sitting. The pawn on e3 is in front of it, so it develops last, and Black’s whole timing is built on that delay.' },
+      { square: 'b6', note: 'The hole 5...a6 concedes. White’s way of using it is c5, clamping the queenside, and whether the clamp is worth the central concession is the argument of that line.' },
+    ],
+    routes: [
+      'Bf1-d3 and later Bd3xc4, the two-move recapture the Meran is named after',
+      'Qd1-c2 or Bf1-e2 first, so that the same recapture takes one move instead',
+    ],
+    sources: [
+      'Sethuraman — Lifetime Repertoires: Semi-Slav',
+      'Arjun Erigaisi — Lifetime Repertoires: Semi-Slav',
+      'Renato Quintillano — The Semi-Slav: A Complete Repertoire for Black',
+      'Anna Cramling — 1.d4 — Part 1',
+      'Kushager Krishnater — The Easiest Semi-Slav Defence',
+    ],
+    };
+
+const MERAN_TABIYA: OpeningTheory = {
+    idea: 'The tabiya of the 5.e3 Semi-Slav, and the position the whole preceding move order is a negotiation about. Bd3 is the natural square — it is the one that makes e3-e4 a real threat rather than an intention — but putting the bishop there answers the question Black has been waiting on, and 6...dxc4 now costs White a second move with the same piece. That single tempo is the Meran. Everything after it follows from one fact: Black has traded his central pawn for time and a queenside pawn mass, and the pawn on c6 is simultaneously the base of his counterplay and his one lasting weakness. If ...c5 arrives, the b7 bishop is looking down an open diagonal at a centre that is now under fire from both sides and Black is doing very well; if it never arrives, c6 sits backward on a half-open file with nothing to defend it and White wins the ending. This is why so much of the theory is about move order rather than evaluation — White’s 6.Qc2 exists purely to avoid the tempo, and Black’s waiting moves exist purely to provoke Bd3 first.',
+    structures: ['semi-slav-triangle'],
+    whitePlans: [
+      'e3-e4 and then e4-e5, the whole justification for the bishop on d3. The advance is double-edged rather than simply good: it takes space and hits f6, and it also concedes d5 for good and leaves the pawn on e5 needing defence the moment Black answers ...cxd4.',
+      'After 6...dxc4 7.Bxc4 b5, put the bishop back on d3 rather than e2 or b3. From d3 it still supports e4, and when ...b4 comes at the knight there is an Ne4 available; the retreats to e2 and b3 give up one or both of those and are sidelines for that reason.',
+      'The main line 8.Bd3 a6 9.e4 c5 10.e5 cxd4 11.Nxb5 axb5 12.exf6 gxf6, a piece for the initiative and a tabiya in its own right since the Kramnik–Anand match of 2008. It is knowledge, not calculation: nobody finds it over the board.',
+      'a2-a4, forcing a concession on the queenside before Black is organised. It does not aim at more than a small edge, which in a line this sharp is a reasonable ambition.',
+      'Transpose to the Anti-Meran with Qc2 and a3 where Black answers with the ...Bd6 set-ups, keeping the queenside mass under supervision instead of racing it.',
+    ],
+    blackPlans: [
+      '...dxc4 followed by ...b5 and ...Bb7, gaining the tempo and freeing the bishop that the triangle shut in. The two moves belong together — the pawn on c4 is not held for its own sake but because ...b5 is what unlocks the position.',
+      'After 8...Bb7 the choice is between ...a6 and ...b4, and both are preparations for the same thing: ...c5. The first shores the queenside up and takes b5 from White’s pieces, the second gains space and drives the knight off c3, at the price of letting it settle on e4.',
+      '8...a6, keeping the kingside undeveloped a little longer so that neither e4 nor Ne4 arrives with a gain of time on a bishop. It is the sharpest move in the position and the one that treats ...c5 as the highest priority.',
+      '8...Bd6 with ...O-O, the modern practical choice: the game transposes to Anti-Meran main lines and Black plays for a normal middlegame rather than a forcing one.',
+      'The regrouping ...Bd6-e7 against Ng5 — but only once the knight has actually gone there. Developing the bishop to e7 while the knight is still on f3 lets White play e4 without having to reckon with ...e5 in reply.',
+    ],
+    breaks: [
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The move the whole variation is arranged around. It frees the position, opens the long diagonal for the bishop on b7 and hits d4 twice; failing to get it in leaves c6 backward on the half-open file with the bishop that used to defend it sitting on b7.',
+        prerequisites: ['...b5 already played, or the pawn on c5 simply hangs to the piece that took on c4', 'The b7 bishop developed, so that the opening of the centre works for Black rather than for White'],
+      },
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'What Bd3 is for. Every black move in the Meran is measured against it, and the price of playing it early is that ...c5 comes immediately with the centre still fluid.',
+      },
+      {
+        move: 'e5',
+        side: 'white',
+        note: 'The follow-up that gains space and dislodges the knight from f6, and hands over d5 in the same move. After ...cxd4 the pawn on e5 is a target rather than a spearhead.',
+        prerequisites: ['Enough pieces behind it to make the space count, since the pawn cannot be defended by another pawn'],
+      },
+      {
+        move: 'b4',
+        side: 'black',
+        note: 'Drives the knight off c3, where it defends both e4 and d5, and gains queenside space for a later ...c5. What it concedes is the e4 square to that same knight.',
+      },
+      { move: 'a4', side: 'white', note: 'The lever against the queenside mass; it asks Black to fix the structure before ...c5 is ready.' },
+    ],
+    keySquares: [
+      { square: 'c6', note: 'Black’s counterplay and Black’s weakness are the same pawn. It is either spent on ...c5 or it is a permanent target on the half-open c-file.' },
+      { square: 'e4', note: 'White’s ambition as a pawn and his knight’s refuge as a square, which is why the bishop stands on d3 and why ...b4 is not simply a free gain of space.' },
+      { square: 'd5', note: 'Conceded the moment White plays e5. A black knight or bishop that reaches it is usually worth more than the space White has bought.' },
+      { square: 'd4', note: 'The pawn ...c5 and the b7 bishop are aimed at; White’s centre stands or falls on whether it can be held once both arrive.' },
+    ],
+    routes: [
+      'Bf1-d3-c4-d3, the two-step Black’s ...dxc4 forces and the tempo the whole Meran is built on',
+      'Bc8-b7 by way of ...b5, the light-squared bishop’s only route out of the triangle',
+    ],
+    traps: [
+      'Taking on c4 while the bishop is still on f1 hands the tempo straight back; the capture is worth a move only once the bishop has committed itself to d3.',
+      'Playing ...Be7 before White has committed the knight to g5 lets e3-e4 come in without the ...e5 answer, which is the one thing the bishop on d6 was covering.',
+    ],
+    modelGames: ['Kramnik – Anand, Bonn 2008'],
+    sources: [
+      'Sethuraman — Lifetime Repertoires: Semi-Slav',
+      'Arjun Erigaisi — Lifetime Repertoires: Semi-Slav',
+      'Sam Shankland — Lifetime Repertoires: Semi-Slav',
+      'Renato Quintillano — The Semi-Slav: A Complete Repertoire for Black',
+      'Converting an Extra Pawn in Chess',
+      'The Complete Book of Chess Strategy',
+    ],
+    };
+
+const SLAV_TWO_KNIGHTS: OpeningTheory = {
+    idea: 'Black takes the pawn at exactly this moment so that ...Bf5 can follow without running into Qb3 — the timing is the whole idea, not the pawn. What Black gets is time: White has to spend moves recovering c4, and cxd5 is off the table for good. What Black gives up is the d-file pawn — with the c-pawn already committed, no pawn will ever stand on d5 again, so e4 and c4 become White’s squares to argue over.',
+    structures: [],
+    whitePlans: [
+      '5.a4, stopping ...b5 before it can hold the pawn — at the cost of the b4 square.',
+      'Recover c4 with e3 and Bxc4, then build the centre with e3-e4 or f3 and e4.',
+      '5.e4 at once, taking the centre and treating the pawn as a gambit.',
+      'Play against the light squares e4 and c4, which Black can no longer contest with a pawn.',
+    ],
+    blackPlans: [
+      'Develop the light-squared bishop to f5 or g4 before ...e6 shuts it in — the point of the whole Slav.',
+      'Hold the pawn with ...b5 when White has not played a4, and make White prove the compensation.',
+      'Use the b4 square that a4 concedes: a bishop there can sit for the rest of the game.',
+      'Play ...a5 after a4 so the queenside cannot be opened, which is what makes long castling thinkable.',
+    ],
+    breaks: [
+      { move: 'b5', side: 'black', note: 'Holds the extra pawn and takes queenside space; a4 is what stops it.' },
+      { move: 'e5', side: 'black', note: 'The freeing break, once the bishop is out and the knight has a home.' },
+      { move: 'c5', side: 'black', note: 'The other freeing move, hitting d4 directly once White has committed to e3.' },
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'The centre White is playing for. Black’s whole setup — ...Bf5 in particular — exists to stop it.',
+      },
+    ],
+    keySquares: [
+      { square: 'e4', note: 'The square the opening is about: White wants a pawn there, Black stops it with pieces rather than a pawn.' },
+      { square: 'b4', note: 'Conceded by a4, and permanent. A black bishop lands there and is never evicted.' },
+    ],
+    traps: [
+      'Taking on c4 a move earlier or later is not the same move: the point of doing it here is that ...Bf5 comes next without Qb3 hitting it.',
+    ],
+    sources: [
+      'Nils Grandelius — Lifetime Repertoires: Classical Slav',
+      'Plichta — Lifetime Repertoires: Queen’s Gambit',
+      'The Club Player’s Black Repertoire 1.d4 d5',
+    ],
+    };
+
+const SLAV_CZECH: OpeningTheory = {
+    idea: 'The position the Slav is played for. The light-squared bishop — the piece the Queen’s Gambit Declined leaves entombed behind ...e6 — is outside the pawn chain on f5, eyeing e4, and ...e6 can now be played without regret. White has the extra queenside space and will spend the opening trying to force e2-e4 through anyway; the a4 that made it possible has left b4 permanently soft.',
+    structures: [],
+    whitePlans: [
+      '6.Ne5, the critical try: not really about regaining c4, but about preparing f3 and e4 to embarrass the f5 bishop and the f6 knight.',
+      '6.e3 and Bxc4, a solid recovery of the pawn with a small pull in space.',
+      'Force e4 through in some form — every white plan here is a version of that.',
+      'Open the queenside with a5 or b4 before Black consolidates.',
+    ],
+    blackPlans: [
+      'Follow with ...e6 and develop the dark-squared bishop, often to b4.',
+      'Answer f3 and e4 by hitting the centre before it is finished — ...Nbd7, ...Bb4 and pressure on c3.',
+      'Play ...a5 to freeze the queenside, which is what makes castling long a real option here.',
+      'Keep the f5 bishop on the b1-h7 diagonal; it is the piece that stops e4.',
+    ],
+    breaks: [
+      { move: 'e6', side: 'black', note: 'Not a break so much as the move ...Bf5 bought — the bishop is already out, so this costs nothing.' },
+      { move: 'e5', side: 'black', note: 'The freeing break, played once the pieces are out and White’s centre has not arrived.' },
+      { move: 'c5', side: 'black', note: 'Hits d4 directly and opens the position for the bishop pair.' },
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'The advance the whole variation is built around stopping.',
+        prerequisites: ['f3 played, or the f5 bishop driven off the diagonal first'],
+      },
+    ],
+    keySquares: [
+      { square: 'e4', note: 'White’s ambition and Black’s job. The bishop on f5 is the guard.' },
+      { square: 'b4', note: 'Weakened by a4 for good; a bishop there is a permanent nuisance.' },
+    ],
+    sources: [
+      'Nils Grandelius — Lifetime Repertoires: Classical Slav',
+      'Lifetime Repertoires: Slav',
+      'The Club Player’s Black Repertoire 1.d4 d5',
+    ],
+    };
+
+const QGD_THREE_KNIGHTS: OpeningTheory = {
+    idea: 'The great crossroads of 1.d4. Black’s next move chooses between half a dozen different openings — ...Be7 the Classical Queen’s Gambit Declined, ...Bb4 the Ragozin, ...c6 the Semi-Slav, ...c5 the Semi-Tarrasch, ...dxc4 the Vienna, and ...a6 or ...Nbd7 keeping the choice open one move longer — and the practical value of the position for Black is precisely that White has to be ready for all of them. Underneath the branching there is a single strategic question, and it is White’s. The c1 bishop has to get outside the pawn chain, to g5 or f4, before e3 goes in; once the pawn stands on e3 with the bishop still behind it, that piece is bad for the rest of the game. If White is allowed Bg5 or Bf4 and then e3 with nothing going wrong in between, he is usually a shade better, and every system Black has here is a way of making something go wrong in between.',
+    structures: ['carlsbad', 'hanging-pawns'],
+    whitePlans: [
+      'Bishop first, e3 second. Which bishop move is right turns on ...Ne4: from g5 the bishop stands on the h4-d8 diagonal, where ...Ne4 hits it and invites exactly the trades that ease Black’s game, while on f4 it is out of the knight’s way.',
+      'cxd5 exd5 and the Carlsbad, when Black has already committed to a set-up that suits the minority attack.',
+      'Hold the exchange on d5 back once ...c6 has been played. Taking then opens the c8-h3 diagonal and solves Black’s one real problem for him, which is why the capture is thought unambitious against the Semi-Slav move order.',
+      'Meet the Semi-Tarrasch ...c5 with cxd5 Nxd5 and e4, trading the pieces Black wants traded but keeping a broad pawn centre and the initiative that goes with it.',
+      'Prepare e4 in the slow lines with Bd3, Qc2 and Rd1; it is what the whole development scheme is for.',
+    ],
+    blackPlans: [
+      '...Be7 and castle, the Classical: the soundest choice, and the line where the difference between Bg5 and Bf4 shows, since ...Ne4 is Black’s standard way of relieving the position.',
+      '...Bb4, the Ragozin — a Nimzo-Indian and a Queen’s Gambit at once. The pin makes e3 and Bd3 awkward and gives ...dxc4 a real point.',
+      '...c6, the Semi-Slav: the most flexible and the most double-edged, keeping ...dxc4 and ...b5 in reserve.',
+      '...c5, the Semi-Tarrasch: concede the centre in return for early exchanges and a structure with no weaknesses.',
+      '...dxc4, the Vienna: concrete and tactical from the fifth move, and the branch where move order matters most.',
+      '...a6, the modern waiting move: it prepares ...dxc4 and ...b5 together and keeps every one of the systems above available for another move.',
+    ],
+    breaks: [
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The freeing break every Queen’s Gambit Declined system is eventually trying to reach. Whether it costs an isolated pawn depends entirely on which of them Black chose.',
+      },
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'The advance the whole white set-up prepares. Getting it in without conceding anything is what "a shade better" means here.',
+        prerequisites: ['The c1 bishop is already outside the chain', 'The d5 pawn is pressured enough that ...dxe4 is not a relief'],
+      },
+      {
+        move: 'e5',
+        side: 'black',
+        note: 'The alternative freeing advance, prepared with ...Nbd7 and ...Re8. The knight on f3 and the pawn on d4 exist largely to watch for it.',
+      },
+      {
+        move: 'b5',
+        side: 'white',
+        note: 'The minority attack, once cxd5 exd5 has fixed the Carlsbad structure. It aims to leave Black with a backward c-pawn or an isolated d-pawn.',
+        prerequisites: ['a4 and b4 played first, with a rook on b1'],
+      },
+    ],
+    keySquares: [
+      { square: 'e4', note: 'The square the position is fought over from both ends. ...Ne4 is Black’s standard equaliser — it trades pieces, unpins, and in the Bg5 lines it comes with tempo — while e3-e4 in one push is White’s statement that the opening has succeeded.' },
+      { square: 'f5', note: 'The c8 bishop’s dream square, and the reason the exchange on d5 is a concession after ...c6. Getting ...Bf5 in without allowing a queen sortie to f3 or b3 against b7 is the whole argument.' },
+      { square: 'd5', note: 'What Black defends and White undermines. The minority attack exists to turn the pawn there into a permanent weakness.' },
+    ],
+    traps: [
+      'Playing e3 before the c1 bishop is out is the standard positional error in this position, and it does not get better: the bishop spends the game behind its own pawns and there is no plan that frees it.',
+      'After the exchange on d5 in the ...c6 lines, ...Bf5 has to be timed. A queen to f3 hits b7 and forces the bishop back to g6, when the follow-up Bxf6 leaves Black with the wrong pawn recapture and a ruined kingside.',
+    ],
+    sources: [
+      'Lifetime Repertoires: Sam Shankland’s 1.d4 — Part 3',
+      'Keep It Simple for Black',
+      'The Solid Queen’s Gambit Declined — Adrien Demuth',
+      'Queen’s Gambit Declined According to Cheparinov — Part 1',
+      'Zlotnik’s Middlegame Manual',
+      'Semi-Slav Defence: A Top-Level Repertoire for Black',
+      'Seriously Shock the Semi-Slav',
+      'Converting an Extra Pawn in Chess',
+      'Lifetime Repertoires: The English Defence',
+    ],
+    };
+
+const QGA_CLASSICAL_MAIN: OpeningTheory = {
+    idea: 'Black gave up the centre on move two and has spent every move since buying it back on his own terms: ...c5 and ...a6 are the two halves of one plan, which is to trade the c-pawn for White’s d-pawn and expand with ...b5 and ...Bb7 so that the light-squared bishop, the piece the whole variation is arranged around, comes out on the long diagonal. If Black gets both — the exchange on d4 and ...b5 — without conceding anything for them, the position is level, and this is the reason 6...a6 has been the critical position of the QGA for a century. Everything White plays here is aimed at splitting the two ideas apart. The bishop must move again before ...b5 arrives with tempo, and where it goes decides which plan White is choosing: Bb3 stays on the a2-g8 diagonal, Bd3 is prophylaxis so that a4 can follow at once, and Be2 is the modest square that keeps the queenside quiet at the cost of any hope of an isolated queen’s pawn attack, since a bishop on e2 is simply too passive for a position where activity is the only compensation for the pawn. The other approach is to strike immediately with e4 or resolve with dxc5, which offers a queenless middlegame where Black’s loss of castling rights matters far less than it looks — a king on e7 is perfectly safe once the queens have gone.',
+    structures: ['iqp', 'hanging-pawns'],
+    whitePlans: [
+      'Move the bishop before ...b5 comes with tempo. Bd3 is the prophylactic choice because a4 can then follow immediately; Bb3 is the most natural but is awkwardly placed if Black answers a4 with ...b4 rather than ...c4.',
+      '7.a4, the old main line, stopping ...b5 and ...Bb7 outright. The cost is permanent: b4 is weakened, a knight comes to c6 and then b4, and a3 is no longer available to chase it.',
+      '7.Qe2, keeping the a4-e8 diagonal covered so that Bxb5 sacrifices stay in the position, then Bd3 and Rd1. This is the modern main line, and it is aimed squarely at making Black’s development uncomfortable.',
+      '7.e4, an immediate space grab that offers the e-pawn. Taking it is playable but unpleasant to defend, and Black’s simplest answer is ...b5 rather than greed.',
+      'dxc5 into the endgame, when Black recaptures with the bishop and White plays against a king that cannot castle — with the caveat that this matters far less without queens on.',
+      'Accept an isolated queen’s pawn only with an active bishop. The whole point of the structure is piece play, and the two must be chosen together.',
+      'Against ...Nc6 rather than ...b5, look for a d5 break, which is the standard punishment for putting the knight on the square that stops supporting the queenside advance.',
+    ],
+    blackPlans: [
+      'Play ...b5 and ...Bb7 to get the light-squared bishop onto the long diagonal. It is the piece the pawn was given up for.',
+      'Exchange on d4 at a moment when White has to recapture in a way that costs him something. Trading the c-pawn for the d-pawn without a concession in return is close to full equality.',
+      'Develop the queen’s knight to d7 rather than c6. On d7 it keeps the queenside advance supported and leaves no target for d5; on c6 it invites exactly that break.',
+      'Finish with ...Be7 and castling; Black is two moves from safety at the critical moment and everything White does is designed to make those two moves cost something.',
+      'Answer a4 with ...Nc6 and ...Nb4, occupying the square a4 gave up, since a3 can no longer chase the knight away.',
+      'In the dxc5 lines, recapture with the bishop rather than trading queens on d1, which would hand White a tempo and put his rook on the d-file for nothing.',
+    ],
+    breaks: [
+      {
+        move: 'b5',
+        side: 'black',
+        note: 'Half of Black’s equalising plan: it gains queenside space and opens the diagonal for ...Bb7. Timing is the whole issue — played while the white bishop still stands on c4 it comes with tempo, and White’s sixth and seventh moves exist to deny that.',
+        prerequisites: [
+          'White has not played a4, or has played it in a version where ...b5 can be prepared anyway.',
+          'The a4-e8 diagonal is not loaded with a Bxb5 sacrifice, which is what Qe2 keeps alive.',
+        ],
+      },
+      {
+        move: 'c4',
+        side: 'black',
+        note: 'The alternative to exchanging on d4 once White has played a4: rather than let the queenside pawns be split, Black pushes past and keeps them connected. It gives up the tension in the centre, so it is a choice rather than an automatic reply, and it is less attractive when it merely chases a white bishop from b3 onto a better diagonal.',
+        prerequisites: ['White has played a4 against ...b5 and the b5 pawn is not itself attacked, so Black has the luxury of choosing.'],
+      },
+      {
+        move: 'a4',
+        side: 'white',
+        note: 'The standing answer to ...b5, and the move that keeps the queenside from resolving in Black’s favour. It weakens b4 permanently, which is why it is prepared with Bd3 rather than played on reflex.',
+        prerequisites: ['The bishop has left c4, so ...b4 does not simply gain a tempo somewhere useful.'],
+      },
+      {
+        move: 'd5',
+        side: 'white',
+        note: 'The central break that punishes ...Nc6. With the knight on d7 instead it usually achieves nothing.',
+        prerequisites: ['Black’s queen’s knight has committed to c6 rather than d7.'],
+      },
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'The immediate space grab, offered as a pawn. It is sound, but Black need not take it — ...b5 arrives in time and equalises without complications.',
+      },
+    ],
+    keySquares: [
+      { square: 'b4', note: 'The square a4 gives away. A black knight arriving there via c6 cannot be dislodged, because the a-pawn has already gone past a3.' },
+      { square: 'd4', note: 'The pawn Black is playing to remove, and the square that decides whether White gets an isolated pawn, hanging pawns or a symmetrical structure.' },
+      { square: 'b7', note: 'Where Black’s light-squared bishop belongs. Every white plan here is measured by whether it stops the bishop reaching this square in good time.' },
+      { square: 'd7', note: 'The right square for the queen’s knight — flexible, supports the queenside expansion, and gives the d5 break nothing to hit.' },
+    ],
+    routes: ['Bc4-d3 followed by a4', 'Nb8-c6-b4 once White has played a4', 'Qd1-e2 with Rf1-d1'],
+    traps: [
+      'Combining Be2 with a plan of accepting an isolated queen’s pawn. The structure demands active pieces and the bishop on e2 provides none, so the two ideas cancel out.',
+      'Combining a4 with Nxd4 in the symmetrical structures: a4 has already conceded b4, and recapturing with the knight leaves nothing to compensate for it.',
+      'For Black, the queen trade on d1 in the dxc5 lines. Recapturing with the bishop is more accurate; the endgame after ...Qxd1 hands White a developing tempo for the castling rights Black barely needs.',
+    ],
+    sources: [
+      'Benjamin Gledura — Lifetime Repertoires: Queen’s Gambit Accepted',
+      'Lifetime Repertoires: Queen’s Gambit Accepted',
+      'Lifetime Repertoires: Plichta’s Queen’s Gambit',
+      'Anna Cramling’s 1.d4 — Part 1',
+      'Zlotnik’s Middlegame Manual',
+    ],
+    };
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -8232,69 +8617,35 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('d4 Nf6 c4 e6 Nf3 d5 Nc3'),
     character: 'positional',
     minRating: 1600,
-    theory: {
-      idea: 'The great crossroads of 1.d4. Black’s next move chooses between half a dozen different openings — ...Be7 the Classical Queen’s Gambit Declined, ...Bb4 the Ragozin, ...c6 the Semi-Slav, ...c5 the Semi-Tarrasch, ...dxc4 the Vienna, and ...a6 or ...Nbd7 keeping the choice open one move longer — and the practical value of the position for Black is precisely that White has to be ready for all of them. Underneath the branching there is a single strategic question, and it is White’s. The c1 bishop has to get outside the pawn chain, to g5 or f4, before e3 goes in; once the pawn stands on e3 with the bishop still behind it, that piece is bad for the rest of the game. If White is allowed Bg5 or Bf4 and then e3 with nothing going wrong in between, he is usually a shade better, and every system Black has here is a way of making something go wrong in between.',
-      structures: ['carlsbad', 'hanging-pawns'],
-      whitePlans: [
-        'Bishop first, e3 second. Which bishop move is right turns on ...Ne4: from g5 the bishop stands on the h4-d8 diagonal, where ...Ne4 hits it and invites exactly the trades that ease Black’s game, while on f4 it is out of the knight’s way.',
-        'cxd5 exd5 and the Carlsbad, when Black has already committed to a set-up that suits the minority attack.',
-        'Hold the exchange on d5 back once ...c6 has been played. Taking then opens the c8-h3 diagonal and solves Black’s one real problem for him, which is why the capture is thought unambitious against the Semi-Slav move order.',
-        'Meet the Semi-Tarrasch ...c5 with cxd5 Nxd5 and e4, trading the pieces Black wants traded but keeping a broad pawn centre and the initiative that goes with it.',
-        'Prepare e4 in the slow lines with Bd3, Qc2 and Rd1; it is what the whole development scheme is for.',
-      ],
-      blackPlans: [
-        '...Be7 and castle, the Classical: the soundest choice, and the line where the difference between Bg5 and Bf4 shows, since ...Ne4 is Black’s standard way of relieving the position.',
-        '...Bb4, the Ragozin — a Nimzo-Indian and a Queen’s Gambit at once. The pin makes e3 and Bd3 awkward and gives ...dxc4 a real point.',
-        '...c6, the Semi-Slav: the most flexible and the most double-edged, keeping ...dxc4 and ...b5 in reserve.',
-        '...c5, the Semi-Tarrasch: concede the centre in return for early exchanges and a structure with no weaknesses.',
-        '...dxc4, the Vienna: concrete and tactical from the fifth move, and the branch where move order matters most.',
-        '...a6, the modern waiting move: it prepares ...dxc4 and ...b5 together and keeps every one of the systems above available for another move.',
-      ],
-      breaks: [
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The freeing break every Queen’s Gambit Declined system is eventually trying to reach. Whether it costs an isolated pawn depends entirely on which of them Black chose.',
-        },
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'The advance the whole white set-up prepares. Getting it in without conceding anything is what "a shade better" means here.',
-          prerequisites: ['The c1 bishop is already outside the chain', 'The d5 pawn is pressured enough that ...dxe4 is not a relief'],
-        },
-        {
-          move: 'e5',
-          side: 'black',
-          note: 'The alternative freeing advance, prepared with ...Nbd7 and ...Re8. The knight on f3 and the pawn on d4 exist largely to watch for it.',
-        },
-        {
-          move: 'b5',
-          side: 'white',
-          note: 'The minority attack, once cxd5 exd5 has fixed the Carlsbad structure. It aims to leave Black with a backward c-pawn or an isolated d-pawn.',
-          prerequisites: ['a4 and b4 played first, with a rook on b1'],
-        },
-      ],
-      keySquares: [
-        { square: 'e4', note: 'The square the position is fought over from both ends. ...Ne4 is Black’s standard equaliser — it trades pieces, unpins, and in the Bg5 lines it comes with tempo — while e3-e4 in one push is White’s statement that the opening has succeeded.' },
-        { square: 'f5', note: 'The c8 bishop’s dream square, and the reason the exchange on d5 is a concession after ...c6. Getting ...Bf5 in without allowing a queen sortie to f3 or b3 against b7 is the whole argument.' },
-        { square: 'd5', note: 'What Black defends and White undermines. The minority attack exists to turn the pawn there into a permanent weakness.' },
-      ],
-      traps: [
-        'Playing e3 before the c1 bishop is out is the standard positional error in this position, and it does not get better: the bishop spends the game behind its own pawns and there is no plan that frees it.',
-        'After the exchange on d5 in the ...c6 lines, ...Bf5 has to be timed. A queen to f3 hits b7 and forces the bishop back to g6, when the follow-up Bxf6 leaves Black with the wrong pawn recapture and a ruined kingside.',
-      ],
-      sources: [
-        'Lifetime Repertoires: Sam Shankland’s 1.d4 — Part 3',
-        'Keep It Simple for Black',
-        'The Solid Queen’s Gambit Declined — Adrien Demuth',
-        'Queen’s Gambit Declined According to Cheparinov — Part 1',
-        'Zlotnik’s Middlegame Manual',
-        'Semi-Slav Defence: A Top-Level Repertoire for Black',
-        'Seriously Shock the Semi-Slav',
-        'Converting an Extra Pawn in Chess',
-        'Lifetime Repertoires: The English Defence',
-      ],
-    },
+    theory: QGD_THREE_KNIGHTS,
+  },
+  {
+    // A 1...e6 order — often a French player’s route — which fell back on the
+    // Queen’s Pawn Opening six plies above.
+    eco: 'D37',
+    name: 'Queen’s Gambit Declined: Three Knights Variation',
+    moves: line('d4 e6 Nf3 d5 c4 Nf6 Nc3'),
+    character: 'positional',
+    minRating: 1600,
+    theory: QGD_THREE_KNIGHTS,
+  },
+  {
+    // Nc3 first, transposing on move four.
+    eco: 'D37',
+    name: 'Queen’s Gambit Declined: Three Knights Variation',
+    moves: line('d4 d5 c4 e6 Nc3 Nf6 Nf3'),
+    character: 'positional',
+    minRating: 1600,
+    theory: QGD_THREE_KNIGHTS,
+  },
+  {
+    // The 1...d5 order, which is how most games reach it.
+    eco: 'D37',
+    name: 'Queen’s Gambit Declined: Three Knights Variation',
+    moves: line('d4 d5 c4 e6 Nf3 Nf6 Nc3'),
+    character: 'positional',
+    minRating: 1600,
+    theory: QGD_THREE_KNIGHTS,
   },
   { eco: 'D20', name: 'Queen’s Gambit Accepted', moves: line('d4 d5 c4 dxc4'), character: 'balanced', forSide: 'black' },
   {
@@ -8324,44 +8675,41 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'sharp',
     minRating: 1600,
     forSide: 'black',
-    theory: {
-      idea: 'Black builds the c6/d5/e6 triangle — as solid as the Queen’s Gambit Declined and as flexible as the Slav — and pays for it by shutting in the light-squared bishop. Everything afterwards is about freeing that bishop: either slowly, with ...b6 and ...Bb7, or sharply, by taking on c4 and holding the pawn with ...b5. Because ...c6 is already played, the capture on c4 is backed by a real threat rather than a bluff, and that is what makes the opening as sharp as it is.',
-      structures: ['semi-slav-triangle'],
-      whitePlans: [
-        '5.e3, the Meran and Anti-Meran complex: c4 is defended, at the cost of blocking in the dark-squared bishop.',
-        '5.Bg5, provoking ...dxc4 or ...h6 and heading for the Botvinnik and Moscow complications.',
-        'Build toward e3-e4; every Semi-Slav plan is measured by whether it stops that or allows it.',
-        '5.g3 is playable but blunt here — the knight defends c4 better from d2 than from c3.',
-      ],
-      blackPlans: [
-        'Free the light-squared bishop, by ...b6 and ...Bb7 or by ...dxc4 and ...b5.',
-        'Take on c4 only after White has moved the f1 bishop, so that recapturing costs a tempo.',
-        'Hold the extra pawn with ...b5 and ...a6 and make White demonstrate the compensation.',
-        'Play ...b5-b4 to drive the c3 knight away from the defence of c4 and d5.',
-      ],
-      breaks: [
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The standard freeing move; with ...dxc4 and ...b5 it is the Meran in one line.',
-          prerequisites: ['The light-squared bishop out, or about to be'],
-        },
-        { move: 'e5', side: 'black', note: 'The other way out, usually after ...Nbd7 and a rook to e8.' },
-        { move: 'e4', side: 'white', note: 'The centre White is building toward, and often worth a pawn on the queenside to achieve.' },
-      ],
-      keySquares: [
-        { square: 'c4', note: 'The pawn the whole opening argues about: whether Black can take it and keep it.' },
-        { square: 'e4', note: 'White’s ambition, and the yardstick for every black plan.' },
-      ],
-      traps: [
-        'Taking on c4 before White has moved the f1 bishop simply loses a tempo — Bxc4 comes in one move instead of two, and the concession has bought nothing.',
-      ],
-      sources: [
-        'Arjun Erigaisi — Lifetime Repertoires: Semi-Slav',
-        'Sam Shankland — Lifetime Repertoires: Semi-Slav',
-        'Sethuraman — Lifetime Repertoires: Semi-Slav',
-      ],
-    },
+    theory: SEMI_SLAV,
+  },
+  {
+    // The 1...Nf6 order into the same position.
+    eco: 'D43',
+    name: 'Semi-Slav Defence',
+    moves: line('d4 Nf6 c4 e6 Nf3 d5 Nc3 c6'),
+    character: 'sharp',
+    minRating: 1600,
+    forSide: 'black',
+    theory: SEMI_SLAV,
+  },
+  {
+    // The Queen’s Gambit Declined order, ...c6 arriving last. It was shown the
+    // Queen’s Gambit Declined, which is what Black has just stopped playing.
+    eco: 'D43',
+    name: 'Semi-Slav Defence',
+    moves: line('d4 d5 c4 e6 Nf3 Nf6 Nc3 c6'),
+    character: 'sharp',
+    minRating: 1600,
+    forSide: 'black',
+    theory: SEMI_SLAV,
+  },
+  {
+    // Nc3 before Nf3, the order that keeps 4.e3 and the Anti-Meran in reserve.
+    // Theory is inherited along move-sequence ancestry, so without an address
+    // here it stops at the Slav — a different defence, four plies above. The
+    // object is shared rather than restated.
+    eco: 'D43',
+    name: 'Semi-Slav Defence',
+    moves: line('d4 d5 c4 c6 Nc3 Nf6 Nf3 e6'),
+    character: 'sharp',
+    minRating: 1600,
+    forSide: 'black',
+    theory: SEMI_SLAV,
   },
   {
     eco: 'D45',
@@ -8370,69 +8718,49 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'sharp',
     minRating: 1600,
     aliases: ['e3 Semi-Slav', 'Meran and Anti-Meran complex'],
-    theory: {
-      idea: 'The starting position of the e3 Semi-Slav, and everything after it is an argument about one tempo. White has defended c4 with the pawn on e3 and the knight on f3, and the plan is Bd3 followed by e4 — but the instant the bishop steps to d3, ...dxc4 makes it move a second time, and that single move is the Meran. White’s sixth move is therefore not a developing choice but a decision about whether to pay: Bd3 pays and buys the fastest possible build-up, while Qc2, Be2, a4, a3 and b3 each decline in a different currency. Whichever branch is taken, the set-up has one standing cost, and it is the c1 bishop. The pawn on e3 stands in front of it, so it is the last piece White develops, and the whole of Black’s play is timed against that fact: the counterplay has to arrive before the centre does.',
-      structures: ['semi-slav-triangle'],
-      whitePlans: [
-        '6.Bd3, the Meran. The bishop takes the best square it has, pointing at the kingside and holding the most control of the centre, and it is the quickest route to e4. The price is admitted openly: ...dxc4 now gains a move.',
-        '6.Qc2, the Anti-Meran. The queen occupies the diagonal the bishop wants without committing the bishop, so the capture on c4 no longer wins a tempo. Its popularity dates from the Kramnik–Anand match at Bonn in 2008, after which White players stopped walking into the Meran on principle.',
-        '6.Be2, the modern flexible treatment. It looks modest, and the point only becomes clear if Black exchanges on c4: the recapture takes one move rather than two. The middlegames are the same as the Meran’s, so the finesses are about order rather than plan.',
-        '6.a4, removing ...dxc4 and ...b5 by force rather than by finesse. The pawn also takes queenside space and can go further later, which is the part of the idea that outlives the prophylaxis.',
-        '6.a3, the most multi-purpose and the most patient: it anticipates ...b5-b4, gives the bishop a2 to retreat to, and above all leaves White’s set-up undefined for one more move. Very subtle, and in practice Black gets a free tempo compared with the same structures elsewhere.',
-        '6.b3, the most common of the remaining moves. It solves the c1 bishop by fianchetto and avoids the Meran altogether, but it hands Black a comfortable version of the positions he was aiming for anyway.',
-        'Play e3-e4. It is the object of all six moves, and the disagreement between them is only about the price.',
-      ],
-      blackPlans: [
-        '5...Nbd7, the standard move: it keeps ...dxc4 and ...b5 in reserve and forces White to declare on move six, which is the whole point of the move order.',
-        '5...a6, the flexible alternative. It takes the sting out of a4, and it keeps ...c5 with ...Nc6 available instead of the usual ...Nbd7 development — a different game rather than a different order. The concession is the hole on b6, which White can play c5 to use.',
-        'Judge every White sixth move by one question: after ...dxc4, does the pawn come back in one move or two? That answer decides whether the ...b5 plan is worth playing at all.',
-        'Against the slow moves, develop and pocket the tempo. Against a3 and b3 in particular Black reaches known structures a move to the good, which is worth more than any specific line.',
-        'Free the light-squared bishop — ...dxc4 and ...b5 against the Meran, ...b6 and ...Bb7 against the quiet systems. The choice of method follows from White’s sixth move, not from taste.',
-        'Aim for ...c5 or ...e5. The triangle is solid and passive until one of them lands, and every plan Black has is a way of preparing one of the two.',
-      ],
-      breaks: [
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'What the whole set-up is for. Getting it in under good circumstances is worth a queenside pawn, and every one of White’s sixth moves is a different estimate of how much preparation it needs.',
-          prerequisites: ['The f1 bishop developed and the king castled', 'Black’s ...dxc4 and ...b5 counterplay either prevented or already answered'],
-        },
-        {
-          move: 'b5',
-          side: 'black',
-          note: 'The move that holds the pawn on c4 and starts the queenside expansion. It is the reason ...c6 was played on move two, and it is only worth the weakening when the capture has already cost White a move.',
-          prerequisites: ['...dxc4 played', 'White’s light-squared bishop already committed to d3, so recapturing takes a second move'],
-        },
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The freeing break. Once it lands the b7 bishop is looking down an open diagonal and the whole Semi-Slav has justified itself; until then the c6 pawn is a weakness with nothing to defend it.',
-        },
-        {
-          move: 'a4',
-          side: 'white',
-          note: 'Prophylaxis before it is needed, taking ...b5 away before ...dxc4 makes it possible. It costs a tempo and the b4 square, and it gains space that a further a5 can make permanent.',
-        },
-      ],
-      keySquares: [
-        { square: 'c4', note: 'The pawn the entire opening argues about — not whether Black can win it, but whether taking it makes White’s bishop move twice.' },
-        { square: 'd3', note: 'The square the bishop wants and hesitates over. Every White alternative on move six is a way of not going there yet, and every one of them is worse for the bishop.' },
-        { square: 'e4', note: 'White’s ambition and the yardstick for everything Black does. A Semi-Slav in which White gets a pawn there for free has gone wrong.' },
-        { square: 'c1', note: 'Where the dark-squared bishop is still sitting. The pawn on e3 is in front of it, so it develops last, and Black’s whole timing is built on that delay.' },
-        { square: 'b6', note: 'The hole 5...a6 concedes. White’s way of using it is c5, clamping the queenside, and whether the clamp is worth the central concession is the argument of that line.' },
-      ],
-      routes: [
-        'Bf1-d3 and later Bd3xc4, the two-move recapture the Meran is named after',
-        'Qd1-c2 or Bf1-e2 first, so that the same recapture takes one move instead',
-      ],
-      sources: [
-        'Sethuraman — Lifetime Repertoires: Semi-Slav',
-        'Arjun Erigaisi — Lifetime Repertoires: Semi-Slav',
-        'Renato Quintillano — The Semi-Slav: A Complete Repertoire for Black',
-        'Anna Cramling — 1.d4 — Part 1',
-        'Kushager Krishnater — The Easiest Semi-Slav Defence',
-      ],
-    },
+    theory: SEMI_SLAV_E3,
+  },
+  {
+    // The Queen’s Gambit Declined order, which was shown Queen’s Gambit
+    // Declined plans five plies above.
+    eco: 'D45',
+    name: 'Semi-Slav Defence: Main Line',
+    moves: line('d4 d5 c4 e6 Nf3 Nf6 Nc3 c6 e3'),
+    character: 'sharp',
+    minRating: 1600,
+    aliases: ['e3 Semi-Slav (QGD order)'],
+    theory: SEMI_SLAV_E3,
+  },
+  {
+    // ...e6 before ...Nf6, the Triangle move order, which reaches the same
+    // position when Black declines the Noteboom.
+    eco: 'D45',
+    name: 'Semi-Slav Defence: Main Line',
+    moves: line('d4 d5 c4 c6 Nc3 e6 e3 Nf6 Nf3'),
+    character: 'sharp',
+    minRating: 1600,
+    aliases: ['e3 Semi-Slav (Triangle order)'],
+    theory: SEMI_SLAV_E3,
+  },
+  {
+    // Both knights out before e3.
+    eco: 'D45',
+    name: 'Semi-Slav Defence: Main Line',
+    moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 e6 e3'),
+    character: 'sharp',
+    minRating: 1600,
+    aliases: ['e3 Semi-Slav (Nf3 and Nc3 first)'],
+    theory: SEMI_SLAV_E3,
+  },
+  {
+    // Nf3 before e3 — the same tabiya, and the commonest route to it.
+    eco: 'D45',
+    name: 'Semi-Slav Defence: Main Line',
+    moves: line('d4 d5 c4 c6 Nc3 Nf6 Nf3 e6 e3'),
+    character: 'sharp',
+    minRating: 1600,
+    aliases: ['e3 Semi-Slav (Nf3 first)'],
+    theory: SEMI_SLAV_E3,
   },
   {
     eco: 'D46',
@@ -8441,72 +8769,17 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'sharp',
     minRating: 1700,
     aliases: ['Meran tabiya', 'Semi-Slav 6.Bd3'],
-    theory: {
-      idea: 'The tabiya of the 5.e3 Semi-Slav, and the position the whole preceding move order is a negotiation about. Bd3 is the natural square — it is the one that makes e3-e4 a real threat rather than an intention — but putting the bishop there answers the question Black has been waiting on, and 6...dxc4 now costs White a second move with the same piece. That single tempo is the Meran. Everything after it follows from one fact: Black has traded his central pawn for time and a queenside pawn mass, and the pawn on c6 is simultaneously the base of his counterplay and his one lasting weakness. If ...c5 arrives, the b7 bishop is looking down an open diagonal at a centre that is now under fire from both sides and Black is doing very well; if it never arrives, c6 sits backward on a half-open file with nothing to defend it and White wins the ending. This is why so much of the theory is about move order rather than evaluation — White’s 6.Qc2 exists purely to avoid the tempo, and Black’s waiting moves exist purely to provoke Bd3 first.',
-      structures: ['semi-slav-triangle'],
-      whitePlans: [
-        'e3-e4 and then e4-e5, the whole justification for the bishop on d3. The advance is double-edged rather than simply good: it takes space and hits f6, and it also concedes d5 for good and leaves the pawn on e5 needing defence the moment Black answers ...cxd4.',
-        'After 6...dxc4 7.Bxc4 b5, put the bishop back on d3 rather than e2 or b3. From d3 it still supports e4, and when ...b4 comes at the knight there is an Ne4 available; the retreats to e2 and b3 give up one or both of those and are sidelines for that reason.',
-        'The main line 8.Bd3 a6 9.e4 c5 10.e5 cxd4 11.Nxb5 axb5 12.exf6 gxf6, a piece for the initiative and a tabiya in its own right since the Kramnik–Anand match of 2008. It is knowledge, not calculation: nobody finds it over the board.',
-        'a2-a4, forcing a concession on the queenside before Black is organised. It does not aim at more than a small edge, which in a line this sharp is a reasonable ambition.',
-        'Transpose to the Anti-Meran with Qc2 and a3 where Black answers with the ...Bd6 set-ups, keeping the queenside mass under supervision instead of racing it.',
-      ],
-      blackPlans: [
-        '...dxc4 followed by ...b5 and ...Bb7, gaining the tempo and freeing the bishop that the triangle shut in. The two moves belong together — the pawn on c4 is not held for its own sake but because ...b5 is what unlocks the position.',
-        'After 8...Bb7 the choice is between ...a6 and ...b4, and both are preparations for the same thing: ...c5. The first shores the queenside up and takes b5 from White’s pieces, the second gains space and drives the knight off c3, at the price of letting it settle on e4.',
-        '8...a6, keeping the kingside undeveloped a little longer so that neither e4 nor Ne4 arrives with a gain of time on a bishop. It is the sharpest move in the position and the one that treats ...c5 as the highest priority.',
-        '8...Bd6 with ...O-O, the modern practical choice: the game transposes to Anti-Meran main lines and Black plays for a normal middlegame rather than a forcing one.',
-        'The regrouping ...Bd6-e7 against Ng5 — but only once the knight has actually gone there. Developing the bishop to e7 while the knight is still on f3 lets White play e4 without having to reckon with ...e5 in reply.',
-      ],
-      breaks: [
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The move the whole variation is arranged around. It frees the position, opens the long diagonal for the bishop on b7 and hits d4 twice; failing to get it in leaves c6 backward on the half-open file with the bishop that used to defend it sitting on b7.',
-          prerequisites: ['...b5 already played, or the pawn on c5 simply hangs to the piece that took on c4', 'The b7 bishop developed, so that the opening of the centre works for Black rather than for White'],
-        },
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'What Bd3 is for. Every black move in the Meran is measured against it, and the price of playing it early is that ...c5 comes immediately with the centre still fluid.',
-        },
-        {
-          move: 'e5',
-          side: 'white',
-          note: 'The follow-up that gains space and dislodges the knight from f6, and hands over d5 in the same move. After ...cxd4 the pawn on e5 is a target rather than a spearhead.',
-          prerequisites: ['Enough pieces behind it to make the space count, since the pawn cannot be defended by another pawn'],
-        },
-        {
-          move: 'b4',
-          side: 'black',
-          note: 'Drives the knight off c3, where it defends both e4 and d5, and gains queenside space for a later ...c5. What it concedes is the e4 square to that same knight.',
-        },
-        { move: 'a4', side: 'white', note: 'The lever against the queenside mass; it asks Black to fix the structure before ...c5 is ready.' },
-      ],
-      keySquares: [
-        { square: 'c6', note: 'Black’s counterplay and Black’s weakness are the same pawn. It is either spent on ...c5 or it is a permanent target on the half-open c-file.' },
-        { square: 'e4', note: 'White’s ambition as a pawn and his knight’s refuge as a square, which is why the bishop stands on d3 and why ...b4 is not simply a free gain of space.' },
-        { square: 'd5', note: 'Conceded the moment White plays e5. A black knight or bishop that reaches it is usually worth more than the space White has bought.' },
-        { square: 'd4', note: 'The pawn ...c5 and the b7 bishop are aimed at; White’s centre stands or falls on whether it can be held once both arrive.' },
-      ],
-      routes: [
-        'Bf1-d3-c4-d3, the two-step Black’s ...dxc4 forces and the tempo the whole Meran is built on',
-        'Bc8-b7 by way of ...b5, the light-squared bishop’s only route out of the triangle',
-      ],
-      traps: [
-        'Taking on c4 while the bishop is still on f1 hands the tempo straight back; the capture is worth a move only once the bishop has committed itself to d3.',
-        'Playing ...Be7 before White has committed the knight to g5 lets e3-e4 come in without the ...e5 answer, which is the one thing the bishop on d6 was covering.',
-      ],
-      modelGames: ['Kramnik – Anand, Bonn 2008'],
-      sources: [
-        'Sethuraman — Lifetime Repertoires: Semi-Slav',
-        'Arjun Erigaisi — Lifetime Repertoires: Semi-Slav',
-        'Sam Shankland — Lifetime Repertoires: Semi-Slav',
-        'Renato Quintillano — The Semi-Slav: A Complete Repertoire for Black',
-        'Converting an Extra Pawn in Chess',
-        'The Complete Book of Chess Strategy',
-      ],
-    },
+    theory: MERAN_TABIYA,
+  },
+  {
+    // The knights developed in the other order, reaching the same Meran tabiya.
+    eco: 'D46',
+    name: 'Semi-Slav Defence: Main Line',
+    moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 e6 e3 Nbd7 Bd3'),
+    character: 'sharp',
+    minRating: 1700,
+    aliases: ['Meran tabiya (Nf3 first)'],
+    theory: MERAN_TABIYA,
   },
   {
     eco: 'D48',
@@ -8536,44 +8809,19 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'positional',
     minRating: 1600,
     forSide: 'black',
-    theory: {
-      idea: 'Black takes the pawn at exactly this moment so that ...Bf5 can follow without running into Qb3 — the timing is the whole idea, not the pawn. What Black gets is time: White has to spend moves recovering c4, and cxd5 is off the table for good. What Black gives up is the d-file pawn — with the c-pawn already committed, no pawn will ever stand on d5 again, so e4 and c4 become White’s squares to argue over.',
-      structures: [],
-      whitePlans: [
-        '5.a4, stopping ...b5 before it can hold the pawn — at the cost of the b4 square.',
-        'Recover c4 with e3 and Bxc4, then build the centre with e3-e4 or f3 and e4.',
-        '5.e4 at once, taking the centre and treating the pawn as a gambit.',
-        'Play against the light squares e4 and c4, which Black can no longer contest with a pawn.',
-      ],
-      blackPlans: [
-        'Develop the light-squared bishop to f5 or g4 before ...e6 shuts it in — the point of the whole Slav.',
-        'Hold the pawn with ...b5 when White has not played a4, and make White prove the compensation.',
-        'Use the b4 square that a4 concedes: a bishop there can sit for the rest of the game.',
-        'Play ...a5 after a4 so the queenside cannot be opened, which is what makes long castling thinkable.',
-      ],
-      breaks: [
-        { move: 'b5', side: 'black', note: 'Holds the extra pawn and takes queenside space; a4 is what stops it.' },
-        { move: 'e5', side: 'black', note: 'The freeing break, once the bishop is out and the knight has a home.' },
-        { move: 'c5', side: 'black', note: 'The other freeing move, hitting d4 directly once White has committed to e3.' },
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'The centre White is playing for. Black’s whole setup — ...Bf5 in particular — exists to stop it.',
-        },
-      ],
-      keySquares: [
-        { square: 'e4', note: 'The square the opening is about: White wants a pawn there, Black stops it with pieces rather than a pawn.' },
-        { square: 'b4', note: 'Conceded by a4, and permanent. A black bishop lands there and is never evicted.' },
-      ],
-      traps: [
-        'Taking on c4 a move earlier or later is not the same move: the point of doing it here is that ...Bf5 comes next without Qb3 hitting it.',
-      ],
-      sources: [
-        'Nils Grandelius — Lifetime Repertoires: Classical Slav',
-        'Plichta — Lifetime Repertoires: Queen’s Gambit',
-        'The Club Player’s Black Repertoire 1.d4 d5',
-      ],
-    },
+    theory: SLAV_TWO_KNIGHTS,
+  },
+  {
+    // Nc3 before Nf3 — the same position, and by some margin the most-played
+    // stranded route in the book. It inherited from the Slav root four plies
+    // above.
+    eco: 'D15',
+    name: 'Slav Defence: Two Knights Attack',
+    moves: line('d4 d5 c4 c6 Nc3 Nf6 Nf3 dxc4'),
+    character: 'positional',
+    minRating: 1600,
+    forSide: 'black',
+    theory: SLAV_TWO_KNIGHTS,
   },
   {
     eco: 'D15',
@@ -8604,42 +8852,17 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'positional',
     minRating: 1600,
     forSide: 'black',
-    theory: {
-      idea: 'The position the Slav is played for. The light-squared bishop — the piece the Queen’s Gambit Declined leaves entombed behind ...e6 — is outside the pawn chain on f5, eyeing e4, and ...e6 can now be played without regret. White has the extra queenside space and will spend the opening trying to force e2-e4 through anyway; the a4 that made it possible has left b4 permanently soft.',
-      structures: [],
-      whitePlans: [
-        '6.Ne5, the critical try: not really about regaining c4, but about preparing f3 and e4 to embarrass the f5 bishop and the f6 knight.',
-        '6.e3 and Bxc4, a solid recovery of the pawn with a small pull in space.',
-        'Force e4 through in some form — every white plan here is a version of that.',
-        'Open the queenside with a5 or b4 before Black consolidates.',
-      ],
-      blackPlans: [
-        'Follow with ...e6 and develop the dark-squared bishop, often to b4.',
-        'Answer f3 and e4 by hitting the centre before it is finished — ...Nbd7, ...Bb4 and pressure on c3.',
-        'Play ...a5 to freeze the queenside, which is what makes castling long a real option here.',
-        'Keep the f5 bishop on the b1-h7 diagonal; it is the piece that stops e4.',
-      ],
-      breaks: [
-        { move: 'e6', side: 'black', note: 'Not a break so much as the move ...Bf5 bought — the bishop is already out, so this costs nothing.' },
-        { move: 'e5', side: 'black', note: 'The freeing break, played once the pieces are out and White’s centre has not arrived.' },
-        { move: 'c5', side: 'black', note: 'Hits d4 directly and opens the position for the bishop pair.' },
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'The advance the whole variation is built around stopping.',
-          prerequisites: ['f3 played, or the f5 bishop driven off the diagonal first'],
-        },
-      ],
-      keySquares: [
-        { square: 'e4', note: 'White’s ambition and Black’s job. The bishop on f5 is the guard.' },
-        { square: 'b4', note: 'Weakened by a4 for good; a bishop there is a permanent nuisance.' },
-      ],
-      sources: [
-        'Nils Grandelius — Lifetime Repertoires: Classical Slav',
-        'Lifetime Repertoires: Slav',
-        'The Club Player’s Black Repertoire 1.d4 d5',
-      ],
-    },
+    theory: SLAV_CZECH,
+  },
+  {
+    // The knights developed in the other order.
+    eco: 'D17',
+    name: 'Slav Defence: Czech Variation',
+    moves: line('d4 d5 c4 c6 Nc3 Nf6 Nf3 dxc4 a4 Bf5'),
+    character: 'positional',
+    minRating: 1600,
+    forSide: 'black',
+    theory: SLAV_CZECH,
   },
   { eco: 'D07', name: 'Chigorin Defence', moves: line('d4 d5 c4 Nc6'), character: 'sharp', forSide: 'black' },
   {
@@ -10461,80 +10684,27 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('d4 d5 c4 dxc4 Nf3 Nf6 e3 e6 Bxc4 c5 O-O a6'),
     character: 'balanced',
     minRating: 1600,
-    theory: {
-      idea: 'Black gave up the centre on move two and has spent every move since buying it back on his own terms: ...c5 and ...a6 are the two halves of one plan, which is to trade the c-pawn for White’s d-pawn and expand with ...b5 and ...Bb7 so that the light-squared bishop, the piece the whole variation is arranged around, comes out on the long diagonal. If Black gets both — the exchange on d4 and ...b5 — without conceding anything for them, the position is level, and this is the reason 6...a6 has been the critical position of the QGA for a century. Everything White plays here is aimed at splitting the two ideas apart. The bishop must move again before ...b5 arrives with tempo, and where it goes decides which plan White is choosing: Bb3 stays on the a2-g8 diagonal, Bd3 is prophylaxis so that a4 can follow at once, and Be2 is the modest square that keeps the queenside quiet at the cost of any hope of an isolated queen’s pawn attack, since a bishop on e2 is simply too passive for a position where activity is the only compensation for the pawn. The other approach is to strike immediately with e4 or resolve with dxc5, which offers a queenless middlegame where Black’s loss of castling rights matters far less than it looks — a king on e7 is perfectly safe once the queens have gone.',
-      structures: ['iqp', 'hanging-pawns'],
-      whitePlans: [
-        'Move the bishop before ...b5 comes with tempo. Bd3 is the prophylactic choice because a4 can then follow immediately; Bb3 is the most natural but is awkwardly placed if Black answers a4 with ...b4 rather than ...c4.',
-        '7.a4, the old main line, stopping ...b5 and ...Bb7 outright. The cost is permanent: b4 is weakened, a knight comes to c6 and then b4, and a3 is no longer available to chase it.',
-        '7.Qe2, keeping the a4-e8 diagonal covered so that Bxb5 sacrifices stay in the position, then Bd3 and Rd1. This is the modern main line, and it is aimed squarely at making Black’s development uncomfortable.',
-        '7.e4, an immediate space grab that offers the e-pawn. Taking it is playable but unpleasant to defend, and Black’s simplest answer is ...b5 rather than greed.',
-        'dxc5 into the endgame, when Black recaptures with the bishop and White plays against a king that cannot castle — with the caveat that this matters far less without queens on.',
-        'Accept an isolated queen’s pawn only with an active bishop. The whole point of the structure is piece play, and the two must be chosen together.',
-        'Against ...Nc6 rather than ...b5, look for a d5 break, which is the standard punishment for putting the knight on the square that stops supporting the queenside advance.',
-      ],
-      blackPlans: [
-        'Play ...b5 and ...Bb7 to get the light-squared bishop onto the long diagonal. It is the piece the pawn was given up for.',
-        'Exchange on d4 at a moment when White has to recapture in a way that costs him something. Trading the c-pawn for the d-pawn without a concession in return is close to full equality.',
-        'Develop the queen’s knight to d7 rather than c6. On d7 it keeps the queenside advance supported and leaves no target for d5; on c6 it invites exactly that break.',
-        'Finish with ...Be7 and castling; Black is two moves from safety at the critical moment and everything White does is designed to make those two moves cost something.',
-        'Answer a4 with ...Nc6 and ...Nb4, occupying the square a4 gave up, since a3 can no longer chase the knight away.',
-        'In the dxc5 lines, recapture with the bishop rather than trading queens on d1, which would hand White a tempo and put his rook on the d-file for nothing.',
-      ],
-      breaks: [
-        {
-          move: 'b5',
-          side: 'black',
-          note: 'Half of Black’s equalising plan: it gains queenside space and opens the diagonal for ...Bb7. Timing is the whole issue — played while the white bishop still stands on c4 it comes with tempo, and White’s sixth and seventh moves exist to deny that.',
-          prerequisites: [
-            'White has not played a4, or has played it in a version where ...b5 can be prepared anyway.',
-            'The a4-e8 diagonal is not loaded with a Bxb5 sacrifice, which is what Qe2 keeps alive.',
-          ],
-        },
-        {
-          move: 'c4',
-          side: 'black',
-          note: 'The alternative to exchanging on d4 once White has played a4: rather than let the queenside pawns be split, Black pushes past and keeps them connected. It gives up the tension in the centre, so it is a choice rather than an automatic reply, and it is less attractive when it merely chases a white bishop from b3 onto a better diagonal.',
-          prerequisites: ['White has played a4 against ...b5 and the b5 pawn is not itself attacked, so Black has the luxury of choosing.'],
-        },
-        {
-          move: 'a4',
-          side: 'white',
-          note: 'The standing answer to ...b5, and the move that keeps the queenside from resolving in Black’s favour. It weakens b4 permanently, which is why it is prepared with Bd3 rather than played on reflex.',
-          prerequisites: ['The bishop has left c4, so ...b4 does not simply gain a tempo somewhere useful.'],
-        },
-        {
-          move: 'd5',
-          side: 'white',
-          note: 'The central break that punishes ...Nc6. With the knight on d7 instead it usually achieves nothing.',
-          prerequisites: ['Black’s queen’s knight has committed to c6 rather than d7.'],
-        },
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'The immediate space grab, offered as a pawn. It is sound, but Black need not take it — ...b5 arrives in time and equalises without complications.',
-        },
-      ],
-      keySquares: [
-        { square: 'b4', note: 'The square a4 gives away. A black knight arriving there via c6 cannot be dislodged, because the a-pawn has already gone past a3.' },
-        { square: 'd4', note: 'The pawn Black is playing to remove, and the square that decides whether White gets an isolated pawn, hanging pawns or a symmetrical structure.' },
-        { square: 'b7', note: 'Where Black’s light-squared bishop belongs. Every white plan here is measured by whether it stops the bishop reaching this square in good time.' },
-        { square: 'd7', note: 'The right square for the queen’s knight — flexible, supports the queenside expansion, and gives the d5 break nothing to hit.' },
-      ],
-      routes: ['Bc4-d3 followed by a4', 'Nb8-c6-b4 once White has played a4', 'Qd1-e2 with Rf1-d1'],
-      traps: [
-        'Combining Be2 with a plan of accepting an isolated queen’s pawn. The structure demands active pieces and the bishop on e2 provides none, so the two ideas cancel out.',
-        'Combining a4 with Nxd4 in the symmetrical structures: a4 has already conceded b4, and recapturing with the knight leaves nothing to compensate for it.',
-        'For Black, the queen trade on d1 in the dxc5 lines. Recapturing with the bishop is more accurate; the endgame after ...Qxd1 hands White a developing tempo for the castling rights Black barely needs.',
-      ],
-      sources: [
-        'Benjamin Gledura — Lifetime Repertoires: Queen’s Gambit Accepted',
-        'Lifetime Repertoires: Queen’s Gambit Accepted',
-        'Lifetime Repertoires: Plichta’s Queen’s Gambit',
-        'Anna Cramling’s 1.d4 — Part 1',
-        'Zlotnik’s Middlegame Manual',
-      ],
-    },
+    theory: QGA_CLASSICAL_MAIN,
+  },
+  {
+    // ...c5 before ...e6, keeping the bishop’s diagonal open a move longer.
+    eco: 'D27',
+    name: 'Queen’s Gambit Accepted: Classical Defence, Main Line',
+    moves: line('d4 d5 c4 dxc4 Nf3 Nf6 e3 c5 Bxc4 e6 O-O a6'),
+    character: 'balanced',
+    minRating: 1600,
+    theory: QGA_CLASSICAL_MAIN,
+  },
+  {
+    // e3 and the recapture before Nf3, which is how White plays it when he
+    // wants to avoid ...Bg4. The same tabiya, nine plies from the theory it
+    // was inheriting.
+    eco: 'D27',
+    name: 'Queen’s Gambit Accepted: Classical Defence, Main Line',
+    moves: line('d4 d5 c4 dxc4 e3 Nf6 Bxc4 e6 Nf3 c5 O-O a6'),
+    character: 'balanced',
+    minRating: 1600,
+    theory: QGA_CLASSICAL_MAIN,
   },
   { eco: 'D07', name: 'Chigorin Defence: Main Line', moves: line('d4 d5 c4 Nc6 Nf3 Bg4 cxd5 Bxf3 gxf3 Qxd5') },
   { eco: 'D47', name: 'Semi-Slav Defence: Meran Variation', moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 e6 e3 Nbd7 Bd3 dxc4 Bxc4 b5'), character: 'sharp' },
