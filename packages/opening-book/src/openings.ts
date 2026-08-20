@@ -323,6 +323,78 @@ const ITALIAN_MODERN_A4: OpeningTheory = {
 };
 
 /**
+ * The Traxler after 5.Bxf7+, which is reached by the 2.Bc4 order as often as by
+ * the Italian one — and by that order the book had no name for it at all. Two
+ * addresses, one set of ideas.
+ */
+const TRAXLER_BISHOP_SACRIFICE: OpeningTheory = {
+  idea: 'The Traxler answers a threat with a bigger one: 4...Bc5 ignores f7 entirely and puts a bishop on the diagonal that ends at f2. White may take with either piece, and the two captures lead to different games. 5.Nxf7 is the greedy one — it forks queen and rook and walks into ...Bxf2+, after which the king has exactly one good square and the analysis runs for pages. 5.Bxf7+ declines the fork and takes the pawn with check instead, and its whole merit is that it removes the sacrifice on f2 as a resource: the king is dragged to e7 or f8 before Black is ready, White stays a clean pawn up, and there is nothing to memorise beyond a handful of accurate moves. It is the practical answer and the modern one. What Black keeps is genuine but limited: an open f-file, pieces already aimed at f2, and the manoeuvre ...Qe8-g6, which is where the compensation actually lives rather than in the exposed king. What White has to get right is order. The bishop must come back off f7 at once, because while it stands there ...h6 attacks the knight and the king attacks the bishop and one of them is lost; and e4 needs a guard before the black queen reaches g6. Consolidation, not further material, is the winning plan.',
+  structures: [],
+  whitePlans: [
+    'Take with the bishop, not the knight. The pawn is the same pawn; what is avoided is ...Bxf2+ and the mass of theory behind it.',
+    'Retreat the bishop immediately — b3 or c4 — before doing anything else. Left on f7 it is attacked by the king while ...h6 hits the knight, and the two threats cannot both be met.',
+    'Bb3 is the accurate square: out of reach of everything, and it keeps looking at the a2-g8 diagonal without giving Black a target to gain time on.',
+    'Bc4 is the active square: it renews the threat of Nf7, and if the game turns defensive the bishop can come back through e2 to hold the kingside — the treatment correspondence play favours.',
+    'Guard e4 with d3 before Black organises against it. The pawn also defends the knight on g5, which is what makes ...h6 a question rather than a threat.',
+    'Meet ...Qe8 with Nc3 rather than castling. The queen is heading for g6, and a king already on g1 is what gives the manoeuvre its point.',
+    'Play for consolidation. The extra pawn wins the game by itself if the pieces come out; hunting a second one is how White loses a position that was simply better.',
+  ],
+  blackPlans: [
+    '...Ke7 rather than ...Kf8. It looks like the worse square and is the better one, because the rook needs f8 — on f8 the king stands in the way of the piece that gives Black his play.',
+    '...Rf8, the most common move: it covers f7, takes the file and points the rook at f2, which is still the weakest square in White’s camp.',
+    '...Qe8 and ...Qg6, the real resource. It hits e4 and g2 at once and is the only plan that generates pressure faster than White can consolidate.',
+    '...h6 to drive the knight away from the defence of e4, winning the pawn back at the cost of a move — sound, and slower than the queen manoeuvre.',
+    '...d5 to open lines for the remaining pieces. It is the natural freeing move and White is not much troubled by it, because the pawn on e4 was never the point.',
+    'Accept that the compensation is practical rather than material. A White player who knows the retreat and the guard on e4 is a pawn up with a safe king; one who does not is defending by hand from move six.',
+  ],
+  breaks: [
+    {
+      move: 'd5',
+      side: 'black',
+      note: 'The freeing break, and the one most often played. It opens the game for the bishops, and it is met rather than feared — White’s advantage rests on the extra pawn and the king on e7, neither of which the break touches.',
+    },
+    {
+      move: 'h6',
+      side: 'black',
+      note: 'The lever at the knight, and its value depends entirely on timing. While the bishop is still on f7 it wins a piece; once the bishop has retreated and d3 is played it merely regains the pawn on e4, a move more slowly than the queen manoeuvre would.',
+      prerequisites: ['Judged against ...Qe8-g6, which is the faster plan when White has castled'],
+    },
+    {
+      move: 'd4',
+      side: 'white',
+      note: 'The consolidating advance once the pieces are developed and the king is safe. It shuts the c5 bishop out of the game and hands the extra pawn a purpose.',
+      prerequisites: ['e4 already defended, and the king castled — opening the centre while the king sits on e1 helps only Black'],
+    },
+  ],
+  keySquares: [
+    { square: 'f2', note: 'What the bishop on c5 is aimed at and the reason the whole counterattack exists. Taking on f7 with the bishop rather than the knight is a way of settling the question of f2 before it is asked.' },
+    { square: 'f7', note: 'The square that changes hands. What matters is not the pawn but that the bishop cannot be left standing there — ...h6 and the king make it a losing piece within a move.' },
+    { square: 'g6', note: 'Where the black queen is going, and the destination that decides White’s move order: Nc3 comes before castling because the manoeuvre needs a target on g1.' },
+    { square: 'e4', note: 'The loose pawn White has to remember. d3 defends it and the knight on g5 at the same time, which is why the little move is worth more than a developing one here.' },
+    { square: 'e7', note: 'The better of the two king squares, for the un-kinglike reason that f8 belongs to the rook.' },
+  ],
+  routes: [
+    'Qd8-e8-g6, which is where Black’s compensation actually lives',
+    'Bc4-e2 when the game turns defensive — the extra piece walking back to hold the kingside',
+  ],
+  traps: [
+    'Leaving the bishop on f7 to castle or develop. ...h6 attacks the knight while the king attacks the bishop, and one of the two is lost — this is the single way White throws the line away.',
+    'Taking with the knight instead. 5.Nxf7 Bxf2+ is the point of the whole variation, and White then has one good king move and a great deal to know.',
+    '...Kf8, which looks safer than ...Ke7 and is a worse version of the same idea: the rook wants f8 and the king is standing on it.',
+    'Castling into ...Qe8. The queen comes to g6 with the king already committed, and the tempo White saved on development is handed straight back.',
+    'Playing the extra pawn for a second one. The position is won by getting the pieces out and returning material if that is what safety costs.',
+  ],
+  sources: [
+    'Wesley So — Lifetime Repertoires: 1.e4, Part 1',
+    'Jan Gustafsson — Aggressive 1.e4, Part 1',
+    'The Dynamic Italian',
+    'Jonas Hacker — The Romantic Italian',
+    'Kamil Plichta — Lifetime Repertoires: 1.e4 e5',
+    'Winning with 1.e4 — The Ultimate Repertoire for Beginners',
+    'The Complete Book of Chess Strategy',
+  ],
+};
+/**
  * Reachable by two move orders — 7...O-O 8.Qd2 Nc6 and 7...Nc6 8.Qd2 O-O — and
  * both addresses are in the book, so the ideas are hoisted here and shared
  * rather than written twice.
@@ -1992,6 +2064,26 @@ export const CURATED_OPENINGS: Opening[] = [
         'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
       ],
     },
+  },
+  {
+    eco: 'C57',
+    name: 'Italian Game: Two Knights Defence, Traxler Counterattack, Bishop Sacrifice Line',
+    moves: line('e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 Bc5 Bxf7+'),
+    character: 'sharp',
+    minRating: 1600,
+    aliases: ['Traxler with 5.Bxf7+', 'Wilkes-Barre Variation'],
+    theory: TRAXLER_BISHOP_SACRIFICE,
+  },
+  {
+    // The same position by the 2.Bc4 order, which is how a large share of
+    // Traxlers actually arise — the book was calling it a Berlin Defence.
+    eco: 'C57',
+    name: 'Italian Game: Two Knights Defence, Traxler Counterattack, Bishop Sacrifice Line',
+    moves: line('e4 e5 Bc4 Nf6 Nf3 Nc6 Ng5 Bc5 Bxf7+'),
+    character: 'sharp',
+    minRating: 1600,
+    aliases: ['Traxler with 5.Bxf7+', 'Wilkes-Barre Variation'],
+    theory: TRAXLER_BISHOP_SACRIFICE,
   },
   { eco: 'C51', name: 'Evans Gambit', moves: line('e4 e5 Nf3 Nc6 Bc4 Bc5 b4'), character: 'gambit' },
   {
