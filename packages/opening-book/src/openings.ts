@@ -9472,6 +9472,26 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: SEMI_SLAV,
   },
   {
+    // The same, with d4 on move two and ...c6 arriving last.
+    eco: 'D43',
+    name: 'Semi-Slav Defence',
+    moves: line('Nf3 d5 d4 Nf6 c4 e6 Nc3 c6'),
+    character: 'sharp',
+    minRating: 1600,
+    forSide: 'black',
+    theory: SEMI_SLAV,
+  },
+  {
+    // A Réti order into the Semi-Slav, which reached no theory at all.
+    eco: 'D43',
+    name: 'Semi-Slav Defence',
+    moves: line('Nf3 d5 c4 c6 d4 Nf6 Nc3 e6'),
+    character: 'sharp',
+    minRating: 1600,
+    forSide: 'black',
+    theory: SEMI_SLAV,
+  },
+  {
     // The 1...Nf6 order into the same position.
     eco: 'D43',
     name: 'Semi-Slav Defence',
@@ -9585,6 +9605,39 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: MERAN_A6,
   },
   {
+    // The English order, which was shown the English Opening fifteen plies
+    // above.
+    eco: 'D48',
+    name: 'Semi-Slav Defence: Meran Variation',
+    moves: line('c4 e6 Nc3 d5 d4 c6 e3 Nf6 Nf3 Nbd7 Bd3 dxc4 Bxc4 b5 Bd3 a6'),
+    character: 'sharp',
+    minRating: 1800,
+    aliases: ['Meran with 8...a6 (1.c4 order)'],
+    theory: MERAN_A6,
+  },
+  {
+    // The 1...Nf6 order into the same crossroads.
+    eco: 'D48',
+    name: 'Semi-Slav Defence: Meran Variation',
+    moves: line('d4 Nf6 c4 e6 Nf3 d5 Nc3 c6 e3 Nbd7 Bd3 dxc4 Bxc4 b5 Bd3 a6'),
+    character: 'sharp',
+    minRating: 1800,
+    aliases: ['Meran with 8...a6 (1...Nf6 order)'],
+    theory: MERAN_A6,
+  },
+  {
+    // A 2.Nf3 order into the Meran crossroads. Fifteen plies separated it from
+    // the Queen’s Pawn Opening it was inheriting — the largest gap in the
+    // report.
+    eco: 'D48',
+    name: 'Semi-Slav Defence: Meran Variation',
+    moves: line('d4 d5 Nf3 Nf6 c4 e6 Nc3 c6 e3 Nbd7 Bd3 dxc4 Bxc4 b5 Bd3 a6'),
+    character: 'sharp',
+    minRating: 1800,
+    aliases: ['Meran with 8...a6 (2.Nf3 order)'],
+    theory: MERAN_A6,
+  },
+  {
     // The same position by the 3.Nf3 order — the order the curated D47 entry
     // uses, and the one the ECO tables switch to two moves later for
     // Reynolds’ Variation, yet which they do not name at this depth.
@@ -9600,6 +9653,16 @@ export const CURATED_OPENINGS: Opening[] = [
     eco: 'D15',
     name: 'Slav Defence: Two Knights Attack',
     moves: line('d4 d5 c4 c6 Nf3 Nf6 Nc3 dxc4'),
+    character: 'positional',
+    minRating: 1600,
+    forSide: 'black',
+    theory: SLAV_TWO_KNIGHTS,
+  },
+  {
+    // The Réti order into the Slav, which reached no theory at all.
+    eco: 'D15',
+    name: 'Slav Defence: Two Knights Attack',
+    moves: line('Nf3 d5 c4 c6 d4 Nf6 Nc3 dxc4'),
     character: 'positional',
     minRating: 1600,
     forSide: 'black',
@@ -9668,6 +9731,15 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: COLLE_SYSTEM,
   },
   {
+    // The 1.Nf3 order, which reached no theory at all.
+    eco: 'D04',
+    name: 'Queen’s Pawn Game: Colle System',
+    moves: line('Nf3 d5 d4 Nf6 e3'),
+    character: 'system',
+    minRating: 1000,
+    theory: COLLE_SYSTEM,
+  },
+  {
     // e3 before the knight, which is how Colle players who want to avoid ...Bf5
     // often play it.
     eco: 'D04',
@@ -9695,6 +9767,15 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: PSEUDO_CATALAN,
   },
   {
+    // The 1.Nf3 order, which reached no theory at all.
+    eco: 'D02',
+    name: 'Queen’s Pawn Game: Symmetrical Variation, Pseudo-Catalan',
+    moves: line('Nf3 d5 d4 Nf6 g3'),
+    character: 'positional',
+    minRating: 1500,
+    theory: PSEUDO_CATALAN,
+  },
+  {
     // The 1...Nf6 order.
     eco: 'D02',
     name: 'Queen’s Pawn Game: Symmetrical Variation, Pseudo-Catalan',
@@ -9710,6 +9791,15 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'system',
     minRating: 1000,
     aliases: ['Torre Attack against 1...d5'],
+    theory: TORRE_VS_D5,
+  },
+  {
+    // The 1.Nf3 order, which reached no theory at all.
+    eco: 'D03',
+    name: 'Queen’s Pawn Game: Torre Attack',
+    moves: line('Nf3 d5 d4 Nf6 Bg5'),
+    character: 'system',
+    minRating: 1000,
     theory: TORRE_VS_D5,
   },
   {
@@ -9872,6 +9962,17 @@ export const CURATED_OPENINGS: Opening[] = [
     eco: 'D01',
     name: 'Richter-Veresov Attack',
     moves: line('d4 Nf6 Nc3 d5 Bg5'),
+    character: 'system',
+    minRating: 1200,
+    forSide: 'white',
+    theory: RICHTER_VERESOV,
+  },
+  {
+    // 1.Nc3, the Van Geet order, which is a standard way of reaching the
+    // Veresov and reached no theory at all.
+    eco: 'D01',
+    name: 'Richter-Veresov Attack',
+    moves: line('Nc3 d5 d4 Nf6 Bg5'),
     character: 'system',
     minRating: 1200,
     forSide: 'white',
@@ -10065,6 +10166,16 @@ export const CURATED_OPENINGS: Opening[] = [
     eco: 'E97',
     name: 'King’s Indian Defence: Mar del Plata',
     moves: line('d4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7'),
+    character: 'sharp',
+    minRating: 1800,
+    theory: KID_MAR_DEL_PLATA,
+  },
+  {
+    // The English order into the Mar del Plata, fifteen plies from the English
+    // Opening entry it was inheriting.
+    eco: 'E97',
+    name: 'King’s Indian Defence: Mar del Plata',
+    moves: line('c4 g6 Nf3 Bg7 Nc3 d6 d4 Nf6 e4 O-O Be2 e5 O-O Nc6 d5 Ne7'),
     character: 'sharp',
     minRating: 1800,
     theory: KID_MAR_DEL_PLATA,
@@ -10824,6 +10935,62 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: LENINGRAD_WARSAW,
   },
   {
+    // The same with Nf3 held back to move six.
+    eco: 'A88',
+    name: 'Dutch Defence: Leningrad Variation, Warsaw Variation',
+    moves: line('d4 f5 c4 Nf6 Nc3 d6 g3 g6 Bg2 Bg7 Nf3 O-O O-O c6'),
+    character: 'sharp',
+    minRating: 1700,
+    forSide: 'black',
+    aliases: ['Leningrad 7...c6 (3.Nc3, delayed Nf3)'],
+    theory: LENINGRAD_WARSAW,
+  },
+  {
+    // Nc3 on move three and ...d6 before ...g6.
+    eco: 'A88',
+    name: 'Dutch Defence: Leningrad Variation, Warsaw Variation',
+    moves: line('d4 f5 c4 Nf6 Nc3 d6 Nf3 g6 g3 Bg7 Bg2 O-O O-O c6'),
+    character: 'sharp',
+    minRating: 1700,
+    forSide: 'black',
+    aliases: ['Leningrad 7...c6 (3.Nc3 order)'],
+    theory: LENINGRAD_WARSAW,
+  },
+  {
+    // An English order with d4 held back to move six.
+    eco: 'A88',
+    name: 'Dutch Defence: Leningrad Variation, Warsaw Variation',
+    moves: line('c4 f5 g3 Nf6 Bg2 g6 Nf3 Bg7 O-O O-O d4 d6 Nc3 c6'),
+    character: 'sharp',
+    minRating: 1700,
+    forSide: 'black',
+    aliases: ['Leningrad 7...c6 (1.c4, delayed d4)'],
+    theory: LENINGRAD_WARSAW,
+  },
+  {
+    // The same English order with ...d6 before ...g6.
+    eco: 'A88',
+    name: 'Dutch Defence: Leningrad Variation, Warsaw Variation',
+    moves: line('c4 f5 Nf3 Nf6 g3 d6 d4 g6 Bg2 Bg7 O-O O-O Nc3 c6'),
+    character: 'sharp',
+    minRating: 1700,
+    forSide: 'black',
+    aliases: ['Leningrad 7...c6 (1.c4, ...d6 first)'],
+    theory: LENINGRAD_WARSAW,
+  },
+  {
+    // An English order into the Leningrad tabiya, thirteen plies from the
+    // English Opening entry it was inheriting.
+    eco: 'A88',
+    name: 'Dutch Defence: Leningrad Variation, Warsaw Variation',
+    moves: line('c4 f5 Nf3 Nf6 g3 g6 Bg2 Bg7 d4 d6 Nc3 O-O O-O c6'),
+    character: 'sharp',
+    minRating: 1700,
+    forSide: 'black',
+    aliases: ['Leningrad 7...c6 (1.c4 order)'],
+    theory: LENINGRAD_WARSAW,
+  },
+  {
     // c4 and Nc3 first, with ...g6 before ...Nf6.
     eco: 'A88',
     name: 'Dutch Defence: Leningrad Variation, Warsaw Variation',
@@ -10908,6 +11075,17 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'positional',
     minRating: 1700,
     aliases: ['Neo-Catalan Accepted', 'Open Catalan without d4'],
+    theory: NEO_CATALAN_ACCEPTED,
+  },
+  {
+    // 1.Nf3 d5, a Réti order into the same position. It reached no theory at
+    // all: the Réti entry above it carries none, so the whole line was silent.
+    eco: 'A13',
+    name: 'English Opening: Agincourt Defence, Catalan Defence Accepted',
+    moves: line('Nf3 d5 c4 e6 g3 Nf6 Bg2 dxc4'),
+    character: 'positional',
+    minRating: 1700,
+    aliases: ['Neo-Catalan Accepted (1.Nf3 d5 order)'],
     theory: NEO_CATALAN_ACCEPTED,
   },
   {
@@ -11200,6 +11378,16 @@ export const CURATED_OPENINGS: Opening[] = [
     eco: 'D27',
     name: 'Queen’s Gambit Accepted: Classical Defence, Main Line',
     moves: line('d4 d5 c4 dxc4 Nf3 Nf6 e3 e6 Bxc4 c5 O-O a6'),
+    character: 'balanced',
+    minRating: 1600,
+    theory: QGA_CLASSICAL_MAIN,
+  },
+  {
+    // c4 delayed to move three, which fell back on the Queen’s Pawn Opening
+    // eleven plies above.
+    eco: 'D27',
+    name: 'Queen’s Gambit Accepted: Classical Defence, Main Line',
+    moves: line('d4 d5 Nf3 Nf6 c4 dxc4 e3 e6 Bxc4 c5 O-O a6'),
     character: 'balanced',
     minRating: 1600,
     theory: QGA_CLASSICAL_MAIN,
