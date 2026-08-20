@@ -17,7 +17,8 @@
     "ingest:eco": "vite-node packages/opening-book/scripts/ingest-eco.ts",
     "index:corpus": "vite-node packages/opening-book/scripts/index-corpus.ts --",
     "report:coverage": "vite-node packages/opening-book/scripts/corpus-coverage.ts --",
-    "digest:node": "vite-node packages/opening-book/scripts/digest-node.ts --"
+    "digest:node": "vite-node packages/opening-book/scripts/digest-node.ts --",
+    "report:addresses": "vite-node packages/opening-book/scripts/missing-addresses.ts --"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
