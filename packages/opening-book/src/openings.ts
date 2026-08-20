@@ -1265,6 +1265,35 @@ const CLOSED_SICILIAN_TRADITIONAL: OpeningTheory = {
     'Garry Kasparov — My Great Predecessors, Volume 2',
   ],
 };
+/**
+ * The Catalan, addressed twice. The opening is normally reached by 3.Nf3 first
+ * and only then g3 — the move order strong Catalan players prefer, because it
+ * keeps the fianchetto in reserve until Black has committed — and that route
+ * never passes through the 3.g3 node. Without the second address every Catalan
+ * played the usual way inherited the Anti-Nimzo-Indian crossroads instead,
+ * which is theory about avoiding 3...Bb4 rather than about the g2 bishop.
+ */
+const CATALAN_MAIN: OpeningTheory = {
+  idea: 'White combines the Queen’s Gambit with a kingside fianchetto. The g2 bishop pressures d5 and the long diagonal forever, and Black’s main problem is untangling the queenside without leaving the c4 pawn permanently in White’s hands. A grinding, low-risk, high-pressure opening.',
+  structures: ['semi-slav-triangle'],
+  whitePlans: [
+    'Recover the c4 pawn with Qa4, Qc2 or Ne5 and keep the bishop pressure.',
+    'Play e4 for a full central bind.',
+    'Squeeze on the queenside and in the endgame; the g2 bishop never gets worse.',
+  ],
+  blackPlans: [
+    'Hold c4 with ...dxc4 and ...b5, accepting a sharp fight.',
+    'Give it back for the ...c5 break and free play.',
+    'Neutralise the long diagonal with ...Bb7 and ...c6, or trade bishops with ...Ba6 and ...Bb4+.',
+  ],
+  breaks: [
+    { move: 'c5', side: 'black', note: 'The main freeing break; the Catalan is comfortable for Black once it lands.' },
+    { move: 'e5', side: 'black', note: 'The alternative release, usually after ...Nbd7 and ...Re8.' },
+    { move: 'e4', side: 'white', note: 'The central advance that turns pressure into a bind.' },
+    { move: 'a4', side: 'white', note: 'Undermines ...b5 in the Open Catalan.' },
+  ],
+};
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -8968,26 +8997,15 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('d4 Nf6 c4 e6 g3'),
     character: 'positional',
     minRating: 1600,
-    theory: {
-      idea: 'White combines the Queen’s Gambit with a kingside fianchetto. The g2 bishop pressures d5 and the long diagonal forever, and Black’s main problem is untangling the queenside without leaving the c4 pawn permanently in White’s hands. A grinding, low-risk, high-pressure opening.',
-      structures: ['semi-slav-triangle'],
-      whitePlans: [
-        'Recover the c4 pawn with Qa4, Qc2 or Ne5 and keep the bishop pressure.',
-        'Play e4 for a full central bind.',
-        'Squeeze on the queenside and in the endgame; the g2 bishop never gets worse.',
-      ],
-      blackPlans: [
-        'Hold c4 with ...dxc4 and ...b5, accepting a sharp fight.',
-        'Give it back for the ...c5 break and free play.',
-        'Neutralise the long diagonal with ...Bb7 and ...c6, or trade bishops with ...Ba6 and ...Bb4+.',
-      ],
-      breaks: [
-        { move: 'c5', side: 'black', note: 'The main freeing break; the Catalan is comfortable for Black once it lands.' },
-        { move: 'e5', side: 'black', note: 'The alternative release, usually after ...Nbd7 and ...Re8.' },
-        { move: 'e4', side: 'white', note: 'The central advance that turns pressure into a bind.' },
-        { move: 'a4', side: 'white', note: 'Undermines ...b5 in the Open Catalan.' },
-      ],
-    },
+    theory: CATALAN_MAIN,
+  },
+  {
+    eco: 'E00',
+    name: 'Catalan Opening',
+    moves: line('d4 Nf6 c4 e6 Nf3 d5 g3'),
+    character: 'positional',
+    minRating: 1600,
+    theory: CATALAN_MAIN,
   },
   {
     eco: 'E05',
