@@ -4542,6 +4542,160 @@ const BENONI_PAWN_STORM: OpeningTheory = {
   ],
 };
 
+/**
+ * 1.e4 Nc6 2.d4 d5 3.e5 — an Advance Caro-Kann with a knight on c6 instead of
+ * a pawn, which changes both of Black's breaks and one of White's development
+ * schemes.
+ */
+const NIMZOWITSCH_SCANDINAVIAN_ADVANCE: OpeningTheory = {
+  idea: 'The pawns end up in the Advance Caro-Kann shape — White on d4 and e5, Black on d5 and, shortly, e6 — and the light-squared bishop gets out to f5 before the wall goes up, so at first glance Black has the good version of a French. The difference is the knight on c6 where the Caro-Kann has a pawn, and it cuts both ways in a manner worth being exact about. Against Black: the pawn on c7 cannot move at all, so ...c5, the break that the whole Advance structure is normally about, does not exist. It can be arranged only by first moving the knight, and every square the knight has takes it away from the pressure on d4 and e5 that was the reason for 1...Nc6 in the first place. It can also be pinned from b5, which no pawn on c6 could be. For Black: the knight already attacks e5, so ...f6, the secondary break in the Caro-Kann, is the primary one here and it arrives with a piece behind it. That is the trade — one break traded for the other, with the better one given away. White’s job is to keep the wedge on e5 fed, which means f2-f4, and that requirement quietly reorganises his whole development: a knight on f3 stands in the pawn’s way, so the king’s knight goes to e2, where it supports d4 and f4 instead, and the queen’s knight comes out to d2 and only reaches f3 once the f-pawn has gone past it. Behind that White has a space advantage on both wings, and since Black often has to castle long to get out of the way of the kingside build-up, a4 and b4 are a real plan rather than a decoration.',
+  structures: [],
+  whitePlans: [
+    'Feed the wedge. c3 and f4 hold e5 and d4, and everything else is arranged around not obstructing them.',
+    'Cross the knights: Ng1-e2 and Nb1-d2-f3. The natural Nf3 blocks the f-pawn, so the king’s knight takes e2 — supporting d4 and f4 — and the queen’s knight arrives on f3 afterwards, where it holds e5 and eyes g5.',
+    'Meet a knight coming to g6 with h4 and h5. It costs nothing, the knight has no forward square, and the pawns gain the kingside space that the e5 wedge is there to exploit.',
+    'Expand with a4 and b4 when Black castles queenside, which he often must — the kingside is where White’s space is, so the black king goes the other way and walks into the second front.',
+    'Answer ...f6 with f4 rather than with an exchange. Trading on f6 hands Black the development he is short of; keeping the tension leaves the e5 pawn defended twice and the f-file half-open in White’s favour when it does open.',
+  ],
+  blackPlans: [
+    'Get the bishop out to f5 first. It is the only thing this move order does better than a French, and delaying it means playing a French with the bad bishop and no ...c5.',
+    '...f6 as the main break, not the secondary one. The knight on c6 is already an attacker of e5, so the push comes with support that the Caro-Kann version never has.',
+    'Develop the king’s knight to e7 and on to f5, not to g6. The pawn on e5 covers f6, e7 is the only sensible square, and from f5 the knight hits d4 and blocks the kingside advance; on g6 it is a target for h4-h5.',
+    'Arrange ...c5 the slow way if at all — the knight to a5 or e7, or a rook to c8 first. It is a plan for several moves rather than a break, and it means letting go of the pressure the knight was placed for.',
+    'Castle queenside if the kingside is where White’s pawns are going, and accept that this is an attacking race rather than a structural argument.',
+  ],
+  breaks: [
+    {
+      move: 'f6',
+      side: 'black',
+      note: 'The break the position is built around, and a better one than in the Caro-Kann because the knight on c6 is already hitting the pawn it undermines. It opens the f-file for both sides, so it is a fight rather than a liberation.',
+      prerequisites: ['The king’s position settled, since the f-file opens in front of it', 'e6 defensible once the pawn on f6 is no longer covering it'],
+    },
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'The break the structure calls for and the one this move order gives up. The pawn cannot move while the knight stands on c6, and every square the knight has abandons the pressure on d4 and e5 that justified 1...Nc6.',
+      prerequisites: ['The knight moved off c6 first, at the cost of a move and of most of its point'],
+    },
+    {
+      move: 'f4',
+      side: 'white',
+      note: 'Not a break so much as the pawn that holds the wedge up, and the move the whole development scheme is arranged around. Once it is in, e5 has two defenders and the kingside advance can begin.',
+      prerequisites: ['No white knight on f3, which is why the king’s knight goes to e2'],
+    },
+    {
+      move: 'h4',
+      side: 'white',
+      note: 'Played against a knight on g6, and free. The knight has nowhere to go forward, so h4-h5 wins space with tempo; if Black answers ...h5 the pawn is fixed and g5 becomes a square for a bishop.',
+    },
+    {
+      move: 'b4',
+      side: 'white',
+      note: 'The second front, prepared by a4 and aimed at a black king that has gone long to escape the kingside space. It is the reason the space advantage here is worth more than in the Caro-Kann, where Black’s counterplay arrives first.',
+      prerequisites: ['Black committed to the queenside', 'c3 already played so the pawn is supported'],
+    },
+  ],
+  keySquares: [
+    { square: 'c6', note: 'The whole variation in one square. A knight there presses d4 and e5 and makes ...f6 strong; it also seals the c-pawn in, removes ...c5 from the position, and can be pinned from b5.' },
+    { square: 'e5', note: 'The wedge that cuts the position in two. Everything White does is about keeping it fed, and everything Black does is about undermining it.' },
+    { square: 'f6', note: 'Covered by the pawn on e5, so the king’s knight cannot use it, and simultaneously the square Black’s pawn has to reach. Both facts follow from the same pawn.' },
+    { square: 'e2', note: 'Where White’s king’s knight belongs, because f3 is needed by the f-pawn. From e2 it defends d4 and f4, which are exactly the two squares the structure rests on.' },
+    { square: 'f5', note: 'The square for Black’s king’s knight after ...Nge7, and where the kingside advance runs out of moves. A knight there attacks d4 and cannot be chased by a pawn.' },
+    { square: 'b5', note: 'The pin that the Caro-Kann structure never has to worry about. It is available precisely because the pawn that would block it is stuck on c7.' },
+  ],
+  routes: [
+    'Ng1-e2 and Nb1-d2-f3, the crossed routes. The f3 square belongs to the queen’s knight and only after f2-f4 has passed through it',
+    'Ng8-e7-f5, the only sensible path for Black’s remaining knight, since e5 covers f6 and g6 invites h4-h5',
+  ],
+  traps: [
+    'Developing the bishop to d3 after c3 and Nd2 are both played. There is then nothing behind it: the queen’s route down the d-file is blocked by the knight on d2 and the c-pawn has already left c2, so ...Bxd3 simply wins a piece. The bishop has to come out before the knight commits, or go somewhere else.',
+    'Playing 3.exd5 instead of advancing. Black recaptures with the queen and reaches a Scandinavian in which the knight is already developed and White has spent a move opening the position for it.',
+    'Meeting the kingside expansion with a knight on g6. h4 and h5 come with tempo and the knight has no square in front of it; ...Nge7-f5 is the route, and it has to be chosen before h4 is on the board.',
+    'Treating the position as an Advance Caro-Kann and looking for ...c5. It is not available and cannot be made available cheaply, and the moves spent trying are moves not spent on ...f6.',
+  ],
+  sources: [
+    'Wesley So — Lifetime Repertoires: 1.e4, Part 1',
+    'Sethuraman — Lifetime Repertoires 1.e4',
+    'The Energetic 1.e4 — Part 1',
+    'Understanding Chess Openings: 1.e4 — Part 1',
+  ],
+};
+
+/**
+ * The Bayonet Attack, 4.g4 in the Advance Caro-Kann — the flank attack played
+ * without the preparation that makes the flank attack work.
+ */
+const CARO_ADVANCE_BAYONET: OpeningTheory = {
+  idea: 'Every version of the flank attack in the Advance Variation is an attempt to punish the bishop for having come out, and every good version prepares it. 4.h4 first takes away the retreat the bishop needs; 4.Nc3 first covers e4, so the bishop’s only route back is g6 and the pawns can chase it. Played immediately, 4.g4 prepares nothing, and the reason that matters is not general but concrete: the pawn has left g2, and the diagonal from e4 to h1 is now empty. So Black answers 4...Be4, and the bishop is not merely safe there — it is attacking the rook. 5.Nc3 loses the exchange to ...Bxh1 and 5.Bg2 simply drops the bishop, since nothing recaptures on g2. White has to plug the diagonal, and the move that plugs it while hitting the bishop is f2-f3, which is exactly the concession Black went to e4 to provoke: the g1 knight loses its square, and White’s king is left behind three pawns on f3, g4 and h2 with no piece anywhere near them. The bishop then drops back to g6 having gained a move. The simpler answer is 4...Bd7, which is comfortable for a reason particular to this move order — in the prepared lines the bishop has to go to g6 and live within range of h4-h5, and here it can step out of range altogether, take up the French set-up with ...e6 and ...c5, and treat the pawn on g4 as the weakness it is. What ties the whole variation together is that the g4 pawn has exactly one defender, the queen along d1-g4, and that defence is severed by anything that lands on f3: 5.Nf3 loses the pawn outright to ...Bxg4, with nothing left to recapture with.',
+  structures: ['french-chain'],
+  whitePlans: [
+    'Follow through with f4 and h4, treating the position as a pawn storm. It is the consistent plan and it needs Black to cooperate — the pawns advance faster than the pieces that would support them.',
+    'Plug the long diagonal with f2-f3 and accept the ugliness. The knight then comes to e2 or h3, and White plays for the space the pawns have taken rather than for an attack.',
+    'c2-c4 against the base of Black’s centre. It is the standard Advance Variation idea, and here it fits badly: the queenside is being opened while White’s pawns and pieces are all facing the other way.',
+    'Keep the wedge on e5 and remember that it, not the pawn storm, is what makes the position pleasant. Every kingside advance that loosens the hold on e5 or d4 has given up more than it gained.',
+  ],
+  blackPlans: [
+    '4...Be4, provoking f2-f3 before retreating to g6. The bishop goes there because it hits the rook on h1 down the diagonal White’s own last move opened, so the eviction has to be a pawn move rather than a piece move.',
+    '4...Bd7, the simple answer. The bishop is out of reach of the wing pawns, it supports ...c5, and Black plays the French set-up with the comfort of knowing White has already weakened himself.',
+    '...e6, ...c5 and ...Nc6, the ordinary Advance Variation plan against the base of the chain. The pawn on g4 does nothing at all against it, which is the whole point.',
+    '...h5, hitting the head of the pawn chain. White cannot prop the g-pawn with h3 — the exchanges on g4 open the h-file onto a rook that has no defender.',
+    'Meet c4 and c5 with ...b6. White’s space grab has no support, and the attempt to hold it with b4 runs into ...a5 and an open a-file.',
+  ],
+  breaks: [
+    {
+      move: 'h5',
+      side: 'black',
+      note: 'The lever the whole variation invites. It attacks the head of White’s pawn chain, and it cannot be answered by propping the pawn up: after h3 hxg4 hxg4 the rook on h1 is undefended and simply falls.',
+      prerequisites: ['White’s king still on e1 with the rook undeveloped, which is the usual case this early'],
+    },
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'The main break of the Advance Variation and the reason 4.g4 is not frightening — it is a queenside move, and White’s fourth move did nothing on that side of the board.',
+      prerequisites: ['...e6 played so d5 is held after the exchange', 'A piece ready for c6 or d7 to press d4 once the tension is released'],
+    },
+    {
+      move: 'f6',
+      side: 'black',
+      note: 'The other break, aimed at the head of the chain rather than its base. It is more attractive than usual here, because White’s kingside pawns have gone forward and the squares behind them cannot be repaired.',
+      prerequisites: ['The king out of the centre, or at least not on the e-file when it opens'],
+    },
+    {
+      move: 'f4',
+      side: 'white',
+      note: 'The consistent follow-up: it holds e5 and builds the storm. It also fixes the g4 pawn as a target, since the f-pawn can no longer come to f3 to shield it.',
+    },
+    {
+      move: 'h4',
+      side: 'white',
+      note: 'What the whole system needed on move four rather than move five. Played now it still gains space, but Black has already chosen a square for the bishop where the pawns cannot reach it.',
+    },
+  ],
+  keySquares: [
+    { square: 'e4', note: 'The square 4.Nc3 exists to cover and 4.g4 leaves open. A bishop standing there is on the diagonal to h1, which is why the eviction costs White a pawn move rather than a developing move.' },
+    { square: 'h1', note: 'The rook that the advance of the g-pawn exposed. It is the reason ...Be4 works, and the reason the h-file exchanges after ...h5 win material rather than merely opening a file.' },
+    { square: 'g4', note: 'A pawn with one defender — the queen, along d1-g4 — and every white piece or pawn that occupies f3 cuts it off. It is what ...h5 and, at the wrong moment, ...Bxg4 are aimed at.' },
+    { square: 'f3', note: 'The square White cannot use freely. A knight there severs the queen’s defence of g4; a pawn there holds g4 but takes the square from the knight and leaves the king behind a fixed wall.' },
+    { square: 'd4', note: 'The base of the chain and where the game is actually decided. The kingside pawn moves do nothing to defend it, which is why ...c5 remains Black’s main plan whatever happens on the wing.' },
+  ],
+  routes: [
+    'Bf5-e4-g6, the retreat with a move inserted: e4 first so that the bishop reaches g6 only once f2-f3 has been forced out of White',
+    'Ng1-e2 or Ng1-h3, the routes left to White once the pawn stands on f3',
+  ],
+  traps: [
+    'Answering 4...Be4 with a developing move. 5.Nc3 Bxh1 wins the exchange and 5.Bg2 Bxg2 loses a piece outright, because the pawn on g4 has left nothing behind to recapture with on either square.',
+    'Playing 5.Nf3 against 4...Bd7. The knight cuts the queen’s defence of g4 without covering the pawn itself, and ...Bxg4 takes it for nothing.',
+    'Supporting the g-pawn with h3 after ...h5. The trade ...hxg4 hxg4 opens the h-file, and the rook on h1 has no defender at all — ...Rxh1 wins a whole rook.',
+    'Grabbing space with c4 and c5. ...b6 undermines it at once, b4 is answered by ...a5, and the a-file opens onto a rook on a1 that is as undefended as the one on h1.',
+  ],
+  sources: [
+    'Starting Out: Caro-Kann',
+    'Lifetime Repertoires: The Caro-Kann',
+    'Understanding Chess Openings: 1.e4 — Part 1',
+    'Yasser Seirawan — Winning Chess Openings',
+  ],
+};
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -9704,6 +9858,15 @@ export const CURATED_OPENINGS: Opening[] = [
   },
   {
     eco: 'B12',
+    name: 'Caro-Kann Defence: Advance Variation, Bayonet Attack',
+    moves: line('e4 c6 d4 d5 e5 Bf5 g4'),
+    character: 'sharp',
+    minRating: 1500,
+    aliases: ['Bayonet Attack', 'Advance Caro-Kann 4.g4'],
+    theory: CARO_ADVANCE_BAYONET,
+  },
+  {
+    eco: 'B12',
     name: 'Caro-Kann Defence: Advance Variation, Tal Variation',
     moves: line('e4 c6 d4 d5 e5 Bf5 h4'),
     character: 'sharp',
@@ -11095,6 +11258,16 @@ export const CURATED_OPENINGS: Opening[] = [
     forSide: 'black',
     aliases: ['Pirc Classical with 6...Bg4', 'Parma Defence'],
     theory: PIRC_PARMA,
+  },
+
+  {
+    eco: 'B00',
+    name: 'Nimzowitsch Defence: Scandinavian Variation, Advance Variation',
+    moves: line('e4 Nc6 d4 d5 e5'),
+    character: 'positional',
+    minRating: 1500,
+    aliases: ['Nimzowitsch Defence with 2...d5', 'Advance Caro-Kann with ...Nc6'],
+    theory: NIMZOWITSCH_SCANDINAVIAN_ADVANCE,
   },
 
   // ---------------------------------------------------------------- 1.d4 ---
