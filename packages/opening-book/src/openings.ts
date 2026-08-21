@@ -13221,6 +13221,83 @@ export const CURATED_OPENINGS: Opening[] = [
     },
   },
   { eco: 'A56', name: 'Modern Benoni', moves: line('d4 Nf6 c4 c5 d5 e6'), character: 'sharp', forSide: 'black', minRating: 1600 },
+
+  /**
+   * The Modern Benoni proper: the structure is on the board, and this is where
+   * White chooses which of five systems to play it against. The entry is the
+   * crossroads — what the pawns mean, and what each sixth move costs.
+   */
+  {
+    eco: 'A60',
+    name: 'Benoni Defence: Modern Variation, Main Line',
+    moves: line('d4 Nf6 c4 c5 d5 e6 Nc3 exd5 cxd5 d6'),
+    character: 'sharp',
+    forSide: 'black',
+    minRating: 1600,
+    aliases: ['Modern Benoni', 'Benoni main position'],
+    theory: {
+      idea: 'The structure is fixed and it is the whole opening. White has a central majority behind the pawn on d5 and a half-open c-file in front of Black’s c5; Black has a queenside majority and a half-open e-file. Neither majority is worth anything standing still, so the game is White trying to move his with e4-e5 while Black tries to move his with ...b5, and everything either side does in the next ten moves is preparation for one of those two pushes or prevention of the other. Two consequences of the pawns have to be taken on board before the moves make sense. The first is that the dark-squared bishop belongs on g7 and nowhere else: Black’s own pawns stand on c5 and d6, both dark squares, so from e7 the bishop looks straight into its own structure, and the long diagonal is the one line it has — the Old Benoni set-up with ...Be7 is this position with the best piece switched off, which is why it is regarded as close to unplayable. The second is that d6 is a backward pawn no rook can attack, because White’s own pawn on d5 blocks the file. It has to be got at by pieces, and there is only one square that does the job, so every white system is built around a knight reaching c4 — usually with a bishop to f4 behind it — and e4-e5 matters as much for opening the file onto the pawn as for the space it gains. That single square is also where the two plans collide: a black pawn arriving on b5 attacks c4, so the knight tour and the counterplay are the same argument, and a4 is White’s way of settling it before it begins. What is decided at this move is which system carries the idea. 6.e4 takes the maximum, and its sharpest form is 7.f4, where the f-pawn is already placed for e4-e5 and no preparation is needed at all; 7.Nge2 is the restrained version of the same idea, keeping the f-pawn uncommitted so that f3 or f4 can be chosen once Black has shown his hand. 6.Nf3 gives up the pawn-storm systems in exchange for smooth development, which is exactly why most Benoni players reach the opening through 1.d4 Nf6 2.c4 e6 3.Nf3 c5 — that move order exists for no other purpose than to rule 7.f4 out. 6.g3 is the fianchetto, where the bishop on g2 supports d5 down the diagonal and White plays to squeeze rather than to storm.',
+      structures: [],
+      whitePlans: [
+        'Set the central majority moving with e4-e5. It does the one thing pieces cannot: it converts space into an attack, drives the knight from f6, and opens the d-file onto the pawn that has been immune to rooks all game.',
+        'Route a knight to c4, from b1 through d2 or from f3 back through d2. It is the only square from which d6 can be attacked, and in the 6.Nf3 lines the retreat pays twice — with the knight off f3 there is nothing for ...Bg4 to trade itself against, so White gets the effect of h3 without spending the move on it.',
+        'Play a4 before committing a piece to c4. A pawn on b5 hits that square, so without a4 the break Black has been preparing all game arrives with tempo on the piece White most wants there.',
+        'Refuse exchanges. The advantage is space, and space is only felt by an opponent who has pieces and nowhere to put them; h3 in the 7.Nf3 lines is played for exactly this reason and for no other.',
+        'Choose the sixth move knowing what it concedes. 7.f4 is the most dangerous system in the opening and 6.Nf3 rules it out — which is what Black’s move order is angling for, and a reason to consider 6.e4 even when the resulting positions are less comfortable to handle.',
+      ],
+      blackPlans: [
+        '...g6 and ...Bg7 at once. The bishop is the whole compensation for the space, and it is the piece that covers d4 and e5 — the two squares White’s break has to cross.',
+        '...Re8 on the file Black’s own e-pawn opened, looking at e4. It is a large part of why e4-e5 is not simply playable on demand: White needs the f-pawn or a piece behind the push before the square is his.',
+        'Prepare ...b5 with ...a6 and ...Rb8 while it is still a pawn move, and with ...Na6-c7 once a4 has made the direct advance impossible.',
+        'Answer the knight tour by hitting the knight rather than defending the pawn. After 6.Nf3 g6 7.Nd2 Nbd7 8.Nc4 Nb6 the knight is challenged on arrival, and 9.Nxb6 Qxb6 hands Black the open b-file that the ...b5 plan wanted anyway.',
+        'Treat ...b5 as a sacrifice when the position calls for it. In the 7.Nf3 Bg7 8.h3 O-O 9.Bd3 main line, 9...b5 10.Bxb5 Nxe4 11.Nxe4 Qa5+ recovers the piece, and the mechanism is worth remembering rather than the moves: the pawn is offered to draw the bishop to b5, where the check that regains the knight also attacks it along the fifth rank. White has nothing that both blocks on the a5-e1 diagonal and defends b5, so after 12.Nfd2 Qxb5 13.Nxd6 Qa6 material is level and the game is a mess.',
+        'Keep the bishop on g7 through everything. Trades relieve the cramp and are worth seeking, but the one piece that must not be exchanged is the one the whole opening was chosen for.',
+      ],
+      breaks: [
+        {
+          move: 'b5',
+          side: 'black',
+          note: 'The reason to play the Benoni at all. It sets the queenside majority in motion, it hits c4 and so answers the knight tour in the same move, and it is often worth a pawn outright because the alternative is a position with space conceded and nothing bought with it.',
+          prerequisites: ['a4 not yet played, or ...Na6 and ...Nc7 arranged so that b4 is covered instead', '...a6 and ...Rb8 in, unless the advance is being offered as a sacrifice'],
+        },
+        {
+          move: 'e5',
+          side: 'white',
+          note: 'The break the central majority exists for, and the move that turns d6 from an untouchable pawn into a target by opening the file in front of it.',
+          prerequisites: ['f2-f4 played, or enough pieces on e5 to outweigh the bishop on g7, the rook on e8 and a knight on d7', 'Black’s knight on f6 without a comfortable square to step back to'],
+        },
+        {
+          move: 'a4',
+          side: 'white',
+          note: 'Restraint rather than attack, and the move most white systems cannot do without. It stops ...b5 before the preparation is finished and makes c4 safe for a knight; the price is b4, a square that has been conceded permanently and that Black’s knight route to c7 is aimed at.',
+        },
+      ],
+      keySquares: [
+        { square: 'c4', note: 'The square White’s own c-pawn vacated on move five. It is the only post from which d6 can be attacked, so every white system contains a route to it — and it is exactly the square a black pawn on b5 hits, which is why a4 comes first.' },
+        { square: 'd6', note: 'Backward, and oddly safe for it: White’s pawn on d5 blocks the file, so no rook can ever reach it. It becomes a real weakness only when a piece lands on c4 or f4, or when e4-e5 opens the file that was closed by White’s own pawn.' },
+        { square: 'e5', note: 'Where White’s break has to land, and where the bishop on g7, the rook on e8 and a knight on d7 all meet it. f2-f4 is how White outnumbers them, which is the entire reason the pawn-storm systems are the critical test.' },
+        { square: 'b5', note: 'Black’s counterplay in one square. Take it away with a4 and what is left is a space disadvantage with a good bishop.' },
+        { square: 'g7', note: 'The only diagonal Black’s dark-squared bishop has, because his own pawns on c5 and d6 occupy the other one. It is also the piece that makes the ...b5 sacrifices work, since the diagonal runs into the queenside the moment the centre opens.' },
+      ],
+      routes: [
+        'Nb1-d2-c4 or Nf3-d2-c4, the tour to the one square that attacks d6',
+        'Nb8-a6-c7, the regrouping that keeps ...b5 alive after a4',
+        'Ra8-b8 with ...a6, the direct preparation while the advance is still a pawn move',
+      ],
+      traps: [
+        'Developing the bishop to e7. It is not merely a slower Benoni: the bishop is walled in by Black’s own pawns on c5 and d6, and with it out of play there is no piece behind the queenside advance and nothing pointing at White’s centre.',
+        'Allowing White both a4 and a knight on c4 without a fight. b5 is covered, d6 is attacked, and Black is left with no break and no target while White improves at leisure.',
+        'Meeting e4-e5 by retreating the f6 knight on principle. The push is usually a pawn offer as much as an advance, and ...dxe5 followed by counting the defenders of the pawn that lands on e5 is the more reliable answer than making room for it.',
+      ],
+      sources: [
+        'Anna Cramling’s 1.d4 — Part 2',
+        'Yasser Seirawan — Winning Chess Openings',
+        'The Complete Book of Chess Strategy',
+        'Mastering Positional Sacrifices',
+        '1.d4 — Part 1: Sidelines',
+      ],
+    },
+  },
   {
     eco: 'A51',
     name: 'Indian Defence: Budapest Gambit',
