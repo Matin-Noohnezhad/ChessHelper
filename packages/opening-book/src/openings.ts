@@ -4395,6 +4395,153 @@ const SLAV_MOROZEVICH: OpeningTheory = {
   ],
 };
 
+/**
+ * The Gurevich System — 1.c4 c6 2.Nf3 d5 3.e3, the Slav pawns without the Slav
+ * pawn on d4. It is reached from 1.Nf3 as readily as from 1.c4, so both orders
+ * get an address and share this object.
+ */
+const RETI_ANGLO_SLAV_GUREVICH: OpeningTheory = {
+  idea: 'White has put the Slav pawn on c4 and the Slav knight on f3 and then declined the move that would make it a Slav. Keeping the d-pawn at home is the whole content of the system: d2-d4 stays in hand as a one-move transposition into a Semi-Slav or a Meran, to be played once Black has committed, while Black must commit to something now. The thing Black has to commit to is the c8 bishop, and that is where the position is decided. Black wants ...Bf5 or ...Bg4 first and ...e6 afterwards — the Slav in its plainest form, with the problem piece outside the chain; if the bishop cannot get out in time, ...e6 shuts it in and the game is a Semi-Slav in which Black has gained nothing for the delay. White has four ways of arguing about it, and the useful thing to see is that each of them covers exactly one square. Qb3 attacks b7, which both bishop moves abandon, so it restrains them together. Qc2 covers f5 and nothing else, so ...Bg4 answers it and the queen finds it has spent a move on a square it no longer needs. h3 covers g4 and nothing else, so ...Bf5 answers it. And b2-b3, the move that gives the queen’s bishop the long diagonal in place of the c1-h6 one that e3 has just closed, stands on the square the queen needed: choosing the fianchetto means giving up the only restraint on Black’s bishop, and ...Bf5 follows at once. Black’s practical reply to all of it is ...a6, a pass that keeps the bishop question open one more move and happens to be the Chebanenko move, so that d2-d4 whenever it comes arrives in an Accelerated Meran Black has already prepared.',
+  structures: [],
+  whitePlans: [
+    'Withhold d2-d4 and make the useful moves first — Nc3, b3 and Bb2, Be2 or Bd3, castling — so the pawn finally arrives on d4 in one move against a set-up Black has already declared. Reaching the Slav structure by the flank order buys nothing else.',
+    'Qb3, the pure restraining move. It develops nothing, but while b7 is attacked neither bishop move exists, and Black has to spend a move on ...a6, ...Qb6 or ...e6 before the question can be reopened.',
+    'Qc2, aimed at f5 alone. The queen is well placed there for the b3 and Bb2 set-ups, and the price is that ...Bg4 solves Black’s problem immediately.',
+    'b3 and Bb2, the Réti treatment. The bishop takes the long diagonal and presses e5 rather than b7, and White plays for cxd5 and the c-file rather than for a big centre.',
+    'cxd5 followed by Nb5. Opening the c-file makes b5 available with tempo against a bishop on d6 or the pawn on c7, and it is the usual way of making a withheld d-pawn worth something.',
+    'd2-d4, transposing. Against ...e6 it is a Semi-Slav, against ...a6 an Accelerated Meran, against ...Bf5 a Slav — always with e3 and Nf3 already fixed, which narrows White’s own options as much as it narrows Black’s.',
+  ],
+  blackPlans: [
+    'Settle the bishop before anything else: ...Bf5 whenever b7 is not attacked, ...Bg4 when f5 is covered, and ...e6 only when neither square is available or the bishop is already out.',
+    '...a6, which commits nothing. It holds ...Bf5 in reserve for the next move, it makes ...dxc4 a real capture rather than a bluff because ...b5 will hold the pawn, and if White finally plays d4 it is the move Black wanted anyway.',
+    'The Accelerated Meran — ...e6, ...dxc4, ...b5 and ...c5 — giving up on f5 and developing the light-squared bishop on b7 instead, with the queenside majority as the long-term asset.',
+    'Against b3 and Bb2, play ...Bd6 and castle before committing the b8 knight. Leaving d7 empty keeps the queen’s defence of d6 down the d-file, so a knight arriving on b5 offers a trade rather than winning a tempo, and the knight is then free to choose c6.',
+    '...e5 as the freeing advance. It is available precisely because White’s pawn is still on d2: there is no dxe5 to meet it with, so the push produces a full black centre rather than an exchange, and it blunts a bishop on b2 at the same time.',
+  ],
+  breaks: [
+    {
+      move: 'd4',
+      side: 'white',
+      note: 'The move the system exists to postpone, and the only one that makes a real fight of it. Played too early it is an ordinary Slav; played at the right moment it is a Semi-Slav where White already knows which diagonal Black’s bishop is on.',
+      prerequisites: ['Black has committed the c8 bishop, or has shut it in with ...e6'],
+    },
+    {
+      move: 'e5',
+      side: 'black',
+      note: 'The freeing push, and the standing refutation of a slow set-up. With d2 still occupied White cannot answer it by exchanging, so Black ends with pawns on d5 and e5 and a bishop on b2 biting on granite.',
+      prerequisites: ['...Bd6 in place and the king castled', 'The count on e5 checked — a bishop on b2 and a knight on f3 both bear on the square'],
+    },
+    {
+      move: 'b5',
+      side: 'black',
+      note: 'What ...a6 was played for. After ...dxc4 it holds the extra pawn and takes queenside space, and it is what turns the Semi-Slav structure from a wall into a plan.',
+      prerequisites: ['...a6 played', 'a4 not yet available with effect'],
+    },
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'The Meran break that follows ...b5, undoing White’s space and giving Black the central majority. It is the point of surrendering the centre with ...dxc4 in the first place.',
+      prerequisites: ['...b5 established', 'd5 no longer needing to be held'],
+    },
+  ],
+  keySquares: [
+    { square: 'b7', note: 'The pawn both bishop moves abandon, and therefore the square the whole opening turns on. While a white queen looks at it from b3, ...Bf5 and ...Bg4 are simply unavailable.' },
+    { square: 'b3', note: 'A square White cannot use twice. The queen wants it for the pressure on b7 and the b-pawn wants it for the fianchetto, and the moment the pawn takes it Black’s bishop is free.' },
+    { square: 'f5', note: 'Where Black’s bishop belongs. Qc2 is the move that covers it, and the only one that does so without spending a pawn move.' },
+    { square: 'g4', note: 'The fallback diagonal when f5 is covered, and the reason h3 appears so often here. Each of the two white moves stops one square and not the other.' },
+    { square: 'd6', note: 'Where Black’s dark-squared bishop stands in the b3 set-ups. It is defended from d8 along the d-file, so leaving d7 empty is what makes Nb5 harmless.' },
+    { square: 'e5', note: 'What the fianchettoed bishop is aimed at and what Black’s freeing break claims. Whoever settles this square has decided whether the position is a Réti or a Slav.' },
+  ],
+  routes: [
+    'Nf3-h4 hitting a bishop on f5; Black answers ...Bg6 and after the exchange recaptures with the h-pawn, taking the half-open file as payment for the bishop pair',
+    'Nc3-b5 once cxd5 has opened the c-file, the standard use of the square White’s withheld d-pawn leaves free',
+  ],
+  traps: [
+    'Developing with ...Bf5 or ...Bg4 while the b3 square is still free. Qb3 hits b7, and after cxd5 cxd5 the pawn has no defender at all, so the bishop move costs either the pawn or several moves getting it back.',
+    'Meeting the b3 and Bb2 set-up with ...Nbd7 before ...Bd6. The knight blocks the d-file, the queen stops defending d6, and Nb5 then gains a tempo on the bishop instead of merely offering to trade it.',
+    'Treating 3.e3 as a slower Slav and playing ...e6 automatically. The pawn on e3 has not committed White to anything; ...e6 has committed Black to a bad bishop against an opponent who can still choose the structure.',
+  ],
+  sources: [
+    'Sam Shankland — Lifetime Repertoires: Black vs the English, Réti and Others',
+    'The Grand Toolbox: Fighting Flank Openings',
+    'Lifetime Repertoires: Modern Réti, Part 1',
+    'Lifetime Repertoires: Slav',
+    'Chebanenko Slav',
+  ],
+};
+
+/**
+ * The Four Pawns Attack against the Modern Benoni, reached at move seven —
+ * the Pawn Storm Variation. Its whole claim rests on one move being available
+ * a tempo early, and on a check that Black’s own third move made unanswerable
+ * by a pawn.
+ */
+const BENONI_PAWN_STORM: OpeningTheory = {
+  idea: 'In every other Benoni White has to spend a move arranging f2-f4; here it is already played on move seven, and that single tempo is the variation. It means e4-e5 needs no preparation at all — the break that elsewhere is a long-term ambition is a threat from the position itself, and behind it comes e5-e6, splitting Black’s kingside before the king has left it. What stops White simply playing it is that the push, taken at once, walks into the counter-attack the diagonals were built for: 8.e5 dxe5 9.fxe5 Nfd7 10.e6 fxe6 11.dxe6 Qh4+ 12.g3 Bxc3+ 13.bxc3 Qe4+ forks the king, the rook on h1 and the pawn on e6, and the storm is over. So the move is 8.Bb5+ first, and the check is the real point of the whole system. Black’s c-pawn went to c5 on move two and cannot come back, so the one natural answer — ...c6, which is what the same check gets in the King’s Indian — does not exist, and the diagonal stays open behind whatever piece is put on d7. Each of the three blocks concedes something different, and choosing between them is what a Benoni player has to know here. ...Nfd7 is sound and costs time, because the knight blocks its own bishop and has to travel back to f6 before c8 can develop. ...Nbd7 takes away the square the knight on f6 needs, so e5 arrives exactly on time. ...Bd7 invites 9.e5 and a knight driven to the rim. Against all of them White’s queenside move is a4, and it is not an attacking move: Black’s entire counterplay in a Benoni is ...b5, and once a4 is in, an ...a6 kick only makes the bishop step back while b5 stays covered.',
+  structures: [],
+  whitePlans: [
+    'Check on b5 before pushing. Bb5+ is not development, it is a question with no comfortable answer, and it exists only because the c-pawn has already gone to c5 — the same check in the King’s Indian is met by ...c6 with tempo.',
+    'a4 the moment the check has been blocked, taking b5 away for good. It is the move the whole set-up depends on, because the Benoni is a lost cause for Black without ...b5.',
+    'e4-e5 and then e5-e6, the reason the pawn is on f4. Whether Black takes on e6 or leaves it, the kingside is broken up and the king stops being able to settle.',
+    'Where nothing forcing is available, develop plainly with Nf3, Be2 or Bd3 and castle. The pawns do the attacking, and Nf3 has the second job of covering h4 and retiring Black’s queen check.',
+    'Avoid exchanges. The whole advantage is space, and space is only worth something while there are pieces on the board to be cramped by it.',
+  ],
+  blackPlans: [
+    'Block the check with the f6 knight and accept the loss of time. It is the reliable answer: nothing goes to the rim, nothing is sacrificed, and the price is that ...Nd7 has to return to f6 before the bishop on c8 has a move.',
+    '...Qh4+ at the one moment it exists. The retreat from f6 has opened the d8-h4 diagonal, and the check has to be played before Nf3 covers the square; g3 is White’s only answer that keeps the right to castle, and the pawn on g3 leaves f3 and h3 permanently soft.',
+    'Play for ...b5 regardless. Against a4 it needs preparation — ...Na6, ...Nc7 and ...Rb8 — and b4 is a square a4 has conceded and cannot take back.',
+    'Meet e4-e5 by counting rather than by retreating. After ...dxe5 fxe5 the advanced pawn needs defending, and every white piece tied to holding it is one not attacking.',
+    'Keep the dark-squared bishop. It is the piece the whole Benoni is built around, and lines where Black gives it up on c3 are justified only by a concrete gain of material or of the initiative.',
+  ],
+  breaks: [
+    {
+      move: 'e5',
+      side: 'white',
+      note: 'The break the f-pawn was placed for, and the one that decides the variation. Played on the right move it wrecks Black’s position; played a move early it loses to the counter-attack on the a7-g1 and d8-h4 diagonals.',
+      prerequisites: ['Bb5+ inserted first', 'A black piece already committed to d7, or the f6 knight simply steps back and the push achieves nothing'],
+    },
+    {
+      move: 'e6',
+      side: 'white',
+      note: 'The follow-up that makes the break worth playing. It splits the kingside pawns after ...fxe6 and leaves White’s pieces looking at a king with no shelter; left alone, it is a wedge that cuts f7 off from its own king.',
+      prerequisites: ['e5 already established and holding', 'Lines open enough that the pawn cannot simply be surrounded'],
+    },
+    {
+      move: 'a4',
+      side: 'white',
+      note: 'Not an attack but the restraint the whole system needs. It stops ...a6 and ...b5, and it makes an immediate ...a6 a wasted move — the bishop retreats and the expansion is still impossible.',
+    },
+    {
+      move: 'b5',
+      side: 'black',
+      note: 'The only counterplay a Benoni has. Everything Black does on the queenside is preparation for it, and everything White does there is preparation against it.',
+      prerequisites: ['a4 answered by ...Na6, ...Nc7 and ...Rb8, since the direct advance no longer works'],
+    },
+  ],
+  keySquares: [
+    { square: 'c6', note: 'The square Black’s own c-pawn has vacated, and the reason the check on b5 works. No pawn can block it, and a bishop left on b5 goes on pinning a piece on d7 to the king for as long as it stands there.' },
+    { square: 'd7', note: 'The traffic square. Knight from f6, knight from b8 and bishop from c8 all want it, only one can have it, and which one Black chooses decides the whole variation.' },
+    { square: 'f6', note: 'The square the knight has to leave to answer the check and has to reoccupy before the queenside pieces come out. The two journeys are the tempi White’s attack runs on.' },
+    { square: 'h4', note: 'Black’s one tactical resource, open the moment the knight leaves f6, and shut the moment White’s knight reaches f3. The timing question in the main line is which of those happens first.' },
+    { square: 'e6', note: 'Where the pawn storm is going. A white pawn arriving there is worth more than the material it usually costs, because it is what stops the black king from finding a home.' },
+    { square: 'b5', note: 'What a4 is played for and what Black’s counterplay is made of. Take it away and the Benoni is only a space disadvantage.' },
+  ],
+  routes: [
+    'Nf6-d7-f6, out to answer the check and back to release the c8 bishop — two moves that buy White the time his attack is running on',
+    'Nb8-a6-c7, the regrouping that supports ...b5 once a4 has ruled out the direct advance',
+  ],
+  traps: [
+    'Pushing 8.e5 without the check. 8...dxe5 9.fxe5 Nfd7 10.e6 fxe6 11.dxe6 Qh4+ 12.g3 Bxc3+ 13.bxc3 Qe4+ picks up the rook on h1 or the pawn on e6 with check, and White has nothing left of the attack.',
+    'Answering 8.Bb5+ with 8...Bd7 and then taking the bishop. After 9.e5 Bxb5 10.exf6 the pawn attacks the bishop on g7 while the knight on c3 attacks the one on b5, and Black can save either but not both — 9...Nh5 has to be played instead, on the rim and out of the game.',
+    'Blocking with 8...Nbd7. It looks like the developing block and it occupies the only square the knight on f6 wants, so 9.e5 arrives with the retreat already taken.',
+    'Leaving ...Qh4+ until after Nf3. The check exists only while h4 is uncovered; once the knight arrives the resource is gone for good, and with it the chance to provoke g3.',
+  ],
+  sources: [
+    'Anna Cramling’s 1.d4 — Part 2',
+    'Yasser Seirawan — Winning Chess Openings',
+  ],
+};
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -13250,6 +13397,16 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: CATALAN_OPEN_CLASSICAL,
   },
 
+  {
+    eco: 'A66',
+    name: 'Benoni Defence: Pawn Storm Variation',
+    moves: line('d4 Nf6 c4 c5 d5 e6 Nc3 exd5 cxd5 d6 e4 g6 f4'),
+    character: 'sharp',
+    minRating: 1800,
+    aliases: ['Four Pawns Attack Benoni', 'Benoni Taimanov Attack'],
+    theory: BENONI_PAWN_STORM,
+  },
+
   // ------------------------------------------------------- Dutch and flank ---
   {
     eco: 'A80',
@@ -13585,6 +13742,27 @@ export const CURATED_OPENINGS: Opening[] = [
     minRating: 1700,
     aliases: ['Neo-Catalan Accepted (1.c4 order)'],
     theory: NEO_CATALAN_ACCEPTED,
+  },
+  {
+    eco: 'A11',
+    name: 'Réti Opening: Anglo-Slav Variation, Gurevich System',
+    moves: line('c4 c6 Nf3 d5 e3'),
+    character: 'positional',
+    minRating: 1600,
+    aliases: ['Anti-Slav with e3', 'Réti Slav without d4'],
+    theory: RETI_ANGLO_SLAV_GUREVICH,
+  },
+  {
+    // The 1.Nf3 route into the same position, which the ECO tables do not name
+    // — it was being identified as a Zukertort Opening three plies in. One
+    // position, one set of ideas.
+    eco: 'A11',
+    name: 'Réti Opening: Anglo-Slav Variation, Gurevich System',
+    moves: line('Nf3 d5 c4 c6 e3'),
+    character: 'positional',
+    minRating: 1600,
+    aliases: ['Anti-Slav with e3 (1.Nf3 order)'],
+    theory: RETI_ANGLO_SLAV_GUREVICH,
   },
   { eco: 'A04', name: 'Réti Opening', moves: line('Nf3'), character: 'positional' },
   { eco: 'A01', name: 'Nimzo-Larsen Attack', moves: line('b3'), character: 'system' },
