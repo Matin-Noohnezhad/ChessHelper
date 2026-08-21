@@ -135,6 +135,15 @@ describe('structure classification', () => {
     expect(mirrorFen(mirrorFen(best.structure.fen))).toBe(best.structure.fen);
   });
 
+  it('does not call a wedge a Carlsbad', () => {
+    // Same c- and d-file picture as a Carlsbad, but White's pawn is on e5
+    // rather than behind d4, which makes it a chain and a different game.
+    const wedge = fenAfter('e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6 d4 exd4 e5 d5 Bb5 Ne4 cxd4 Bb6');
+    expect(idsOf(wedge)).not.toContain('carlsbad');
+    // The real thing, where the e-pawn is still home, still matches.
+    expect(idsOf(fenAfter('d4 d5 c4 e6 Nc3 Nf6 cxd5 exd5'))).toContain('carlsbad');
+  });
+
   it('says nothing about a position that has no structure yet', () => {
     expect(classifyStructure(fenAfter('e4 e5 Nf3 Nc6 Bb5'))).toEqual([]);
     expect(classifyStructureBest(fenAfter(''))).toBeUndefined();

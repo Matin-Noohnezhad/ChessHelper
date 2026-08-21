@@ -93,6 +93,11 @@ type Rule = (s: PawnSkeleton) => boolean;
 
 /** No pawn of that colour anywhere on the file — the file is theirs to use. */
 const noFile = (side: Side, file: string): Rule => (s) => s.count(side, file) === 0;
+/** A pawn on at least one of the squares — "the e-pawn is still home-ish". */
+const pawnOnAny =
+  (side: Side, ...squares: string[]): Rule =>
+  (s) =>
+    squares.some((square) => s.has(side, square));
 const all =
   (...rules: Rule[]): Rule =>
   (s) =>
@@ -159,7 +164,17 @@ const RULES: { id: string; rule: Rule }[] = [
   },
   {
     id: 'carlsbad',
-    rule: all(pawns('white', 'd4'), noFile('white', 'c'), pawns('black', 'd5'), noFile('black', 'e')),
+    // White's e-pawn has to still be behind d4. Without that the rule also
+    // matched positions with a pawn on e5, which is a wedge and a completely
+    // different game — the Italian after 9.e5 and 11.cxd4 reached it, and
+    // would have been shown minority-attack plans for a structure it is not.
+    rule: all(
+      pawns('white', 'd4'),
+      noFile('white', 'c'),
+      pawnOnAny('white', 'e2', 'e3'),
+      pawns('black', 'd5'),
+      noFile('black', 'e'),
+    ),
   },
   {
     id: 'hanging-pawns',
