@@ -248,6 +248,15 @@ function walk(context: WalkContext, line: PgnMove[], sideline: boolean): void {
 
     const text = move.comment?.trim();
     if (text && text.length >= options.minChars) {
+      // `line` carries the file's own SAN tokens, not ours. Rendering canonical
+      // SAN would mean generating the legal moves at every node to disambiguate,
+      // which is exactly the cost `resolveSan` exists to avoid — a tenfold
+      // slowdown over the corpus. Measured, 0.019% of tokens differ from what
+      // our own generator would write, almost always a missing check marker or
+      // an over-specified origin square. `resolveSan` reads both, so lines
+      // replay correctly either way; the only cost is that a prefix match
+      // against the book misses on those tokens, at a rate that changes no
+      // decision. Anything quoting a line to a reader should replay it first.
       const record: Annotation = {
         key: pos.key(),
         line: path.join(' '),
