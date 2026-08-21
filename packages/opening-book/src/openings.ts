@@ -1079,6 +1079,68 @@ const NEO_CATALAN_ACCEPTED: OpeningTheory = {
 };
 
 /**
+ * One move before the main tabiya, and a genuinely different position: the
+ * c-pawn is still at home, which is what the whole crossroads is about. Two
+ * move orders reach it and both point here.
+ */
+const LONDON_NBD2_CROSSROADS: OpeningTheory = {
+  idea: 'The knight comes out before the c-pawn, and the reason is a single move. With a pawn already on c3 the reply ...Qb6 hits b2 in its best version, because the queen’s knight is not yet on d2 to defend along the second rank and the pawn on c3 has taken c3 away from it as well; White ends up making concessions to hold a pawn he did not need to expose. Playing Nbd2 first changes the answer rather than the defence: ...Qb6 is now met by dxc5, and Black has to choose between recovering the pawn with the queen and grabbing on b2, both of which produce a much sharper game than either side normally gets from this opening. The delay pays a second time, because the pawn on c2 is still flexible: against ...Bg4 White can play h3 and go for something concrete instead of settling into the standard set-up. So the position is a crossroads about one thing — where Black’s light-squared bishop is going to live. ...e6 is the main move and shuts it in, which is not a mistake but a commitment: the bishop’s future is then ...b6 and ...Bb7 many moves later. ...Bg4 and ...Bf5 solve the problem at once, and the price is that each of them lets White change the subject with dxc5, which is why the accurate order is ...cxd4 first and the bishop afterwards. And ...Nh5, which is the newest of them, ignores the bishop question entirely: Black gives a pawn to take the London bishop and the centre instead.',
+  structures: [],
+  whitePlans: [
+    'Nbd2 before c3, and understand what it is for. It is not a developing move played in a particular order out of habit — it is what keeps ...Qb6 from arriving in its good version.',
+    'Answer an early ...Qb6 or ...Bf5 with dxc5. Taking a pawn and asking a question is the option the delayed c-pawn buys, and it is what makes those moves less accurate than they look.',
+    'Against ...Bg4, h3 rather than the automatic c3. The bishop must decide before White has committed anything, and Bb5 is available too, since the a4-e8 diagonal is open while the pin lasts.',
+    'Against ...Nh5, take the pawn rather than shuffle the bishop. Bg5 h6 Bh4 g5 Bg3 Nxg3 is exactly the trade Black gave the pawn for, and going along with it concedes the whole point of the opening.',
+    'Otherwise continue into the tabiya: c3, Bd3, castle, and a knight to e5. Nothing about the delay changes that plan, and every version of it is easier to play with the queenside settled.',
+  ],
+  blackPlans: [
+    'Decide about the light-squared bishop before anything else. That decision is what the position asks and every fifth move here is an answer to it.',
+    '...cxd4 first and then ...Bf5 or ...Bg4. Clarifying the centre removes White’s dxc5 resource, which is the whole difference between the accurate order and the natural one.',
+    '...Bg4, developing outside the chain. The pin also makes c4 unattractive for White, since the d4-pawn would then be under real pressure, and Black should be content to give the bishop up for the knight on f3 when it is chased.',
+    '...e6 and a normal set-up, accepting that the bishop is shut in and that its route out is ...b6 and ...Bb7 later.',
+    '...Nh5, the modern pawn sacrifice: the London bishop is worth a pawn, and with it gone the dark squares and the centre belong to Black.',
+    '...Qb6 at once, taking up the argument about b2 while White’s king is still in the middle. It is the sharpest reply and White has an answer prepared for it.',
+  ],
+  breaks: [
+    {
+      move: 'e5',
+      side: 'black',
+      note: 'The freeing advance the whole system is arranged to prevent, and the reason White wants a knight on e5 first. Getting it in under decent conditions is equality.',
+      prerequisites: ['The e5 square contested — a knight of White’s already established there has to be traded off first', 'Developed enough that the opening of the centre is not the problem'],
+    },
+    {
+      move: 'c4',
+      side: 'black',
+      note: 'Takes space and denies White the d3 square, at the cost of releasing the central tension. It is a much better bet before c3, since White does not yet have the c2 square ready for the bishop.',
+    },
+    {
+      move: 'e4',
+      side: 'white',
+      note: 'The central break White is heading for once the bishop is on d3 or c2 and the king has castled. It is the standard punishment for ...c4.',
+      prerequisites: ['c3 played, so the bishop has c2 to drop back to', 'The d4-pawn secure, since the push gives up its defender'],
+    },
+  ],
+  keySquares: [
+    { square: 'b2', note: 'The square the move order is about. With c3 played the pawn there is loose in the version Black wants; with the knight on d2 first, White answers the attack on it by changing the subject.' },
+    { square: 'f4', note: 'The London bishop, and the piece Black is willing to spend a pawn to remove. Everything about ...Nh5 follows from what it is worth.' },
+    { square: 'c5', note: 'Not just a pawn: dxc5 is the resource that the delayed c-pawn keeps available, and it is what makes an early ...Bf5 or ...Qb6 imprecise.' },
+    { square: 'e5', note: 'The permanent argument of the whole system — White’s outpost against Black’s freeing break, on the same square.' },
+  ],
+  routes: ['Nb1-d2 before c2-c3, the accuracy the whole line rests on', 'Bc8-g4 or ...Bc8-f5 before ...e6, which is the one problem the London set-up sets Black'],
+  traps: [
+    'Playing c3 first out of habit. It looks like the same position a move later and it is not: ...Qb6 then arrives with the b2 pawn genuinely awkward to defend, and it is the commonest inaccuracy in the whole system.',
+    'Meeting ...Nh5 with Bg5: after ...h6, Bh4 g5 and Bg3 the bishop is traded on g3 anyway, which is what Black offered the pawn for.',
+    'Developing to f5 or g4 before taking on d4 — dxc5 is then available, and the bishop move has cost Black the chance to remove it.',
+  ],
+  sources: [
+    'Alex Banzea — London System',
+    'Lifetime Repertoires: Sahaj and Srinath’s London System',
+    'Nils Grandelius — Lifetime Repertoires: Classical Slav',
+    'Sam Shankland — Lifetime Repertoires: Semi-Slav',
+  ],
+};
+
+/**
  * The main tabiya of the modern London, after both sides have completed the
  * standard set-up and White has played c3. The identical position arrives by
  * the older 2.Bf4 order — 1.d4 d5 2.Bf4 Nf6 3.e3 e6 4.Nf3 c5 5.c3 Nc6 6.Nbd2 —
@@ -11414,6 +11476,28 @@ export const CURATED_OPENINGS: Opening[] = [
     minRating: 1400,
     aliases: ['Modern London (1...Nf6 order)'],
     theory: LONDON_MODERN,
+  },
+  {
+    // One ply before ...e6, where the c-pawn is still at home. It had no
+    // address and fell back on the five-move London entry, which is about the
+    // system rather than about this choice.
+    eco: 'D02',
+    name: 'Queen’s Pawn Game: London System',
+    moves: line('d4 d5 Nf3 Nf6 Bf4 c5 e3 Nc6 Nbd2'),
+    character: 'system',
+    minRating: 1500,
+    aliases: ['London with 5.Nbd2'],
+    theory: LONDON_NBD2_CROSSROADS,
+  },
+  {
+    // The same position by the 2.Bf4 order, as with the tabiya below.
+    eco: 'D02',
+    name: 'Queen’s Pawn Game: London System',
+    moves: line('d4 d5 Bf4 Nf6 e3 c5 Nf3 Nc6 Nbd2'),
+    character: 'system',
+    minRating: 1500,
+    aliases: ['London with 5.Nbd2 (2.Bf4 move order)'],
+    theory: LONDON_NBD2_CROSSROADS,
   },
   {
     eco: 'D02',
