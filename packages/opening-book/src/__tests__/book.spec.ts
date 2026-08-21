@@ -112,7 +112,7 @@ describe('opening data integrity', () => {
    * teaching content.
    */
   it('does not quietly lose entries', () => {
-    expect(CURATED_OPENINGS.length).toBeGreaterThanOrEqual(379);
+    expect(CURATED_OPENINGS.length).toBeGreaterThanOrEqual(395);
 
     const landmarks = [
       'e4',
@@ -125,6 +125,7 @@ describe('opening data integrity', () => {
       'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6',
       'e4 c6 d4 d5 exd5 cxd5 c4',
       'e4 e5 f4',
+      'd4 Nf6 c4 c5 d5 e6 Nc3 exd5 cxd5 d6',
     ];
     // Theory may be the node's own or inherited; what matters is that a reader
     // looking the opening up is shown some.

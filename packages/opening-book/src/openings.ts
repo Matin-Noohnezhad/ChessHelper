@@ -4836,6 +4836,135 @@ const HYPERACCELERATED_PTERODACTYL: OpeningTheory = {
   ],
 };
 
+/**
+ * The Smyslov Variation, 7.a4 in the Winawer main line. It is prophylaxis
+ * aimed at one square and at one diagonal, and both halves of it turn on the
+ * pawn Black keeps on c5.
+ */
+const WINAWER_SMYSLOV: OpeningTheory = {
+  idea: 'A move about a square. In this structure a4 is where Black’s pieces want to be: the queen comes there from a5 to hit c2 from behind the doubled pawns, and in the ...b6 and ...Ba6 schemes the light-squared bishop lands there and cannot be driven off, which is Black’s standard way of solving his worst piece against 7.Nf3. A white pawn on a4 with the rook still on a1 behind it makes every one of those visits cost a piece, and that is the whole of the move’s positive case; in Botvinnik’s day conceding the square to a black piece was thought to be the mistake, and 7.a4 was the fashionable answer. The second purpose is Ba3, the diagonal that opened when the b-pawn recaptured on c3, cutting across the squares a black king wants after castling long. The trouble is that the diagonal runs a3-b4-c5, so it is shut by the pawn on c5 and only opens if Black takes on d4 or advances past it — and Black will do neither, because ...cxd4 cxd4 repairs the very pawns he gave up his bishop to damage. So the bishop can go to a3 and then has to come back, and 7.a4 has spent a move on the wing while the base of the chain is untouched. The reply that settled the matter is Korchnoi’s 7...Qa5. It attacks c3, which cannot be defended by a pawn and is holding d4 up, so White answers Bd2 — and a bishop on d2 is two moves from a3 rather than one, which means a developing move has argued the point of a4 away. From there Black completes the queenside, keeps the tension on d4, and breaks with ...f6 at the head of the chain. He can also close with ...c4 first, and this is the one version of the Winawer where that is not a concession: closing normally opens the a3-f8 diagonal as a gift, and with the bishop already committed to d2 the gift arrives at an address that is further away than when it was posted.',
+  structures: [],
+  whitePlans: [
+    'Take a4 away as a square before it is used. It denies the queen the route from a5, and it denies the bishop the outpost that makes ...b6 and ...Ba6 work — after 7...b6 8.Bb5+ Bd7 9.Bd3 the resource Black is relying on simply is not there, because the pawn stands on it and the rook on a1 defends it.',
+    'Keep Ba3 as a threat rather than a plan. It is only worth playing once Black’s c-pawn has left c5, so it is a move to have ready for the moment he closes or captures, not a scheme to arrange in advance.',
+    'Meet 7...Qa5 with Bd2 and accept that the bishop is no longer going to a3. c3 has to be held, it cannot be held by a pawn, and the alternative ways of defending it are worse than the concession.',
+    'If Black does play ...c4, take the diagonal at once. With c5 vacated the bishop reaches a3 and looks straight at the knight on e7 and at the squares the black king needs.',
+    'Otherwise play the ordinary Winawer scheme — Nf3, Bd3, O-O and h4 — remembering that the pawn on a4 contributes nothing to it, so the attack has to be worth a tempo.',
+  ],
+  blackPlans: [
+    '7...Qa5, the answer that made the move unfashionable. It hits c3 and provokes Bd2, and the bishop that goes there has given up the diagonal a4 was played to prepare.',
+    'Keep the tension on d4 and never resolve it. Every plan on both sides here is downstream of that: ...cxd4 undoubles White’s pawns and opens a3-f8 in the same move.',
+    'Break with ...f6 once the queenside pieces are out. The chain is attacked at its head rather than its base, and it is the break that gives the bishop on c8 something to do after ...exf5 or ...fxe5.',
+    'Consider ...c4 here and almost nowhere else. It is a concession in every other line, and it is playable in this one for a single reason: the bishop has already been provoked to d2, so the diagonal the advance opens is two moves away instead of one.',
+    'Do not rely on ...b6 and ...Ba6 against this move. 8.Bb5+ Bd7 9.Bd3 leaves the light-squared bishop without the a4 square, and closing with 9...c4 afterwards hands White the diagonal for nothing.',
+  ],
+  breaks: [
+    {
+      move: 'f6',
+      side: 'black',
+      note: 'The break the whole set-up is aiming at. It attacks the chain at the head, where White’s extra queenside pawn move does not help him, and it is the only way the bishop on c8 ever gets air.',
+      prerequisites: ['The queenside pieces developed and the king’s home decided, since the f-file opens', 'The tension on d4 still unresolved, so that White cannot answer in the centre'],
+    },
+    {
+      move: 'c4',
+      side: 'black',
+      note: 'Closing the queenside, which is normally a concession because it releases d4 and opens a3-f8 for the bishop. Here it is a real option, and only because White’s bishop has been drawn to d2 first and needs two moves to reach the diagonal it wants.',
+      prerequisites: ['Bd2 already provoked by ...Qa5', '...f6 prepared, since the advance ends Black’s play on the wing it happens on'],
+    },
+    {
+      move: 'a5',
+      side: 'white',
+      note: 'The follow-up that gives the pawn on a4 a second job, fixing Black’s queenside and taking b6 from the knight. It is worth having in mind precisely because a4 on its own achieves so little.',
+      prerequisites: ['Black has not answered with ...b6, and the pawn is not simply going to be surrounded'],
+    },
+  ],
+  keySquares: [
+    { square: 'a4', note: 'The square the move is named for. Black’s queen wants it from a5 and his light-squared bishop wants it from d7; a pawn there, defended by the rook on a1, makes both visits cost a piece.' },
+    { square: 'a3', note: 'Where the bishop is meant to go and usually cannot. The diagonal is blocked by the pawn on c5, so the plan depends on Black releasing the tension — which is the one thing his whole position is arranged not to do.' },
+    { square: 'c3', note: 'The prop under d4 that no pawn can defend. ...Qa5 attacks it, Bd2 is the answer, and that exchange of moves is what makes 7.a4 harmless.' },
+    { square: 'd2', note: 'A perfectly good square for the bishop and the wrong one for this variation. From d2 the a3-f8 diagonal is two moves away, and Black’s ...c4 becomes playable in consequence.' },
+    { square: 'd4', note: 'The base of the chain, and untouched by anything White has done on the seventh move. The tension there is worth more to Black than any pawn on the queenside.' },
+  ],
+  routes: [
+    'Bc1-d2-c1-a3, the journey a4 was played to make possible and that ...Qa5 turns into three moves',
+    'Qd8-a5 hitting c3, Korchnoi’s move and the reason the line went out of fashion',
+  ],
+  traps: [
+    'Answering 7.a4 with the ...b6 and ...Ba6 plan. 8.Bb5+ Bd7 9.Bd3 and the bishop has no a4 square — the pawn occupies it and the rook on a1 covers it — so the manoeuvre that works against 7.Nf3 achieves nothing here.',
+    'Closing with ...c4 while White’s bishop is still on c1. It vacates c5 and the a3-f8 diagonal opens immediately, which is the one favour the whole 7.a4 idea is asking for.',
+    'Releasing the tension with ...cxd4. cxd4 repairs the doubled pawn Black gave up his dark-squared bishop to create, and opens the bishop’s diagonal into the bargain.',
+  ],
+  sources: [
+    'Garry Kasparov — My Great Predecessors',
+    'Lifetime Repertoires: The French Defence',
+    'Converting an Extra Pawn in Chess',
+  ],
+};
+
+const WINAWER_MAIN_LINE: OpeningTheory = {
+      idea: 'The tabiya of the variation, and the clearest statement of the bargain it rests on: White has the two bishops and a pawn chain that owns the centre and points at the kingside, and in exchange his queenside pawns are damaged for the rest of the game. The c3 pawn cannot be defended by another pawn and it is the prop under d4, so Black’s whole position points at it. 6...Ne7 rather than ...Nc6 is deliberate — the knight keeps g7 guarded so that Qg4 does not simply win a pawn, it leaves the c-file clear for the queenside play, and from e7 it reaches f5 in one move to add a third attacker to d4. The other permanent feature is that Black’s king does not go to g8. Castling short walks straight into the attack the pawn chain is built for, so the standard scheme is ...Qc7 or ...Qa5, ...Nbc6, ...Bd7 and long castling, or leaving the king in the centre while both wings burn.',
+      structures: ['french-chain'],
+      whitePlans: [
+        '7.Qg4, the principal test: it hits g7 before Black is organised and forces an immediate decision. Black either defends with ...Nf5, which puts the knight somewhere it is easy to attack, or gives both kingside pawns up with ...Qc7 and plays for the centre and the exposed white king.',
+        '7.h4, the modern choice, which keeps Qg4 in reserve. h4-h5 forces ...h6, and after that the rook has h4 and the kingside breakthrough acquires its point.',
+        '7.a4, prophylaxis against both black plans at once: ...b6 is met by Bb5+, and Ba3 hits the squares a black king on the queenside needs.',
+        '7.Nf3, the Rauzer: sound development and a slow squeeze. It is the line Black is happiest to see, because White gives up Qg4 and the Nh3-f4-h5 route and commits to the slow plan.',
+        'The long-term kingside break with f4, g4 and f5-f6, which is only worth having once ...h6 has been forced.',
+      ],
+      blackPlans: [
+        'Attack d4 with ...Nbc6, ...Qc7 or ...Qa5 and ...Nf5. It is the base of the chain and no pawn can be brought to defend it.',
+        'Solve the bad bishop with ...b6 and ...Ba6, trading off the piece the French normally leaves buried behind e6.',
+        'Close the queenside with ...c4, castle long and prepare ...f6. This gives up the pressure on d4, so it belongs together with the kingside break rather than instead of it.',
+        'Reach an endgame. The doubled c-pawns and the pawn on a3 do not improve, and White’s compensation is entirely dynamic.',
+      ],
+      breaks: [
+        {
+          move: 'f6',
+          side: 'black',
+          note: 'The break the ...c4 and long-castling scheme exists to prepare. It is at its best with the h-pawns still at home: exf6 gxf6 then leaves Black covering g6 with no weak h6 pawn to defend, which is precisely what h4-h5 is played to change.',
+          prerequisites: ['The king has left the centre, normally to the queenside', 'White has not already forced ...h6'],
+        },
+        {
+          move: 'c4',
+          side: 'black',
+          note: 'Closes the queenside and fixes c2 and c3 as permanent targets. It is a commitment rather than a free move — d4 stops being under pressure the moment it is played.',
+          prerequisites: ['A plan for the other wing, because the queenside will produce nothing further by itself'],
+        },
+        {
+          move: 'h5',
+          side: 'white',
+          note: 'The modern space-gainer. Black has to reply ...h6, since letting the pawn reach h6 concedes f6 and g7 for good, and the pawn on h6 is then the hook everything else aims at.',
+        },
+        {
+          move: 'f5',
+          side: 'white',
+          note: 'The breakthrough the kingside pawns are aiming for; f6 after it leaves Black with holes wherever the g-pawn recaptures.',
+          prerequisites: ['...h6 has been forced', 'f4 and g4 are already in place'],
+        },
+      ],
+      keySquares: [
+        { square: 'c3', note: 'The target the whole black position is aimed at. It cannot be defended by a pawn and it is the prop under d4.' },
+        { square: 'd4', note: 'The base of White’s chain. ...c5, ...Nc6, ...Qa5 and ...Nf5 all press on it, and the moment it falls the e5 wedge goes with it.' },
+        { square: 'f5', note: 'The e7 knight’s square: from there it attacks d4 and stands in the way of the pawn storm.' },
+        { square: 'c4', note: 'Once ...b6 and ...Ba6 have traded the light-squared bishops, the light squares in front of White’s damaged queenside have no defender left.' },
+        { square: 'g7', note: 'The pawn Qg4 attacks on move seven. Defending it, giving it up or moving the king is the first real decision of the variation.' },
+      ],
+      traps: [
+        'Castling short is not a small inaccuracy but a losing plan. Against h4 in particular the attack is free, and the natural relief ...f6 only opens the position for the two bishops: after exf6 Black has nothing on the dark squares and e5 in particular.',
+        '7.Nh3 is not a beginner’s move. The knight is heading for f4 and h5, and it is aimed exactly at the ...b6 and ...c4 set-ups, which leave d4 unchallenged and give White the time for it.',
+      ],
+      sources: [
+        'Lifetime Repertoires: The French Defence',
+        'Lifetime Repertoires: Gajewski’s 1.e4 — Part 2',
+        'Lifetime Repertoires: Sethuraman’s 1.e4 — Part 2',
+        'Wesley So’s 1.e4 — Part 2',
+        'The Energetic 1.e4 — Part 1',
+        'Understanding Chess Openings: 1.e4 — Part 1',
+        'Garry Kasparov — My Great Predecessors, Volume 5',
+        'Yasser Seirawan — Winning Chess Openings',
+      ],
+    };
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -9645,6 +9774,81 @@ export const CURATED_OPENINGS: Opening[] = [
       ],
     },
   },
+  /**
+   * The Alekhine Gambit with 6...Nc6 — the Kan. 4.Ne2 refuses the doubled
+   * pawns and pays a pawn for it; this is where Black decides what to do with
+   * the pawn, and the answer is not to defend it.
+   */
+  {
+    eco: 'C15',
+    name: 'French Defence: Winawer Variation, Alekhine Gambit, Kan Variation',
+    moves: line('e4 e6 d4 d5 Nc3 Bb4 Ne2 dxe4 a3 Bxc3+ Nxc3 Nc6'),
+    character: 'sharp',
+    minRating: 1700,
+    theory: {
+      idea: 'White has refused the doubled pawns and bought the refusal with a pawn. The knight recaptured on c3, so the whole structural case for the Winawer has gone; what is left is a plain gambit — bishop pair and a lead in development against an extra pawn on e4 that nothing defends. Black’s sixth move is where the pawn’s fate is decided, and the first thing to understand is that it is not to be defended. Holding it with ...f5 is refuted by a piece that is no longer on the board: the dark-squared bishop went on move five, and a pawn on f5 hands over e5, g5 and the whole dark complex round the king with nothing left to answer for them. ...Nc6 instead ignores the pawn and attacks d4, and the reasoning is that White cannot both nurse his centre and collect on e4 — Nxe4 at once is met by ...Qxd4, and the queen trade is exactly the simplification a defender a pawn up wants. What ...Nc6 costs is ...c5, and with it the French player’s usual method of solving the bishop on c8. That bishop now stays shut in unless White opens the position himself, which is why the line is genuinely double-edged rather than merely a pawn grab. White’s seventh move chooses between the two ways of playing it. 7.Bf4 is the modern try and it does not defend d4 at all: it poisons it, and prepares Qd2 and long castling behind Nb5 ideas against c7. 7.d5 is the direct strike, giving the pawn back to open the position for the bishops — and giving Black’s worst piece the c8-h3 diagonal in the same move, which is the concession that keeps the line balanced.',
+      structures: [],
+      whitePlans: [
+        '7.Bf4, which answers the attack on d4 by making the pawn poisoned rather than by defending it. It also discourages ...e5, the one break that would let the bishop on c8 out, and it develops towards Qd2 and queenside castling instead of to the passive e3.',
+        'Answer 7...Nxd4 with 8.Be5, hitting the knight and g7 at the same time with the rook on h8 behind the pawn. The knight cannot simply step somewhere: it has to solve both threats.',
+        'Answer 7...Qxd4 with 8.Nb5, and the point is not only that the queen is attacked. c7 is hit by knight and bishop together, and the queen trade does not save Black — after 8...Qxd1+ 9.Rxd1 the rook covers d7 and d8, so 10.Nxc7+ leaves the king only f8 and the rook on a8 goes.',
+        'Bb5 against ...Nf6, to remove the piece that attacks d4 and to double Black’s queenside pawns if he recaptures with one.',
+        '7.d5 for the other treatment: return the pawn, open the centre for the two bishops, and offer the queen trade on d5 knowing Black must decline it, since a knight recapturing on d5 arrives with the c7 pawn already attacked.',
+        'Recover e4 only when it costs nothing. The pawn is undefended and can be taken almost any time, so the question is never whether but at what price — and the price of taking it early is the trade of queens.',
+      ],
+      blackPlans: [
+        'Attack d4 and leave e4 alone. The extra pawn is not the asset; White’s inability to defend his centre and develop at the same time is, and the pawn is what makes him hurry.',
+        'Refuse to prop the pawn up with ...f5. The bishop that would have covered e5 and g5 was given away two moves ago, and no development can repair what the pawn move concedes.',
+        'Choose the knight’s square by what it has to survive. ...Nf6 defends e4 but invites Bg5 and Bb5; ...Nge7 leaves e4 hanging and leaves g4 and h5 free for the white queen, but it means Bxc6 can be answered with the knight and the queenside pawns stay whole.',
+        'Meet Bb5 with ...Bd7, keeping the structure at the price of the d-file — the bishop stands in front of Black’s own pressure on d4, which is the whole reason it was not the automatic move.',
+        'Take the pawn on d4 only with a piece White cannot double-attack. ...Nxd4 loses to Be5 and ...Qxd4 loses to Nb5; the pressure is worth more than the pawn.',
+        'Welcome 7.d5. It costs the extra pawn nothing and gives the light-squared bishop the diagonal that ...Nc6 had taken away, and a white queen sitting on d5 is a target rather than a piece.',
+      ],
+      breaks: [
+        {
+          move: 'd5',
+          side: 'white',
+          note: 'The strike that returns the pawn to open lines for the bishop pair. It solves White’s problem with d4 by removing the pawn, and creates a new one by handing Black’s bishop on c8 the diagonal it has no other way of reaching.',
+          prerequisites: ['A follow-up for the queen after Qxd5, since she cannot stay in the centre and Black’s ...Nc6 gains time on her'],
+        },
+        {
+          move: 'e5',
+          side: 'black',
+          note: 'The break that would free the bishop on c8 and settle the centre. Discouraging it is the second reason for Bf4, and a black player who never gets it in has a bishop that spends the whole game behind its own pawns.',
+          prerequisites: ['d4 already exchanged or pinned down, since the push cannot simply be met by dxe5', 'Development finished — the move opens the centre with a king still on e8'],
+        },
+        {
+          move: 'f5',
+          side: 'black',
+          note: 'The natural way to hold the extra pawn and the losing one. There has been no dark-squared bishop since move five, so the pawn move gives away the squares around the black king that nothing can take back.',
+        },
+      ],
+      keySquares: [
+        { square: 'd4', note: 'The pawn the whole position is about. White does not defend it, he makes it cost something to capture — with a bishop landing on e5 or a knight on b5, depending on which black piece takes.' },
+        { square: 'e4', note: 'The extra pawn, undefended from the moment it is taken. White can recover it almost at will; the reason he waits is that Nxe4 invites the queen trade, and a defender a pawn up is happy to trade anything.' },
+        { square: 'c7', note: 'What Nb5 and Bf4 are aimed at together. It is the reason both natural captures on d4 fail, and it is why White castles long here rather than short.' },
+        { square: 'c8', note: 'Black’s problem piece, and the accounting entry against ...Nc6. Without ...c5 the bishop has no route out except the one White opens himself with d4-d5.' },
+        { square: 'e5', note: 'The square Black wants for a pawn and White wants for a bishop. The dark-squared bishop that would have contested it has been traded, and every dark-square problem in the line follows from that.' },
+      ],
+      routes: [
+        'Bc1-f4-e5, the double attack that makes ...Nxd4 unplayable',
+        'Nc3-b5 against c7 once the black queen has committed herself to d4',
+        'Qd1-d2 with O-O-O, White’s standard arrangement behind the poisoned pawn',
+      ],
+      traps: [
+        '7...Nxd4. 8.Be5 attacks the knight and g7 together, and behind g7 is the rook on h8 — the knight has no square that answers both.',
+        '7...Qxd4. 8.Nb5 hits the queen while c7 is attacked twice, and the queen trade is no escape: 8...Qxd1+ 9.Rxd1 puts the rook on the file that covers the king’s flight squares, and 9...Nge7 10.Nxc7+ Kf8 11.Nxa8 wins the exchange.',
+        'Defending e4 with ...f5. It keeps a pawn and concedes the dark squares permanently, which in a position where Black has already parted with the bishop that guards them is not a trade at all.',
+        'Grabbing back on e4 too early as White. 7.Nxe4 Qxd4 8.Qxd4 Nxd4 restores material and takes the queens off, which suits the side who is behind in development.',
+      ],
+      sources: [
+        'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 2',
+        'Play 1.e4 with Purpose',
+        'The Principled and Practical 1.e4',
+        'Lifetime Repertoires: The French Defence',
+      ],
+    },
+  },
   {
     eco: 'C18',
     name: 'French Defence: Winawer Variation, Advance Variation',
@@ -9717,69 +9921,40 @@ export const CURATED_OPENINGS: Opening[] = [
     moves: line('e4 e6 d4 d5 Nc3 Bb4 e5 c5 a3 Bxc3+ bxc3 Ne7'),
     character: 'sharp',
     minRating: 1800,
-    theory: {
-      idea: 'The tabiya of the variation, and the clearest statement of the bargain it rests on: White has the two bishops and a pawn chain that owns the centre and points at the kingside, and in exchange his queenside pawns are damaged for the rest of the game. The c3 pawn cannot be defended by another pawn and it is the prop under d4, so Black’s whole position points at it. 6...Ne7 rather than ...Nc6 is deliberate — the knight keeps g7 guarded so that Qg4 does not simply win a pawn, it leaves the c-file clear for the queenside play, and from e7 it reaches f5 in one move to add a third attacker to d4. The other permanent feature is that Black’s king does not go to g8. Castling short walks straight into the attack the pawn chain is built for, so the standard scheme is ...Qc7 or ...Qa5, ...Nbc6, ...Bd7 and long castling, or leaving the king in the centre while both wings burn.',
-      structures: ['french-chain'],
-      whitePlans: [
-        '7.Qg4, the principal test: it hits g7 before Black is organised and forces an immediate decision. Black either defends with ...Nf5, which puts the knight somewhere it is easy to attack, or gives both kingside pawns up with ...Qc7 and plays for the centre and the exposed white king.',
-        '7.h4, the modern choice, which keeps Qg4 in reserve. h4-h5 forces ...h6, and after that the rook has h4 and the kingside breakthrough acquires its point.',
-        '7.a4, prophylaxis against both black plans at once: ...b6 is met by Bb5+, and Ba3 hits the squares a black king on the queenside needs.',
-        '7.Nf3, the Rauzer: sound development and a slow squeeze. It is the line Black is happiest to see, because White gives up Qg4 and the Nh3-f4-h5 route and commits to the slow plan.',
-        'The long-term kingside break with f4, g4 and f5-f6, which is only worth having once ...h6 has been forced.',
-      ],
-      blackPlans: [
-        'Attack d4 with ...Nbc6, ...Qc7 or ...Qa5 and ...Nf5. It is the base of the chain and no pawn can be brought to defend it.',
-        'Solve the bad bishop with ...b6 and ...Ba6, trading off the piece the French normally leaves buried behind e6.',
-        'Close the queenside with ...c4, castle long and prepare ...f6. This gives up the pressure on d4, so it belongs together with the kingside break rather than instead of it.',
-        'Reach an endgame. The doubled c-pawns and the pawn on a3 do not improve, and White’s compensation is entirely dynamic.',
-      ],
-      breaks: [
-        {
-          move: 'f6',
-          side: 'black',
-          note: 'The break the ...c4 and long-castling scheme exists to prepare. It is at its best with the h-pawns still at home: exf6 gxf6 then leaves Black covering g6 with no weak h6 pawn to defend, which is precisely what h4-h5 is played to change.',
-          prerequisites: ['The king has left the centre, normally to the queenside', 'White has not already forced ...h6'],
-        },
-        {
-          move: 'c4',
-          side: 'black',
-          note: 'Closes the queenside and fixes c2 and c3 as permanent targets. It is a commitment rather than a free move — d4 stops being under pressure the moment it is played.',
-          prerequisites: ['A plan for the other wing, because the queenside will produce nothing further by itself'],
-        },
-        {
-          move: 'h5',
-          side: 'white',
-          note: 'The modern space-gainer. Black has to reply ...h6, since letting the pawn reach h6 concedes f6 and g7 for good, and the pawn on h6 is then the hook everything else aims at.',
-        },
-        {
-          move: 'f5',
-          side: 'white',
-          note: 'The breakthrough the kingside pawns are aiming for; f6 after it leaves Black with holes wherever the g-pawn recaptures.',
-          prerequisites: ['...h6 has been forced', 'f4 and g4 are already in place'],
-        },
-      ],
-      keySquares: [
-        { square: 'c3', note: 'The target the whole black position is aimed at. It cannot be defended by a pawn and it is the prop under d4.' },
-        { square: 'd4', note: 'The base of White’s chain. ...c5, ...Nc6, ...Qa5 and ...Nf5 all press on it, and the moment it falls the e5 wedge goes with it.' },
-        { square: 'f5', note: 'The e7 knight’s square: from there it attacks d4 and stands in the way of the pawn storm.' },
-        { square: 'c4', note: 'Once ...b6 and ...Ba6 have traded the light-squared bishops, the light squares in front of White’s damaged queenside have no defender left.' },
-        { square: 'g7', note: 'The pawn Qg4 attacks on move seven. Defending it, giving it up or moving the king is the first real decision of the variation.' },
-      ],
-      traps: [
-        'Castling short is not a small inaccuracy but a losing plan. Against h4 in particular the attack is free, and the natural relief ...f6 only opens the position for the two bishops: after exf6 Black has nothing on the dark squares and e5 in particular.',
-        '7.Nh3 is not a beginner’s move. The knight is heading for f4 and h5, and it is aimed exactly at the ...b6 and ...c4 set-ups, which leave d4 unchallenged and give White the time for it.',
-      ],
-      sources: [
-        'Lifetime Repertoires: The French Defence',
-        'Lifetime Repertoires: Gajewski’s 1.e4 — Part 2',
-        'Lifetime Repertoires: Sethuraman’s 1.e4 — Part 2',
-        'Wesley So’s 1.e4 — Part 2',
-        'The Energetic 1.e4 — Part 1',
-        'Understanding Chess Openings: 1.e4 — Part 1',
-        'Garry Kasparov — My Great Predecessors, Volume 5',
-        'Yasser Seirawan — Winning Chess Openings',
-      ],
-    },
+    theory: WINAWER_MAIN_LINE,
+  },
+  {
+    // The ...Ne7-before-...c5 order reaches the main-line tabiya, but theory is
+    // inherited along the move sequence, so without this address it falls back
+    // on the Winawer root six plies up. One position, one set of ideas.
+    eco: 'C19',
+    name: 'French Defence: Winawer, Main Line',
+    moves: line('e4 e6 d4 d5 Nc3 Bb4 e5 Ne7 a3 Bxc3+ bxc3 c5'),
+    character: 'sharp',
+    minRating: 1800,
+    theory: WINAWER_MAIN_LINE,
+  },
+  /**
+   * 7.a4, the Smyslov Variation — a move about a single square, and about a
+   * diagonal that only opens if Black obliges. It is written from the
+   * geometry: a3-b4-c5 is blocked by the pawn Black has no reason to move.
+   */
+  {
+    eco: 'C19',
+    name: 'French Defence: Winawer Variation, Advance Variation, Smyslov Variation',
+    moves: line('e4 e6 d4 d5 Nc3 Bb4 e5 Ne7 a3 Bxc3+ bxc3 c5 a4'),
+    character: 'sharp',
+    minRating: 1800,
+    theory: WINAWER_SMYSLOV,
+  },
+  {
+    // The ...c5-first order, which is how most games arrive.
+    eco: 'C19',
+    name: 'French Defence: Winawer Variation, Advance Variation, Smyslov Variation',
+    moves: line('e4 e6 d4 d5 Nc3 Bb4 e5 c5 a3 Bxc3+ bxc3 Ne7 a4'),
+    character: 'sharp',
+    minRating: 1800,
+    theory: WINAWER_SMYSLOV,
   },
   {
     eco: 'C10',
