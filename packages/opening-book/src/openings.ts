@@ -11474,6 +11474,81 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: TORRE_VS_D5,
   },
   {
+    // The ...e6 Torre, which is a different opening from the ...d5 one the
+    // entries above cover: with the d-pawn still at home White can play for
+    // e2-e4, and that possibility is what the whole variation turns on.
+    eco: 'A46',
+    name: 'Torre Attack: Classical Defence',
+    moves: line('d4 Nf6 Nf3 e6 Bg5'),
+    character: 'system',
+    minRating: 1300,
+    aliases: ['Torre Attack against 2...e6', 'Torre with 3.Bg5'],
+    theory: {
+      idea: 'Against 2...d5 the Torre is a system: e3, Bd3, c3, Nbd2 and castle, with the bishop outside the chain and nothing much to decide. Against 2...e6 it is not, because Black has not yet blocked the centre and White therefore has a real second option — e2-e4 in one move, with a full centre. That is what the pin buys and it is also what it is aimed at: the immediate 3...b6 walks into 4.e4, so a Queen’s Indian player cannot simply play his opening, and the choice of third move is forced to be a genuine choice. It follows that White’s fourth move is the crossroads rather than a formality. Nbd2 keeps both plans alive and threatens e4; e3 abandons one of them, and with it the reason for ever taking on f6, since the point of the trade is to gain a tempo for the advance. Black’s most testing reply is 3...h6, which is not a loss of time: the bishop has to declare itself before Black does, and once it leaves the c1-h6 diagonal it can never come back to that side of the board. If White answers with Bxf6, the exchange gives Black the bishop pair and an intact, flexible structure in return for the big centre — a version of the Trompowsky position with 2.Bg5 e6 3.e4 h6 4.Bxf6 in which the knight on f3 has already occupied the square White needs for the f2-f4 advance, so the space-gaining plan that justifies it there does not exist here.',
+      structures: [],
+      whitePlans: [
+        'Keep e2-e4 in reserve and prepare it with Nbd2. This is the whole difference from the ...d5 Torre, and it is the reason the system move e3 is worth postponing: played too early it settles the game into the quiet version by choice rather than by necessity.',
+        'Trade on f6 to gain the tempo for e4. It is a real plan and not a concession, but only while the pawn is still on e2 — after e3 the exchange buys nothing and simply hands over the bishop pair.',
+        'Punish 3...b6 with 4.e4. It is the reason the bishop went to g5 rather than f4, and against a Queen’s Indian player it takes the opening away at the third move.',
+        'Fall back on the system when Black plays soundly: e3, Bd3, c3, Nbd2 and short castling, with a solid structure and the plans that go with it. It is a legitimate way to play for a game rather than for an opening advantage.',
+        'Meet 3...c5 with c3 rather than e3 if the pawn on d4 is the point. c3 holds the centre and keeps the tension; e3 concedes that ...cxd4 will be met by exd4, which opens the e-file and gives the position a different, more forcing character.',
+      ],
+      blackPlans: [
+        'Play 3...h6 first and make the bishop commit. Bh4 keeps the pin, so the kingside still costs a move to develop; Bxf6 gives up the pair. Either way the bishop is off the c1-h6 diagonal for good, and the squares it was covering there are Black’s for the rest of the game.',
+        'Take the bishop pair and keep the structure whole. After Bxf6 Qxf6 and e4 White has the centre and Black has two bishops with no weaknesses; the position is a long game in which the pawns can be arranged to suit the bishops, and the side with them should be happy to trade pieces, not pawns.',
+        'Hit d4 with ...c5 before deciding anything else. It asks White what he intends to do with the centre and makes him answer at a moment when the bishop on g5 is not defending d4.',
+        'Play ...Be7 and a normal set-up when a quiet game is wanted. It unpins by hand rather than by force and keeps ...d5 and ...c5 both available.',
+        'Do not play 3...b6 at once. The pin is aimed precisely at it, and the resulting big centre is the one line where White’s third move is objectively justified.',
+        'Treat 3...d5 as a transposition and not a solution. After 4.c4 the game leaves the Torre altogether and becomes a Queen’s Gambit line, which may be the last thing a Queen’s Indian player has prepared.',
+      ],
+      breaks: [
+        {
+          move: 'e4',
+          side: 'white',
+          note: 'The move that makes this version of the Torre worth playing. It needs either the knight on f6 removed or a piece supporting the push, which is what Nbd2 and the exchange on f6 are for.',
+          prerequisites: ['Nbd2 played, or the knight on f6 exchanged off', 'The pawn still on e2 — after e3 it is a two-move plan and no longer available'],
+        },
+        {
+          move: 'c5',
+          side: 'black',
+          note: 'The standard strike at the base of the centre, and the one that puts the question to White before he has settled his set-up. It is more awkward here than in the ...d5 lines because the bishop on g5 has stopped covering d4.',
+        },
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The solid release, which transposes out of the variation. Sound, but it lets White choose c4 and a completely different opening.',
+        },
+        {
+          move: 'e3',
+          side: 'white',
+          note: 'The system move, and a decision rather than a developing move: it settles for the quiet Torre and rules the e4 plan out. Its own point is that after ...cxd4 the recapture exd4 opens the e-file.',
+        },
+      ],
+      keySquares: [
+        { square: 'e4', note: 'The square that separates this line from the ...d5 Torre. Black’s d-pawn is not there yet, so the advance is available in one move, and every early decision on both sides is measured against it.' },
+        { square: 'f6', note: 'The knight the pin is aimed at. Removing it is what buys the tempo for e4; that is the only reason to give up the bishop, and White should be clear about which of the two he wants.' },
+        { square: 'f4', note: 'Where the bishop would like to end up in the quiet lines, and where ...h6 permanently stops it going. The whole value of the early ...h6 is that the retreat is one-way.' },
+        { square: 'd4', note: 'The pawn the bishop stopped defending when it went to g5. It is why ...c5 is the critical strike and why c3 rather than e3 is the reply when White means to keep the pawn where it is.' },
+      ],
+      routes: [
+        'Nb1-d2, the move that keeps e4 and the quiet system both on the table',
+        'Bg5-h4, keeping the pin at the price of a bishop that no longer sees the queenside',
+        'Bf1-d3 and c2-c3 behind e3, the system set-up White falls back on',
+      ],
+      traps: [
+        'Playing 3...b6 into the pin. 4.e4 follows and White has the centre he wanted, in the one version where Black cannot punish the third move.',
+        'Taking on f6 after e3 has been played. The exchange is only ever justified by the time it buys for e4, and that advance has already been given up; what is left is a bishop pair handed over for nothing.',
+        'Meeting 3...c5 with e3 while intending to keep the pawn on d4. The two ideas do not fit: after ...cxd4 the recapture has to be exd4, and a player who wanted the closed structure finds himself in an open one.',
+      ],
+      sources: [
+        'Lifetime Repertoires Nimzo & Bogo-Indian Defense',
+        'The Accelerated Queen’s Indian Defense — A Full Repertoire',
+        'The Amateur’s Mind',
+        'Garry Kasparov — My Great Predecessors, Volume 3',
+      ],
+    },
+  },
+  {
     eco: 'D02',
     name: 'London System',
     moves: line('d4 d5 Bf4'),
@@ -13522,6 +13597,87 @@ export const CURATED_OPENINGS: Opening[] = [
   { eco: 'A90', name: 'Dutch Defence: Stonewall, Modern Line', moves: line('d4 f5 c4 Nf6 g3 e6 Bg2 d5 Nf3 c6 O-O Bd6') },
   { eco: 'A20', name: 'English Opening: Reversed Sicilian', moves: line('c4 e5 Nc3 Nf6 Nf3 Nc6 g3 d5 cxd5 Nxd5') },
   { eco: 'A30', name: 'English Opening: Symmetrical, Hedgehog', moves: line('c4 c5 Nf3 Nf6 g3 b6 Bg2 Bb7 O-O e6') },
+  {
+    // The Ultra-Symmetrical tabiya. The classifier finds no structure here and
+    // that is correct — the pawns are still a mirror image — so structures
+    // stays empty rather than borrowing a mirrored match.
+    eco: 'A36',
+    name: 'English Opening: Symmetrical Variation, Ultra-Symmetrical Variation',
+    moves: line('c4 c5 g3 g6 Bg2 Bg7 Nc3 Nc6'),
+    character: 'positional',
+    minRating: 1500,
+    aliases: ['Ultra-Symmetrical English', 'Double Fianchetto Symmetrical English'],
+    theory: {
+      idea: 'Everything is mirrored except the move, and the move is the whole argument: whoever breaks the symmetry first has to be better off for having done it. Both sides have a bishop on the long diagonal and a knight on the queen’s bishop file, so the position reduces to a fight over one square each — d4 for White and d5 for Black — and every idea in the variation is about those two squares. The point most easily missed is why Black leaves the king’s knight at home. With the pawn on c5, the knight on c6 and the bishop on g7 all bearing on d4, White cannot break with d2-d4 at all, and the moment ...Nf6 is played the square is covered once less and the break becomes available with tempo; copying White move for move therefore loses the argument, because White gets to the centre first. So Black develops that knight to e7, or in some lines to h6 and f5, and keeps the d-pawn flexible until White has committed. White’s three tries are 5.Nf3 with d4 in reserve, 5.a3 preparing Rb1 and b4 — the reversed Dragon, played on the wing the extra tempo already points at — and 5.e3 with Nge2, which builds up for d4 without shutting in the bishop on g2. The variation has a reputation for being drawish and does not deserve it: the tabiya is a genuine crossroads where White is not yet pressing and Black has a wide choice, and the mistakes are made in choosing between the schemes rather than inside them.',
+      structures: [],
+      whitePlans: [
+        'Get d2-d4 in. It is the only way to break the symmetry in the centre, and the timing is everything: played while Black is still developing it opens the position for the better-mobilised side, and played a move late it is simply not available.',
+        'Play a3, Rb1 and b4 instead, and treat the position as a Dragon with colours reversed. This is at its best when Black has taken space with ...e5, since that move blunts his own bishop on g7 and leaves him behind in development on the wing where the pawns are coming.',
+        'Build with e3 and Nge2 rather than Nf3. The knight supports d4 from a square that does not block the long diagonal, and it keeps the option of f4 later; the price is a tempo and the fact that Black gets a free hand on the kingside.',
+        'Answer ...Bxc3 with bxc3, then play d4 and e4 and take a large centre. The doubled pawn is worth very little next to two centre pawns and a pair of bishops, and the exchange only makes sense for Black once White has committed a tempo to e3.',
+        'Use a3 as a waiting move as much as a preparation. It is useful in every plan White has, and it forces Black to declare a set-up first.',
+      ],
+      blackPlans: [
+        'Keep the knight on g8 while d4 still needs guarding. Three pieces cover the square as things stand, and ...Nf6 reduces it to two at the exact moment White wants to push — which is why the natural developing move is the one Black postpones.',
+        'The Fischer set-up: ...e6, ...Nge7 and ...O-O, with the d-pawn left uncommitted for d6 or d5 and the c8 bishop heading for b7. It concedes nothing on d5 and is the most direct attempt at equality; the practical difficulty is that it invites the immediate d4 before the knight reaches e7.',
+        'The ...e5 set-up, which hands White the d5 square in return for space and a plan to take it back. Black follows with ...Nge7, ...d6 and ...Be6, and the long-term aim is ...d5 in one move; White’s counter is to start on the queenside before that machinery is assembled.',
+        'Play ...d6 first when in doubt. It is the safest move here, it stops b2-b4 for a while, and it keeps every one of Black’s schemes available.',
+        'Kill the queenside plan outright with ...a5, or turn it round with ...a6 and ...b5. ...a5 concedes b5 and leaves d5 loose as well, and the whole judgement is that pieces can cover holes that pawns cannot reach.',
+        'Route the knight to f5 via h6 to stop d4 permanently — but play ...h5 first. Without it the bishop on g7 is the only defender of the knight on h6, and White’s central break works precisely by overloading it.',
+        'Meet the e3 and Nge2 schemes with ...h5. With no knight on f3 there is nothing to stop the pawn, and either it reaches h4 or White spends h4 himself; White’s best answer is the quiet h3, so that ...h4 can be met by g4.',
+      ],
+      breaks: [
+        {
+          move: 'd4',
+          side: 'white',
+          note: 'The break the whole variation is arranged around. It is not a move White can play whenever he likes: with three black units on the square it has to be timed for the moment one of them is diverted, most often when the king’s knight commits to f6.',
+          prerequisites: ['Black’s cover of d4 reduced — a knight on f6, or the g7 bishop otherwise occupied', 'Ready for both recaptures on d4, by pawn and by knight'],
+        },
+        {
+          move: 'b4',
+          side: 'white',
+          note: 'The reversed-Dragon break, and the reason a3 and Rb1 appear in a position where nothing seems to be happening. It gains queenside space against a bishop that is pointing the other way.',
+          prerequisites: ['a3 played, or a rook already on b1', '...a5 not yet in, or the pawn on a5 already exchanged'],
+        },
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The counterpart, and the justification for ...e5. It is worth two tempi of preparation — ...Nge7 and ...Be6 — because achieved in one move it settles the fight over the square for good; achieved in two it does not.',
+          prerequisites: ['...Nge7 and ...Be6 in place, so the square is covered more times than White attacks it'],
+        },
+        {
+          move: 'b5',
+          side: 'black',
+          note: 'The queenside counter, prepared by ...a6 and often by ...Rb8. It takes the initiative on the wing White intended to play on rather than merely stopping him.',
+          prerequisites: ['...a6 played, and the c-file pressure answered'],
+        },
+      ],
+      keySquares: [
+        { square: 'd4', note: 'Guarded three times at the start and attacked twice. Almost every early decision either side makes changes that count, and the count is what decides whether White’s central break exists.' },
+        { square: 'd5', note: 'The mirror image, and what ...e5 gives away. Black does not intend to concede it permanently: ...Nge7 and ...Be6 are the machinery for taking it back with a pawn.' },
+        { square: 'f5', note: 'Where a black knight would end the discussion about d4 for good, which is why the ...Nh6 route exists and why it has to be prepared with ...h5.' },
+        { square: 'b5', note: 'The hole ...a5 leaves. It is conceded knowingly: Black’s pieces can cover b5 and d5 together, and stopping b2-b4 permanently is judged the better bargain.' },
+        { square: 'e4', note: 'What the doubled pawns buy after bxc3. With d4 and e4 both in, the bishop pair and the extra centre pawn outweigh the structural damage, which is the reason ...Bxc3 is rarely right.' },
+      ],
+      routes: [
+        'Ng8-e7, the developing move that keeps d4 covered — and, in the ...e5 lines, the piece that prepares ...d5',
+        'Ng8-h6-f5, the sharper version of the same idea, playable once ...h5 has given the knight a second defender',
+        'Ra1-b1 behind a3, White’s standard preparation for the b4 advance',
+        'Ng1-e2 in the e3 set-ups, supporting d4 from a square that leaves the long diagonal open',
+      ],
+      traps: [
+        'Copying to the end. Mirroring White’s development with ...Nf6 hands over the tempo that matters: d4 becomes possible, White opens the centre first, and the extra move is finally worth something.',
+        'Taking on c3 without a reason. bxc3 followed by d4 and e4 gives White exactly the centre the whole variation is about denying him, and the bishop pair with it.',
+        'Starting ...a5 and then leaving the holes unattended. The move is sound only as part of a scheme in which pieces take over b5 and d5; played as a reflex against b4 it gives White two permanent squares for nothing.',
+      ],
+      sources: [
+        'The Classical English — GM Danyyil Dvirnyy',
+        'Lifetime Repertoires Neo-Catalan, Part 2',
+        'Lifetime Repertoires Nimzo & Bogo-Indian Defense',
+        'Anish Giri’s Complete Benko Gambit',
+      ],
+    },
+  },
 
   {
     eco: 'B10',
