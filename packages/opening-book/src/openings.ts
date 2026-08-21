@@ -13615,7 +13615,7 @@ export const CURATED_OPENINGS: Opening[] = [
     forSide: 'black',
     minRating: 1700,
     theory: {
-      idea: 'Black hands White the centre and then treats it as a target rather than an asset. That much is familiar; the mechanism underneath is the part worth knowing. Pawns on d4 and e4 together cover every important square in the middle of the board, and the moment either one steps forward it gains space and gives away a square or a diagonal — so Black’s real aim is not to capture the centre but to provoke it into moving. Everything he plays serves that: ...Bg7 on the long diagonal, ...c5 against the base, ...Nc6 and ...Qa5 adding weight, ...Bg4 pinning whatever defends d4. White’s side of the bargain is Steinitz’s rule in its clearest form — he holds an advantage that has to be used actively or it decays, and the activity is what creates the weaknesses Black’s counterattack feeds on. If the centre survives, Black is left with no space and no play; if it falls, Black also has the better structure, because the Exchange Variation leaves White with a doubled c-pawn and Black with a healthy queenside majority for the endgame. White’s fourth move chooses which of those two games is played.',
+      idea: 'Black hands White the centre and then treats it as a target rather than an asset. That much is familiar; the mechanism underneath is the part worth knowing. Pawns on d4 and e4 together cover every important square in the middle of the board, and the moment either one steps forward it gains space and gives away a square or a diagonal — so Black’s real aim is not to capture the centre but to provoke it into moving. Everything he plays serves that: ...Bg7 on the long diagonal, ...c5 against the base, ...Nc6 and ...Qa5 adding weight, ...Bg4 pinning whatever defends d4. White’s side of the bargain is Steinitz’s rule in its clearest form — he holds an advantage that has to be used actively or it decays, and the activity is what creates the weaknesses Black’s counterattack feeds on. If the centre survives, Black is left with no space and no play; if it falls, Black also has the better structure, because the Exchange Variation splits White’s queenside pawns onto a2 and c3, where no passed pawn can be made between them, and leaves Black with a healthy three-against-two for the endgame. White’s fourth move chooses which of those two games is played.',
       structures: [],
       whitePlans: [
         'Take on d5 and build the classical centre with e4 — the main line, and the most honest reply. White gets the ideal pawn pair on d4 and e4 at the price of doubled c-pawns and the target they make.',
@@ -13628,7 +13628,7 @@ export const CURATED_OPENINGS: Opening[] = [
         'Play ...c5 as early as the position allows, and ...Qa5 if the pawn is taken. Against every white fourth move this is the first thing to check, because the whole defence depends on getting at d4 before the centre is reinforced.',
         'Add ...Nc6 and ...Bg4 to the attack on d4. The pin matters because the piece defending d4 is usually a knight, and it is why White so often prefers Ne2 to Nf3.',
         'Provoke d4-d5 or e4-e5. Neither push is bad for White in itself, but each surrenders squares — d5 opens the long diagonal that was blocked, and e5 hands over d5 and the light squares — and Black’s pieces are already placed to use whichever appears.',
-        'Trade into the endgame. With White’s doubled c-pawn against a clean three-against-two on the queenside, the simplification Black cannot get in the middlegame is worth a great deal once the queens come off.',
+        'Trade into the endgame. With White’s queenside cut down to a2 and c3 against a clean three-against-two, the simplification Black cannot get in the middlegame is worth a great deal once the queens come off.',
         'Meet 4.Bg5 by leaving the d5 pawn where it is rather than defending it with the automatic ...Ne4. The modern treatment accepts that d5 may fall and counts on the time it costs White to take it.',
       ],
       breaks: [
@@ -13656,7 +13656,7 @@ export const CURATED_OPENINGS: Opening[] = [
       ],
       keySquares: [
         { square: 'd4', note: 'The base of the centre and the object of ...c5, ...Nc6, ...Bg4 and ...Qa5 alike. Whether it can be held without a concession decides the whole opening.' },
-        { square: 'c3', note: 'What the Exchange Variation costs. The doubled pawn is not weak while pieces are on but it is the reason Black’s queenside majority is worth more than White’s kingside one.' },
+        { square: 'c3', note: 'What the Exchange Variation costs. The pawn is not weak while pieces are on — it is what holds d4 — but it is cut off from the pawn on a2, which is why Black’s queenside majority is worth more than White’s kingside one.' },
         { square: 'e5', note: 'The square the 4.Bf4 systems fight for, and the square White gives up if he ever pushes his e-pawn past it.' },
         { square: 'a1-h8', note: 'The bishop on g7 is the opening. Everything White does about the centre is also a decision about that diagonal, and trading the bishop is one of his most reliable ways to an edge.' },
       ],
