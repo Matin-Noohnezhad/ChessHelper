@@ -3996,6 +3996,75 @@ const LENINGRAD_WARSAW: OpeningTheory = {
     ],
     };
 
+const KID_ORTHODOX_CROSSROADS: OpeningTheory = {
+    idea: 'White has finished developing without touching the centre, and the bishop stands on e2 for negative reasons: on d3 it would sit on the file its own pawn is blocking and on c4 it would be a target for the black knights, while on e2 it is out of the way of everything and still supports the squares the regrouping needs later. Nothing has been resolved, and that is the position’s content — the tension between d4 and e5 is the whole King’s Indian, and the side that resolves it chooses which of four games is played. Black asks the question with ...e5, and White has four answers, each a different opening. Castling keeps the tension and leads, after ...Nc6, to the position where d4-d5 comes with tempo and the Mar del Plata races begin. Be3 keeps the tension and the king’s options at the same time, and is answered by ...Ng4 questioning the bishop at once. d5 closes the centre a move early, which sounds like a concession of tempo and is not: the pawn arrives without hitting anything, so Black’s queen’s knight chooses its own route, and White’s king stays in the middle where the storm cannot reach it. dxe5 takes the queens off and leaves a dry position in which Black’s pawn on e5 blocks his own bishop and the d-file belongs to whoever occupies it first. Black’s alternatives to 6...e5 — ...Nbd7, ...Na6, ...c5, ...Bg4 — are all move-order arguments about seeing White’s answer before committing to the question, and each pays for the information: the queenless Exchange is toothless once a knight already stands on d7, and ...c5 is a different opening altogether, a Benoni after d5 or an endgame after dxc5.',
+    structures: ['kid-locked', 'benoni'],
+    whitePlans: [
+      'O-O and hold the tension. After ...Nc6 the advance d4-d5 gains a tempo on the knight and the position becomes the main line, with both sides attacking where their own pawn chain points.',
+      'Be3, the Gligoric move: develop, keep the tension and leave the king uncommitted. ...Ng4 is the standard reply and where the bishop goes from there — g5, c1 or d2 — is the whole variation.',
+      'd5 at once, the Petrosian: close the centre before Black’s knight has committed itself, delay castling, and squeeze on the queenside while the kingside attack has no address.',
+      'dxe5 and the queen trade, the Exchange: an early ending in which White’s targets are c7 and the d-file, and Black’s bishop on g7 is shut in by his own pawn. It is the least ambitious of the four and it wins games against players who only know how to attack.',
+      'Against 6...c5 choose the structure: d4-d5 gives a Benoni in which the extra tempi are White’s, and dxc5 leads to an endgame after the queens come off on d1.',
+      'Whichever branch is chosen, treat c4-c5 as the queenside lever and the d5 square as the reason the light-squared bishop stays modest — it does its work from e2 and later from g4 or h5, not from an exposed square in the centre.',
+    ],
+    blackPlans: [
+      '...e5, the move the whole set-up is built around: it attacks d4, and whatever White does about the attack determines the game. Nothing else Black plays here has that property.',
+      '...Nbd7 first, a move order rather than a variation. It keeps ...e5 in reserve for one move, sidesteps the seventh-move alternatives and takes the sting out of the queenless Exchange, because a knight already on d7 makes ...c6 and the ending comfortable.',
+      '...Na6, developing towards c5 where the knight hits e4, blocks the c4-c5 advance and cannot be chased once ...a5 has taken b4 away.',
+      '...c5, changing openings: a Modern Benoni with White’s bishop already committed to e2 after d4-d5, or a queenless middlegame after dxc5.',
+      '...Bg4, spending a move to pin the piece that defends d4 before adding ...Nc6 and ...e5 to the pressure.',
+      'Once the centre closes, everything goes to the kingside: the f6 knight steps aside, ...f5 follows, and the pawn on e5 becomes the head of a chain aimed at White’s king.',
+    ],
+    breaks: [
+      {
+        move: 'e5',
+        side: 'black',
+        note: 'The question the whole variation asks. It is not a break in search of an open file but a provocation: each of White’s four replies concedes something, and Black’s preparation is really preparation for four different games.',
+      },
+      {
+        move: 'f5',
+        side: 'black',
+        note: 'The follow-up once the centre is closed, and the reason the knight leaves f6 rather than developing. It opens the f-file at White’s king and it is why Black is content to be squeezed on the other wing.',
+        prerequisites: ['The centre is locked, so White cannot answer in the middle', 'The f6 knight has moved and the g7 bishop has a diagonal or a future one'],
+      },
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'The other sixth move, and a different opening rather than a different move order — a Benoni structure after d4-d5, and a queenless game after dxc5.',
+      },
+      {
+        move: 'd5',
+        side: 'white',
+        note: 'Closing the centre. Played here it arrives without gaining time, which is the Petrosian’s point and its cost at the same time: no tempo, but the black knight is not driven to a square White has chosen for it.',
+      },
+      {
+        move: 'c5',
+        side: 'white',
+        note: 'The queenside lever in every closed version. It opens the c-file and the b6 and d6 squares, and the race it starts is measured against Black’s ...f5 to the move.',
+        prerequisites: ['The centre is locked', 'b2-b4 prepared, or ...a5 has not already taken the square away'],
+      },
+    ],
+    keySquares: [
+      { square: 'd4', note: 'What ...e5 attacks and what everything else defends. Resolving the tension is a decision, not a move, and it belongs to whoever is willing to make it.' },
+      { square: 'e5', note: 'A strong point for Black once the centre closes and an obstruction the moment it does not: after dxe5 dxe5 the pawn stands in front of the bishop the defence exists for.' },
+      { square: 'c5', note: 'Where the queen’s knight wants to be in the ...Na6 and ...Nbd7 schemes — attacking e4 and standing in the way of White’s own advance.' },
+      { square: 'd5', note: 'The square White’s space advantage is built on and the outpost his pieces use in the queenless lines.' },
+    ],
+    routes: [
+      'Nb8-a6-c5, the route chosen when the knight would be hit by d4-d5 on c6',
+      'Nf6-e8 or Nf6-h5, clearing the f-pawn’s path once the centre is closed',
+    ],
+    traps: [
+      'In the Exchange, the pawn on e5 is not free: after 7.dxe5 dxe5 8.Qxd8 Rxd8 9.Nxe5 Nxe4 the knight on c3 is overloaded — 10.Nxe4 Bxe5 restores the material, because taking on e4 unguards the knight the bishop on g7 has been looking at all along.',
+    ],
+    sources: [
+      'Alex Colovic — The King’s Indian Defence Simplified',
+      'Lifetime Repertoires: King’s Indian Defense, Part 1',
+      'Garry Kasparov — My Great Predecessors, Volume 5',
+      'Lifetime Repertoires: Modern Réti — Part 2',
+    ],
+};
+
 const KID_MAR_DEL_PLATA: OpeningTheory = {
     idea: 'White closed the centre with d5 rather than resolve it, and from that moment the two sides are playing on different boards. Neither can make progress in the middle, so each attacks where his own pawn chain points: White’s runs c4-d5 and aims at the queenside, Black’s runs e5-d6 and aims at the king. The mechanism is the same for both — push the pawn beside the lead pawn to open a file for the rooks — which means c4-c5 for White and ...f7-f5 for Black, and everything either side does before those breaks is preparation for them. The knight retreat from f6 is therefore not a developing move but the act of clearing the f-pawn’s path, and 8...Ne7 is played rather than any other eighth move because the knight is needed on g6 or f5 to support the storm and because c6 is no longer a square worth having once d5 is fixed. The race is genuinely a race: White is usually faster, and Black’s attack is heavier, so counting tempi matters more here than in any other opening. Black is content to lose the entire queenside if the attack mates, and White’s side of the bargain — Korchnoi’s — is that Black is pushing the pawns that shelter his own king, so a repulsed attack leaves a bare king to be hunted. Engines have historically preferred White on space and been slow to see the danger, which is worth knowing before trusting an evaluation here.',
     structures: ['kid-locked'],
@@ -13228,74 +13297,17 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'balanced',
     minRating: 1600,
     aliases: ['King’s Indian Classical', 'King’s Indian sixth-move crossroads'],
-    theory: {
-      idea: 'White has finished developing without touching the centre, and the bishop stands on e2 for negative reasons: on d3 it would sit on the file its own pawn is blocking and on c4 it would be a target for the black knights, while on e2 it is out of the way of everything and still supports the squares the regrouping needs later. Nothing has been resolved, and that is the position’s content — the tension between d4 and e5 is the whole King’s Indian, and the side that resolves it chooses which of four games is played. Black asks the question with ...e5, and White has four answers, each a different opening. Castling keeps the tension and leads, after ...Nc6, to the position where d4-d5 comes with tempo and the Mar del Plata races begin. Be3 keeps the tension and the king’s options at the same time, and is answered by ...Ng4 questioning the bishop at once. d5 closes the centre a move early, which sounds like a concession of tempo and is not: the pawn arrives without hitting anything, so Black’s queen’s knight chooses its own route, and White’s king stays in the middle where the storm cannot reach it. dxe5 takes the queens off and leaves a dry position in which Black’s pawn on e5 blocks his own bishop and the d-file belongs to whoever occupies it first. Black’s alternatives to 6...e5 — ...Nbd7, ...Na6, ...c5, ...Bg4 — are all move-order arguments about seeing White’s answer before committing to the question, and each pays for the information: the queenless Exchange is toothless once a knight already stands on d7, and ...c5 is a different opening altogether, a Benoni after d5 or an endgame after dxc5.',
-      structures: ['kid-locked', 'benoni'],
-      whitePlans: [
-        'O-O and hold the tension. After ...Nc6 the advance d4-d5 gains a tempo on the knight and the position becomes the main line, with both sides attacking where their own pawn chain points.',
-        'Be3, the Gligoric move: develop, keep the tension and leave the king uncommitted. ...Ng4 is the standard reply and where the bishop goes from there — g5, c1 or d2 — is the whole variation.',
-        'd5 at once, the Petrosian: close the centre before Black’s knight has committed itself, delay castling, and squeeze on the queenside while the kingside attack has no address.',
-        'dxe5 and the queen trade, the Exchange: an early ending in which White’s targets are c7 and the d-file, and Black’s bishop on g7 is shut in by his own pawn. It is the least ambitious of the four and it wins games against players who only know how to attack.',
-        'Against 6...c5 choose the structure: d4-d5 gives a Benoni in which the extra tempi are White’s, and dxc5 leads to an endgame after the queens come off on d1.',
-        'Whichever branch is chosen, treat c4-c5 as the queenside lever and the d5 square as the reason the light-squared bishop stays modest — it does its work from e2 and later from g4 or h5, not from an exposed square in the centre.',
-      ],
-      blackPlans: [
-        '...e5, the move the whole set-up is built around: it attacks d4, and whatever White does about the attack determines the game. Nothing else Black plays here has that property.',
-        '...Nbd7 first, a move order rather than a variation. It keeps ...e5 in reserve for one move, sidesteps the seventh-move alternatives and takes the sting out of the queenless Exchange, because a knight already on d7 makes ...c6 and the ending comfortable.',
-        '...Na6, developing towards c5 where the knight hits e4, blocks the c4-c5 advance and cannot be chased once ...a5 has taken b4 away.',
-        '...c5, changing openings: a Modern Benoni with White’s bishop already committed to e2 after d4-d5, or a queenless middlegame after dxc5.',
-        '...Bg4, spending a move to pin the piece that defends d4 before adding ...Nc6 and ...e5 to the pressure.',
-        'Once the centre closes, everything goes to the kingside: the f6 knight steps aside, ...f5 follows, and the pawn on e5 becomes the head of a chain aimed at White’s king.',
-      ],
-      breaks: [
-        {
-          move: 'e5',
-          side: 'black',
-          note: 'The question the whole variation asks. It is not a break in search of an open file but a provocation: each of White’s four replies concedes something, and Black’s preparation is really preparation for four different games.',
-        },
-        {
-          move: 'f5',
-          side: 'black',
-          note: 'The follow-up once the centre is closed, and the reason the knight leaves f6 rather than developing. It opens the f-file at White’s king and it is why Black is content to be squeezed on the other wing.',
-          prerequisites: ['The centre is locked, so White cannot answer in the middle', 'The f6 knight has moved and the g7 bishop has a diagonal or a future one'],
-        },
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'The other sixth move, and a different opening rather than a different move order — a Benoni structure after d4-d5, and a queenless game after dxc5.',
-        },
-        {
-          move: 'd5',
-          side: 'white',
-          note: 'Closing the centre. Played here it arrives without gaining time, which is the Petrosian’s point and its cost at the same time: no tempo, but the black knight is not driven to a square White has chosen for it.',
-        },
-        {
-          move: 'c5',
-          side: 'white',
-          note: 'The queenside lever in every closed version. It opens the c-file and the b6 and d6 squares, and the race it starts is measured against Black’s ...f5 to the move.',
-          prerequisites: ['The centre is locked', 'b2-b4 prepared, or ...a5 has not already taken the square away'],
-        },
-      ],
-      keySquares: [
-        { square: 'd4', note: 'What ...e5 attacks and what everything else defends. Resolving the tension is a decision, not a move, and it belongs to whoever is willing to make it.' },
-        { square: 'e5', note: 'A strong point for Black once the centre closes and an obstruction the moment it does not: after dxe5 dxe5 the pawn stands in front of the bishop the defence exists for.' },
-        { square: 'c5', note: 'Where the queen’s knight wants to be in the ...Na6 and ...Nbd7 schemes — attacking e4 and standing in the way of White’s own advance.' },
-        { square: 'd5', note: 'The square White’s space advantage is built on and the outpost his pieces use in the queenless lines.' },
-      ],
-      routes: [
-        'Nb8-a6-c5, the route chosen when the knight would be hit by d4-d5 on c6',
-        'Nf6-e8 or Nf6-h5, clearing the f-pawn’s path once the centre is closed',
-      ],
-      traps: [
-        'In the Exchange, the pawn on e5 is not free: after 7.dxe5 dxe5 8.Qxd8 Rxd8 9.Nxe5 Nxe4 the knight on c3 is overloaded — 10.Nxe4 Bxe5 restores the material, because taking on e4 unguards the knight the bishop on g7 has been looking at all along.',
-      ],
-      sources: [
-        'Alex Colovic — The King’s Indian Defence Simplified',
-        'Lifetime Repertoires: King’s Indian Defense, Part 1',
-        'Garry Kasparov — My Great Predecessors, Volume 5',
-        'Lifetime Repertoires: Modern Réti — Part 2',
-      ],
-    },
+    theory: KID_ORTHODOX_CROSSROADS,
+  },
+  {
+    // The same position by the other Classical move order (6.Be2 O-O 7.Nf3),
+    // which the book would otherwise send back to the King’s Indian root.
+    eco: 'E73',
+    name: 'King’s Indian Defence: Normal Variation, Standard Development',
+    moves: line('d4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Be2 O-O Nf3'),
+    character: 'balanced',
+    minRating: 1600,
+    theory: KID_ORTHODOX_CROSSROADS,
   },
   {
     // d5 played before castling, which is what separates this from the Mar del
