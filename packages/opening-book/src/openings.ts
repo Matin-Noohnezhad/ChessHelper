@@ -4696,6 +4696,79 @@ const CARO_ADVANCE_BAYONET: OpeningTheory = {
   ],
 };
 
+/**
+ * The Hyperaccelerated Pterodactyl, or the Sniper — the one Sicilian in which
+ * Black does not take on d4. It arrives just as often by the Modern order
+ * 1.e4 g6 2.d4 Bg7 3.Nf3 c5, which had no address of its own, so both point
+ * here.
+ */
+const HYPERACCELERATED_PTERODACTYL: OpeningTheory = {
+  idea: 'This is the one Sicilian where Black leaves the pawn on c5, and everything about the variation follows from that. Two things are being kept alive. The first is a target: a bishop on g7 wants a pawn on d4 that is held by a piece rather than by another pawn, and taking on d4 immediately would let White recapture with the knight and settle the centre. The second is the check. With the a5-e1 diagonal clear, ...Qa5 arrives with tempo, and against a knight on c3 it arrives as a pin, so ...Bxc3+ follows and White’s queenside is wrecked — that mechanism, not the fianchetto, is what the opening is named for. Both of White’s good replies go after exactly those two resources rather than after the pawn. 4.dxc5 gives the pawn straight back but makes Black spend ...Qa5+ and ...Qxc5 to collect it, and the queen then stands on c5 where Be3 and b2-b4 come with time; nobody is trying to keep the extra pawn. 4.c3 is better still, and it is worth seeing as geometry rather than as a move. The pawn occupies the square Black’s queen would have to travel through, so ...Qa5 stops being a check and stops being a pin in the same instant, and dxc5 becomes a real threat that costs Black a pawn for nothing. The same pawn means that when ...cxd4 finally comes the recapture is cxd4, leaving White with pawns on d4 and e4 — the two-pawn centre that trading the c-pawn is meant to prevent. And it sits on the long diagonal with b2 behind it, so the piece the whole opening was arranged around is biting on granite. Black’s answer has to be ...d5 in the manner of an Alapin, because without it White simply has a bigger centre than a fianchetto is built to argue with.',
+  structures: [],
+  whitePlans: [
+    '4.c3, the improved Alapin, doing three things with one pawn: it blocks the diagonal Black’s queen check needs, it reserves the recapture cxd4 that keeps a two-pawn centre, and with b2 behind it it shuts the bishop on g7 out of the game.',
+    '4.dxc5 and give the pawn back on White’s terms. Black needs two queen moves to collect it, and the queen is then a target on c5 — the tempi matter, the pawn does not.',
+    '4.Nc3, the practical choice: once Black takes on d4 the game is an Accelerated Dragon or an ordinary Dragon, and no separate system has to be learned. The price is that ...Qa5 is available with the pin behind it.',
+    'Meet ...d5 with the Alapin’s own choice — e4-e5, keeping the chain and the space, or exd5, which keeps a pawn for as long as it can be held at the cost of doubling on the d-file.',
+    'Remember that the extra centre pawn is the whole gain. Every line where White ends up recapturing on d4 with a piece has given the position back to Black and made 2...g6 a good move.',
+  ],
+  blackPlans: [
+    'Keep the tension. The bishop on g7 needs a pawn on d4 that a piece is holding; releasing it early against c3 gives White the recapture he wants and the centre he wants with it.',
+    '...Qa5 against a knight on c3 — the move the opening is named for. It pins the knight to the king, ...Bxc3+ follows, and White is left with doubled pawns and an open diagonal pointing at them.',
+    '...d5 once White has committed to c3 and the pawns have come off on d4. It is the only way to argue with a two-pawn centre, and the whole variation depends on getting it in.',
+    'Develop as in a Modern rather than a Sicilian: ...Nc6, ...d6, ...Nf6 and pressure on d4 and e4, since the c-pawn is not going to be traded for the d-pawn in the usual way.',
+    'Where White grabs on c5, recover the pawn without losing the thread. ...Qa5+ and ...Qxc5 is the mechanical route, and the moves White gains hitting the queen are the real cost of the variation.',
+  ],
+  breaks: [
+    {
+      move: 'd5',
+      side: 'black',
+      note: 'The break the whole line comes down to. Against the c3 set-up it is the only way to challenge a centre the fianchetto cannot outgun, and it is played in the Alapin manner — as a strike at e4, not as a space-gaining advance.',
+      prerequisites: ['...cxd4 and cxd4 already exchanged, so d5 is not simply met by a pawn capture with support', 'A knight ready for f6 to recapture if White takes'],
+    },
+    {
+      move: 'e5',
+      side: 'white',
+      note: 'The Alapin answer to ...d5: keep the pawn chain, take the space, and leave Black with the bad bishop problem of a French while his good bishop stares at a wall on d4.',
+      prerequisites: ['...d5 played', 'd4 firmly held, since the chain has no other base'],
+    },
+    {
+      move: 'd5',
+      side: 'white',
+      note: 'Closing the centre at once. It takes the bishop on g7 out of the equation immediately, but it hands Black a Benoni-flavoured position with the queen check and ...Bxc3 still on the board, which is the game Black was hoping for.',
+    },
+    {
+      move: 'b4',
+      side: 'white',
+      note: 'The tempo move against a black queen that has come to a5 or c5. After c2-c3 it is supported, and it is the reason recovering the pawn on c5 costs more than it looks.',
+      prerequisites: ['c3 played so the pawn is defended', 'Black’s queen already committed to the a5-c5 area'],
+    },
+  ],
+  keySquares: [
+    { square: 'c3', note: 'Where the variation is decided. A white pawn there kills the check, kills the pin, prepares the recapture on d4 and blocks the g7 bishop; a white knight there is a target for both the pin and ...Bxc3+.' },
+    { square: 'd4', note: 'What the bishop on g7 was fianchettoed to hit. The only question in the whole opening is whether it ends up held by a pawn on c3 or by a piece.' },
+    { square: 'a5', note: 'The square Black’s queen is heading for, and the reason the c-pawn stays on c5 — with the diagonal open the queen arrives with check and with a pin behind it.' },
+    { square: 'e4', note: 'The pawn ...d5 is aimed at, and the one that makes White’s centre worth having. It is also why the fianchetto alone achieves nothing here: the bishop does not look at it.' },
+    { square: 'c5', note: 'A pawn Black is keeping on purpose. Handing it over to dxc5 is not a disaster, but reclaiming it takes two queen moves and White spends both of them developing with tempo.' },
+  ],
+  routes: [
+    'Qd8-a5 with ...Bg7xc3 behind it, the Pterodactyl mechanism — the pin comes first, the capture doubles the pawns, and the diagonal opens onto them',
+    'Ng8-f6 after ...d5 and exd5, the recapture that makes the central strike work without a second pawn move',
+  ],
+  traps: [
+    'Playing ...Qa5 by rote once White has answered with c3. The pawn is standing on the square the check has to cross, so it is neither check nor pin, and b2-b4 hits the queen with the pawn on c3 defending.',
+    'Answering 4.c3 with an ordinary developing move. 5.dxc5 then takes a pawn with no check to recover it: ...Qa5 is met by b2-b4 with the pawn on c3 holding the advance, and the slow routes back cost more than the pawn is worth.',
+    'Treating 4.dxc5 as a pawn grab to be punished. White has no intention of holding it — the point is the two moves Black spends on ...Qa5+ and ...Qxc5, and the further ones spent moving the queen again when Be3 and b4 arrive.',
+    'Reaching this position through the Modern order and then playing it as a Modern. The pawn has already gone to c5, so the game is a fight about d4 from the first move rather than the slow ...d6 and ...Nd7 build-up the Modern is usually played for.',
+  ],
+  sources: [
+    'Yuriy Krykun — Lifetime Repertoires: 1.e4 — Part 2',
+    'The Energetic 1.e4 — Part 3',
+    'The Open Sicilian: A Champion’s Guide',
+    'The Principled and Practical 1.e4',
+  ],
+};
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -8594,6 +8667,28 @@ export const CURATED_OPENINGS: Opening[] = [
         'The Principled and Practical 1.e4',
       ],
     },
+  },
+
+  {
+    eco: 'B27',
+    name: 'Sicilian Defence: Hyperaccelerated Pterodactyl',
+    moves: line('e4 c5 Nf3 g6 d4 Bg7'),
+    character: 'sharp',
+    minRating: 1600,
+    aliases: ['Sniper Defence', 'Hyperaccelerated Dragon with 3...Bg7'],
+    theory: HYPERACCELERATED_PTERODACTYL,
+  },
+  {
+    // The Modern order, 1.e4 g6 2.d4 Bg7 3.Nf3 c5, which reaches the same
+    // position and had no address — it was being shown Modern Defence ideas
+    // for a game that is a fight about d4. One position, one set of ideas.
+    eco: 'B27',
+    name: 'Sicilian Defence: Hyperaccelerated Pterodactyl',
+    moves: line('e4 g6 d4 Bg7 Nf3 c5'),
+    character: 'sharp',
+    minRating: 1600,
+    aliases: ['Sniper Defence (Modern order)'],
+    theory: HYPERACCELERATED_PTERODACTYL,
   },
 
   // ---------------------------------------------------------------- French ---
