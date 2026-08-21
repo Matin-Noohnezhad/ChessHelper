@@ -4092,6 +4092,73 @@ const DRAGON_YUGOSLAV_BC4: OpeningTheory = {
       ],
     };
 
+const QGD_EXCHANGE_CARLSBAD: OpeningTheory = {
+    idea: 'The purest Carlsbad position and the classic minority-attack laboratory: each side has a pawn majority on the wing the other one’s king is not on, and the whole middlegame is about which majority gets moving first. But the opening phase is decided by something narrower — the bishop on c8. Taking on d5 has opened its diagonal, which is the one concession the exchange makes, so White’s next few moves are a race to shut it again: Bd3 and Qc2 both cover f5, and f3 answers ...Bg4. Black’s corresponding rule is ...c6 straight after the recapture, which props up d5 against the Bxf6 and Nxd5 trick and keeps the bishop’s options alive. If Black solves the bishop the position is comfortable; if he does not, he spends the game defending a structure with no counterplay in it.',
+    structures: ['carlsbad'],
+    whitePlans: [
+      'The minority attack: Rb1, a3, b4 and b5, sending two pawns against three so that bxc6 leaves a backward pawn on c6 sitting on a half-open file. It is the slowest winning attempt in the openings and one of the most reliable.',
+      'Develop the king’s knight to e2 rather than f3. It keeps f3 free for a later e4, guards c3 against a pin from b4, and leaves the g5 bishop’s retreat squares uncluttered.',
+      'Threaten Bxf6, giving Black doubled f-pawns. It is a positional threat rather than a move to hurry, and the fear of it shapes Black’s whole set-up.',
+      'Play Qc2 before e3, purely to take f5 away from the black bishop a move earlier — the move-order refinement the whole variation has drifted towards.',
+      'Attack on the kingside with Ne5, f3 and g4 when Black commits everything to the queenside. Having the majority there means the pawns as well as the pieces can join in.',
+    ],
+    blackPlans: [
+      'Play ...c6 at once, before anything else. It defends d5 so that Bxf6 followed by Nxd5 is no longer a resource, and everything else Black wants to do depends on d5 being secure.',
+      'Get the bishop out. ...Bf5 is the move the exchange on d5 was supposed to permit, and the race to play it before Bd3 and Qc2 is the opening’s central practical question.',
+      'Ask the question with ...h6 early. The pawn is not a weakness here and it stops h7 hanging to a bishop on d3, which is what otherwise makes the ...Nd7-f8-g6 regrouping impossible.',
+      'Meet the minority attack in one of three ways: ...a6 and ...b5 to stop it by force, ...c5 to change the structure before the weakness appears, or ...Re8, ...Nf8 and ...Ne6 to defend c6 with pieces from a distance.',
+      'Use the kingside majority with ...Ne4 and ...f5, which is the counterattack the structure entitles Black to and the reason the minority attack has to be conducted quickly.',
+    ],
+    breaks: [
+      {
+        move: 'b5',
+        side: 'white',
+        note: 'The minority attack. Two pawns advance against three so that the exchange on c6 leaves a pawn that cannot be defended by another pawn, on a file White’s rooks already own.',
+        prerequisites: ['A rook on b1 and usually a3 first, so that ...a6 and ...b5 cannot simply blunt the advance', 'Black’s kingside counterplay with ...Ne4 and ...f5 is not already faster'],
+      },
+      {
+        move: 'f5',
+        side: 'black',
+        note: 'The kingside counter, using the majority the structure grants. It is the reason White cannot conduct the queenside plan at leisure.',
+        prerequisites: ['A knight established on e4, or the f6 knight otherwise safe from being traded on the way'],
+      },
+      {
+        move: 'c5',
+        side: 'black',
+        note: 'Freeing break that accepts an isolated d-pawn in exchange for open lines and an end to the minority attack — the weakness White was manufacturing no longer exists once the c-pawn has left.',
+      },
+      {
+        move: 'e4',
+        side: 'white',
+        note: 'The central alternative, prepared with f3 and Re1, which abandons the queenside plan entirely and makes the game about d5. It is why the knight is often better on e2 than f3.',
+      },
+    ],
+    keySquares: [
+      { square: 'f5', note: 'The square the whole opening race is about. It belongs to the black bishop if it arrives in time and to White’s Bd3 and Qc2 if it does not.' },
+      { square: 'c6', note: 'The weakness the minority attack is built to create. Everything Black does on the queenside is an attempt to make sure it never becomes backward on a half-open file.' },
+      { square: 'e4', note: 'Contested by both plans: a black knight there launches the kingside majority, and a white pawn there ends the discussion of d5.' },
+      { square: 'd5', note: 'Solid rather than weak, but it needs a pawn behind it. Without ...c6 the Bxf6 and Nxd5 sequence collects it.' },
+    ],
+    routes: [
+      'Ng1-e2-g3 or Ne2-f4, White’s alternative to f3 — it defends c3 and keeps the f-pawn free for e4.',
+      'Nb8-d7-f8-g6 or Nf8-e6, the defensive regrouping that covers c6 and the kingside at once, and which needs ...h6 first.',
+      'Ra1-b1 with a3 before b4, the standard order of the minority attack.',
+    ],
+    traps: [
+      'The Elephant Trap: after Bg5 Nbd7, capturing on d5 loses a piece to ...Nxd5, since Bxd8 is answered by ...Bb4+ and the bishop is recovered on the next move.',
+      'Developing the bishop with ...Bf5 before ...h6 and while White’s pawn is on e3 runs into Qf3, hitting the bishop along the file; after ...Bg6 White trades on f6 and then queens, and the resulting endgame with doubled f-pawns is solid but has nothing in it for Black.',
+      'The pin with ...Bb4 only works once White has committed the knight to f3. With the knight on e2 the c3 knight is defended and the pin achieves nothing.',
+      'Meeting the Exchange with a kingside fianchetto is a bad plan for White. e4 is unachievable — Black simply captures and leaves White with an isolated d-pawn — so the bishop on g2 stares at d5 for the rest of the game.',
+    ],
+    modelGames: ['Botvinnik – Keres, Moscow 1952'],
+    sources: [
+      'Adrien Demuth — The Solid Queen’s Gambit Declined',
+      'Anna Cramling’s 1.d4 — Part 1',
+      'Christof Sielecki — Keep It Simple for Black',
+      'David Vigorito — Vigorito’s Queen’s Gambit Declined',
+    ],
+};
+
 export const CURATED_OPENINGS: Opening[] = [
   // ---------------------------------------------------------------- 1.e4 ---
   {
@@ -10530,72 +10597,7 @@ export const CURATED_OPENINGS: Opening[] = [
     name: 'Queen’s Gambit Declined: Exchange Variation',
     moves: line('d4 d5 c4 e6 Nc3 Nf6 cxd5 exd5'),
     character: 'positional',
-    theory: {
-      idea: 'The purest Carlsbad position and the classic minority-attack laboratory: each side has a pawn majority on the wing the other one’s king is not on, and the whole middlegame is about which majority gets moving first. But the opening phase is decided by something narrower — the bishop on c8. Taking on d5 has opened its diagonal, which is the one concession the exchange makes, so White’s next few moves are a race to shut it again: Bd3 and Qc2 both cover f5, and f3 answers ...Bg4. Black’s corresponding rule is ...c6 straight after the recapture, which props up d5 against the Bxf6 and Nxd5 trick and keeps the bishop’s options alive. If Black solves the bishop the position is comfortable; if he does not, he spends the game defending a structure with no counterplay in it.',
-      structures: ['carlsbad'],
-      whitePlans: [
-        'The minority attack: Rb1, a3, b4 and b5, sending two pawns against three so that bxc6 leaves a backward pawn on c6 sitting on a half-open file. It is the slowest winning attempt in the openings and one of the most reliable.',
-        'Develop the king’s knight to e2 rather than f3. It keeps f3 free for a later e4, guards c3 against a pin from b4, and leaves the g5 bishop’s retreat squares uncluttered.',
-        'Threaten Bxf6, giving Black doubled f-pawns. It is a positional threat rather than a move to hurry, and the fear of it shapes Black’s whole set-up.',
-        'Play Qc2 before e3, purely to take f5 away from the black bishop a move earlier — the move-order refinement the whole variation has drifted towards.',
-        'Attack on the kingside with Ne5, f3 and g4 when Black commits everything to the queenside. Having the majority there means the pawns as well as the pieces can join in.',
-      ],
-      blackPlans: [
-        'Play ...c6 at once, before anything else. It defends d5 so that Bxf6 followed by Nxd5 is no longer a resource, and everything else Black wants to do depends on d5 being secure.',
-        'Get the bishop out. ...Bf5 is the move the exchange on d5 was supposed to permit, and the race to play it before Bd3 and Qc2 is the opening’s central practical question.',
-        'Ask the question with ...h6 early. The pawn is not a weakness here and it stops h7 hanging to a bishop on d3, which is what otherwise makes the ...Nd7-f8-g6 regrouping impossible.',
-        'Meet the minority attack in one of three ways: ...a6 and ...b5 to stop it by force, ...c5 to change the structure before the weakness appears, or ...Re8, ...Nf8 and ...Ne6 to defend c6 with pieces from a distance.',
-        'Use the kingside majority with ...Ne4 and ...f5, which is the counterattack the structure entitles Black to and the reason the minority attack has to be conducted quickly.',
-      ],
-      breaks: [
-        {
-          move: 'b5',
-          side: 'white',
-          note: 'The minority attack. Two pawns advance against three so that the exchange on c6 leaves a pawn that cannot be defended by another pawn, on a file White’s rooks already own.',
-          prerequisites: ['A rook on b1 and usually a3 first, so that ...a6 and ...b5 cannot simply blunt the advance', 'Black’s kingside counterplay with ...Ne4 and ...f5 is not already faster'],
-        },
-        {
-          move: 'f5',
-          side: 'black',
-          note: 'The kingside counter, using the majority the structure grants. It is the reason White cannot conduct the queenside plan at leisure.',
-          prerequisites: ['A knight established on e4, or the f6 knight otherwise safe from being traded on the way'],
-        },
-        {
-          move: 'c5',
-          side: 'black',
-          note: 'Freeing break that accepts an isolated d-pawn in exchange for open lines and an end to the minority attack — the weakness White was manufacturing no longer exists once the c-pawn has left.',
-        },
-        {
-          move: 'e4',
-          side: 'white',
-          note: 'The central alternative, prepared with f3 and Re1, which abandons the queenside plan entirely and makes the game about d5. It is why the knight is often better on e2 than f3.',
-        },
-      ],
-      keySquares: [
-        { square: 'f5', note: 'The square the whole opening race is about. It belongs to the black bishop if it arrives in time and to White’s Bd3 and Qc2 if it does not.' },
-        { square: 'c6', note: 'The weakness the minority attack is built to create. Everything Black does on the queenside is an attempt to make sure it never becomes backward on a half-open file.' },
-        { square: 'e4', note: 'Contested by both plans: a black knight there launches the kingside majority, and a white pawn there ends the discussion of d5.' },
-        { square: 'd5', note: 'Solid rather than weak, but it needs a pawn behind it. Without ...c6 the Bxf6 and Nxd5 sequence collects it.' },
-      ],
-      routes: [
-        'Ng1-e2-g3 or Ne2-f4, White’s alternative to f3 — it defends c3 and keeps the f-pawn free for e4.',
-        'Nb8-d7-f8-g6 or Nf8-e6, the defensive regrouping that covers c6 and the kingside at once, and which needs ...h6 first.',
-        'Ra1-b1 with a3 before b4, the standard order of the minority attack.',
-      ],
-      traps: [
-        'The Elephant Trap: after Bg5 Nbd7, capturing on d5 loses a piece to ...Nxd5, since Bxd8 is answered by ...Bb4+ and the bishop is recovered on the next move.',
-        'Developing the bishop with ...Bf5 before ...h6 and while White’s pawn is on e3 runs into Qf3, hitting the bishop along the file; after ...Bg6 White trades on f6 and then queens, and the resulting endgame with doubled f-pawns is solid but has nothing in it for Black.',
-        'The pin with ...Bb4 only works once White has committed the knight to f3. With the knight on e2 the c3 knight is defended and the pin achieves nothing.',
-        'Meeting the Exchange with a kingside fianchetto is a bad plan for White. e4 is unachievable — Black simply captures and leaves White with an isolated d-pawn — so the bishop on g2 stares at d5 for the rest of the game.',
-      ],
-      modelGames: ['Botvinnik – Keres, Moscow 1952'],
-      sources: [
-        'Adrien Demuth — The Solid Queen’s Gambit Declined',
-        'Anna Cramling’s 1.d4 — Part 1',
-        'Christof Sielecki — Keep It Simple for Black',
-        'David Vigorito — Vigorito’s Queen’s Gambit Declined',
-      ],
-    },
+    theory: QGD_EXCHANGE_CARLSBAD,
   },
   // Reached as often from 1.d4 Nf6 2.c4 e6 3.Nf3 d5 4.Nc3 as from the Queen's
   // Gambit move order, which is why it is filed by its Indian sequence.
@@ -13475,5 +13477,152 @@ export const CURATED_OPENINGS: Opening[] = [
         'Yasser Seirawan — Winning Chess Openings',
       ],
     },
+  },
+  {
+    eco: 'C82',
+    name: 'Ruy Lopez: Open, Dilworth Variation',
+    moves: line('e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4 d4 b5 Bb3 d5 dxe5 Be6 c3 Bc5 Nbd2 O-O Bc2 Nxf2'),
+    character: 'sharp',
+    minRating: 2000,
+    theory: {
+      idea: 'The Open Spanish is built around the knight on e4, and this is where Black cashes it in. Two minor pieces go for a rook and a pawn, which on a material count is close to level and misses the point entirely: the pieces Black gives up are already developed and the ones he leaves White with are not. After 12.Rxf2 Bxf2+ 13.Kxf2 the white king stands on f2, the rook on a1 and the bishop on c1 have yet to move, and the pawn on e5 that gave White his space is now something to attack rather than something to lean on. Black’s compensation is therefore time, and it has a shelf life. The move that gives it substance is ...f6, opening the f-file before White can untangle, and the move that answers it is 13.Nf1 — White declines to capture on f6, since taking there only opens lines for the pieces Black wants activated, and instead hands over a second pawn in order to develop, threatening Be3 to break the pin so that Black has to take the rook at once. Underneath the attack sits a permanent liability: the pawn on d5. If the initiative runs out, Black is left with a weak pawn and an inferior endgame, so the variation is a commitment rather than an option.',
+      structures: [],
+      whitePlans: [
+        '13.Nf1, the modern treatment. It develops, it prepares Be3 to break the pin on f2, and it accepts being two pawns down for the few moves it takes to bring the queenside out.',
+        'Decline the capture on f6. Taking there hurries Black’s development along and hands the f-file and the long diagonal to the pieces that are waiting for them; the pawn is worth less than the tempo.',
+        'Walk the king back to safety once the pin is resolved, and only then look for the extra material. Nothing about the position improves for White while the king stands on f2.',
+        'Aim at the pawn on d5 as the game simplifies. It is the one lasting weakness in Black’s position, and every trade that takes the sting out of the attack makes it more relevant.',
+        'Answer 11...Nxd2 instead of the sacrifice with 12.Qxd2, which is the reason Black takes on f2: the quiet recapture leaves White with the attacking chances on the kingside and a target on d5.',
+      ],
+      blackPlans: [
+        'Play ...f6 immediately. The whole idea is a race against White’s development, and the f-file is where the rook has to arrive before the queenside pieces do.',
+        'Keep the bishop on the a7-g1 diagonal while it costs White something, and take on f2 the moment Be3 is threatened. Choosing that moment is most of the technique in the line.',
+        'Advance the d-pawn when the chance appears. A pawn on d4 takes e3 away from White’s bishop, which is precisely the square the untangling plan needs.',
+        'Bring the queen to the kingside behind the rook rather than in front of it. The attack is worth something only while White’s king cannot reach g1 and the queenside pieces cannot come out.',
+        'Treat the d5 pawn as the price of the operation. If the pieces are traded and nothing has been achieved, the resulting endgame is worse, so the initiative has to be spent rather than banked.',
+      ],
+      breaks: [
+        {
+          move: 'f6',
+          side: 'black',
+          note: 'The follow-up that gives the sacrifice its meaning: it opens the f-file at White’s king and undermines the pawn on e5, and it has to arrive before Nf1 and Be3 are in.',
+          prerequisites: ['The rook already on f8, which castling has seen to', 'The bishop still on the a7-g1 diagonal, so that a capture on f2 keeps coming with check'],
+        },
+        {
+          move: 'd4',
+          side: 'black',
+          note: 'A quieter resource with the same purpose. The pawn takes e3 from the white bishop, so the pin on f2 cannot be broken the natural way, and it gets the weakest pawn in the position off a square where it can be attacked.',
+          prerequisites: ['The tactics on f2 already resolved, since the pawn is not defending anything while it moves'],
+        },
+      ],
+      keySquares: [
+        { square: 'f2', note: 'The address of the sacrifice and, for a long stretch of the game, of the white king. Everything Black does is aimed at keeping it uncomfortable.' },
+        { square: 'e3', note: 'The square White’s bishop needs in order to break the pin and untangle. Taking it away is worth more to Black than a pawn.' },
+        { square: 'e5', note: 'White’s extra pawn and the anchor of his position. It is what ...f6 is aimed at, and it is why capturing on f6 helps Black rather than White.' },
+        { square: 'd5', note: 'The pawn Black leaves behind. While the attack lasts it is irrelevant; the moment it stops, it decides the game.' },
+      ],
+      routes: [
+        'Nd2-f1-e3 for White, the untangling manoeuvre the whole defence is built on',
+        'Rf8 and the queen behind it on the f-file, the only way the two extra pawns are paid for',
+      ],
+      traps: [
+        'Taking on d2 rather than f2 is the safe-looking move and the losing idea: after 12.Qxd2 White has the kingside chances and Black is left defending d5 with nothing to show for it.',
+        '13.exf6 was played almost automatically for decades and is no longer trusted: 13...Bxf2+ 14.Kxf2 Qxf6 leaves Black comfortable, which is what moved practice to 13.Nf1.',
+        'Beginning with 11...Bxf2+ transposes after the exchanges on f2 and is not an independent line, so nothing is gained by changing the order.',
+        'Meeting 11.Bc2 with ...Bf5 is the old alternative and it is met by 12.Nb3, when White is simply better.',
+      ],
+      modelGames: ['Nakamura – Caruana, Candidates 2022', 'Firouzja – Abdusattorov, Tata Steel Masters 2024'],
+      sources: [
+        'Grand Ruy Lopez — Nils Grandelius',
+        'Ivan Cheparinov — Play the Ruy Lopez, Part 2',
+        'Grzegorz Gajewski — Lifetime Repertoires: 1.e4 — Part 1',
+        'Gustafsson’s Aggressive 1.e4 — Part 1',
+        'Garry Kasparov — My Great Predecessors, Volume 3',
+        'Understanding Chess Openings: 1.e4 — Part 2',
+      ],
+    },
+  },
+  {
+    // The moment of the exchange, one ply above the Carlsbad tabiya. The
+    // recapture ...exd5 reaches the position the Exchange Variation entry
+    // covers; ...Nxd5 is a different opening, so the crossroads is the content
+    // here rather than a second telling of the minority attack.
+    eco: 'D35',
+    name: 'Queen’s Gambit Declined: Exchange Variation',
+    moves: line('d4 Nf6 c4 e6 Nc3 d5 cxd5'),
+    character: 'positional',
+    minRating: 1600,
+    theory: {
+      idea: 'White can release the tension on d5 at four different moments and they are not the same move. This one is made with Black’s knight already committed to f6 and White’s king’s knight still at home, and that combination is what makes it the version Black least wants to face. Two things follow from it. Bg5 is available at once and arrives as a pin, which means the natural developing move ...Bf5 is unavailable — Bxf6 and Nxd5 would simply collect the d-pawn — so the bishop the exchange was supposed to liberate stays on c8 for several moves more. And with the g1 knight uncommitted, White keeps e2 for it, from where it defends c3 against a pin and leaves f3 free for a later e4. Exchanging earlier, before ...Nf6, or later, after Nf3, hands Black one of those two concessions back. Black’s reply is correspondingly a real decision rather than a formality. ...exd5 enters the Carlsbad and the minority attack, where the first rule is ...c6 immediately, propping up d5 so that the Bxf6 trick stops existing. ...Nxd5 declines that whole game: after e4 and the exchange on c3 White has the broad centre and Black plays against it with ...c5, which is the Semi-Tarrasch — a defence for a player who would rather attack an isolated white d-pawn than defend a backward black c-pawn.',
+      structures: ['carlsbad', 'iqp'],
+      whitePlans: [
+        'Take on d5 at this exact moment rather than earlier or later. The knight on f6 is committed and the knight on g1 is not, which is the whole argument for the Exchange Variation being played in this move order.',
+        'Follow with Bg5, the move the timing was chosen for. It pins the knight, keeps ...Bf5 off the board and puts a permanent positional threat of Bxf6 into the position.',
+        'Develop the king’s knight to e2, not f3. From e2 it guards c3, keeps the f-pawn free for f3 and e4, and does not block the queen’s route to c2.',
+        'Against the recapture with the knight, play e4 at once and take the big centre. Black has spent a tempo on a piece that is coming off, and the pawns on d4 and e4 are the compensation for the doubled c-pawns that follow.',
+        'After ...exd5, go for the minority attack with Rb1, a3 and b4-b5, which is the plan the structure was entered for.',
+      ],
+      blackPlans: [
+        'Recapture with the e-pawn and play ...c6 on the following move. The pawn on c6 is what makes d5 safe from the Bxf6 and Nxd5 sequence, and nothing else Black wants to do is possible until it is played.',
+        'Accept that ...Bf5 is not available in this version and aim instead for ...h6 to ask the bishop, ...Be7, and the regrouping with ...Nd7-f8-g6. The bishop finds work later, or is traded off a different way.',
+        'Recapture with the knight and change the opening. After ...Nxd5, ...Nxc3 and ...c5 the game is a Semi-Tarrasch, in which the target is White’s centre and the plan is to leave him with an isolated pawn on d4.',
+        'Use the kingside majority in the Carlsbad with ...Ne4 and ...f5. It is the counterplay the structure entitles Black to, and it is the reason White cannot conduct the queenside plan slowly.',
+        'Keep track of which knight White has committed. With a knight on f3 the ...Bf5 plans and the pin with ...Bb4 both work; with the knight on e2 neither does.',
+      ],
+      breaks: [
+        {
+          move: 'c5',
+          side: 'black',
+          note: 'The move that defines the alternative recapture: after ...Nxd5 and the trade on c3 it strikes at the head of White’s centre and is the whole point of the Semi-Tarrasch.',
+          prerequisites: ['The knight already exchanged on c3, or ...c5 merely invites the pawn front to advance past it'],
+        },
+        {
+          move: 'b5',
+          side: 'white',
+          note: 'The minority attack, and the reason White takes on d5 in the first place. Two pawns march at three so that the exchange on c6 leaves a pawn no pawn can defend, on a file White’s rooks already own.',
+          prerequisites: ['The Carlsbad structure reached, which means Black recaptured with the e-pawn', 'A rook on b1 and a3 first, so ...a6 and ...b5 cannot blunt the advance'],
+        },
+        {
+          move: 'e4',
+          side: 'white',
+          note: 'The central alternative to the queenside plan, and what the knight on e2 rather than f3 is for. Against the knight recapture it comes at once and with tempo.',
+        },
+      ],
+      keySquares: [
+        { square: 'd5', note: 'The square being handed over. Which unit ends up standing on it — a black pawn, a black knight, or nothing at all — is the entire content of Black’s next move.' },
+        { square: 'f5', note: 'Where Black’s bishop wants to go the moment the diagonal opens, and where this move order stops it going. The difference between the four possible exchange timings comes down to this square.' },
+        { square: 'e2', note: 'The square White’s remaining knight keeps by not having gone to f3. From there it covers c3, so the pin with ...Bb4 achieves nothing, and f3 stays free for the e4 advance.' },
+        { square: 'c6', note: 'Black’s support point immediately after ...exd5 and White’s target for the rest of the game. The whole minority attack exists to make it backward.' },
+      ],
+      routes: [
+        'Ng1-e2-g3 or Ne2-f4, the development the timing of the exchange preserves',
+        'Nb8-d7-f8-g6, Black’s regrouping in the Carlsbad once ...Bf5 has been ruled out',
+      ],
+      traps: [
+        'After ...exd5, developing with ...Bf5 before the d-pawn has support loses it: Bg5 is already there, and Bxf6 followed by Nxd5 wins the pawn outright, while recapturing on f6 with the g-pawn wrecks the structure instead.',
+        'Preparing the bishop with ...c6 and then playing ...Bf5 while White’s pawn is still on e2 runs into Qf3, and the trade on f6 that follows leads to an endgame with nothing in it for Black. The move works once White has committed the knight to f3, and not before.',
+        'Recapturing with the queen leaves it in the centre with White’s pieces coming out at it, and gives back the tempo Black spent developing the knight to f6.',
+      ],
+      sources: [
+        'Christof Sielecki — Keep It Simple for Black',
+        'Adrien Demuth — The Solid Queen’s Gambit Declined',
+        'Queen’s Gambit Declined According to Cheparinov — Part 1',
+        'Garry Kasparov — My Great Predecessors, Volume 2',
+        'Garry Kasparov — My Great Predecessors, Volume 4',
+        'Hammer’s Nimzo-Indian',
+      ],
+    },
+  },
+  {
+    // The Carlsbad by the Indian move order. The position after this recapture
+    // is the one the Exchange Variation entry above describes, but theory is
+    // inherited along move-sequence ancestry, so this route would otherwise
+    // have stopped at the crossroads entry one ply above. One position, one
+    // set of ideas.
+    eco: 'D35',
+    name: 'Queen’s Gambit Declined: Exchange Variation',
+    moves: line('d4 Nf6 c4 e6 Nc3 d5 cxd5 exd5'),
+    character: 'positional',
+    theory: QGD_EXCHANGE_CARLSBAD,
   },
 ];
