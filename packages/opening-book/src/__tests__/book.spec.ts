@@ -266,8 +266,11 @@ describe('the imported ECO tables', () => {
   });
 
   it('gives deep imported lines the theory of their curated ancestor', () => {
-    // A Najdorf sub-variation that exists only in the imported tables.
-    const deep = 'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6 Bg5 e6 f4 Qb6'.split(' ');
+    // A Najdorf sub-variation that exists only in the imported tables. This
+    // was the Poisoned Pawn until that line was given an entry of its own —
+    // the assertion is about inheritance, so it has to name a line that is
+    // still only in the tables. Move it again if the Polugaevsky is written.
+    const deep = 'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6 Bg5 e6 f4 b5'.split(' ');
     const match = identifyOpening(deep)!;
     expect(match.opening.theory).toBeUndefined();
     expect(match.theorySource?.name).toContain('Najdorf');

@@ -6820,6 +6820,81 @@ export const CURATED_OPENINGS: Opening[] = [
     theory: SICILIAN_NAJDORF,
   },
   {
+    // The pawn grab itself. The parent Najdorf entry warns the reader off
+    // entering it from memory; what it does not say is what the choice at move
+    // eight actually is, which is the useful part.
+    eco: 'B97',
+    name: 'Sicilian Defence: Najdorf Variation, Poisoned Pawn Variation',
+    moves: line('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6 Bg5 e6 f4 Qb6'),
+    character: 'sharp',
+    forSide: 'black',
+    minRating: 2000,
+    aliases: ['Poisoned Pawn Najdorf', 'Najdorf 7...Qb6'],
+    theory: {
+      idea: 'Both of White’s last two moves took a defender away from b2 — the bishop left c1 for g5, and the f-pawn advance means the only piece still looking that way is the queen on d1 — so the seventh move is not a bluff, and the pawn really can be taken. What Black buys with it is a pawn and a wrecked white queenside; what he pays is his entire development, since the queen then spends the middlegame in the corner while White castles long, plays f5 and e5 and opens lines at a king that has not moved. The reason the trade is playable rather than reckless is easy to overlook: b2 is also the pawn that shelters White’s own king once he castles queenside, so an attack that runs out of moves does not fizzle into equality, it leaves White simply worse. There is no middle ground and both sides know it, which is why 8.Qd2 Qxb2 9.Rb1 Qa3 has been analysed to a depth no one can hold in their head, and why the honest practical question is not whether Black is objectively fine — he is — but whether either player wants a memory contest. Strong repertoires on both sides duck it: several give up 6.Bg5 altogether, and White’s real decision on move eight is between the forcing main line and the quieter 8.Nb3, 8.a3 and 8.Qd3, which decline to give the pawn and leave a game of chess to be played instead.',
+      structures: ['scheveningen'],
+      whitePlans: [
+        'Offer the pawn with 8.Qd2 and take the tabiya after 8...Qxb2 9.Rb1 Qa3, then choose between 10.f5 and 10.e5. From here the game is on published rails for a long time; this is a line to know exactly or not to enter.',
+        'Decline with 8.Nb3, keeping the pawn. The knight also blocks the queen’s diagonal, so she has nothing left to do on b6 and goes back to c7 — two tempi for nothing — and White follows with Qd2 to provoke ...b5 and ...Bb7. The price is that the knight sits on b3 rather than d4, which most sources think suits Black.',
+        'Play 8.a3 as a useful waiting move, but not in combination with a later Qd2. After ...Nbd7 and ...Qxb2 the sortie Nb3 no longer traps the queen, because ...Nc5 saves her, and that resource exists only because a3 has been played.',
+        'Punish a declined pawn. If Black answers 8.Qd2 with 8...Nc6 rather than taking, Bxf6 gxf6 and Nb3 leaves a very comfortable Richter-Rauzer in which the queen on b6 has achieved nothing at all.',
+        'Attack the king in the centre with f5 and e5. Black cannot castle short into the open f-file and cannot castle long with the queenside gone, so the extra pawn is worth nothing to him while the lines are still opening.',
+      ],
+      blackPlans: [
+        'Take the pawn. It is not an option inside the variation but the variation itself — every other eighth move concedes that the queen sortie was a wasted tempo, and White gets a better version of an ordinary Najdorf.',
+        'Get the queen back into the game. a3 is a foothold rather than a home, and the whole middlegame consists of extracting her — usually with ...Nbd7, ...Be7 and ...h6 — without letting the extraction cost the material she went for.',
+        'Delay castling until the breaks have been answered. The king is often safest where it stands while f5 and e5 are still in the air, and committing it early is the most common way the defence collapses.',
+        'Play for the ending. Once the attack is contained, an extra pawn against a queenside that no longer exists is not a small advantage, and trading queens is usually the goal rather than a relief.',
+        'Know why this is not the same as 7...h6 8.Bh4 Qb6. With the bishop already on h4 White has the manoeuvre to f2, which hits the queen on b6 and gains time; after the immediate 7...Qb6 the bishop is on g5 and that resource does not exist.',
+      ],
+      breaks: [
+        {
+          move: 'f5',
+          side: 'white',
+          note: 'The standard lever against the small centre, aimed at e6. Here it is also a tempo-gaining move in a position where every tempo is the whole argument.',
+          prerequisites: ['The king already committed to the queenside, or the centre stable enough that opening it does not cut both ways'],
+        },
+        {
+          move: 'e5',
+          side: 'white',
+          note: 'The other break, hitting the knight on f6 while it is pinned to the queen. It opens the long diagonal and the e-file at a king that has not castled.',
+          prerequisites: ['The pin from g5 still in force, or a piece ready to occupy d5 and f5 once the pawn lands'],
+        },
+        {
+          move: 'b5',
+          side: 'black',
+          note: 'The Najdorf’s own counterplay, and awkward here because the queen has gone the other way. It is worth waiting for: ...b5 and ...Bb7 turn the wrecked queenside from a liability into a set of open lines pointing at White’s king.',
+          prerequisites: ['The queen extracted, or at least not in need of the b-file herself'],
+        },
+      ],
+      keySquares: [
+        { square: 'b2', note: 'The pawn the whole variation is named for, and the point missed most often: it is also White’s own king shelter after castling long, so winning it is a positional gain and not only a material one.' },
+        { square: 'a3', note: 'Where the queen goes after Rb1. It is not safety — it is the least bad square, and the rest of Black’s game is arranged around getting her off it.' },
+        { square: 'e6', note: 'The pawn f4-f5 is aimed at. Whether Black can hold it together decides whether the extra material ever gets to matter.' },
+        { square: 'd5', note: 'The hole in the small centre, and where White’s pieces land once the knight on f6 has been traded or driven off.' },
+        { square: 'b3', note: 'The square White uses to decline. A knight there keeps the pawn and shuts the black queen out of the game, at the cost of the far better post on d4.' },
+      ],
+      routes: [
+        'Qd8-b6xb2-a3, the journey that is the opening, and the reason Black’s pieces stay at home for so long',
+        'Nd4-b3 with Qd1-d2, White’s way of keeping the pawn and sending the black queen back to c7',
+        'Bg5-h4-f2 in the 7...h6 move order — the tempo-gaining manoeuvre that the immediate 7...Qb6 avoids',
+      ],
+      traps: [
+        'Declining with 8...Nc6. Bxf6 gxf6 and Nb3 reaches a pleasant Richter-Rauzer for White in which Black has spent a move putting his queen on a square she now has to leave.',
+        'Combining 8.a3 with a later Qd2. The two ideas do not fit: after ...Nbd7 and ...Qxb2 the trapping attempt Nb3 is answered by ...Nc5, and the pawn is simply gone.',
+        'Playing either side from general principles. This is the one Najdorf line where understanding does not substitute for preparation — a single move order taken in the wrong sequence loses on the spot, and both players are following the same published analysis until it does.',
+      ],
+      sources: [
+        'Understanding Chess Openings 1.e4, Part 3',
+        'Lifetime Repertoires: Sethuraman’s 1.e4, Part 2',
+        'Garry Kasparov — My Great Predecessors, Volume 2',
+        'Garry Kasparov — My Great Predecessors, Volume 3',
+        'The Energetic 1.e4, Part 2',
+        'The Principled and Practical 1.e4',
+      ],
+    },
+  },
+  {
     eco: 'B80',
     name: 'Sicilian Defence: Scheveningen Variation',
     moves: line('e4 c5 Nf3 e6 d4 cxd4 Nxd4 Nf6 Nc3 d6'),
