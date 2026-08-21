@@ -1274,23 +1274,57 @@ const CLOSED_SICILIAN_TRADITIONAL: OpeningTheory = {
  * which is theory about avoiding 3...Bb4 rather than about the g2 bishop.
  */
 const CATALAN_MAIN: OpeningTheory = {
-  idea: 'White combines the Queen’s Gambit with a kingside fianchetto. The g2 bishop pressures d5 and the long diagonal forever, and Black’s main problem is untangling the queenside without leaving the c4 pawn permanently in White’s hands. A grinding, low-risk, high-pressure opening.',
+  idea: 'A Queen’s Gambit in which White’s worst piece has been solved before it became a problem: the bishop goes to g2 and leans on d5 and the long diagonal for the rest of the game, and every Catalan question is a version of what to do about it. The cost is that the c4-pawn no longer has the f1-bishop behind it, so ...dxc4 is genuinely available and White is often a pawn down for a while. He does not hurry to recover it — Qa4, Qc2 or Ne5 will collect it eventually, and the moves Black spends holding on with ...a6 and ...b5 are moves not spent on ...c5. That is the whole trade: a pawn for time, pressure and a bishop that never gets worse. Black’s two freeing breaks are ...c5 and ...e5, and everything else he does is preparation for one of them.',
   structures: ['semi-slav-triangle'],
   whitePlans: [
-    'Recover the c4 pawn with Qa4, Qc2 or Ne5 and keep the bishop pressure.',
-    'Play e4 for a full central bind.',
-    'Squeeze on the queenside and in the endgame; the g2 bishop never gets worse.',
+    'Recover the pawn at leisure with Qa4, Qc2 or Ne5, treating the delay as the price of the initiative rather than as a risk.',
+    'Develop the queen’s knight to d2, not c3. On c3 it stops defending c4, which is the one pawn in the position that needs defending; Nc3 becomes correct once b3 has taken over that job, or in the lines where it covers b5 and so refutes ...b5 outright.',
+    'Meet ...b6 with Ne5. The point is to stop ...Bb7 arriving to contest the long diagonal, which is the only piece Black has that can neutralise the g2-bishop.',
+    'Play e4 for a full central bind, supporting it with Qd3 rather than Qc2 in the lines where ...dxc4 is a real possibility.',
+    'Undermine the queenside pawn chain with a4 when Black holds the pawn with ...b5, and grind: the endgames favour the side with the better bishop, and White’s is on g2.',
   ],
   blackPlans: [
-    'Hold c4 with ...dxc4 and ...b5, accepting a sharp fight.',
-    'Give it back for the ...c5 break and free play.',
-    'Neutralise the long diagonal with ...Bb7 and ...c6, or trade bishops with ...Ba6 and ...Bb4+.',
+    'Take on c4 and hold it with ...a6 and ...b5, accepting a sharp fight and using the tempi White spends recovering the pawn.',
+    'Take on c4 and give it straight back for ...c5, which is the equalising plan whenever it can be arranged in one move.',
+    'The Closed treatment with ...c6, which is not simply solidity: it means that when White exchanges on d5 Black can recapture with the c-pawn and keep a symmetrical structure, rather than being left with the hanging-pawn formations the Queen’s Indian versions produce.',
+    'Contest the long diagonal with ...Bb7, or trade the bishop’s opposite number off with ...Ba6 hitting c4 — the two ways of answering White’s best piece.',
+    'Check on b4 before White has committed the g1-knight. It gains a tempo, and in the version with the knight on d2 Black keeps the extra option of ...c5.',
   ],
   breaks: [
-    { move: 'c5', side: 'black', note: 'The main freeing break; the Catalan is comfortable for Black once it lands.' },
-    { move: 'e5', side: 'black', note: 'The alternative release, usually after ...Nbd7 and ...Re8.' },
-    { move: 'e4', side: 'white', note: 'The central advance that turns pressure into a bind.' },
-    { move: 'a4', side: 'white', note: 'Undermines ...b5 in the Open Catalan.' },
+    {
+      move: 'c5',
+      side: 'black',
+      note: 'The main freeing break. Once it lands the Catalan bishop has nothing left to press against and Black is comfortable; almost all of White’s play is aimed at delaying it by one more move.',
+      prerequisites: ['The queenside is developed, or the break costs a pawn on the c-file for nothing', 'It comes in one move — arranging it with ...c6 first hands White the tempo he was playing for'],
+    },
+    { move: 'e5', side: 'black', note: 'The other release, which also opens the c8-bishop’s original diagonal. It needs ...Nbd7 and ...Re8 and is usually unrealistic, because Ne5 and the g2-bishop cover the square so well.' },
+    {
+      move: 'b5',
+      side: 'black',
+      note: 'Holds the extra pawn instead of returning it, gaining time whenever the white queen has come to c4.',
+      prerequisites: ['A white knight is not on c3, where Nxb5 refutes the whole idea', '...a6 or ...c6 supports the advance, and in the ...a6 version the bishop waits before going to b7 so that a4 does not come with tempo'],
+    },
+    { move: 'e4', side: 'white', note: 'The advance that turns long-term pressure into a bind. It is prepared by Nbd2 or Nc3 and by the queen, and it is the reason White is happy to keep the position closed.' },
+    { move: 'a4', side: 'white', note: 'Undermines ...b5 in the Open Catalan; after ...b4 the queenside is fixed and White has squares, and after ...bxa4 the a-file opens against a pawn that cannot be defended by another pawn.' },
+  ],
+  keySquares: [
+    { square: 'd5', note: 'What the g2-bishop is aimed at through the whole game. Black’s pawn there is not weak, but keeping it defended costs the moves that ...c5 needs.' },
+    { square: 'c4', note: 'The pawn that makes the opening a real fight rather than a squeeze. Whether White recovers it in two moves or ten decides who has been using the time.' },
+    { square: 'e5', note: 'White’s outpost, from which the knight both stops ...Bb7 and covers the ...e5 break. Black rarely gets to occupy it and mostly plays to make it irrelevant.' },
+    { square: 'b7', note: 'The square Black’s light-squared bishop must reach to have an opinion about the long diagonal, and the square White’s Ne5 is played to deny it.' },
+  ],
+  routes: ['Nb1-d2, keeping c4 defended, and on to b3 or f3', 'Nf3-e5, the anti-...Bb7 manoeuvre', 'Bc8-a6 hitting c4, or Bc8-b7 after ...a6 or ...c6'],
+  traps: [
+    'In the Closed Catalan with a white knight on c3, grabbing with ...dxc4 and trying to hold it by ...b5 loses material: Ne5 hits the pawn again and Nxb5 is available because the knight on c3 covers the square. The same pawn grab is entirely playable when the knight is still on b1 or on d2.',
+    'Developing the bishop to b7 before ...a6 in the Open Catalan invites a4, when the queenside pawn Black is trying to advance is hit before it has support.',
+  ],
+  sources: [
+    'Srinath Narayanan — Lifetime Repertoires: The Catalan',
+    'Alvar Alonso — Lifetime Repertoires: Catalan',
+    'Christof Sielecki — Keep it Simple 1.d4',
+    'Arkadij Naiditsch — Nimzo-Bogo Indian',
+    'Converting an Extra Pawn in Chess',
+    'Yasser Seirawan — Winning Chess Openings',
   ],
 };
 
