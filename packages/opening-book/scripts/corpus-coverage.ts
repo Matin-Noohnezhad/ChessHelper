@@ -28,6 +28,7 @@
  *   --min-gap <n>     plies below the theory source before a node is "thin" (default: 4)
  *   --min-prose <n>   drop rows with fewer *distinct* passages than this (default: 0)
  *   --min-sources <n> drop worklist rows backed by fewer courses than this (default: 0)
+ *   --by-subtree      rank on material *below* the node instead of at it
  *   --top <n>         rows to print per list (default: 40)
  */
 
@@ -48,6 +49,15 @@ interface Options {
   minProse: number;
   /** Floor on how many separate courses back it — corroboration, not volume. */
   minSources: number;
+  /**
+   * Rank on the material below a node rather than on it. A junction like the
+   * Open Sicilian attracts almost no prose of its own — every course writes
+   * about the variations underneath — so it never clears `--min-prose` and
+   * never appears, while thousands of passages sit below it and the node
+   * itself shows the plans of `1.e4 c5`. Three such gaps were found by hand
+   * before this existed.
+   */
+  bySubtree: boolean;
   top: number;
 }
 
@@ -58,10 +68,16 @@ function parseArgs(argv: string[]): Options {
     minGap: 4,
     minProse: 0,
     minSources: 0,
+    bySubtree: false,
     top: 40,
   };
   for (let i = 0; i < argv.length; i += 2) {
     const value = argv[i + 1];
+    if (argv[i] === '--by-subtree') {
+      options.bySubtree = true;
+      i -= 1; // a flag, not a pair
+      continue;
+    }
     switch (argv[i]) {
       case '--corpus':
         options.corpus = resolve(value!);
@@ -370,6 +386,7 @@ async function main(): Promise<void> {
     (n) =>
       !UNWRITABLE.has(n.opening.moves.join(' ')) &&
       !coveredPositions.has(n.key) &&
+      (!options.bySubtree || n.subtreeSubstantial >= 500) &&
       n.gap >= options.minGap &&
       n.distinct.size >= Math.max(1, options.minProse) &&
       n.sources.size >= options.minSources,
@@ -382,8 +399,10 @@ async function main(): Promise<void> {
     const held = byPosition.get(node.key);
     if (!held || node.opening.moves.length < held.opening.moves.length) byPosition.set(node.key, node);
   }
-  const worklist = [...byPosition.values()].sort(
-    (a, b) => b.distinct.size - a.distinct.size || b.sources.size - a.sources.size,
+  const worklist = [...byPosition.values()].sort((a, b) =>
+    options.bySubtree
+      ? b.subtreeSubstantial - a.subtreeSubstantial
+      : b.distinct.size - a.distinct.size || b.sources.size - a.sources.size,
   );
 
   console.log(
