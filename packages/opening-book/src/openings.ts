@@ -9151,6 +9151,70 @@ export const CURATED_OPENINGS: Opening[] = [
   },
   { eco: 'C01', name: 'French Defence: Exchange Variation', moves: line('e4 e6 d4 d5 exd5'), character: 'balanced' },
 
+  {
+    eco: 'C00',
+    name: 'French Defence: Wing Gambit',
+    moves: line('e4 e6 Nf3 d5 e5 c5 b4'),
+    character: 'gambit',
+    minRating: 1400,
+    theory: {
+      idea: 'The pawn is not the point. Everything Black does against an Advance French runs through the ...c5 lever hitting the base of the chain, and 4.b4 offers a wing pawn to buy that lever off before the chain even exists: after 4...cxb4 5.a3 or 5.d4 White builds the centre he wants with nobody attacking d4, and the half-open queenside files give the initiative a Benko flavour. Both Black repertoires in the corpus therefore decline. 4...d4 is the practical answer and the reason is one square: the pawn White spent a move clearing d4 for is now standing on it, so the big centre can never be built, and the game leaves preparation immediately — the position after 4...d4 has a fraction of the games of the position before it. White recovers the pawn with bxc5 and Black recaptures with the bishop, so material is level and the argument is about whether the advanced d4 pawn is strength or weakness.',
+      structures: [],
+      whitePlans: [
+        'After 4...cxb4, follow with a3 or d4 and treat the pawn as spent. What was bought is the absence of ...c5 — the Advance French chain with its base unattacked — plus open lines towards a king that has not castled.',
+        'Against 4...d4, take on c5 and develop with Bd3, which prepares short castling and points at h7 before Black has anything on the kingside. The bishop can also step to e4 and be propped up with d3.',
+        'Play Ba3 rather than Bb2 after ...Bxc5, offering the trade of dark-squared bishops. It is the one exchange that helps White, because the bishop on c5 is Black’s best-placed piece and the trade leaves d4 harder for Black to hold.',
+        'Attack d4 with Bb2 at once. The pawn is defended only by the queen down the open d-file, so any Black move that blocks that file makes it fall.',
+        'Nurse b4 if Black leaves it alone. c3 and a3 hold it, and White then has a genuine kingside plan with Bd3, but the tempi spent are exactly why 4...b6 works.',
+      ],
+      blackPlans: [
+        'Decline with 4...d4, taking the square rather than the pawn. It is a space gain and a permanent one: without d2-d4 White has bought nothing with the sacrifice.',
+        'Recapture on c5 with the bishop, which develops for free and stares at f2 down the a7-g1 diagonal — the diagonal that most of the tactics in the line run on.',
+        'Meet Bd3 with ...Bd7, planning ...Bc6 so that Be4 can be answered by the exchange, then ...Ne7, castling, and ...Nd7 to lean on e5.',
+        'Prefer ...Ne7 to ...Bd7 while the bishop is still on b2. From e7 the knight goes to g6 or f5 and the d-file stays clear, which matters because the queen is d4’s only defender.',
+        'Meet Ba3 with ...Qa5, which holds the bishop on c5, threatens to take on a3 and still allows ...Ne7 and short castling.',
+        'Decline the other way with 4...b6, simply refusing to touch the pawn. Follow with ...Qd7 to cover b5, then ...Ba6: the trade of Black’s worst piece for the bishop White needs for the kingside attack, while b4 stays a pawn White has to keep defending.',
+      ],
+      breaks: [
+        {
+          move: 'd4',
+          side: 'black',
+          note: 'Not a break so much as a refusal — the pawn steps past the tension and occupies the square the gambit was played to clear. From then on White’s pieces have to work around it instead of behind a pawn centre.',
+          prerequisites: ['Ready to answer bxc5 with ...Bxc5 rather than a pawn recapture'],
+        },
+        {
+          move: 'f6',
+          side: 'black',
+          note: 'The standard French undermining of e5, available here on better terms than usual because White has spent moves on the queenside and the light-squared bishop often has an open diagonal after ...Bd7-c6.',
+          prerequisites: ['Development finished and the king castled', '...Nd7 already leaning on e5, so the exchange there is not simply good for White'],
+        },
+        {
+          move: 'a3',
+          side: 'white',
+          note: 'The Benko-style follow-up to the accepted gambit, opening the a-file rather than regaining the pawn. It is the move that makes the sacrifice a sacrifice.',
+        },
+      ],
+      keySquares: [
+        { square: 'd4', note: 'The whole argument. White gave up a pawn to put a pawn here; Black declines by putting one here first, and every subsequent plan on either side is about whether it can be won or held.' },
+        { square: 'f2', note: 'Where Black’s bishop points once it recaptures on c5, and the square the line’s tactics keep coming back to. It is unguarded but for the king, and the king cannot always take.' },
+        { square: 'c6', note: 'The route out for the bishop that the French normally imprisons. Reaching it costs the d-file, which is the trade Black has to judge.' },
+        { square: 'b5', note: 'Why the queen goes to d7 before ...Ba6 in the 4...b6 lines: without it, b4-b5 meets the bishop on arrival.' },
+      ],
+      routes: ['Bc8-d7-c6, the French bishop taking the route the closed centre usually denies it', 'Ng8-e7-g6 or -f5, developing without blocking the d-file behind the pawn on d4'],
+      traps: [
+        'After 4...d4 5.Bb2 Bd7 6.bxc5 Bxc5, taking with the knight loses: 7.Nxd4 Qb6 attacks b2 down the file, 8.Nb3 is the only block, and 8...Bxf2+ then cannot be answered by Kxf2 — the bishop leaving c5 opens the b6-f2 diagonal, so the king is walking into the queen. 9.Ke2 is forced, and White has lost a pawn and the castling rights for nothing.',
+        'After 4...d4 5.bxc5 Bxc5 6.Bd3 Bd7, the natural 7.c3 hands Black the initiative: 7...Bc6 and the pawn still cannot be taken, since 8.cxd4 Bxd4 9.Nxd4 Qxd4 forks the rook on a1 and the bishop on d3 from one square.',
+        'Answering 4...b6 by leaving b4 to look after itself. The pawn has no defenders where it stands, and every move spent on a3 and c3 is a move not spent on the kingside play the gambit was supposed to buy.',
+      ],
+      sources: [
+        'Yuriy Krykun — The Unexplored French Defence',
+        'Lifetime Repertoires: Plichta’s French Defence',
+        'Master the French Defense',
+        'Lifetime Repertoires: French Defence',
+      ],
+    },
+  },
+
   // ------------------------------------------------------------ Caro-Kann ---
   {
     eco: 'B10',
@@ -13589,6 +13653,71 @@ export const CURATED_OPENINGS: Opening[] = [
         'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
         'Lifetime Repertoires: Plichta’s 1.e4 e5',
         'Understand the Scotch Game',
+      ],
+    },
+  },
+  {
+    eco: 'C45',
+    name: 'Scotch Game: Tartakower Variation',
+    moves: line('e4 e5 Nf3 Nc6 d4 exd4 Nxd4 Nf6 Nxc6 bxc6 Nd2'),
+    character: 'positional',
+    minRating: 1600,
+    aliases: ['Scotch 6.Nd2'],
+    theory: {
+      idea: 'A move defined by what it declines. White has to defend e4 and the two mainstream ways of doing it both cost something: 6.e5 is the forcing main line with masses of analysis in which Black holds, and 6.Nc3 allows ...Bb4, the Four Knights pin, which is not what a Scotch player wanted. Nd2 defends the pawn and takes the pin away, and pays for it with a knight on its worst square and a bishop on c1 with nothing to look at. What is bought is the structure. After 5...bxc6 Black has three pawn islands against two and doubled c-pawns, a small edge that never disappears and grows with every trade — so White is happy to play a long simple game and Black is not. The second point of d2 rather than c3 is that it leaves f1 clear: as soon as Black frees himself with ...d5 and White answers exd5 cxd5, the bishop lands on b5 with check in one move and the light-squared bishops come off, which is exactly the sort of exchange White wants. So Black usually delays the freeing move, plays ...Bc5, and takes the fight into the middlegame, where White’s one independent try — 7.Nb3, hitting the bishop and abandoning e4 — is a real pawn offer rather than a bluff.',
+      structures: [],
+      whitePlans: [
+        'Trade pieces on principle. The structural edge is permanent and the compensation for it is activity, so every exchange is a small gain and the endgame is the destination rather than a concession.',
+        'Meet ...d5 with exd5 cxd5 and Bb5+. This is what the knight went to d2 for: the bishop reaches b5 in a single move, the light-squared bishops disappear and Black is left defending an isolated d-pawn instead of a doubled one.',
+        'Play 7.Nb3 against ...Bc5. It hits the bishop and gives up the e-pawn deliberately — after 7...Nxe4 8.Nxc5 Nxc5 White has the bishop pair and a target-free position against a knight that has to keep finding squares.',
+        'Punish a premature ...O-O with e4-e5, which takes the f6 knight’s squares while the c8 bishop is still walled in behind its own pawns.',
+        'Remember what d2 costs. The bishop on c1 has no diagonal until the knight moves, so White’s development is not finished when it looks finished, and slow play lets Black consolidate the pawn.',
+      ],
+      blackPlans: [
+        '6...Bc5 before anything else. 6...d5 is solid and is precisely what White is hoping for; delaying it denies him the exd5, Bb5+ sequence and keeps pieces on the board, which is where Black’s compensation lives.',
+        'Take the pawn when it is offered and keep it. After 7.Nb3 Nxe4 8.Nxc5 Nxc5 Black is a clean pawn up; the structure is ugly but the pawn is real, and the recommendation in the corpus is to hold it rather than hand it back for comfort.',
+        '7...Bb6 as the alternative to grabbing, when 8.e5 Ne4 9.Qg4 gives a sharp sequence that runs out into a level ending.',
+        'Play ...d5 before castling against the quiet 7.Be2 and 7.Bd3. Castling first invites 8.e5, and the tempo White gains there is not one Black can afford while the c8 bishop is still buried.',
+        '7...d6 as the ambitious version, keeping the bishop on c5 rather than freeing the position. It works because White wants Nb3 anyway: once the knight leaves d2 nothing defends e4, and ...Re8 arrives with a threat instead of a developing move.',
+        'Get the light-squared bishop out before ...d5 shuts the diagonal, or accept that ...d5 has to be met with a plan for it. The bishop is the piece the structure hurts most.',
+      ],
+      breaks: [
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The freeing move, and the one that resolves the doubled pawns. It also invites exd5 cxd5 Bb5+, so the question is never whether to play it but when — after ...Bc5, and before castling.',
+          prerequisites: ['...Bc5 already played, so the move comes with a developed piece rather than instead of one', 'A reply to Bb5+ decided in advance, since the check is the point of White’s whole set-up'],
+        },
+        {
+          move: 'e5',
+          side: 'white',
+          note: 'The clamp, best played the moment Black castles without having struck in the centre. It gains space, dislodges the knight and leaves Black’s queenside bishop without a future.',
+          prerequisites: ['Black has committed to ...O-O without ...d5 or ...d6'],
+        },
+        {
+          move: 'c4',
+          side: 'white',
+          note: 'The way to fix Black’s d-pawn once ...d5 has been played and the bishops have come off. It converts the doubled pawn into an isolated one, which is the version of the structure White actually wants in an ending.',
+        },
+      ],
+      keySquares: [
+        { square: 'e4', note: 'The pawn the whole variation is arranged around — defended by the knight, then deliberately offered by it. Whether Black may take it is the main question of the line.' },
+        { square: 'b5', note: 'One move away for the f1 bishop, which is the hidden reason the knight went to d2. The check there arrives the instant Black plays ...d5 and takes the light-squared bishops off.' },
+        { square: 'c5', note: 'Black’s bishop’s square and the hinge of the middlegame: Nb3 hits it, and whether Black keeps it with ...Bb6 or lets it go for the e-pawn decides which kind of game follows.' },
+        { square: 'c6', note: 'The doubled pawn. It cannot advance without help, it blocks the bishop’s natural diagonal, and it is the reason White is content with any simplification.' },
+        { square: 'd2', note: 'A square the knight does not want, blocking the c1 bishop. White accepts the awkwardness for two moves and Black’s job is to make it three or four.' },
+      ],
+      routes: ['Nb1-d2-b3, defending e4 and then leaving it, gaining the tempo on the bishop that pays for the pawn'],
+      traps: [
+        'Castling before striking with ...d5. After 7.Be2 O-O 8.e5 the knight must move, the c8 bishop still has no diagonal, and Black has spent his best tempo on the one move that did not need hurrying.',
+        'Grabbing on e4 and then handing the pawn back for a quiet position. The pawn is the entire compensation for the structure; without it Black has the worse pawns and nothing to show.',
+        'Treating 6.Nd2 as harmless because the knight looks passive. The passivity lasts a few moves and the pawn islands last the game.',
+      ],
+      sources: [
+        'Alex Colovic — 1.e4 Simplified',
+        'Gawain Jones — Lifetime Repertoires: 1.e4 e5',
+        'Lifetime Repertoires: Plichta’s 1.e4 e5',
+        'Jan Gustafsson — Lifetime Repertoires: 1.e4 e5',
       ],
     },
   },
