@@ -13625,4 +13625,81 @@ export const CURATED_OPENINGS: Opening[] = [
     character: 'positional',
     theory: QGD_EXCHANGE_CARLSBAD,
   },
+  {
+    // One ply above the King’s Indian and the Grünfeld, both of which carry
+    // their own theory. The content here is the fork itself — which third move
+    // chooses which game, and what each one closes off — rather than a second
+    // telling of either defence.
+    eco: 'E61',
+    name: 'King’s Indian Defence',
+    moves: line('d4 Nf6 c4 g6 Nc3'),
+    character: 'sharp',
+    forSide: 'black',
+    minRating: 1500,
+    theory: {
+      idea: 'Third moves in this position are chosen for what they permit rather than what they do, and 3.Nc3 is the most natural and the most permissive of them. The knight goes to the square Black’s counterplay wants to trade on: after ...d5 and ...Nxd5, the exchange ...Nxc3 forces White to recapture with the b-pawn, which is what leaves him with a broad centre and a doubled pawn behind it — and that trade is the entire mechanism of the Grünfeld. The systems that begin 3.f3, 3.g3 or 3.Nf3 with a later e3 exist to deny it, each buying the Grünfeld’s absence at some cost in the King’s Indian. So after 3.Nc3 the game divides, and the division is Black’s to make. 3...Bg7 keeps both defences alive for one more move but hands the decision to White, since 4.e4 makes ...d5 unplayable and settles the game as a King’s Indian, while 4.Nf3 leaves the Grünfeld open. 3...d5 takes the decision away from White, and with it every anti-King’s-Indian system — no Sämisch, no Four Pawns, no Averbakh — at the price of never reaching the locked centre and the kingside attack the King’s Indian is played for. What the two defences share is the premise: Black declines to occupy the centre and dares White to build one, on the understanding that a large pawn centre is a liability the moment it can be shot at, and the bishop on g7 is the piece that makes the invitation safe.',
+      structures: ['kid-locked', 'benoni'],
+      whitePlans: [
+        'Play the natural developing move and accept that both defences are on the table. Every third move that dodges the Grünfeld gives something back elsewhere, and 3.Nc3 gives nothing back.',
+        'Choose with the fourth move against 3...Bg7. 4.e4 commits to the full centre and rules the Grünfeld out; 4.Nf3 keeps it available and steers towards the modern exchange lines; 4.Bf4 and 4.g3 sidestep both main roads.',
+        'Take on d5 against the Grünfeld and follow with e4, accepting doubled c-pawns in exchange for the pawn centre and the open b-file the recapture creates.',
+        'Meet whichever defence appears in the centre rather than on the wing. Both are built on Black having no pawns there to be attacked, so a wing attack simply arrives at a position Black is happy with.',
+      ],
+      blackPlans: [
+        'Decide on move three and know what the decision closes off. This is the only moment at which both defences are genuinely available.',
+        '3...Bg7 when the King’s Indian is the real intention. It is the flexible move, it costs nothing against most fourth moves, and after 4.e4 it also leaves ...c5 and a Benoni as a second road.',
+        '3...d5 when the Grünfeld is the intention. Committing a move early removes every system built to punish the King’s Indian, which is worth more than the flexibility it gives up.',
+        'Leave the centre alone at first in either defence. The bishop on g7 looks through d4 at b2 from the moment it is developed, and the pawn moves that matter — ...e5, ...c5, ...d5 — are all played later and all played once.',
+        'Answer 4.e4 with ...d6 for the classical King’s Indian or ...c5 for a Benoni, and treat the two as different openings rather than different move orders.',
+      ],
+      breaks: [
+        {
+          move: 'd5',
+          side: 'black',
+          note: 'The Grünfeld strike, and the move 3.Nc3 permits. Its value lies in the exchange that follows: the knight comes to d5, trades itself on c3 and leaves White recapturing with a pawn towards the centre he then has to defend.',
+          prerequisites: ['White’s knight actually on c3 — against 3.g3 and 3.f3 set-ups the trade is unavailable and the strike means something else entirely'],
+        },
+        {
+          move: 'e5',
+          side: 'black',
+          note: 'The King’s Indian break, played after ...Bg7, ...d6 and castling. It either wins the centre back or provokes d4-d5, which locks the position and starts the race of pawn storms.',
+          prerequisites: ['The king already castled, since the centre may open', 'The bishop on g7 unobstructed, so that ...exd4 is a real threat rather than an exchange'],
+        },
+        {
+          move: 'c5',
+          side: 'black',
+          note: 'The other lever, and the one that changes the structure rather than the balance: against a pawn on d4 it invites d4-d5 and a Benoni, and in the Grünfeld it is the follow-up that makes the pressure on d4 concrete.',
+        },
+        {
+          move: 'e4',
+          side: 'white',
+          note: 'The move that closes the fork. Once the pawn stands on e4 the Grünfeld is no longer available and the game is a King’s Indian, whatever Black had prepared.',
+        },
+      ],
+      keySquares: [
+        { square: 'c3', note: 'The square the whole fork turns on. A knight standing there is what makes ...d5 and the exchange on it into the Grünfeld; the third moves that avoid the defence are the ones that keep the knight away.' },
+        { square: 'd4', note: 'What the bishop on g7 is aimed at, in both defences and from the first move. Every plan Black has is a way of adding a second or third attacker to it.' },
+        { square: 'e4', note: 'The pawn that decides which opening is being played, and the one that runs short of defenders first once the centre is challenged.' },
+        { square: 'd5', note: 'Where the game is settled in the King’s Indian and where it starts in the Grünfeld — a white pawn arriving there locks the position, a black pawn arriving there opens it.' },
+      ],
+      routes: [
+        'Nf6-d5-c3, the Grünfeld exchange, available only because White’s knight went to c3',
+        'Bf8-g7 before any pawn commitment, the move both defences begin with and the reason the choice can be delayed',
+      ],
+      traps: [
+        'Playing 3...Bg7 with a Grünfeld in mind concedes the choice. After 4.e4 the strike ...d5 no longer works, and the game is a King’s Indian whether or not it was prepared.',
+        'Answering 3.g3 or 3.f3 with the Grünfeld move order out of habit misses the point of those moves: without a white knight on c3 there is nothing to exchange on, and the defence loses the mechanism it is built around.',
+        'Treating the two breaks as interchangeable. ...e5 belongs to the locked King’s Indian centre and ...c5 to the Benoni and Grünfeld structures; the wrong one produces the shape without the counterplay that justifies it.',
+      ],
+      sources: [
+        'Alex Colovic — The King’s Indian Defense Simplified',
+        'Lifetime Repertoires: Peter Svidler’s Grünfeld — Part 1',
+        'Lifetime Repertoires: Giri’s Grünfeld',
+        'Mastering Opening Strategy',
+        'The Complete Book of Chess Strategy',
+        'Anna Cramling’s 1.d4 — Part 2',
+        'Gawain Jones — King’s Indian Defence, Part 2',
+      ],
+    },
+  },
 ];
