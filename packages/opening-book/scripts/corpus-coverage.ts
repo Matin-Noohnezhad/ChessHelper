@@ -121,6 +121,10 @@ const UNWRITABLE = new Map<string, string>([
     'e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4 c4',
     'Petrov Kaufmann Attack: four passages that survive deduplication are four phrasings of one sentence from a single course — free piece play as in the main lines, without the theory, followed by d3, d4, Nc3 and Bd3. One course saying one thing is not corroboration, and the sentence itself is a move list.',
   ],
+  [
+    'd4 d5 c4 e6 Nc3 Nf6 Bg5 Be7 Nf3',
+    'QGD with 5.Bg5 Be7 6.Nf3: the passages at the node are transposition bookkeeping — which other move orders reach it, which chapter the game will be found in after e3. The only plan content sits one ply below and belongs to the named defences that branch there, and the nearest of them, the Tartakower, is now written. A parent entry would restate the child.',
+  ],
 ]);
 
 /** Same near-duplicate key the digest uses, so the two agree on what is one piece. */
