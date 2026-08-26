@@ -8,7 +8,7 @@ import App from '../App.js';
 import { Board } from '../components/Board.js';
 import { OpeningPanel } from '../components/OpeningPanel.js';
 import { ReviewSetup } from '../components/ReviewSetup.js';
-import { ReviewReport, StructureNote } from '../components/ReviewView.js';
+import { ReviewReport, StructureNote, moveBadge } from '../components/ReviewView.js';
 import { TrainerView } from '../components/TrainerView.js';
 
 /**
@@ -195,6 +195,40 @@ describe('game review UI', () => {
     // Every move is in the list, and the board still draws all 64 squares.
     expect(html).toContain('Bb5');
     expect(html.match(/data-square="/g)).toHaveLength(64);
+  });
+
+  it('sticks the move’s category to the square it landed on', () => {
+    const html = renderToStaticMarkup(
+      <Board
+        game={new Chess()}
+        orientation="white"
+        lastMove={null}
+        onMove={() => {}}
+        badge={{ square: 'e4', symbol: '⚔', label: 'Sacrifice', className: 'q q--sacrifice' }}
+      />,
+    );
+    // The disc sits inside e4's cell, carrying the colour class the move list
+    // and the graph use for the same category.
+    const cell = html.slice(html.indexOf('data-square="e4"'));
+    expect(cell.slice(0, cell.indexOf('data-square="d4"'))).toContain('square-badge');
+    expect(html).toContain('q--sacrifice');
+    expect(html).toContain('Sacrifice');
+  });
+
+  it('takes the badge from the move, and hides it behind the engine’s suggestion', async () => {
+    const review = await reviewPgn('1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *', { evaluator: flatEvaluator });
+    const knight = review.moves[2]!;
+    expect(knight.san).toBe('Nf3');
+
+    const badge = moveBadge(knight, false);
+    expect(badge?.square).toBe('f3');
+    expect(badge?.label).toBe(QUALITY_LABELS[knight.quality]);
+    expect(badge?.className).toContain(`q--${knight.quality}`);
+
+    // While the engine's move is on the board the position predates the move,
+    // so there is nothing to pass judgement on yet.
+    expect(moveBadge(knight, true)).toBeNull();
+    expect(moveBadge(null, false)).toBeNull();
   });
 
   it('lists every move category, including the ones neither side scored', async () => {

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Chess } from '@coh/chess-core';
 import {
   QUALITY_LABELS,
+  QUALITY_SYMBOLS,
   formatScore,
   formatSeconds,
   keyMoments,
@@ -11,9 +12,9 @@ import type { GameReview, MoveTag, ReviewedMove } from '@coh/review';
 import { breaksFor, classifyStructureBest, plansFor } from '@coh/opening-book';
 import type { Side } from '@coh/opening-book';
 import { Board } from './Board.js';
-import type { AnnotationThickness } from './Board.js';
+import type { AnnotationThickness, SquareBadge } from './Board.js';
 import { EvalBar } from './EvalBar.js';
-import { QualityBadge } from './QualityBadge.js';
+import { QualityBadge, qualityClass } from './QualityBadge.js';
 import { ReviewGraph } from './ReviewGraph.js';
 import { ReviewMoveList } from './ReviewMoveList.js';
 import { ReviewSetup } from './ReviewSetup.js';
@@ -62,6 +63,28 @@ export function StructureNote({ fen, toMove }: { fen: string; toMove: Side }) {
       )}
     </div>
   );
+}
+
+/**
+ * The verdict, stuck to the square the move landed on, so the board alone says
+ * what kind of move this was.
+ *
+ * The destination comes off the UCI, which is right for the awkward cases too:
+ * castling is `e1g1`, so the sticker lands on the king rather than the rook,
+ * and a promotion's `a7a8q` still points at a8.
+ *
+ * Nothing is shown while the engine's suggestion is on the board — the same
+ * rule the last-move highlight follows. That position is the one *before* the
+ * move, so there is nothing yet to pass judgement on.
+ */
+export function moveBadge(move: ReviewedMove | null, showingBefore: boolean): SquareBadge | null {
+  if (!move || showingBefore) return null;
+  return {
+    square: move.uci.slice(2, 4),
+    symbol: QUALITY_SYMBOLS[move.quality],
+    label: QUALITY_LABELS[move.quality],
+    className: qualityClass(move.quality),
+  };
 }
 
 function MoveDetail({
@@ -195,6 +218,8 @@ export function ReviewReport({
       ? [{ from: alternative.uci.slice(0, 2), to: alternative.uci.slice(2, 4) }]
       : [];
 
+  const badge = moveBadge(move, showingBefore);
+
   const step = (delta: number) => {
     setShowBest(false);
     setSelectedPly((ply) => Math.max(0, Math.min(review.moves.length, ply + delta)));
@@ -235,6 +260,7 @@ export function ReviewReport({
             onMove={() => {}}
             interactive={false}
             hintArrows={hintArrows}
+            badge={badge}
             {...(annotationThickness ? { annotationThickness } : {})}
           />
         </div>

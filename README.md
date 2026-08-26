@@ -34,7 +34,7 @@ app or a Tauri desktop build later — only `apps/*` changes.
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # 156 tests across core, book, trainer, review and UI
+npm test           # 158 tests across core, book, trainer, review and UI
 npm run ingest:eco # regenerate the ECO tables from data/*.tsv
 npm run typecheck
 ```
@@ -102,7 +102,9 @@ way the game comes back the way chess.com reports it.
   critical moments and moves played in time pressure. Every category is listed
   in the summary whether or not anyone scored it: a zero next to Blunder is a
   fact about the game, and a table whose rows shuffle between games cannot be
-  read at a glance. An obvious recapture never counts as a great move.
+  read at a glance. An obvious recapture never counts as a great move. Stepping
+  through the game sticks the label to the square the move landed on, so the
+  board on its own tells you what kind of move you are looking at.
 - **Sacrifices, in the ordinary sense of the word.** Material handed over — a
   pawn is enough — without getting it straight back, found by static exchange
   evaluation rather than by eyeballing the eval. Whether it *counts* is a

@@ -246,6 +246,35 @@ button:disabled {
   pointer-events: none;
 }
 
+/*
+ * The move's verdict, stuck to the square it landed on. Sized and positioned in
+ * percentages so it tracks the board at any width, and kept *inside* the square
+ * rather than straddling its corner the way a real sticker would: the board
+ * clips its own overflow, and a badge on a1 or h8 would lose half of itself.
+ */
+.square-badge {
+  position: absolute;
+  top: 3%;
+  right: 3%;
+  z-index: 3;
+  width: 38%;
+  height: 38%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--q, var(--muted));
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: calc(var(--board-size) / 8 * 0.2);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
 .coord {
   position: absolute;
   font-size: 0.62rem;
