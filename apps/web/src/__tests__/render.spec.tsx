@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { identifyOpening } from '@coh/opening-book';
 import { Chess } from '@coh/chess-core';
-import { reviewPgn } from '@coh/review';
+import { QUALITY_LABELS, QUALITY_ORDER, reviewPgn } from '@coh/review';
 import type { PositionEvaluator } from '@coh/review';
 import App from '../App.js';
 import { Board } from '../components/Board.js';
@@ -174,5 +174,18 @@ describe('game review UI', () => {
     // Every move is in the list, and the board still draws all 64 squares.
     expect(html).toContain('Bb5');
     expect(html.match(/data-square="/g)).toHaveLength(64);
+  });
+
+  it('lists every move category, including the ones neither side scored', async () => {
+    const review = await reviewPgn('1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *', { evaluator: flatEvaluator });
+    const html = renderToStaticMarkup(<ReviewReport review={review} onReset={() => {}} />);
+
+    // A flat evaluator produces nothing but theory, so every other row is a zero
+    // — and every one of them still has to be on screen.
+    for (const label of QUALITY_ORDER.map((quality) => QUALITY_LABELS[quality])) {
+      expect(html).toContain(label);
+    }
+    expect(html).toContain('Sacrifice');
+    expect(html).toContain('is-empty');
   });
 });

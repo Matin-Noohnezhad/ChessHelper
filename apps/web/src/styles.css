@@ -1204,6 +1204,12 @@ button:disabled {
   --q: #c4553d;
 }
 
+/* A category nobody scored still holds its row, greyed back out of the way. */
+.review-table--counts tr.is-empty {
+  color: var(--muted);
+  opacity: 0.45;
+}
+
 .quality-badge {
   display: inline-flex;
   align-items: center;
