@@ -14,6 +14,7 @@ import { SettingsPanel } from './components/SettingsPanel.js';
 import { TrainerView } from './components/TrainerView.js';
 import { useChessGame } from './hooks/useChessGame.js';
 import { useEngine } from './hooks/useEngine.js';
+import { useGameReview } from './hooks/useGameReview.js';
 import { useSettings } from './hooks/useSettings.js';
 
 type Mode = 'explore' | 'train' | 'review';
@@ -24,6 +25,10 @@ export default function App() {
   // Analysis belongs to the explore board only — the trainer is quizzing the
   // user, and Stockfish's opinion would defeat the point.
   const engine = useEngine(game.game.fen());
+  // The review lives up here rather than inside the view so that a report
+  // survives a trip back to the board — you can play the position out, look at
+  // a line, and come back to the same report instead of re-running the engine.
+  const review = useGameReview();
   const [mode, setMode] = useState<Mode>('explore');
   const [marks, setMarks] = useState<SquareMark[]>([]);
   const [copied, setCopied] = useState(false);
@@ -40,6 +45,14 @@ export default function App() {
     () => (game.sans.length ? formatMoveText(game.sans, false, '*') : null),
     [game.sans],
   );
+
+  // The second way in: no clipboard, no paste box. Whatever is on the board is
+  // a game, and one click reviews it.
+  const reviewBoardGame = useCallback(() => {
+    if (!currentGamePgn) return;
+    setMode('review');
+    review.start(currentGamePgn);
+  }, [currentGamePgn, review]);
 
   const handleMove = useCallback(
     (from: string, to: string, promotion?: PieceSymbol) => {
@@ -141,6 +154,14 @@ export default function App() {
               <button type="button" onClick={game.reset} disabled={!game.sans.length}>
                 New game
               </button>
+              <button
+                type="button"
+                onClick={reviewBoardGame}
+                disabled={!currentGamePgn}
+                title="Run the game review on the moves currently on the board"
+              >
+                Review game
+              </button>
             </>
           )}
           <button
@@ -166,7 +187,9 @@ export default function App() {
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : mode === 'review' ? (
         <ReviewView
+          controller={review}
           currentGamePgn={currentGamePgn}
+          onReviewBoardGame={reviewBoardGame}
           annotationThickness={settings.annotationThickness}
         />
       ) : (

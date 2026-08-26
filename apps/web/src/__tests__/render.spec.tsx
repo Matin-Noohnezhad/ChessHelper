@@ -132,12 +132,33 @@ describe('game review UI', () => {
 
   it('offers a PGN box, a file picker and the depth presets', () => {
     const html = renderToStaticMarkup(
-      <ReviewSetup controller={idle} currentGamePgn={'1.e4 e5 *'} />,
+      <ReviewSetup controller={idle} currentGamePgn={'1.e4 e5 *'} onReviewBoardGame={() => {}} />,
     );
     expect(html).toContain('Review a game');
     expect(html).toContain('Open a .pgn file');
-    expect(html).toContain('Use the game on the board');
     expect(html).toContain('Balanced');
+  });
+
+  it('offers the moves on the board as a review of their own, in one click', () => {
+    const html = renderToStaticMarkup(
+      <ReviewSetup
+        controller={idle}
+        currentGamePgn={'1.e4 e5 2.Nf3 Nc6 *'}
+        onReviewBoardGame={() => {}}
+      />,
+    );
+    expect(html).toContain('The game on the board');
+    expect(html).toContain('Review these moves');
+    expect(html).toContain('2 moves');
+    expect(html).toContain('e4 e5 Nf3 Nc6');
+  });
+
+  it('has nothing to say about the board when no moves have been played', () => {
+    const html = renderToStaticMarkup(
+      <ReviewSetup controller={idle} currentGamePgn={null} onReviewBoardGame={() => {}} />,
+    );
+    expect(html).not.toContain('The game on the board');
+    expect(html).toContain('Open a .pgn file');
   });
 
   it('names the pawn structure on the board, from the side to move', () => {

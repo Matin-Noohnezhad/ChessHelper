@@ -18,7 +18,7 @@ import { ReviewGraph } from './ReviewGraph.js';
 import { ReviewMoveList } from './ReviewMoveList.js';
 import { ReviewSetup } from './ReviewSetup.js';
 import { ReviewSummary } from './ReviewSummary.js';
-import { useGameReview } from '../hooks/useGameReview.js';
+import type { ReviewController } from '../hooks/useGameReview.js';
 import type { Orientation } from '../hooks/useChessGame.js';
 
 const TAG_LABELS: Record<MoveTag, string> = {
@@ -29,8 +29,11 @@ const TAG_LABELS: Record<MoveTag, string> = {
 };
 
 interface ReviewViewProps {
+  controller: ReviewController;
   /** The line on the explore board, so "review what I just played" needs no clipboard. */
   currentGamePgn: string | null;
+  /** Reviews that line straight away, without a trip through the paste box. */
+  onReviewBoardGame: () => void;
   annotationThickness?: AnnotationThickness;
 }
 
@@ -154,10 +157,13 @@ export function ReviewReport({
   review,
   annotationThickness,
   onReset,
+  onReviewBoardGame,
 }: {
   review: GameReview;
   annotationThickness?: AnnotationThickness;
   onReset: () => void;
+  /** Offered when the explore board holds a line — usually a longer one than this report covers. */
+  onReviewBoardGame?: (() => void) | undefined;
 }) {
   const [selectedPly, setSelectedPly] = useState(0);
   const [showBest, setShowBest] = useState(false);
@@ -281,6 +287,11 @@ export function ReviewReport({
           <button type="button" onClick={onReset}>
             Review another game
           </button>
+          {onReviewBoardGame && (
+            <button type="button" onClick={onReviewBoardGame}>
+              Review the board again
+            </button>
+          )}
         </div>
 
         <ReviewSummary review={review} />
@@ -347,17 +358,25 @@ export function ReviewReport({
  */
 
 /**
- * The review mode: a PGN goes in, and what comes back is the same report
- * chess.com gives — accuracy for both sides, split by phase, with every move
+ * The review mode. A game goes in — pasted, opened from a file, or simply the
+ * moves sitting on the explore board — and what comes back is the same report
+ * chess.com gives: accuracy for both sides, split by phase, with every move
  * labelled and the turning points listed first.
  */
-export function ReviewView({ currentGamePgn, annotationThickness }: ReviewViewProps) {
-  const controller = useGameReview();
-
+export function ReviewView({
+  controller,
+  currentGamePgn,
+  onReviewBoardGame,
+  annotationThickness,
+}: ReviewViewProps) {
   if (!controller.review) {
     return (
       <main className="app__body app__body--single">
-        <ReviewSetup controller={controller} currentGamePgn={currentGamePgn} />
+        <ReviewSetup
+          controller={controller}
+          currentGamePgn={currentGamePgn}
+          onReviewBoardGame={onReviewBoardGame}
+        />
       </main>
     );
   }
@@ -367,6 +386,7 @@ export function ReviewView({ currentGamePgn, annotationThickness }: ReviewViewPr
       review={controller.review}
       {...(annotationThickness ? { annotationThickness } : {})}
       onReset={controller.clear}
+      onReviewBoardGame={currentGamePgn ? onReviewBoardGame : undefined}
     />
   );
 }

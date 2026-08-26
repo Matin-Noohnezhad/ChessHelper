@@ -14,18 +14,29 @@ function describeGame(pgn: string, index: number): string {
   return `${players} · ${result}${date} · ${Math.ceil(moves.length / 2)} moves`;
 }
 
+/** "e4 c5 Nf3 d6 …" — enough of the line to recognise the game without a board. */
+function openingOf(pgn: string, plies = 6): string {
+  const { moves } = parseAnnotatedPgn(pgn);
+  const shown = moves.slice(0, plies).map((move) => move.san);
+  return shown.join(' ') + (moves.length > plies ? ' …' : '');
+}
+
 interface ReviewSetupProps {
   controller: ReviewController;
   /** The line currently on the explore board, ready to review without a copy-paste. */
   currentGamePgn: string | null;
+  /** Reviews that line directly — the whole point of the button being here. */
+  onReviewBoardGame: () => void;
 }
 
 /**
- * Where a review starts: paste, drop or open a PGN. Files from lichess and
- * chess.com routinely hold a whole month of games, so a multi-game export gets
- * a picker rather than a "one game only" error.
+ * Where a review starts. Two ways in, and neither is the poor relation: the
+ * moves already on the explore board go straight to the engine in one click,
+ * and a PGN can be pasted, dropped or opened from a file. Exports from lichess
+ * and chess.com routinely hold a whole month of games, so a multi-game file
+ * gets a picker rather than a "one game only" error.
  */
-export function ReviewSetup({ controller, currentGamePgn }: ReviewSetupProps) {
+export function ReviewSetup({ controller, currentGamePgn, onReviewBoardGame }: ReviewSetupProps) {
   const [text, setText] = useState('');
   const [selected, setSelected] = useState(0);
   const [dragging, setDragging] = useState(false);
@@ -51,14 +62,43 @@ export function ReviewSetup({ controller, currentGamePgn }: ReviewSetupProps) {
     reader.readAsText(file);
   };
 
+  const boardMoves = currentGamePgn ? parseAnnotatedPgn(currentGamePgn).moves.length : 0;
+
   return (
     <section className="panel review-setup">
       <div className="panel__head">
         <div className="panel__title">
           <h2>Review a game</h2>
-          <span className="muted">annotated or plain PGN, one game or a whole export</span>
+          <span className="muted">the moves on the board, or any PGN</span>
         </div>
       </div>
+
+      {currentGamePgn && (
+        <>
+        <div className="review-board-game">
+          <div className="review-board-game__what">
+            <strong>The game on the board</strong>
+            <span className="muted">
+              {Math.ceil(boardMoves / 2)} moves · {openingOf(currentGamePgn)}
+            </span>
+          </div>
+          <div className="review-setup__row">
+            <button
+              type="button"
+              className="primary"
+              onClick={onReviewBoardGame}
+              disabled={running}
+            >
+              Review these moves
+            </button>
+            <button type="button" onClick={() => load(currentGamePgn)} disabled={running}>
+              Edit as PGN
+            </button>
+          </div>
+        </div>
+        <div className="review-setup__or muted">or review a PGN</div>
+        </>
+      )}
 
       <label
         className={`review-drop${dragging ? ' is-dragging' : ''}`}
@@ -93,11 +133,6 @@ export function ReviewSetup({ controller, currentGamePgn }: ReviewSetupProps) {
         <button type="button" onClick={() => fileRef.current?.click()}>
           Open a .pgn file
         </button>
-        {currentGamePgn && (
-          <button type="button" onClick={() => load(currentGamePgn)}>
-            Use the game on the board
-          </button>
-        )}
         {text && (
           <button type="button" onClick={() => load('')}>
             Clear

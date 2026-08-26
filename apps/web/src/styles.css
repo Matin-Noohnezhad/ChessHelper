@@ -1252,6 +1252,47 @@ button:disabled {
   outline: none;
   border-color: var(--accent-dim);
 }
+/*
+ * The board's own game, offered first and offered whole: what it is, how long
+ * it is, and one button that runs it. The paste box below it is the other way
+ * in, not the only one.
+ */
+.review-board-game {
+  margin-top: 0.9rem;
+  padding: 0.8rem;
+  border: 1px solid var(--accent-dim);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+.review-board-game__what {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.review-board-game__what span {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.78rem;
+}
+.review-board-game .review-setup__row {
+  margin-top: 0.6rem;
+}
+
+.review-setup__or {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.review-setup__or::before,
+.review-setup__or::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border);
+}
+
 .review-drop {
   display: block;
 }
@@ -1310,6 +1351,8 @@ button.primary:hover:not(:disabled) {
 
 .review-actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   justify-content: flex-end;
 }
 
