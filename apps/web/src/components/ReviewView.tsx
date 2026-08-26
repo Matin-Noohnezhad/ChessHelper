@@ -8,6 +8,8 @@ import {
   winPercent,
 } from '@coh/review';
 import type { GameReview, MoveTag, ReviewedMove } from '@coh/review';
+import { breaksFor, classifyStructureBest, plansFor } from '@coh/opening-book';
+import type { Side } from '@coh/opening-book';
 import { Board } from './Board.js';
 import type { AnnotationThickness } from './Board.js';
 import { EvalBar } from './EvalBar.js';
@@ -32,12 +34,42 @@ interface ReviewViewProps {
   annotationThickness?: AnnotationThickness;
 }
 
+/**
+ * The pawn structure on the board at this move, if it is one the encyclopedia
+ * knows. Read from the position rather than from the opening, which is the
+ * point: by move 20 the opening's name has stopped being the useful fact and
+ * the structure has started being it.
+ */
+export function StructureNote({ fen, toMove }: { fen: string; toMove: Side }) {
+  const match = classifyStructureBest(fen);
+  if (!match) return null;
+
+  const plans = plansFor(match, toMove);
+  const breaks = breaksFor(match).filter((brk) => brk.side === toMove);
+
+  return (
+    <div className="review-detail__structure">
+      <h3>{match.structure.name}</h3>
+      {plans[0] && <p>{plans[0]}</p>}
+      {breaks.length > 0 && (
+        <p className="muted">
+          {toMove === 'white' ? 'White' : 'Black'} breaks here:{' '}
+          {breaks.map((brk) => brk.move).join(', ')}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function MoveDetail({
   move,
+  fen,
   showBest,
   onToggleBest,
 }: {
   move: ReviewedMove;
+  /** The position shown on the board, which is what the structure is read from. */
+  fen: string;
   showBest: boolean;
   onToggleBest: () => void;
 }) {
@@ -59,6 +91,8 @@ function MoveDetail({
       </div>
 
       <p className="review-detail__line">{move.explanation}</p>
+
+      <StructureNote fen={fen} toMove={fen.split(' ')[1] === 'b' ? 'black' : 'white'} />
 
       <dl className="review-detail__facts">
         <div>
@@ -233,7 +267,12 @@ export function ReviewReport({
         </div>
 
         {move && (
-          <MoveDetail move={move} showBest={showBest} onToggleBest={() => setShowBest((v) => !v)} />
+          <MoveDetail
+            move={move}
+            fen={fen}
+            showBest={showBest}
+            onToggleBest={() => setShowBest((v) => !v)}
+          />
         )}
       </div>
 

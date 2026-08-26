@@ -6,3 +6,6 @@ dist/
 
 # Opening databases: ~421MB of source PGN, not something git should carry.
 pgn/
+
+# Derived annotation index over those PGNs. Rebuild with `npm run index:corpus`.
+.corpus/

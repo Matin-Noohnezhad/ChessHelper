@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Chess, parseFen, toFen } from '@coh/chess-core';
 import { CURATED_OPENINGS } from '../openings.js';
 import { PAWN_STRUCTURES, getStructure } from '../structures.js';
+import { pawnSkeleton } from '../classify.js';
 import { OPENINGS, bookStats, continuationsFrom, deepestOpening, identifyOpening, searchOpenings } from '../book.js';
 
 /**
@@ -49,12 +50,99 @@ describe('opening data integrity', () => {
     for (const structure of PAWN_STRUCTURES) check(structure.name, structure.breaks);
   });
 
+  /**
+   * A break has to be a move that side could actually make. Writing plans from
+   * annotated material makes it easy to attribute one to the wrong colour, or
+   * to name a push on a file where that side has no pawn left — the sort of
+   * mistake that reads perfectly well and is simply false. This checks the
+   * cheap half of it: a pawn push needs a pawn of that colour on the file,
+   * behind the square it is being pushed to.
+   */
+  it('every pawn break in an opening is a push that side could make', () => {
+    const push = /^[a-h][1-8]$/;
+
+    for (const opening of CURATED_OPENINGS) {
+      if (!opening.theory) continue;
+      const board = new Chess();
+      for (const san of opening.moves) {
+        expect(board.move(san), `${opening.name}: ${san}`).not.toBeNull();
+      }
+      const skeleton = pawnSkeleton(board.fen());
+
+      for (const brk of opening.theory.breaks) {
+        if (!push.test(brk.move)) continue;
+        const file = brk.move[0]!;
+        const rank = Number(brk.move[1]);
+        const behind = [...Array(8).keys()]
+          .map((index) => index + 1)
+          .filter((candidate) => (brk.side === 'white' ? candidate < rank : candidate > rank));
+
+        const found = behind.some((candidate) => skeleton.has(brk.side, `${file}${candidate}`));
+        expect(
+          found,
+          `${opening.name}: ${brk.side} cannot push to ${brk.move} — no ${brk.side} pawn behind it on the ${file}-file`,
+        ).toBe(true);
+      }
+    }
+  });
+
   it('every structure skeleton is a valid position with both kings', () => {
     for (const structure of PAWN_STRUCTURES) {
       const pos = parseFen(structure.fen);
       expect(toFen(pos), `${structure.name} FEN does not round-trip`).toBe(structure.fen);
       expect(pos.kings[0], `${structure.name} has no white king`).toBeGreaterThanOrEqual(0);
       expect(pos.kings[1], `${structure.name} has no black king`).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  /**
+   * Four of these diagrams shipped with a pawn missing or on the wrong side —
+   * a Benoni where White kept the c-pawn and Black had none, Sicilians where
+   * White had no c2. Nothing caught it because nothing read them. They are read
+   * now, by the classifier, so the counts are worth pinning: none of these
+   * structures is a gambit, so both sides must have the same number of pawns.
+   */
+  /**
+   * An entry once vanished from the array mid-edit — a rewrite consumed a
+   * closing brace, the following entry was absorbed into the one before it, and
+   * the file still parsed. Every test passed. Nothing in a book keyed by move
+   * sequence notices that one of its addresses stopped existing, so this checks
+   * the two things that would have caught it: the count only ever grows, and
+   * the openings a reader is most likely to look up still resolve to real
+   * teaching content.
+   */
+  it('does not quietly lose entries', () => {
+    expect(CURATED_OPENINGS.length).toBeGreaterThanOrEqual(400);
+
+    const landmarks = [
+      'e4',
+      'd4',
+      'e4 c5',
+      'e4 e6',
+      'e4 c6',
+      'e4 e5 Nf3 Nc6 Bb5',
+      'd4 d5 c4',
+      'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6',
+      'e4 c6 d4 d5 exd5 cxd5 c4',
+      'e4 e5 f4',
+      'd4 Nf6 c4 c5 d5 e6 Nc3 exd5 cxd5 d6',
+    ];
+    // Theory may be the node's own or inherited; what matters is that a reader
+    // looking the opening up is shown some.
+    for (const line of landmarks) {
+      const match = identifyOpening(line.split(' '));
+      expect(match, `nothing identified at "${line}"`).not.toBeNull();
+      expect(match!.theory, `"${line}" (${match!.opening.name}) shows no theory`).toBeDefined();
+    }
+  });
+
+  it('every structure skeleton has balanced material', () => {
+    for (const structure of PAWN_STRUCTURES) {
+      const placement = structure.fen.split(' ')[0]!;
+      const white = placement.replace(/[^P]/g, '').length;
+      const black = placement.replace(/[^p]/g, '').length;
+      expect(white, `${structure.name}: ${white} white pawns vs ${black} black`).toBe(black);
+      expect(white, `${structure.name} has too few pawns to be a structure`).toBeGreaterThanOrEqual(5);
     }
   });
 
@@ -88,13 +176,13 @@ describe('identification', () => {
   });
 
   it('inherits theory from the parent opening', () => {
-    const marDelPlata = identifyOpening(
-      'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7'.split(' '),
+    const classicalSystem = identifyOpening(
+      'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7 Ne1'.split(' '),
     )!;
-    expect(marDelPlata.opening.name).toBe('King’s Indian Defence: Mar del Plata');
-    expect(marDelPlata.opening.theory).toBeUndefined();
-    expect(marDelPlata.theorySource?.name).toBe('King’s Indian Defence');
-    expect(marDelPlata.theory?.structures).toContain('kid-locked');
+    expect(classicalSystem.opening.name).toContain('Classical System');
+    expect(classicalSystem.opening.theory).toBeUndefined();
+    expect(classicalSystem.theorySource?.name).toBe('King’s Indian Defence: Mar del Plata');
+    expect(classicalSystem.theory?.structures).toContain('kid-locked');
   });
 
   it('returns null before any move', () => {
@@ -179,8 +267,11 @@ describe('the imported ECO tables', () => {
   });
 
   it('gives deep imported lines the theory of their curated ancestor', () => {
-    // A Najdorf sub-variation that exists only in the imported tables.
-    const deep = 'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6 Bg5 e6 f4 Qb6'.split(' ');
+    // A Najdorf sub-variation that exists only in the imported tables. This
+    // was the Poisoned Pawn until that line was given an entry of its own —
+    // the assertion is about inheritance, so it has to name a line that is
+    // still only in the tables. Move it again if the Polugaevsky is written.
+    const deep = 'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6 Bg5 e6 f4 b5'.split(' ');
     const match = identifyOpening(deep)!;
     expect(match.opening.theory).toBeUndefined();
     expect(match.theorySource?.name).toContain('Najdorf');

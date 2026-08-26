@@ -134,6 +134,63 @@ entries read as one list.
 **Hand-written** — `src/openings.ts` and `src/structures.ts`. This is the part
 that cannot be imported and the reason the app exists.
 
+### The annotation index
+
+The hand-written layer is the good part and also the thin part: 31 of 3,826
+lines carry their own theory, 298 inherit none at all, and 72% of the tree
+inherits from a node four or more plies shallower. That is why a deep line can
+show plans written for a position two openings up.
+
+Annotated PGN — repertoire courses, annotated game collections — already says
+the things those lines are missing, in prose attached to a move. `npm run
+index:corpus -- --dir <path>` makes that prose addressable: it replays every
+line in every file, main lines and sidelines alike, and writes each comment out
+keyed by the position it was written about.
+
+```
+.corpus/
+  annotations.jsonl.gz   one record per comment: position hash, SAN path, text
+  games.jsonl.gz         headers per game, so a comment can be cited
+  manifest.json          per-file sha256, counts, and anything unreadable
+```
+
+The index is a **local cache, not a source**. It is derived from files you own,
+often commercial, so `.corpus/` is gitignored and nothing verbatim from it
+belongs in the repository — only distilled content, written in our own words,
+with provenance recorded.
+
+`npm run report:coverage` then joins the index against the book and says where
+the work is. It ranks book nodes by how far their displayed theory was inherited
+from against how much the corpus writes about that exact position — so the top
+of the list is the next thing worth writing rather than a guess. The Classical
+Sicilian heads it: 1,167 substantial pieces of prose from 19 separate sources
+about a line that currently shows the plans of `1.e4 c5`, eight plies above it.
+A second list covers positions the corpus discusses that the book has no entry
+for at all. Both are written to `.corpus/coverage.json`.
+
+`npm run digest:node -- --rank 1` is the reading step: it gathers everything
+written about one position, collapses the near-duplicates that courses repeat at
+the head of every chapter, and ranks what is left by how much of it is about
+*playing* the position rather than about the author's relationship with the
+opening. A person reads the digest and writes the entry. Nothing is copied —
+what ships is the distillation, in our own words, with the courses it rests on
+recorded in `theory.sources` so a reader can go and check.
+
+That is a loop, not a one-off: write entries, re-run the coverage report, and
+the worklist shrinks by exactly what was written. There is no checklist to keep
+up to date — a node leaves the worklist the moment it has its own theory, so
+progress is read off the data rather than tracked by hand. `.claude/skills/
+distil-openings` carries the runbook, so a fresh session can pick the work up
+with `/distil-openings` and no other context.
+
+Two pieces of the core exist to make this practical. `parseAnnotatedPgn`
+descends into sidelines, hanging each on the move it replaces, because courses
+keep most of their teaching down there. And `resolveSan` resolves notation by
+reading what it describes and checking only that move for legality, rather than
+rendering SAN for every legal move until one matches — same answer, about ten
+times faster, which is the difference between a four-minute pass over a corpus
+and a forty-minute one.
+
 ## Design notes
 
 **Why our own chess core.** The planned complexity engine needs make/unmake,
@@ -145,6 +202,14 @@ later.
 whether it came from the Panov, the Tarrasch or the Nimzo. Structures live in
 their own encyclopedia and openings reference them by id, so learning
 transfers the way it does over the board.
+
+**Why structures are recognised, not tagged.** Referencing them by id only
+works if somebody typed the id, which happened for 24 lines out of 3,844 — and
+never for a game that left the book. But a structure is a property of the pawns
+on the board, so `classifyStructure` reads it off the position instead: 519
+book lines now arrive with one, and so does roughly a quarter of any real
+middlegame. A structure held by Black comes back mirrored, with the plans,
+breaks and diagram turned the right way up.
 
 **Two layers in the book.** The imported ECO tables give *coverage* — almost any
 opening sequence has a name. The 118 hand-written entries give *understanding* —

@@ -210,6 +210,7 @@ export default function App() {
           <ImbalancesPanel game={game.game} />
           <OpeningPanel
             match={match}
+            fen={game.game.fen()}
             plies={played.length}
             onPlayMove={playSan}
             onMarks={setMarks}

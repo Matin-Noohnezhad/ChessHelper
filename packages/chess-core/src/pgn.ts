@@ -4,8 +4,11 @@
  * Two levels: {@link parsePgn} keeps only the main-line SAN tokens, which is all
  * the opening ingest needs, while {@link parseAnnotatedPgn} also keeps what real
  * exports from lichess and chess.com carry per move — clocks, published evals,
- * NAGs and comments — which the game review needs. Variations are skipped in
- * both, not parsed.
+ * NAGs and comments — which the game review needs. {@link parseAnnotatedPgn}
+ * also descends into sidelines, hanging each one off the move it replaces:
+ * repertoire courses keep most of their teaching down there, so a reader that
+ * drops variations throws away the better half of the file. {@link parsePgn}
+ * still keeps the main line only.
  */
 
 const RESULTS = new Set(['1-0', '0-1', '1/2-1/2', '*']);
@@ -103,6 +106,19 @@ export interface PgnMove {
   evalCp?: number;
   /** Published forced mate from White's perspective — `{[%eval #-4]}`. */
   evalMate?: number;
+  /**
+   * Sidelines offered as alternatives to *this* move — `1. e4 e5 (1... c5 …)`
+   * hangs the Sicilian off `e5`. Each entry is a line in its own right and may
+   * nest further. Absent when the move has none, which is the common case.
+   */
+  variations?: PgnMove[][];
+  /**
+   * A passed turn — ChessBase writes `Z0`, other tools `--` or `0000`. Not a
+   * chess move and not playable, but it has to be *kept*: dropping the token
+   * silently shifts every move after it onto the wrong side, which turns the
+   * rest of the line into notation that cannot be replayed.
+   */
+  nullMove?: true;
 }
 
 export interface AnnotatedPgnGame {
@@ -112,6 +128,9 @@ export interface AnnotatedPgnGame {
   /** Starting position, from a `[FEN]` header, or the standard one. */
   startFen?: string;
 }
+
+/** Passed turns, as the tools that emit them write them. */
+const NULL_MOVES = new Set(['--', 'Z0', '0000', 'z0', '@@@@']);
 
 /** SAN, loosely: enough to reject junk tokens without re-implementing the parser. */
 const SAN_RE = /^(?:O-O-O|O-O|0-0-0|0-0|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|[a-h](?:[1-8]|x[a-h][1-8])(?:=[QRBN])?)[+#]?$/;
@@ -166,16 +185,35 @@ function applyComment(move: PgnMove, body: string): void {
 }
 
 /**
+ * One line under construction: the moves so far, plus any comment seen before
+ * its first move — `( {the point is} 1... c5 )` annotates the variation, and
+ * there is no earlier move on that line to hang it on.
+ */
+interface LineFrame {
+  line: PgnMove[];
+  pending?: string;
+}
+
+/**
  * Walks movetext character by character rather than splitting on whitespace:
  * comments can contain parentheses, sidelines can be glued to moves, and a
  * clock comment has to land on the move it follows.
+ *
+ * Sidelines are read into a stack of frames. `(` opens a line that replaces the
+ * move it follows, `)` returns to the parent, and everything — comments, NAGs,
+ * suffixes — is applied to whichever frame is on top, so nesting costs nothing
+ * extra.
  */
 function scanMovetext(text: string): PgnMove[] {
-  const moves: PgnMove[] = [];
-  let depth = 0; // > 0 means we are inside a sideline
+  const root: PgnMove[] = [];
+  const stack: LineFrame[] = [{ line: root }];
   let i = 0;
 
-  const last = (): PgnMove | undefined => moves[moves.length - 1];
+  const top = (): LineFrame => stack[stack.length - 1]!;
+  const last = (): PgnMove | undefined => {
+    const { line } = top();
+    return line[line.length - 1];
+  };
 
   while (i < text.length) {
     const ch = text[i]!;
@@ -184,7 +222,12 @@ function scanMovetext(text: string): PgnMove[] {
       const end = text.indexOf('}', i + 1);
       const body = text.slice(i + 1, end < 0 ? text.length : end);
       const target = last();
-      if (!depth && target) applyComment(target, body);
+      if (target) applyComment(target, body);
+      else {
+        // Nothing to annotate yet: hold it for this line's first move.
+        const frame = top();
+        frame.pending = frame.pending ? `${frame.pending} ${body}` : body;
+      }
       i = end < 0 ? text.length : end + 1;
       continue;
     }
@@ -194,12 +237,17 @@ function scanMovetext(text: string): PgnMove[] {
       continue;
     }
     if (ch === '(') {
-      depth++;
+      const owner = last();
+      const line: PgnMove[] = [];
+      // A sideline with no move before it cannot be attached to anything, but
+      // it still gets a frame so the parentheses stay balanced.
+      if (owner) (owner.variations ??= []).push(line);
+      stack.push({ line });
       i++;
       continue;
     }
     if (ch === ')') {
-      depth = Math.max(0, depth - 1);
+      if (stack.length > 1) stack.pop();
       i++;
       continue;
     }
@@ -212,7 +260,7 @@ function scanMovetext(text: string): PgnMove[] {
     while (end < text.length && !/[\s{};()]/.test(text[end]!)) end++;
     const token = text.slice(i, end);
     i = end;
-    if (depth || !token) continue;
+    if (!token) continue;
 
     if (token.startsWith('$')) {
       const nag = Number(token.slice(1));
@@ -226,14 +274,21 @@ function scanMovetext(text: string): PgnMove[] {
 
     const suffixMatch = /([!?]+)$/.exec(bare);
     const san = suffixMatch ? bare.slice(0, -suffixMatch[1]!.length) : bare;
-    if (!SAN_RE.test(san)) continue; // move numbers, "--", "Z0", stray junk
+    const isNull = NULL_MOVES.has(san);
+    if (!isNull && !SAN_RE.test(san)) continue; // move numbers, stray junk
 
-    const move: PgnMove = { san, nags: [] };
+    const move: PgnMove = { san: isNull ? '--' : san, nags: [] };
+    if (isNull) move.nullMove = true;
     if (suffixMatch) move.suffix = suffixMatch[1]!;
-    moves.push(move);
+    const frame = top();
+    if (frame.pending !== undefined) {
+      applyComment(move, frame.pending);
+      frame.pending = undefined;
+    }
+    frame.line.push(move);
   }
 
-  return moves;
+  return root;
 }
 
 /** Parses one game, keeping per-move clocks, evals, NAGs and comments. */
