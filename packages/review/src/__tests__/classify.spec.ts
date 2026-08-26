@@ -19,6 +19,8 @@ function input(overrides: Partial<ClassifyInput> = {}): ClassifyInput {
     winBefore: 52,
     winAfter: 52,
     winSecondBest: 50,
+    cpBefore: 20,
+    cpAfter: 20,
     mateAvailable: false,
     keepsMate: false,
     investedCp: 0,
@@ -79,25 +81,78 @@ describe('move classification', () => {
     expect(result.quality).toBe('miss');
   });
 
-  it('celebrates a sound sacrifice and tags the material', () => {
+  it('calls a piece given up in a level position a sacrifice, and does not double-tag it', () => {
     const result = classifyMove(
-      input({ investedCp: 330, winBefore: 60, winAfter: 60, winSecondBest: 55 }),
+      input({ investedCp: 330, winBefore: 60, winAfter: 60, cpBefore: 50, cpAfter: 40 }),
     );
-    expect(result.quality).toBe('brilliant');
+    expect(result.quality).toBe('sacrifice');
+    // The category has said it; the tag would only repeat it.
+    expect(result.tags).not.toContain('sacrifice');
+  });
+
+  it('counts a pawn as enough material', () => {
+    expect(classifyMove(input({ investedCp: 100 })).quality).toBe('sacrifice');
+    expect(classifyMove(input({ investedCp: 90 })).quality).toBe('best');
+  });
+
+  it('keeps the label while a winning position stays winning', () => {
+    // +7 down to +2 is a lot of evaluation to spend, and still a sacrifice.
+    const result = classifyMove(
+      input({ playedUci: 'a2a3', investedCp: 500, cpBefore: 700, cpAfter: 200 }),
+    );
+    expect(result.quality).toBe('sacrifice');
+  });
+
+  it('keeps the label while a level position stays level', () => {
+    const result = classifyMove(
+      input({ playedUci: 'a2a3', investedCp: 100, cpBefore: 50, cpAfter: -50 }),
+    );
+    expect(result.quality).toBe('sacrifice');
+  });
+
+  it('keeps the label when a position that was already worse holds where it was', () => {
+    const result = classifyMove(
+      input({ playedUci: 'a2a3', investedCp: 300, cpBefore: -150, cpAfter: -150 }),
+    );
+    expect(result.quality).toBe('sacrifice');
+  });
+
+  it('is not a sacrifice once the position drops a band', () => {
+    // A winning position that is only level afterwards bought nothing.
+    const result = classifyMove(
+      input({ playedUci: 'a2a3', investedCp: 330, cpBefore: 400, cpAfter: 0, winBefore: 75, winAfter: 50 }),
+    );
+    expect(result.quality).not.toBe('sacrifice');
     expect(result.tags).toContain('sacrifice');
   });
 
-  it('does not call a sacrifice brilliant when it simply loses', () => {
+  it('is not a sacrifice from a position that was already lost', () => {
     const result = classifyMove(
-      input({ playedUci: 'a2a3', investedCp: 330, winBefore: 55, winAfter: 15 }),
+      input({ playedUci: 'a2a3', investedCp: 330, cpBefore: -700, cpAfter: -700, winBefore: 8, winAfter: 8 }),
+    );
+    expect(result.quality).toBe('best');
+    expect(result.tags).toContain('sacrifice');
+  });
+
+  it('does not call a sacrifice sound when it simply loses', () => {
+    const result = classifyMove(
+      input({
+        playedUci: 'a2a3',
+        investedCp: 330,
+        winBefore: 55,
+        winAfter: 15,
+        cpBefore: 30,
+        cpAfter: -600,
+      }),
     );
     expect(result.quality).toBe('blunder');
     expect(result.tags).toContain('sacrifice');
   });
 
-  it('does not call giving material back in a won game brilliant', () => {
-    const result = classifyMove(input({ investedCp: 500, winBefore: 99, winAfter: 99 }));
-    expect(result.quality).toBe('best');
+  it('leaves a gambit still in book labelled theory, tagged with the material', () => {
+    const result = classifyMove(input({ isBook: true, investedCp: 100 }));
+    expect(result.quality).toBe('book');
+    expect(result.tags).toContain('sacrifice');
   });
 
   it('calls the one move that holds great, and marks the moment critical', () => {
@@ -125,7 +180,9 @@ describe('move classification', () => {
   });
 
   it('stays "best" when the runner-up was also perfectly playable', () => {
-    const result = classifyMove(input({ winBefore: 95, winAfter: 95, winSecondBest: 70 }));
+    const result = classifyMove(
+      input({ winBefore: 95, winAfter: 95, winSecondBest: 70, cpBefore: 800, cpAfter: 800 }),
+    );
     expect(result.quality).toBe('best');
   });
 

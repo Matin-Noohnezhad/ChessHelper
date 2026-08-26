@@ -42,12 +42,14 @@ export interface EvaluatedPosition {
 export type PositionEvaluator = (fen: string, ply: number) => Promise<EvaluatedPosition>;
 
 /**
- * chess.com's move vocabulary. `book` is a move still in our opening tables,
- * `forced` a position with a single legal reply, and `miss` a move that threw
- * away a decisive chance rather than merely losing evaluation.
+ * chess.com's move vocabulary, with one change: `sacrifice` sits where
+ * "brilliant" would, and covers every move that gives material away and keeps
+ * the position it had. `book` is a move still in our opening tables, `forced` a
+ * position with a single legal reply, and `miss` a move that threw away a
+ * decisive chance rather than merely losing evaluation.
  */
 export type MoveQuality =
-  | 'brilliant'
+  | 'sacrifice'
   | 'great'
   | 'best'
   | 'excellent'
@@ -59,7 +61,11 @@ export type MoveQuality =
   | 'miss'
   | 'blunder';
 
-/** Orthogonal to quality: a blunder can also be a sacrifice, a best move can be the only one. */
+/**
+ * Orthogonal to quality: a best move can be the only one. The `sacrifice` tag
+ * marks material given up by a move whose *category* went elsewhere — a gambit
+ * still in book, or a piece thrown at a position already lost.
+ */
 export type MoveTag = 'sacrifice' | 'only-move' | 'critical' | 'time-pressure';
 
 export type GamePhase = 'opening' | 'middlegame' | 'endgame';

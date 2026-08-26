@@ -5,7 +5,7 @@ import { qualityClass } from './QualityBadge.js';
 
 const HEIGHT = 34;
 /** Only the categories worth interrupting the curve for. */
-const MARKED: MoveQuality[] = ['brilliant', 'great', 'miss', 'mistake', 'blunder'];
+const MARKED: MoveQuality[] = ['sacrifice', 'great', 'miss', 'mistake', 'blunder'];
 
 interface ReviewGraphProps {
   review: GameReview;

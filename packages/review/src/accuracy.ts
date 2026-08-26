@@ -98,15 +98,18 @@ export function meanAccuracy(accuracies: number[]): number | null {
 }
 
 /**
- * Centipawns lost by a move, from the mover's perspective, with mates mapped to
- * a large but finite number so a missed mate-in-5 does not make an average
- * infinite.
+ * A score as a plain number of centipawns from one side's point of view, with
+ * mates mapped to a large but finite number so a missed mate-in-5 does not make
+ * an average infinite.
  */
+export function centipawnsFor(score: Score, color: ColorName): number {
+  const white = score.mate !== null
+    ? (score.mate > 0 ? 2000 : -2000)
+    : clamp(score.cp ?? 0, -2000, 2000);
+  return color === 'w' ? white : -white;
+}
+
+/** Centipawns lost by a move, from the mover's perspective. */
 export function centipawnLoss(before: Score, after: Score, color: ColorName): number {
-  const toCp = (score: Score): number => {
-    if (score.mate !== null) return score.mate > 0 ? 2000 : -2000;
-    return clamp(score.cp ?? 0, -2000, 2000);
-  };
-  const sign = color === 'w' ? 1 : -1;
-  return Math.max(0, (toCp(before) - toCp(after)) * sign);
+  return Math.max(0, centipawnsFor(before, color) - centipawnsFor(after, color));
 }

@@ -1170,7 +1170,7 @@ button:disabled {
  * Move categories. One colour per label, defined once here so the move list,
  * the graph dots and the badges can never drift apart.
  */
-.q--brilliant {
+.q--sacrifice {
   --q: #26c2a3;
 }
 .q--great {

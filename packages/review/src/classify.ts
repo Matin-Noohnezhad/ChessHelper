@@ -1,12 +1,16 @@
 /**
  * Labelling a single move.
  *
- * Everything is measured in win expectancy given away, never in centipawns:
- * dropping half a pawn while up a queen is not a mistake, and dropping half a
- * pawn in a level ending is. On top of the plain "how much did this cost"
- * ladder sit the four labels that need context rather than a threshold —
- * a move that was the only one available, the only *good* one, one that gave up
- * material on purpose, and one that threw away a decisive chance.
+ * Cost is measured in win expectancy given away, never in centipawns: dropping
+ * half a pawn while up a queen is not a mistake, and dropping half a pawn in a
+ * level ending is. On top of that ladder sit the labels that need context
+ * rather than a threshold — a move that was the only one available, the only
+ * *good* one, one that gave up material on purpose, and one that threw away a
+ * decisive chance.
+ *
+ * The sacrifice rule is the one place centipawns are read directly, because
+ * "the position held" is a statement about the evaluation itself and not about
+ * how much of it was spent. See {@link isSacrifice}.
  */
 
 import type { CandidateMove, MoveQuality, MoveTag } from './types.js';
@@ -27,12 +31,21 @@ const ONLY_MOVE_GAP = 15;
 const CRITICAL_GAP = 20;
 /** Every alternative has to leave the mover worse than equal for a move to be "great". */
 const RUNNER_UP_IS_LOST = 50;
-/** Material given up before a move is called a sacrifice — a clear piece, not an exchange. */
-const SACRIFICE_CP = 150;
-/** Below this the position is not "still fine", so a sacrifice was just a blunder. */
-const SOUND_SACRIFICE_WIN = 50;
-/** Above this the game is already over and giving material back is not brilliant. */
-const ALREADY_WINNING = 97;
+/** Material given up before a move is called a sacrifice — a pawn is enough. */
+export const SACRIFICE_CP = 100;
+/**
+ * The floors of the four evaluation bands a position can sit in, mover's
+ * perspective: winning, playable, worse-but-holding, and lost. A sacrifice is
+ * judged by whether it *keeps* the band it started in, not by what it costs —
+ * +7 to +2 is still a winning position, +0.5 to -0.5 is still a game, and a
+ * -1.5 that stays -1.5 is still the same fight. Below the last floor the
+ * position is already gone and shedding material is not a sacrifice.
+ */
+export const BAND_FLOORS = {
+  winning: 150,
+  playable: -100,
+  holding: -200,
+} as const;
 /** A decisive advantage: throwing this away is a miss, not merely a mistake. */
 const DECISIVE_WIN = 70;
 /** What a miss has to leave behind — anything above this and the chance is still there. */
@@ -51,6 +64,10 @@ export interface ClassifyInput {
   winAfter: number;
   /** Win expectancy of the engine's second choice, or null when there was none. */
   winSecondBest: number | null;
+  /** Evaluation before the move in centipawns, mover's perspective. */
+  cpBefore: number;
+  /** Evaluation after it, same units and perspective. */
+  cpAfter: number;
   /** The mover had a forced mate available. */
   mateAvailable: boolean;
   /** The move played keeps a forced mate for the mover. */
@@ -68,6 +85,37 @@ export interface Classification {
   tags: MoveTag[];
 }
 
+/**
+ * Which of the four bands an evaluation sits in: 3 winning, 2 playable,
+ * 1 worse but holding, 0 lost.
+ */
+export function evalBand(cp: number): number {
+  if (cp >= BAND_FLOORS.winning) return 3;
+  if (cp >= BAND_FLOORS.playable) return 2;
+  if (cp >= BAND_FLOORS.holding) return 1;
+  return 0;
+}
+
+/**
+ * A sacrifice in the ordinary chess sense: material handed over without getting
+ * it straight back, and a position that still stands up afterwards. The static
+ * exchange in {@link materialInvested} is what makes the first half true — a
+ * capture the opponent simply recaptures costs nothing, and a piece dropped on
+ * a defended square costs a piece.
+ *
+ * "Stands up" means the evaluation stays in the band it was already in. That
+ * deliberately admits sacrifices that cost something: giving back a rook to
+ * simplify a won game is a sacrifice, and so is a pawn burned for the initiative
+ * in a level position. What it excludes is the move that drops the position a
+ * band — an attack that was worth playing and now is not — and any sacrifice
+ * made from an already lost position, where there is nothing left to keep.
+ */
+export function isSacrifice(investedCp: number, cpBefore: number, cpAfter: number): boolean {
+  if (investedCp < SACRIFICE_CP) return false;
+  const before = evalBand(cpBefore);
+  return before > 0 && evalBand(cpAfter) >= before;
+}
+
 /** The plain "how much did it cost" ladder, before any of the special cases. */
 function band(loss: number): MoveQuality {
   if (loss <= LOSS_THRESHOLDS.best) return 'best';
@@ -83,15 +131,19 @@ export function classifyMove(input: ClassifyInput): Classification {
   const playedBest = input.candidates[0]?.uci === input.playedUci;
   const gap = input.winSecondBest === null ? null : input.winBefore - input.winSecondBest;
 
+  const quality = qualityOf(input, loss, playedBest, gap);
+
   const tags: MoveTag[] = [];
   if (input.legalCount === 1 || (playedBest && gap !== null && gap >= ONLY_MOVE_GAP)) {
     tags.push('only-move');
   }
-  if (input.investedCp >= SACRIFICE_CP) tags.push('sacrifice');
+  // The tag is what is left over once the category has had its say: it marks the
+  // gambit still in book and the piece thrown at a lost position, not the move
+  // already labelled "Sacrifice" in letters an inch high.
+  if (input.investedCp >= SACRIFICE_CP && quality !== 'sacrifice') tags.push('sacrifice');
   if (input.legalCount > 1 && gap !== null && gap >= CRITICAL_GAP) tags.push('critical');
   if (input.inTimePressure) tags.push('time-pressure');
 
-  const quality = qualityOf(input, loss, playedBest, gap);
   return { quality, tags };
 }
 
@@ -105,18 +157,8 @@ function qualityOf(
   if (input.isBook) return 'book';
   if (input.legalCount === 1) return 'forced';
 
-  // A sound sacrifice: material given up, nothing given away on the clock face
-  // of the evaluation, and a position still worth playing afterwards. The
-  // "already winning" guard stops every simplifying exchange sacrifice in a
-  // won game from being celebrated.
-  if (
-    input.investedCp >= SACRIFICE_CP &&
-    loss < LOSS_THRESHOLDS.excellent &&
-    input.winAfter >= SOUND_SACRIFICE_WIN &&
-    input.winBefore <= ALREADY_WINNING
-  ) {
-    return 'brilliant';
-  }
+  // Material given up, and the position still standing where it stood.
+  if (isSacrifice(input.investedCp, input.cpBefore, input.cpAfter)) return 'sacrifice';
 
   // The only move that holds, found. Every alternative has to leave the mover
   // worse than equal, otherwise this is just the best of several playable moves
@@ -149,7 +191,7 @@ function qualityOf(
 
 /** Display order and copy for the categories, so the UI and the tests agree on both. */
 export const QUALITY_LABELS: Record<MoveQuality, string> = {
-  brilliant: 'Brilliant',
+  sacrifice: 'Sacrifice',
   great: 'Great',
   best: 'Best',
   excellent: 'Excellent',
@@ -163,7 +205,7 @@ export const QUALITY_LABELS: Record<MoveQuality, string> = {
 };
 
 export const QUALITY_SYMBOLS: Record<MoveQuality, string> = {
-  brilliant: '!!',
+  sacrifice: '⚔',
   great: '!',
   best: '★',
   excellent: '✓',
@@ -177,7 +219,7 @@ export const QUALITY_SYMBOLS: Record<MoveQuality, string> = {
 };
 
 export const QUALITY_ORDER: MoveQuality[] = [
-  'brilliant',
+  'sacrifice',
   'great',
   'best',
   'excellent',
@@ -192,7 +234,7 @@ export const QUALITY_ORDER: MoveQuality[] = [
 
 export function emptyCounts(): Record<MoveQuality, number> {
   return {
-    brilliant: 0,
+    sacrifice: 0,
     great: 0,
     best: 0,
     excellent: 0,

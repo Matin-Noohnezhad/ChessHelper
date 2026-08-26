@@ -20,7 +20,7 @@ packages/
                   rotation, spaced repetition, off-book feedback   ✅ 19 tests
   imbalances/     static, Silman-style reading of a position       ✅ 8 tests
   review/         whole-game review: accuracy, phases, and
-                  chess.com-style move classification             ✅ 39 tests
+                  chess.com-style move classification             ✅ 50 tests
 apps/
   web/            React + Vite: explore board, study panel,
                   the training mode and the game review            ✅ runs
@@ -95,11 +95,19 @@ Paste a PGN — annotated with clocks or not, one game or a whole month's export
   the moves are still in our ECO tables; the endgame starts when the material
   says so. "82% overall" tells you less than "you are fine until the pieces come
   off".
-- **Every move labelled** — Brilliant, Great, Best, Excellent, Good, Theory,
-  Forced, Inaccuracy, Mistake, Miss, Blunder — plus tags for sacrifices, only
-  moves, critical moments and moves played in time pressure. A sacrifice is
-  found by static exchange evaluation rather than by eyeballing the eval, and an
-  obvious recapture never counts as a great move.
+- **Every move labelled** — Sacrifice, Great, Best, Excellent, Good, Theory,
+  Forced, Inaccuracy, Mistake, Miss, Blunder — plus tags for only moves,
+  critical moments and moves played in time pressure. An obvious recapture never
+  counts as a great move.
+- **Sacrifices, in the ordinary sense of the word.** Material handed over — a
+  pawn is enough — without getting it straight back, found by static exchange
+  evaluation rather than by eyeballing the eval. Whether it *counts* is a
+  question about the position, not the price: the evaluation has to stay in the
+  band it was already in. +7 to +2 is still a winning position and still a
+  sacrifice; +0.5 to −0.5 is still a game; −1.5 that stays −1.5 is still the
+  same fight. Below −2 there is nothing left to keep, and a move that drops the
+  position a band bought nothing — those keep the label they earned on the
+  ladder and carry a sacrifice *tag* instead.
 - **A one-line verdict per move**, the engine's alternatives with their lines,
   and a "show me the move I should have played" arrow on the previous position.
 - **Turning points first**, biggest swing at the top, and a win-expectancy graph
