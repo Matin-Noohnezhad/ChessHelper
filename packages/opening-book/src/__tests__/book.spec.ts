@@ -112,7 +112,7 @@ describe('opening data integrity', () => {
    * teaching content.
    */
   it('does not quietly lose entries', () => {
-    expect(CURATED_OPENINGS.length).toBeGreaterThanOrEqual(399);
+    expect(CURATED_OPENINGS.length).toBeGreaterThanOrEqual(400);
 
     const landmarks = [
       'e4',
