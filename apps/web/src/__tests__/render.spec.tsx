@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { identifyOpening } from '@coh/opening-book';
 import { Chess } from '@coh/chess-core';
-import { reviewPgn } from '@coh/review';
+import { QUALITY_LABELS, QUALITY_ORDER, reviewPgn } from '@coh/review';
 import type { PositionEvaluator } from '@coh/review';
 import App from '../App.js';
 import { Board } from '../components/Board.js';
 import { OpeningPanel } from '../components/OpeningPanel.js';
 import { ReviewSetup } from '../components/ReviewSetup.js';
-import { ReviewReport, StructureNote } from '../components/ReviewView.js';
+import { ReviewReport, StructureNote, moveBadge } from '../components/ReviewView.js';
 import { TrainerView } from '../components/TrainerView.js';
 
 /**
@@ -132,12 +132,33 @@ describe('game review UI', () => {
 
   it('offers a PGN box, a file picker and the depth presets', () => {
     const html = renderToStaticMarkup(
-      <ReviewSetup controller={idle} currentGamePgn={'1.e4 e5 *'} />,
+      <ReviewSetup controller={idle} currentGamePgn={'1.e4 e5 *'} onReviewBoardGame={() => {}} />,
     );
     expect(html).toContain('Review a game');
     expect(html).toContain('Open a .pgn file');
-    expect(html).toContain('Use the game on the board');
     expect(html).toContain('Balanced');
+  });
+
+  it('offers the moves on the board as a review of their own, in one click', () => {
+    const html = renderToStaticMarkup(
+      <ReviewSetup
+        controller={idle}
+        currentGamePgn={'1.e4 e5 2.Nf3 Nc6 *'}
+        onReviewBoardGame={() => {}}
+      />,
+    );
+    expect(html).toContain('The game on the board');
+    expect(html).toContain('Review these moves');
+    expect(html).toContain('2 moves');
+    expect(html).toContain('e4 e5 Nf3 Nc6');
+  });
+
+  it('has nothing to say about the board when no moves have been played', () => {
+    const html = renderToStaticMarkup(
+      <ReviewSetup controller={idle} currentGamePgn={null} onReviewBoardGame={() => {}} />,
+    );
+    expect(html).not.toContain('The game on the board');
+    expect(html).toContain('Open a .pgn file');
   });
 
   it('names the pawn structure on the board, from the side to move', () => {
@@ -174,5 +195,52 @@ describe('game review UI', () => {
     // Every move is in the list, and the board still draws all 64 squares.
     expect(html).toContain('Bb5');
     expect(html.match(/data-square="/g)).toHaveLength(64);
+  });
+
+  it('sticks the move’s category to the square it landed on', () => {
+    const html = renderToStaticMarkup(
+      <Board
+        game={new Chess()}
+        orientation="white"
+        lastMove={null}
+        onMove={() => {}}
+        badge={{ square: 'e4', symbol: '⚔', label: 'Sacrifice', className: 'q q--sacrifice' }}
+      />,
+    );
+    // The disc sits inside e4's cell, carrying the colour class the move list
+    // and the graph use for the same category.
+    const cell = html.slice(html.indexOf('data-square="e4"'));
+    expect(cell.slice(0, cell.indexOf('data-square="d4"'))).toContain('square-badge');
+    expect(html).toContain('q--sacrifice');
+    expect(html).toContain('Sacrifice');
+  });
+
+  it('takes the badge from the move, and hides it behind the engine’s suggestion', async () => {
+    const review = await reviewPgn('1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *', { evaluator: flatEvaluator });
+    const knight = review.moves[2]!;
+    expect(knight.san).toBe('Nf3');
+
+    const badge = moveBadge(knight, false);
+    expect(badge?.square).toBe('f3');
+    expect(badge?.label).toBe(QUALITY_LABELS[knight.quality]);
+    expect(badge?.className).toContain(`q--${knight.quality}`);
+
+    // While the engine's move is on the board the position predates the move,
+    // so there is nothing to pass judgement on yet.
+    expect(moveBadge(knight, true)).toBeNull();
+    expect(moveBadge(null, false)).toBeNull();
+  });
+
+  it('lists every move category, including the ones neither side scored', async () => {
+    const review = await reviewPgn('1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *', { evaluator: flatEvaluator });
+    const html = renderToStaticMarkup(<ReviewReport review={review} onReset={() => {}} />);
+
+    // A flat evaluator produces nothing but theory, so every other row is a zero
+    // — and every one of them still has to be on screen.
+    for (const label of QUALITY_ORDER.map((quality) => QUALITY_LABELS[quality])) {
+      expect(html).toContain(label);
+    }
+    expect(html).toContain('Sacrifice');
+    expect(html).toContain('is-empty');
   });
 });

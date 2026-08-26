@@ -15,6 +15,7 @@ import type { AnnotatedPgnGame, ColorName, PgnMove } from '@coh/chess-core';
 import { deepestOpening } from '@coh/opening-book';
 import {
   centipawnLoss,
+  centipawnsFor,
   combineAccuracy,
   moveAccuracy,
   volatilityWeights,
@@ -291,6 +292,8 @@ export async function reviewGame(
       winBefore,
       winAfter,
       winSecondBest,
+      cpBefore: centipawnsFor(scoreBefore, move.color),
+      cpAfter: centipawnsFor(scoreAfter, move.color),
       mateAvailable,
       keepsMate,
       investedCp,
@@ -363,13 +366,13 @@ export async function reviewGame(
 }
 
 /**
- * The moves worth replaying first, biggest swing first. Brilliancies and the
- * moves that saved a position ride along at the bottom, where their zero loss
+ * The moves worth replaying first, biggest swing first. Sacrifices and the
+ * moves that saved a position ride along at the bottom, where their small loss
  * puts them — they are worth seeing, but never ahead of the game's blunders.
  */
 export function keyMoments(review: GameReview, limit = 6): ReviewedMove[] {
   return [...review.moves]
-    .filter((move) => move.loss >= 5 || move.quality === 'brilliant' || move.quality === 'great')
+    .filter((move) => move.loss >= 5 || move.quality === 'sacrifice' || move.quality === 'great')
     .sort((a, b) => b.loss - a.loss)
     .slice(0, limit);
 }

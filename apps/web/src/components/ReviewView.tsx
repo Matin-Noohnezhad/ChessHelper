@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Chess } from '@coh/chess-core';
 import {
   QUALITY_LABELS,
+  QUALITY_SYMBOLS,
   formatScore,
   formatSeconds,
   keyMoments,
@@ -11,14 +12,14 @@ import type { GameReview, MoveTag, ReviewedMove } from '@coh/review';
 import { breaksFor, classifyStructureBest, plansFor } from '@coh/opening-book';
 import type { Side } from '@coh/opening-book';
 import { Board } from './Board.js';
-import type { AnnotationThickness } from './Board.js';
+import type { AnnotationThickness, SquareBadge } from './Board.js';
 import { EvalBar } from './EvalBar.js';
-import { QualityBadge } from './QualityBadge.js';
+import { QualityBadge, qualityClass } from './QualityBadge.js';
 import { ReviewGraph } from './ReviewGraph.js';
 import { ReviewMoveList } from './ReviewMoveList.js';
 import { ReviewSetup } from './ReviewSetup.js';
 import { ReviewSummary } from './ReviewSummary.js';
-import { useGameReview } from '../hooks/useGameReview.js';
+import type { ReviewController } from '../hooks/useGameReview.js';
 import type { Orientation } from '../hooks/useChessGame.js';
 
 const TAG_LABELS: Record<MoveTag, string> = {
@@ -29,8 +30,11 @@ const TAG_LABELS: Record<MoveTag, string> = {
 };
 
 interface ReviewViewProps {
+  controller: ReviewController;
   /** The line on the explore board, so "review what I just played" needs no clipboard. */
   currentGamePgn: string | null;
+  /** Reviews that line straight away, without a trip through the paste box. */
+  onReviewBoardGame: () => void;
   annotationThickness?: AnnotationThickness;
 }
 
@@ -59,6 +63,28 @@ export function StructureNote({ fen, toMove }: { fen: string; toMove: Side }) {
       )}
     </div>
   );
+}
+
+/**
+ * The verdict, stuck to the square the move landed on, so the board alone says
+ * what kind of move this was.
+ *
+ * The destination comes off the UCI, which is right for the awkward cases too:
+ * castling is `e1g1`, so the sticker lands on the king rather than the rook,
+ * and a promotion's `a7a8q` still points at a8.
+ *
+ * Nothing is shown while the engine's suggestion is on the board — the same
+ * rule the last-move highlight follows. That position is the one *before* the
+ * move, so there is nothing yet to pass judgement on.
+ */
+export function moveBadge(move: ReviewedMove | null, showingBefore: boolean): SquareBadge | null {
+  if (!move || showingBefore) return null;
+  return {
+    square: move.uci.slice(2, 4),
+    symbol: QUALITY_SYMBOLS[move.quality],
+    label: QUALITY_LABELS[move.quality],
+    className: qualityClass(move.quality),
+  };
 }
 
 function MoveDetail({
@@ -154,10 +180,13 @@ export function ReviewReport({
   review,
   annotationThickness,
   onReset,
+  onReviewBoardGame,
 }: {
   review: GameReview;
   annotationThickness?: AnnotationThickness;
   onReset: () => void;
+  /** Offered when the explore board holds a line — usually a longer one than this report covers. */
+  onReviewBoardGame?: (() => void) | undefined;
 }) {
   const [selectedPly, setSelectedPly] = useState(0);
   const [showBest, setShowBest] = useState(false);
@@ -188,6 +217,8 @@ export function ReviewReport({
     showingBefore && alternative
       ? [{ from: alternative.uci.slice(0, 2), to: alternative.uci.slice(2, 4) }]
       : [];
+
+  const badge = moveBadge(move, showingBefore);
 
   const step = (delta: number) => {
     setShowBest(false);
@@ -229,6 +260,7 @@ export function ReviewReport({
             onMove={() => {}}
             interactive={false}
             hintArrows={hintArrows}
+            badge={badge}
             {...(annotationThickness ? { annotationThickness } : {})}
           />
         </div>
@@ -281,6 +313,11 @@ export function ReviewReport({
           <button type="button" onClick={onReset}>
             Review another game
           </button>
+          {onReviewBoardGame && (
+            <button type="button" onClick={onReviewBoardGame}>
+              Review the board again
+            </button>
+          )}
         </div>
 
         <ReviewSummary review={review} />
@@ -347,17 +384,25 @@ export function ReviewReport({
  */
 
 /**
- * The review mode: a PGN goes in, and what comes back is the same report
- * chess.com gives — accuracy for both sides, split by phase, with every move
+ * The review mode. A game goes in — pasted, opened from a file, or simply the
+ * moves sitting on the explore board — and what comes back is the same report
+ * chess.com gives: accuracy for both sides, split by phase, with every move
  * labelled and the turning points listed first.
  */
-export function ReviewView({ currentGamePgn, annotationThickness }: ReviewViewProps) {
-  const controller = useGameReview();
-
+export function ReviewView({
+  controller,
+  currentGamePgn,
+  onReviewBoardGame,
+  annotationThickness,
+}: ReviewViewProps) {
   if (!controller.review) {
     return (
       <main className="app__body app__body--single">
-        <ReviewSetup controller={controller} currentGamePgn={currentGamePgn} />
+        <ReviewSetup
+          controller={controller}
+          currentGamePgn={currentGamePgn}
+          onReviewBoardGame={onReviewBoardGame}
+        />
       </main>
     );
   }
@@ -367,6 +412,7 @@ export function ReviewView({ currentGamePgn, annotationThickness }: ReviewViewPr
       review={controller.review}
       {...(annotationThickness ? { annotationThickness } : {})}
       onReset={controller.clear}
+      onReviewBoardGame={currentGamePgn ? onReviewBoardGame : undefined}
     />
   );
 }

@@ -20,7 +20,7 @@ packages/
                   rotation, spaced repetition, off-book feedback   ✅ 19 tests
   imbalances/     static, Silman-style reading of a position       ✅ 8 tests
   review/         whole-game review: accuracy, phases, and
-                  chess.com-style move classification             ✅ 39 tests
+                  chess.com-style move classification             ✅ 50 tests
 apps/
   web/            React + Vite: explore board, study panel,
                   the training mode and the game review            ✅ runs
@@ -34,7 +34,7 @@ app or a Tauri desktop build later — only `apps/*` changes.
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # 119 tests across core, book, trainer, review and UI
+npm test           # 158 tests across core, book, trainer, review and UI
 npm run ingest:eco # regenerate the ECO tables from data/*.tsv
 npm run typecheck
 ```
@@ -83,8 +83,10 @@ Gambit waits its turn.
 
 ### Game review
 
-Paste a PGN — annotated with clocks or not, one game or a whole month's export
-— and the game comes back the way chess.com reports it.
+Two ways in, both one click: **Review game** on the explore board sends the
+moves you have just played straight to the engine, and the review tab also takes
+a PGN — annotated with clocks or not, one game or a whole month's export. Either
+way the game comes back the way chess.com reports it.
 
 - **Accuracy for both sides, and per phase.** Every score is converted to a win
   expectancy before anything is measured, because half a pawn matters in a level
@@ -95,11 +97,23 @@ Paste a PGN — annotated with clocks or not, one game or a whole month's export
   the moves are still in our ECO tables; the endgame starts when the material
   says so. "82% overall" tells you less than "you are fine until the pieces come
   off".
-- **Every move labelled** — Brilliant, Great, Best, Excellent, Good, Theory,
-  Forced, Inaccuracy, Mistake, Miss, Blunder — plus tags for sacrifices, only
-  moves, critical moments and moves played in time pressure. A sacrifice is
-  found by static exchange evaluation rather than by eyeballing the eval, and an
-  obvious recapture never counts as a great move.
+- **Every move labelled** — Sacrifice, Great, Best, Excellent, Good, Theory,
+  Forced, Inaccuracy, Mistake, Miss, Blunder — plus tags for only moves,
+  critical moments and moves played in time pressure. Every category is listed
+  in the summary whether or not anyone scored it: a zero next to Blunder is a
+  fact about the game, and a table whose rows shuffle between games cannot be
+  read at a glance. An obvious recapture never counts as a great move. Stepping
+  through the game sticks the label to the square the move landed on, so the
+  board on its own tells you what kind of move you are looking at.
+- **Sacrifices, in the ordinary sense of the word.** Material handed over — a
+  pawn is enough — without getting it straight back, found by static exchange
+  evaluation rather than by eyeballing the eval. Whether it *counts* is a
+  question about the position, not the price: the evaluation has to stay in the
+  band it was already in. +7 to +2 is still a winning position and still a
+  sacrifice; +0.5 to −0.5 is still a game; −1.5 that stays −1.5 is still the
+  same fight. Below −2 there is nothing left to keep, and a move that drops the
+  position a band bought nothing — those keep the label they earned on the
+  ladder and carry a sacrifice *tag* instead.
 - **A one-line verdict per move**, the engine's alternatives with their lines,
   and a "show me the move I should have played" arrow on the previous position.
 - **Turning points first**, biggest swing at the top, and a win-expectancy graph

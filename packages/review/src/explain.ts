@@ -39,8 +39,10 @@ export function explainMove(input: ExplainInput): string {
     case 'forced':
       return 'The only legal move.';
 
-    case 'brilliant':
-      return `Brilliant — gives up ${formatPawns(input.investedCp)} and the position still stands at ${after}.`;
+    case 'sacrifice':
+      return alternative
+        ? `A sacrifice — ${formatPawns(input.investedCp)} invested, and the position still stands at ${after}; the engine wanted ${alternative}.`
+        : `A sacrifice — ${formatPawns(input.investedCp)} invested, and the position still stands at ${after}.`;
 
     case 'great':
       return alternative

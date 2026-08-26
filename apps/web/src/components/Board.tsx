@@ -100,6 +100,23 @@ export interface SquareMark {
   label?: string;
 }
 
+/**
+ * A sticker pinned to a square, chess.com-style: the verdict on the move that
+ * just landed there, readable without looking away from the board.
+ *
+ * Deliberately says nothing about move categories — the board does not know
+ * what a review is. The caller brings the glyph, the words and the colour.
+ */
+export interface SquareBadge {
+  square: string;
+  /** The glyph inside the disc. One or two characters; anything longer will not fit. */
+  symbol: string;
+  /** What the glyph means, for the tooltip and for screen readers. */
+  label: string;
+  /** Carries the colour, e.g. `q q--sacrifice`. */
+  className?: string;
+}
+
 interface BoardProps {
   game: Chess;
   orientation: Orientation;
@@ -110,6 +127,8 @@ interface BoardProps {
   marks?: SquareMark[];
   /** Arrows drawn by the app rather than the user; cleared with the position, not by clicking. */
   hintArrows?: BoardArrow[];
+  /** The verdict on the move that reached this position, stuck to the square it landed on. */
+  badge?: SquareBadge | null;
   /** Stroke weight for drawn arrows and square marks; defaults to 'medium'. */
   annotationThickness?: AnnotationThickness;
 }
@@ -127,6 +146,7 @@ export function Board({
   interactive = true,
   marks = [],
   hintArrows = [],
+  badge = null,
   annotationThickness = 'medium',
 }: BoardProps) {
   const annotationScale = ANNOTATION_SCALE[annotationThickness];
@@ -355,6 +375,15 @@ export function Board({
               )}
               {targets.has(square) && (
                 <span className={targets.get(square) ? 'target target--capture' : 'target'} />
+              )}
+              {badge?.square === square && (
+                <span
+                  className={`square-badge ${badge.className ?? ''}`}
+                  title={badge.label}
+                  aria-label={badge.label}
+                >
+                  {badge.symbol}
+                </span>
               )}
               {mark?.label && <span className="square-label">{mark.label}</span>}
               {file === 0 && <span className="coord coord--rank">{square[1]}</span>}

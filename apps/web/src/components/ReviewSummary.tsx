@@ -29,12 +29,12 @@ function AccuracyCard({ side }: { side: SideReport }) {
  * the three phases, and what the moves were made of. The phase split is the
  * part players act on — "82% overall" says less than "you are fine until the
  * pieces come off".
+ *
+ * Every category is listed, including the ones nobody scored: a zero next to
+ * Blunder is a fact about the game, and a table whose rows move around between
+ * games cannot be read at a glance. Empty rows are dimmed, not dropped.
  */
 export function ReviewSummary({ review }: { review: GameReview }) {
-  const usedQualities = QUALITY_ORDER.filter(
-    (quality) => review.white.counts[quality] || review.black.counts[quality],
-  );
-
   return (
     <section className="panel review-summary">
       <div className="accuracy-cards">
@@ -80,8 +80,13 @@ export function ReviewSummary({ review }: { review: GameReview }) {
 
       <table className="review-table review-table--counts">
         <tbody>
-          {usedQualities.map((quality) => (
-            <tr key={quality}>
+          {QUALITY_ORDER.map((quality) => (
+            <tr
+              key={quality}
+              className={
+                review.white.counts[quality] || review.black.counts[quality] ? '' : 'is-empty'
+              }
+            >
               <td>{review.white.counts[quality]}</td>
               <th scope="row">
                 <QualityBadge quality={quality} />

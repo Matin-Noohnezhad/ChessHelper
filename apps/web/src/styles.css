@@ -246,6 +246,35 @@ button:disabled {
   pointer-events: none;
 }
 
+/*
+ * The move's verdict, stuck to the square it landed on. Sized and positioned in
+ * percentages so it tracks the board at any width, and kept *inside* the square
+ * rather than straddling its corner the way a real sticker would: the board
+ * clips its own overflow, and a badge on a1 or h8 would lose half of itself.
+ */
+.square-badge {
+  position: absolute;
+  top: 3%;
+  right: 3%;
+  z-index: 3;
+  width: 38%;
+  height: 38%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--q, var(--muted));
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: calc(var(--board-size) / 8 * 0.2);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
 .coord {
   position: absolute;
   font-size: 0.62rem;
@@ -1170,7 +1199,7 @@ button:disabled {
  * Move categories. One colour per label, defined once here so the move list,
  * the graph dots and the badges can never drift apart.
  */
-.q--brilliant {
+.q--sacrifice {
   --q: #26c2a3;
 }
 .q--great {
@@ -1202,6 +1231,12 @@ button:disabled {
 }
 .q--blunder {
   --q: #c4553d;
+}
+
+/* A category nobody scored still holds its row, greyed back out of the way. */
+.review-table--counts tr.is-empty {
+  color: var(--muted);
+  opacity: 0.45;
 }
 
 .quality-badge {
@@ -1246,6 +1281,47 @@ button:disabled {
   outline: none;
   border-color: var(--accent-dim);
 }
+/*
+ * The board's own game, offered first and offered whole: what it is, how long
+ * it is, and one button that runs it. The paste box below it is the other way
+ * in, not the only one.
+ */
+.review-board-game {
+  margin-top: 0.9rem;
+  padding: 0.8rem;
+  border: 1px solid var(--accent-dim);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+.review-board-game__what {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.review-board-game__what span {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.78rem;
+}
+.review-board-game .review-setup__row {
+  margin-top: 0.6rem;
+}
+
+.review-setup__or {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.review-setup__or::before,
+.review-setup__or::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border);
+}
+
 .review-drop {
   display: block;
 }
@@ -1304,6 +1380,8 @@ button.primary:hover:not(:disabled) {
 
 .review-actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   justify-content: flex-end;
 }
 

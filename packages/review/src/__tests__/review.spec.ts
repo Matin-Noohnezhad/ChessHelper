@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { Chess } from '@coh/chess-core';
+import { QUALITY_ORDER } from '../classify.js';
 import { ReviewAbortedError, keyMoments, reviewPgn } from '../review.js';
+import type { PositionEvaluator } from '../types.js';
 import { materialEvaluator } from './fake-engine.js';
 
 const evaluator = materialEvaluator();
@@ -66,6 +69,84 @@ describe('reviewing a game', () => {
     expect(review.white.phases.opening.moves).toBe(4);
     expect(review.white.phases.middlegame.moves).toBe(0);
     expect(review.white.phases.middlegame.accuracy).toBeNull();
+  });
+
+  /**
+   * A bishop thrown at h7 and, two plies later, a queen dropped on h5 where the
+   * knight on f6 simply takes it. Both moves invest material — the difference
+   * between them is whether the position survives, which is the whole of the
+   * sacrifice rule. The evaluations are scripted rather than searched: a
+   * two-ply material engine has no notion of compensation, so it could never
+   * call any sacrifice sound.
+   */
+  const GREEK_GIFT =
+    '1. d4 d5 2. Nf3 Nf6 3. e3 e6 4. Bd3 Be7 5. Nbd2 O-O 6. Ne5 c5 7. Bxh7+ Kxh7 8. Qh5+ Kg8 *';
+
+  /** Every position is worth `cps[ply]` to White, whatever is standing on it. */
+  const scripted = (cps: Record<number, number>): PositionEvaluator => async (fen, ply) => {
+    const game = new Chess(fen);
+    const cp = cps[ply] ?? 30;
+    return {
+      fen,
+      depth: 12,
+      candidates: game.legalMoves().slice(0, 3).map((move) => ({
+        uci: move.uci,
+        san: move.san,
+        score: { cp, mate: null },
+        pv: [move.san],
+      })),
+    };
+  };
+
+  it('calls a sacrifice the sacrifice it is, and counts it', async () => {
+    const review = await reviewPgn(GREEK_GIFT, { evaluator: scripted({ 15: -800, 16: -800 }) });
+    const bishop = review.moves[12]!;
+
+    expect(bishop.san).toBe('Bxh7+');
+    // A bishop for the h-pawn, measured by static exchange, not by guesswork.
+    expect(bishop.investedCp).toBe(230);
+    expect(bishop.quality).toBe('sacrifice');
+    expect(bishop.explanation).toContain('sacrifice');
+    expect(review.white.counts.sacrifice).toBe(1);
+  });
+
+  it('will not call a piece dropped for nothing a sacrifice', async () => {
+    const review = await reviewPgn(GREEK_GIFT, { evaluator: scripted({ 15: -800, 16: -800 }) });
+    const queen = review.moves[14]!;
+
+    // Nxh5 is available, so the queen really is being given away — but the
+    // position falls out of the band it was in, and that is a blunder.
+    expect(queen.san).toBe('Qh5+');
+    expect(queen.investedCp).toBeGreaterThan(0);
+    expect(queen.quality).toBe('blunder');
+    expect(queen.tags).toContain('sacrifice');
+  });
+
+  it('holds the label when a winning position stays winning', async () => {
+    // The same bishop, thrown from +7 and landing on +2: still a sacrifice.
+    const review = await reviewPgn(GREEK_GIFT, {
+      evaluator: scripted({ 12: 700, 13: 200, 14: 200, 15: -800, 16: -800 }),
+    });
+    expect(review.moves[12]!.quality).toBe('sacrifice');
+  });
+
+  it('does not call shedding material in a lost position a sacrifice', async () => {
+    const review = await reviewPgn(GREEK_GIFT, {
+      evaluator: scripted({ 12: -700, 13: -700, 14: -700, 15: -900, 16: -900 }),
+    });
+    const bishop = review.moves[12]!;
+    expect(bishop.quality).not.toBe('sacrifice');
+    expect(bishop.tags).toContain('sacrifice');
+  });
+
+  it('lists every category in the counts, scored or not', async () => {
+    const review = await reviewPgn(SCHOLARS_MATE, { evaluator });
+    // The report carries a number for each label rather than only the ones that
+    // happened, so the summary table can be read the same way every game.
+    expect(Object.keys(review.white.counts).sort()).toEqual(
+      [...QUALITY_ORDER].sort(),
+    );
+    expect(review.white.counts.sacrifice).toBe(0);
   });
 
   it('lists the blunder among the key moments', async () => {
