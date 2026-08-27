@@ -45,6 +45,11 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
 
   const readFile = (file: File | undefined) => {
     if (!file) return;
+    // The file the user picked is usually named for the repertoire it holds, and
+    // a Lichess export stamps `?` into the Event header, so the filename is the
+    // better default name. It only seeds the field — a typed name still wins.
+    const fromName = file.name.replace(/\.[^.]+$/, '').trim();
+    if (fromName && !name.trim()) setName(fromName);
     const reader = new FileReader();
     reader.onload = () => setText(String(reader.result ?? ''));
     reader.readAsText(file);

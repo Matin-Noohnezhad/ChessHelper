@@ -23,7 +23,14 @@ function courseFor(stored: StoredCourse): Course {
   const key = `${stored.id}:${stored.side}:${stored.pgn.length}`;
   let course = built.get(key);
   if (!course) {
-    course = buildCourse(stored.pgn, { id: stored.id, name: stored.name, side: stored.side });
+    // A course saved before its name could be worked out sits in storage as `?`;
+    // drop that so the builder falls back to its own guess rather than showing it.
+    const name = stored.name?.trim();
+    course = buildCourse(stored.pgn, {
+      id: stored.id,
+      ...(name && name !== '?' ? { name } : {}),
+      side: stored.side,
+    });
     built.set(key, course);
   }
   return course;

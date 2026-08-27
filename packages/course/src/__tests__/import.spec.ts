@@ -85,6 +85,12 @@ describe('course import', () => {
     ]);
   });
 
+  it('does not take a bare ? header as the course name', () => {
+    const pgn = `[Event "?"]\n[White "?"]\n\n1. e4 c5 *`;
+    expect(buildCourse(pgn).name).toBe('Imported course');
+    expect(buildCourse(pgn, { name: 'Najdorf.pgn' }).name).toBe('Najdorf.pgn');
+  });
+
   it('starts a chapter from its FEN header', () => {
     const fen = '8/8/8/4k3/8/8/4P3/4K3 w - - 0 1';
     const course = buildCourse(`[Event "Endings: Opposition"]\n[FEN "${fen}"]\n\n1. Kd2 Kd4 *`);

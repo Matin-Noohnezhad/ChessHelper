@@ -91,12 +91,19 @@ function mergeSiblings(into: RawNode[], from: readonly RawNode[]): void {
 
 /* ------------------------------------------------------------- naming --- */
 
+/** Exporters stamp a bare `?` into headers they do not know; it is not a name. */
+const named = (value: string | undefined): string | undefined => {
+  const trimmed = value?.trim();
+  return trimmed && trimmed !== '?' ? trimmed : undefined;
+};
+
 /** Lichess and most publishers write `[Event "Course name: Chapter name"]`. */
 function splitEvent(event: string | undefined): { course?: string; chapter?: string } {
-  if (!event) return {};
-  const at = event.lastIndexOf(': ');
-  if (at <= 0) return { course: event };
-  return { course: event.slice(0, at).trim(), chapter: event.slice(at + 2).trim() };
+  const cleaned = named(event);
+  if (!cleaned) return {};
+  const at = cleaned.lastIndexOf(': ');
+  if (at <= 0) return { course: cleaned };
+  return { course: cleaned.slice(0, at).trim(), chapter: cleaned.slice(at + 2).trim() };
 }
 
 /**
@@ -112,8 +119,8 @@ function splitEvent(event: string | undefined): { course?: string; chapter?: str
 function chapterNames(games: readonly AnnotatedPgnGame[]): string[] {
   const schemes: { names: (string | undefined)[]; explicit: boolean }[] = [
     { names: games.map((game) => splitEvent(game.headers.Event).chapter), explicit: true },
-    { names: games.map((game) => game.headers.Event), explicit: false },
-    { names: games.map((game) => game.headers.White), explicit: false },
+    { names: games.map((game) => named(game.headers.Event)), explicit: false },
+    { names: games.map((game) => named(game.headers.White)), explicit: false },
   ];
 
   for (const { names, explicit } of schemes) {
@@ -129,7 +136,7 @@ function courseName(games: readonly AnnotatedPgnGame[]): string {
     const { course } = splitEvent(game.headers.Event);
     if (course) return course;
   }
-  return games[0]?.headers.White?.trim() || 'Imported course';
+  return named(games[0]?.headers.White) ?? 'Imported course';
 }
 
 const slug = (text: string): string =>
