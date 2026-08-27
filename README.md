@@ -8,7 +8,8 @@ its ups and downs.
 ## Where the project is now
 
 Steps 1–4 are done: the rules engine, the knowledge base, the web UI, and the
-sparring trainer.
+sparring trainer. Since then: the game review, and a course trainer that drills
+a repertoire somebody else wrote.
 
 ```
 packages/
@@ -18,12 +19,14 @@ packages/
                   identification, inheritance, search           ✅ 3,844 lines
   trainer/        sparring engine: repertoire lines, variation
                   rotation, spaced repetition, off-book feedback   ✅ 19 tests
+  course/         MoveTrainer-style course drilling: PGN import,
+                  chunked lessons, per-move spaced repetition      ✅ 90 tests
   imbalances/     static, Silman-style reading of a position       ✅ 8 tests
   review/         whole-game review: accuracy, phases, and
                   chess.com-style move classification             ✅ 50 tests
 apps/
-  web/            React + Vite: explore board, study panel,
-                  the training mode and the game review            ✅ runs
+  web/            React + Vite: explore board, study panel, the
+                  training mode, the courses and the game review   ✅ runs
 ```
 
 Nothing in `packages/` imports the DOM, so the same core drives a React Native
@@ -34,7 +37,7 @@ app or a Tauri desktop build later — only `apps/*` changes.
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # 158 tests across core, book, trainer, review and UI
+npm test           # 257 tests across core, book, trainer, courses, review and UI
 npm run ingest:eco # regenerate the ECO tables from data/*.tsv
 npm run typecheck
 ```
@@ -80,6 +83,75 @@ Line depth scales with what you pick: choosing the Sicilian drills 178 variation
 of 6–12 plies, choosing the Najdorf drills 26 of 14–20. Lines are ordered by how
 much published theory sits beneath them, so main lines come first and the Wing
 Gambit waits its turn.
+
+### Courses
+
+The trainer above drills *our* book. The Courses tab drills somebody else's:
+paste or drop a repertoire PGN and it becomes a course, taught the way
+Chessable's MoveTrainer teaches one — a move at a time, each move on its own
+schedule.
+
+- **The unit is the move, not the line.** Every move you have to produce carries
+  its own level and its own due date. Miss the fifth move of a variation and the
+  fifth move comes back this afternoon; the other four go on climbing. A line is
+  not a thing you know or do not know, and treating it as one is what makes a
+  twenty-ply variation come round every time you fluff one move of it.
+- **The ladder** is four hours → a day → three days → a week → two weeks → a
+  month → three → six. One miss puts that move back on the bottom rung.
+- **Learning a line means watching it first.** The moves are played out one at a
+  time — animated, at a pace you can read at, the opponent's replies included —
+  with whatever the author wrote about each one beside it. Then the board rewinds
+  and asks for the same moves back. Watching a line is not knowing it, and the
+  gap between the two is the whole point of the exercise.
+- **Long lines come in parts.** Four of your own moves at a time, split evenly
+  rather than four-then-one: watch a part, play it back, watch the next, play
+  that back — and when the parts are done, the whole line from the first move
+  with nothing shown. Playing a variation in four-move instalments is not knowing
+  it either; the run from the top is the only task in a learn session that asks
+  the question the board will ask you.
+- **Read a note again whenever you want it.** The author's line about why the
+  knight goes to b3 goes past in a couple of seconds, and the moment you want it
+  back is the moment you are stuck on the move after it. Every move already on
+  the board is a button, arrow keys walk the trail, and the ones carrying a note
+  are marked — the board rewinds to that position, the note comes back, and the
+  live position waits untouched behind it.
+- **A session counts itself in lines.** Two variations drilled three times each
+  is *two* lines, not six tasks: the board says `Line 1 of 2` with `try 1 of 3`
+  under it, so the number tells you how much of the chapter is left as well as
+  where you are inside it.
+- **Review and quick review.** *Review* replays whole variations with nothing
+  shown until you have missed something. *Quick review* skips the replay and
+  drops you straight into the position each due move sits in — the difference
+  between an hour of review and ten minutes of it on a course of any size.
+- **Sidelines are the course.** A repertoire keeps most of its teaching in
+  parentheses, so the import reads them as siblings of the move they replace, not
+  as footnotes. At your own move the three kinds are told apart without asking the
+  author to mark anything up: a sideline with a line under it is another variation
+  to learn, one shown and dropped is an **alternative** — playable, accepted, never
+  required — and one carrying `?` or `?!` is a move the author is warning you off,
+  which comes back with their reason for it when you play it. At the opponent's
+  move every sideline is a branch, the bad ones included: that is where the
+  refutation lives.
+- **A move is measured the first time the session asks it, and after that only
+  bad news gets through.** Producing it from move one having already produced it
+  inside a part proves nothing new; *failing* to, having managed it a minute ago,
+  is exactly the thing worth knowing — so a later miss demotes a move that had
+  passed, and a later success cannot promote one that had not. Otherwise a line
+  could be walked up the ladder by being asked often enough in one sitting.
+- **Progress is keyed by position, not by path.** Two chapters that transpose
+  share one move's history, so learning the Najdorf move order does not leave
+  the same move unlearned in the Scheveningen.
+- **Chapters come from the file.** `[Event "Course: Chapter"]` is split the way
+  lichess writes it, games under one chapter merge into one tree, `[FEN]` starts
+  a chapter wherever the author wanted, and a move that will not replay is
+  reported rather than dropped in silence.
+- **Which colour you play is inferred** from where the course actually branches —
+  a White repertoire answers 1...c5, 1...e5 and 1...e6 but plays one move against
+  each — and shown next to a switch at import, since a course imported for the
+  wrong colour asks you to play your opponent's moves.
+- Courses live in IndexedDB rather than `localStorage`: a real course is a
+  megabyte or two of PGN and people own several. What is stored is the PGN, so a
+  fix to the importer reaches courses imported last month.
 
 ### Game review
 
@@ -242,4 +314,11 @@ rebuild — the interaction the trainer needs when you want to try another reply
    given rating, rather than only whether a move is right.
 2. **Recommendations** — read a player's games, estimate strength and style, and
    suggest openings and specific lines that fit.
-3. **More UIs** — React Native and Tauri shells over the same packages.
+3. **The book, next to the course.** A course teaches its own lines and says
+   nothing about the ones it skipped. The opening book knows the plans,
+   structures and breaks for the same positions, and showing them beside the
+   author's note is the thing Chessable cannot do and this repo already can.
+4. **Engine-marked alternatives** — accept anything within about a third of a
+   pawn of the taught move, the way a course author would if they had the time,
+   once `packages/engine` exists to ask.
+5. **More UIs** — React Native and Tauri shells over the same packages.
