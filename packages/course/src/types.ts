@@ -110,6 +110,14 @@ export type SessionMode =
 export interface WatchRange {
   from: number;
   to: number;
+  /**
+   * Plies `[from, recap)` are a recap: moves you have already been taught this
+   * session, at the head of a variation that shares its opening with one you
+   * just did. They are played through quickly to carry you back to the point
+   * where this line branches off, rather than dropped onto the board in one go.
+   * Absent when the demonstration is all new ground.
+   */
+  recap?: number;
 }
 
 /** Which instalment of a chunked line a task is, for the sake of saying so. */

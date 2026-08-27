@@ -27,6 +27,8 @@ export interface CourseSessionState {
   advanceWatch: () => void;
   /** Cuts the demonstration short and goes to being asked. */
   skipWatch: () => void;
+  /** Plays the current part's demonstration again, from the top. */
+  rewatch: () => void;
 }
 
 /**
@@ -113,6 +115,13 @@ export function useCourseSession(
     bump();
   }, [trainer]);
 
+  const rewatch = useCallback(() => {
+    if (!trainer.rewatch()) return;
+    setFeedback(null);
+    setHinted(null);
+    bump();
+  }, [trainer]);
+
   return {
     trainer,
     plan,
@@ -126,5 +135,6 @@ export function useCourseSession(
     restart,
     advanceWatch,
     skipWatch,
+    rewatch,
   };
 }

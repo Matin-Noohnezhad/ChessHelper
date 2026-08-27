@@ -21,7 +21,14 @@
 import { isDue, progressFor } from './scheduler.js';
 import { moveKey, quizIndices, variationsOf } from './tree.js';
 import type { Variation } from './tree.js';
-import type { Course, CourseProgress, SessionMode, SessionPlan, SessionTask } from './types.js';
+import type {
+  Course,
+  CourseNode,
+  CourseProgress,
+  SessionMode,
+  SessionPlan,
+  SessionTask,
+} from './types.js';
 
 /** New moves a learn session takes on before it stops. */
 export const DEFAULT_NEW_MOVES = 10;
@@ -35,6 +42,27 @@ export const DEFAULT_NEW_MOVES = 10;
  * changes under you at every one.
  */
 export const DEFAULT_CHUNK = 4;
+
+/**
+ * The most leading plies a first part will recap.
+ *
+ * When a variation opens with moves another line already taught this session,
+ * those moves are replayed quickly at the top of the first part instead of
+ * being dropped on the board — but a deep transposition can share twenty-odd
+ * plies, and past a point a "recap" is just the screensaver the instant set-up
+ * was there to avoid. Beyond this, the recap starts partway in.
+ */
+export const RECAP_MAX_PLIES = 24;
+
+/**
+ * The shortest shared opening worth recapping.
+ *
+ * One or two moves in common is every line in the chapter; materialising them
+ * on the board in one go, the way an unshared opening is, costs nothing. It is
+ * a genuine run of theory — a whole system played the same way — that is worth
+ * carrying you back through rather than skipping to the end of.
+ */
+export const RECAP_MIN_PLIES = 4;
 
 /** Times the whole line is asked for, from move one, once the parts are done. */
 export const DEFAULT_FULL_PASSES = 1;
@@ -121,6 +149,14 @@ export function evenParts(count: number, max: number): number[] {
   return Array.from({ length: parts }, (_, i) => base + (i < extra ? 1 : 0));
 }
 
+/** How many leading plies two lines share, matched on the move and its position. */
+function sharedPrefix(a: readonly CourseNode[], b: readonly CourseNode[]): number {
+  const max = Math.min(a.length, b.length);
+  let i = 0;
+  while (i < max && moveKey(a[i]!) === moveKey(b[i]!)) i++;
+  return i;
+}
+
 function learnPlan(
   course: Course,
   progress: CourseProgress,
@@ -136,6 +172,8 @@ function learnPlan(
   const picked = Boolean(options.lineIds?.length);
   const tasks: SessionTask[] = [];
   const taken = new Set<string>();
+  // Lines that have generated tasks, to spot the next one that opens the same way.
+  const taught: CourseNode[][] = [];
 
   for (const variation of variations) {
     if (!picked && taken.size >= budget) break;
@@ -143,22 +181,34 @@ function learnPlan(
     const { line } = variation;
     const quiz = quizIndices(line, course.side);
     if (!quiz.length) continue;
-    // Which of this line's moves you have never met. Everything else in it is
-    // context: it still gets asked on the run from move one, because you cannot
-    // reach move 12 without playing moves 1 to 11, but it is not what the
-    // session is spending its budget on and not what the parts teach.
+
+    // Leading plies this line shares with one already taught this session, once
+    // that run is long enough to be worth replaying. A picked line is exempt:
+    // "study this line" means from the top, every time.
+    const shared = picked
+      ? 0
+      : taught.reduce((most, prev) => Math.max(most, sharedPrefix(prev, line)), 0);
+    const recap = shared >= RECAP_MIN_PLIES ? shared : 0;
+
+    // Which of this line's moves you have never met, and are not part of the
+    // recap. Everything else in it is context: it still gets asked on the run
+    // from move one, because you cannot reach move 12 without playing moves 1 to
+    // 11, but it is not what the session spends its budget on or the parts teach.
     const fresh = quiz.filter(
-      (index) => progressFor(progress, moveKey(line[index]!), now).level === 0,
+      (index) =>
+        index >= recap && progressFor(progress, moveKey(line[index]!), now).level === 0,
     );
     if (!picked && !fresh.length) continue;
 
     for (const index of fresh) taken.add(moveKey(line[index]!));
+    taught.push(line);
 
     // Teaching starts at the first move you have not met — or at the top, for a
     // line you asked to study again. Everything before the start is put on the
     // board in one go: being walked slowly through six moves you already know is
-    // how a lesson turns into a screensaver.
-    const from = fresh.length ? fresh[0]! : quiz[0]!;
+    // how a lesson turns into a screensaver. The exception is a shared opening,
+    // which the first part replays quickly rather than skipping outright.
+    const from = fresh.length ? fresh[0]! : (quiz.find((index) => index >= recap) ?? quiz[0]!);
     const teach = quiz.filter((index) => index >= from);
     const sizes = evenParts(teach.length, chunk);
 
@@ -173,6 +223,10 @@ function learnPlan(
       const next = teach[cut];
       const end = next ?? line.length;
 
+      // The first part rewinds to before the shared opening and plays it through
+      // as a recap; every other part opens where its own moves begin.
+      const recapFrom = part === 0 && recap > 0 ? Math.max(0, start - RECAP_MAX_PLIES) : start;
+
       tasks.push({
         id: `${variation.id}~${part}`,
         mode: 'learn',
@@ -182,7 +236,11 @@ function learnPlan(
         line,
         startIndex: start,
         quiz: mine,
-        watch: { from: start, to: end },
+        watch: {
+          from: recapFrom,
+          to: end,
+          ...(recapFrom < start ? { recap: start } : {}),
+        },
         ...(sizes.length > 1 ? { part: { index: part, total: sizes.length } } : {}),
         pass: 0,
       });

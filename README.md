@@ -102,13 +102,21 @@ schedule.
   time — animated, at a pace you can read at, the opponent's replies included —
   with whatever the author wrote about each one beside it. Then the board rewinds
   and asks for the same moves back. Watching a line is not knowing it, and the
-  gap between the two is the whole point of the exercise.
+  gap between the two is the whole point of the exercise. **Watch again** replays
+  the demonstration whenever you want it — the line goes past once, and the
+  moment you want it back is the moment you are stuck on the move after it.
 - **Long lines come in parts.** Four of your own moves at a time, split evenly
   rather than four-then-one: watch a part, play it back, watch the next, play
   that back — and when the parts are done, the whole line from the first move
   with nothing shown. Playing a variation in four-move instalments is not knowing
   it either; the run from the top is the only task in a learn session that asks
   the question the board will ask you.
+- **A line that opens like the last one is recapped, not re-taught.** When the
+  next variation shares its first several moves with one you just learned, the
+  first part rewinds to move one and replays that shared opening quickly — a few
+  hundred milliseconds a move — to carry you back to the point where the two
+  lines diverge, and only asks for the moves past it. A deep transposition is
+  capped so the recap never becomes the screensaver the instant set-up avoids.
 - **Read a note again whenever you want it.** The author's line about why the
   knight goes to b3 goes past in a couple of seconds, and the moment you want it
   back is the moment you are stuck on the move after it. Every move already on

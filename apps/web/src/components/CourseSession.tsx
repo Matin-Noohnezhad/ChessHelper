@@ -32,6 +32,13 @@ const MODE_NOTES: Record<SessionMode, string> = {
 const WATCH_PAUSE = 1100;
 const WATCH_PAUSE_WITH_NOTE = 2600;
 
+/**
+ * The pace for the recap at the top of a first part — the shared opening you
+ * were already taught in the line before this one. Quick enough not to be a
+ * wait, slow enough to follow the pieces back to where this line branches off.
+ */
+const WATCH_PAUSE_RECAP = 420;
+
 /** What one line of a session is called, which is not the same in all three. */
 const RUN_NOUN: Record<SessionMode, string> = {
   learn: 'Line',
@@ -143,16 +150,24 @@ export function CourseSession({
 
   // The demonstration plays itself. Each move waits long enough to be seen, and
   // longer when the author left something to read with it — and it holds still
-  // entirely while you are reading back through what it has already played.
+  // entirely while you are reading back through what it has already played. The
+  // shared opening at the top of a first part is a recap, and runs quicker.
   const { advanceWatch } = session;
   const watchStep = watched?.id ?? '';
+  const watchAt = trainer.watchAt;
+  const recapUntil = trainer.watchRecapUntil;
+  const inRecap = watching && recapUntil > 0 && watchAt <= recapUntil;
   useEffect(() => {
     if (!watching || looking) return;
-    const pause = watched?.comment ? WATCH_PAUSE_WITH_NOTE : WATCH_PAUSE;
+    const pause = inRecap
+      ? WATCH_PAUSE_RECAP
+      : watched?.comment
+        ? WATCH_PAUSE_WITH_NOTE
+        : WATCH_PAUSE;
     const timer = setTimeout(advanceWatch, pause);
     return () => clearTimeout(timer);
     // watchStep is the move currently on the board: a new one restarts the wait.
-  }, [watching, looking, watchStep, watched?.comment, advanceWatch]);
+  }, [watching, looking, watchStep, watched?.comment, inRecap, advanceWatch]);
 
   // Arrow keys walk the trail, the way they do on the explore board.
   useEffect(() => {
@@ -235,9 +250,13 @@ export function CourseSession({
             {looking
               ? `Looking back — move ${lookback} of ${livePly}`
               : watching
-                ? watched
-                  ? `Watching — ${watched.san}`
-                  : 'Watch the line'
+                ? inRecap
+                  ? watched
+                    ? `Recap — ${watched.san}`
+                    : 'Recapping the shared opening'
+                  : watched
+                    ? `Watching — ${watched.san}`
+                    : 'Watch the line'
                 : finished
                   ? 'Session complete'
                   : betweenTasks
@@ -292,6 +311,15 @@ export function CourseSession({
               </>
             ) : (
               <>
+                {trainer.replayable && (
+                  <button
+                    type="button"
+                    onClick={session.rewatch}
+                    title="Play the line out again — you will be asked for it after"
+                  >
+                    Watch again
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={session.reveal}
@@ -371,6 +399,7 @@ export function CourseSession({
               watched={watched}
               upNext={trainer.watchNext}
               progress={trainer.watchCompletion}
+              recap={inRecap}
             />
           ) : finished ? (
             <div className="card card--good">
@@ -493,6 +522,8 @@ interface DemonstrationProps {
   watched: CourseNode | null;
   upNext: CourseNode | null;
   progress: number;
+  /** The moves going past now are the shared opening, replayed at speed. */
+  recap: boolean;
 }
 
 /**
@@ -502,9 +533,10 @@ interface DemonstrationProps {
  * a move you watched land, in a position you had a moment to look at, with the
  * reason it is played sitting next to it, is a move you have some chance of
  * producing thirty seconds later. A line that flashes past is a line you will
- * be shown again tomorrow.
+ * be shown again tomorrow. The exception is the recap — moves you were taught
+ * in the line before this one, run through quickly to reach the branch.
  */
-function Demonstration({ watched, upNext, progress }: DemonstrationProps) {
+function Demonstration({ watched, upNext, progress, recap }: DemonstrationProps) {
   return (
     <div className="card card--info course-watch">
       <h3>
@@ -515,11 +547,17 @@ function Demonstration({ watched, upNext, progress }: DemonstrationProps) {
               {watched.side === 'w' ? 'White' : 'Black'}
             </span>
           </>
+        ) : recap ? (
+          'Recapping the shared opening'
         ) : (
           'Watch the line'
         )}
       </h3>
-      {watched?.comment ? (
+      {recap ? (
+        <p className="muted">
+          You have played these moves already — this is the line before this one, to here.
+        </p>
+      ) : watched?.comment ? (
         <p>{watched.comment}</p>
       ) : (
         <p className="muted">

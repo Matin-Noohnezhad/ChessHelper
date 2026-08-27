@@ -148,6 +148,35 @@ export class CourseTrainer {
     return (this.watchCursor - watch.from) / (watch.to - watch.from);
   }
 
+  /** How many plies the demonstration has played. */
+  get watchAt(): number {
+    return this.watchCursor;
+  }
+
+  /**
+   * The ply at which the demonstration stops recapping and starts teaching, or
+   * 0 when it has no recap. Plies before it are a shared opening replayed at
+   * speed; the move just played is part of the recap while `watchAt` is at or
+   * below this.
+   */
+  get watchRecapUntil(): number {
+    return this.task?.watch?.recap ?? 0;
+  }
+
+  /**
+   * Whether the current part's demonstration can be played again.
+   *
+   * Only a learn part has one — the run from the top and every review task ask
+   * cold — and only once it is over, i.e. you are being asked or the part is
+   * done. Mid-demonstration there is nothing to replay yet.
+   */
+  get replayable(): boolean {
+    return (
+      Boolean(this.task?.watch) &&
+      (this.sessionStatus === 'asking' || this.sessionStatus === 'task-complete')
+    );
+  }
+
   /** True once the answer is on display, because you asked or because you missed. */
   get revealed(): boolean {
     return this.revealedNow;
@@ -280,6 +309,24 @@ export class CourseTrainer {
   /** Cuts the demonstration short and goes straight to being asked. */
   skipWatch(): void {
     if (this.sessionStatus === 'watching') this.beginAsking();
+  }
+
+  /**
+   * Plays the current part's demonstration over again.
+   *
+   * The line goes past once and then you are on your own, and the moment you
+   * want it back is the moment you are stuck on the move after it. Rewinds to
+   * the top of the part — the moves you had already answered are asked again,
+   * which is the point of watching them — and does nothing outside a learn part.
+   */
+  rewatch(): boolean {
+    if (!this.replayable) return false;
+    const watch = this.task!.watch!;
+    this.setUpAt(watch.from);
+    this.watchCursor = watch.from;
+    this.sessionStatus = 'watching';
+    this.resetQuestion();
+    return true;
   }
 
   /**

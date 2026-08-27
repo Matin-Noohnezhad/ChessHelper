@@ -407,6 +407,100 @@ describe('watching the line first', () => {
     for (const san of ['e4', 'Nf3', 'd4', 'Nxd4', 'Nc3']) trainer.submit(san);
     expect(trainer.status).toBe('complete');
   });
+
+  it('can be played again once it is over', () => {
+    const trainer = learning();
+    while (trainer.watching) trainer.advanceWatch();
+    expect(trainer.status).toBe('asking');
+    expect(trainer.replayable).toBe(true);
+
+    expect(trainer.rewatch()).toBe(true);
+    expect(trainer.status).toBe('watching');
+    expect(trainer.game.history()).toEqual([]);
+    expect(trainer.watchNext?.san).toBe('e4');
+
+    // Watched through a second time, it rewinds and asks just the same.
+    while (trainer.watching) trainer.advanceWatch();
+    expect(trainer.status).toBe('asking');
+    expect(trainer.current?.san).toBe('e4');
+  });
+
+  it('can be replayed from between parts too', () => {
+    const trainer = learning();
+    trainer.skipWatch();
+    for (const san of ['e4', 'Nf3', 'd4']) trainer.submit(san);
+    expect(trainer.status).toBe('task-complete');
+    expect(trainer.replayable).toBe(true);
+
+    expect(trainer.rewatch()).toBe(true);
+    expect(trainer.status).toBe('watching');
+    expect(trainer.game.history()).toEqual([]);
+    expect(trainer.watchNext?.san).toBe('e4');
+  });
+
+  it('has nothing to replay mid-demonstration or in a cold task', () => {
+    const watching = learning();
+    expect(watching.replayable).toBe(false);
+    expect(watching.rewatch()).toBe(false);
+
+    const cold = new CourseTrainer({
+      course,
+      plan: buildSession(course, progressAt(course, 2, NOW - HOUR), { mode: 'review', now: NOW }),
+      now: () => NOW,
+    });
+    expect(cold.replayable).toBe(false);
+    expect(cold.rewatch()).toBe(false);
+  });
+});
+
+describe('recapping a shared opening', () => {
+  // Two variations that share 1.e4 e5 2.Nf3 Nc6 3.Bb5 a6, then part ways.
+  const shared = buildCourse(
+    `[Event "S: Main"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 *\n\n` +
+      `[Event "S: Exchange"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Bxc6 dxc6 5. O-O *`,
+    { side: 'white' },
+  );
+
+  /** Walk to the first task of the second variation — its first part. */
+  function atSecondLine() {
+    const plan = buildSession(shared, {}, { mode: 'learn', now: NOW, newMoves: 100 });
+    const trainer = new CourseTrainer({ course: shared, plan, now: () => NOW });
+    const secondId = plan.tasks.find((task) => task.lineId !== plan.tasks[0]!.lineId)!.lineId;
+    while (trainer.task?.lineId !== secondId) trainer.nextTask();
+    return trainer;
+  }
+
+  it('opens the second line by replaying its shared moves, from move one', () => {
+    const trainer = atSecondLine();
+    expect(trainer.status).toBe('watching');
+    expect(trainer.watchAt).toBe(0);
+    expect(trainer.watchRecapUntil).toBe(6);
+    expect(trainer.game.history()).toEqual([]);
+  });
+
+  it('is on the branch, teaching the new move, once the recap is played', () => {
+    const trainer = atSecondLine();
+    for (let i = 0; i < 6; i++) trainer.advanceWatch();
+    expect(trainer.watchAt).toBe(6);
+    expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
+    expect(trainer.watchNext?.san).toBe('Bxc6');
+
+    while (trainer.watching) trainer.advanceWatch();
+    expect(trainer.status).toBe('asking');
+    expect(trainer.current?.san).toBe('Bxc6');
+    // Only the new moves are asked; the shared six stay on the board.
+    expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
+  });
+
+  it('replays the recap too when the part is watched again', () => {
+    const trainer = atSecondLine();
+    while (trainer.watching) trainer.advanceWatch();
+    expect(trainer.status).toBe('asking');
+
+    expect(trainer.rewatch()).toBe(true);
+    expect(trainer.watchAt).toBe(0);
+    expect(trainer.game.history()).toEqual([]);
+  });
 });
 
 describe('where the session has got to', () => {

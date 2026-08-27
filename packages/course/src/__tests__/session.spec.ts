@@ -109,6 +109,64 @@ describe('learn sessions', () => {
   });
 });
 
+describe('a line that opens like one already taught', () => {
+  // Two variations sharing six plies — 1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 — then one
+  // retreats the bishop and the other takes on c6.
+  const shared = buildCourse(
+    `[Event "S: Main"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 *\n\n` +
+      `[Event "S: Exchange"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Bxc6 dxc6 5. O-O *`,
+    { side: 'white' },
+  );
+  const idOf = (chapter: number) => variationsOf(shared.chapters[chapter]!, 'white')[0]!.id;
+
+  it('recaps the shared opening instead of teaching it again', () => {
+    const plan = buildSession(shared, {}, { mode: 'learn', now: NOW, newMoves: 100 });
+    const parts = plan.tasks.filter((task) => task.lineId === idOf(1) && task.watch);
+    expect(parts).toHaveLength(1);
+    const first = parts[0]!;
+    // The demonstration rewinds to move one and replays the six shared plies as
+    // a recap; only 4.Bxc6 onward is asked for.
+    expect(first.watch).toEqual({ from: 0, to: 9, recap: 6 });
+    expect(first.startIndex).toBe(6);
+    expect(first.quiz).toEqual([6, 8]);
+  });
+
+  it('teaches the first line in full — it shares its opening with nothing', () => {
+    const plan = buildSession(shared, {}, { mode: 'learn', now: NOW, newMoves: 100 });
+    const first = plan.tasks.find((task) => task.lineId === idOf(0) && task.watch)!;
+    expect(first.watch!.recap).toBeUndefined();
+    expect(first.watch!.from).toBe(0);
+    expect(first.startIndex).toBe(0);
+  });
+
+  it('ignores an opening too short to be worth replaying', () => {
+    // Only 1.e4 in common: set it up in one go, the way it always was.
+    const thin = buildCourse(
+      `[Event "T: e5"]\n\n1. e4 e5 2. Nf3 Nc6 *\n\n[Event "T: c5"]\n\n1. e4 c5 2. Nf3 d6 *`,
+      { side: 'white' },
+    );
+    const plan = buildSession(thin, {}, { mode: 'learn', now: NOW, newMoves: 100 });
+    expect(plan.tasks.every((task) => task.watch?.recap === undefined)).toBe(true);
+    expect(plan.tasks.every((task) => (task.watch ? task.watch.from === task.startIndex : true))).toBe(
+      true,
+    );
+  });
+
+  it('leaves a picked line to be taught from the top, shared opening and all', () => {
+    const plan = buildSession(shared, {}, {
+      mode: 'learn',
+      now: NOW,
+      lineIds: [idOf(0), idOf(1)],
+    });
+    expect(plan.tasks.every((task) => task.watch?.recap === undefined)).toBe(true);
+    for (const id of [idOf(0), idOf(1)]) {
+      const first = plan.tasks.find((task) => task.lineId === id && task.watch)!;
+      expect(first.watch!.from).toBe(0);
+      expect(first.startIndex).toBe(0);
+    }
+  });
+});
+
 describe('splitting a line into parts', () => {
   it('divides as evenly as the count allows', () => {
     expect(evenParts(3, 4)).toEqual([3]);
