@@ -9,6 +9,8 @@ export interface CourseSessionOptions {
   mode: SessionMode;
   /** Restricts the session to one chapter. Whole course when absent. */
   chapterIds?: readonly string[];
+  /** Restricts the session to specific variations, picked off the line list. */
+  lineIds?: readonly string[];
 }
 
 export interface CourseSessionState {
@@ -46,6 +48,7 @@ export function useCourseSession(
   const [, bump] = useReducer((n: number) => n + 1, 0);
 
   const chapterKey = options.chapterIds?.join(',') ?? '';
+  const lineKey = options.lineIds?.join(',') ?? '';
   const commit = useRef(onProgress);
   commit.current = onProgress;
 
@@ -54,11 +57,12 @@ export function useCourseSession(
       buildSession(entry.course, entry.progress, {
         mode: options.mode,
         ...(chapterKey ? { chapterIds: chapterKey.split(',') } : {}),
+        ...(lineKey ? { lineIds: lineKey.split(',') } : {}),
       }),
     // The plan is a snapshot: rebuilding it mid-session because a move's level
     // changed would reshuffle the queue under the person answering it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [entry.course, entry.stored.id, options.mode, chapterKey, generation],
+    [entry.course, entry.stored.id, options.mode, chapterKey, lineKey, generation],
   );
 
   const trainer = useMemo(

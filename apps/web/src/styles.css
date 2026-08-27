@@ -1953,3 +1953,208 @@ button.primary:hover:not(:disabled) {
   font-weight: 600;
   color: var(--text);
 }
+
+/* ---------------------------------------------------- course outline --- */
+
+/*
+ * The variation list, Chessable-style: chapters with a completion figure, and
+ * under each one every line as a row with a ring that fills as the line is
+ * learned. `--full` sits on the course page; `--rail` is the strip beside the
+ * board during a session.
+ */
+.course-outline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.course-outline__legend {
+  margin: 0.3rem 0 0.9rem;
+  font-size: 0.82rem;
+}
+
+.course-outline__chapter {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.course-outline__summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'name pct' 'bar bar';
+  gap: 0.3rem 0.6rem;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.course-outline__summary::-webkit-details-marker {
+  display: none;
+}
+.course-outline__name {
+  grid-area: name;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  min-width: 0;
+}
+.course-outline__name::before {
+  content: '▸';
+  color: var(--muted);
+  font-size: 0.7rem;
+  flex: none;
+}
+.course-outline__chapter[open] .course-outline__name::before {
+  content: '▾';
+}
+.course-outline__name > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.course-outline__pct {
+  grid-area: pct;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+.course-outline__bar {
+  grid-area: bar;
+}
+
+.course-outline__chapter-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.8rem 0.6rem;
+}
+.course-outline__chapter-actions button {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8rem;
+}
+.course-outline__chapter-actions .muted {
+  margin-left: auto;
+  font-size: 0.78rem;
+}
+
+.course-outline__lines {
+  list-style: none;
+  margin: 0;
+  padding: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.course-outline__line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 0.35rem 0.5rem;
+  border-radius: 5px;
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.course-outline__line:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: transparent;
+}
+.course-outline__line.is-started {
+  color: var(--text);
+}
+.course-outline__line.is-learned {
+  color: var(--text);
+}
+.course-outline__line.is-active {
+  background: var(--accent-dim);
+  color: #fff;
+}
+.course-outline__san {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.course-outline--full .course-outline__san {
+  white-space: normal;
+}
+.course-outline__due {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.course-outline__line.is-active .course-outline__due {
+  background: #fff;
+}
+
+/* The ring next to a line. */
+.ring {
+  flex: none;
+}
+.ring__track {
+  stroke: var(--border);
+}
+.ring__fill {
+  stroke: var(--accent);
+  transition: stroke-dashoffset 0.3s ease;
+}
+.ring__disc {
+  fill: var(--accent);
+}
+.ring__check {
+  stroke: var(--surface);
+}
+.course-outline__line.is-active .ring__track {
+  stroke: rgba(255, 255, 255, 0.4);
+}
+.course-outline__line.is-active .ring__disc {
+  fill: #fff;
+}
+.course-outline__line.is-active .ring__check {
+  stroke: var(--accent-dim);
+}
+
+/* -------------------------------------------- session with the rail --- */
+
+.course-session--rail {
+  grid-template-columns: minmax(200px, 240px) var(--board-size) minmax(300px, 1fr);
+}
+.course-session__rail {
+  align-self: start;
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+.course-session__rail .course-head {
+  margin-bottom: 0.6rem;
+}
+.course-session__rail .course-outline__chapter {
+  background: var(--surface);
+}
+
+@media (max-width: 1240px) {
+  .course-session--rail {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .course-session__rail {
+    position: static;
+    width: min(92vw, 620px);
+    max-height: none;
+    order: -1;
+  }
+}

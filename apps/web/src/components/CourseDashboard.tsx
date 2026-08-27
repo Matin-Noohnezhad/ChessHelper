@@ -1,6 +1,7 @@
-import { LEVELS, MAX_LEVEL, nextDueAt } from '@coh/course';
+import { LEVELS, MAX_LEVEL, courseOutline, nextDueAt } from '@coh/course';
 import type { CourseSide, SessionMode } from '@coh/course';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
+import { CourseOutline } from './CourseOutline.js';
 import { untilLabel } from './CourseLibrary.js';
 
 /** How long a move at each rung waits: the ladder, in words. */
@@ -15,7 +16,7 @@ function rungLabel(level: number): string {
 
 interface CourseDashboardProps {
   entry: LibraryEntry;
-  onStart: (mode: SessionMode, chapterIds?: string[]) => void;
+  onStart: (mode: SessionMode, chapterIds?: string[], lineIds?: string[]) => void;
   onBack: () => void;
   onResetProgress: () => void;
   onSetSide: (side: CourseSide) => void;
@@ -39,6 +40,7 @@ export function CourseDashboard({
   const { course, stats, progress } = entry;
   const next = nextDueAt(course, progress);
   const now = Date.now();
+  const outline = courseOutline(course, progress, now);
 
   return (
     <div className="course-dashboard">
@@ -114,52 +116,17 @@ export function CourseDashboard({
       </section>
 
       <section className="panel">
-        <h3>Chapters</h3>
-        <table className="review-table course-chapters">
-          <thead>
-            <tr>
-              <th>Chapter</th>
-              <th>Lines</th>
-              <th>Moves</th>
-              <th>Learned</th>
-              <th>Due</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {stats.chapters.map((chapter) => (
-              <tr key={chapter.chapterId}>
-                <td>{chapter.name}</td>
-                <td>{chapter.variations}</td>
-                <td>{chapter.total}</td>
-                <td>
-                  {chapter.learned}
-                  <span className="muted">
-                    {' '}
-                    ({chapter.total ? Math.round((chapter.learned / chapter.total) * 100) : 0}%)
-                  </span>
-                </td>
-                <td>{chapter.due || '—'}</td>
-                <td className="course-chapters__go">
-                  <button
-                    type="button"
-                    onClick={() => onStart('learn', [chapter.chapterId])}
-                    disabled={chapter.seen >= chapter.total}
-                  >
-                    Learn
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onStart('review', [chapter.chapterId])}
-                    disabled={chapter.due === 0 || chapter.seen === 0}
-                  >
-                    Review
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <h3>Chapters &amp; lines</h3>
+        <p className="muted course-outline__legend">
+          The ring fills as you work through a line and turns solid with a tick once every move in
+          it has come back after a night. Click any line to study it now — a dot means something in
+          it is due.
+        </p>
+        <CourseOutline
+          chapters={outline}
+          onPickLine={(lineId) => onStart('learn', undefined, [lineId])}
+          onChapter={(mode, chapterId) => onStart(mode, [chapterId])}
+        />
       </section>
 
       {course.problems.length > 0 && (

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { courseOutline } from '@coh/course';
 import type { CourseNode, CourseOutcome, CourseProgress, SessionMode } from '@coh/course';
 import { Chess, START_FEN } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
 import { Board } from './Board.js';
 import type { AnnotationThickness, BoardArrow } from './Board.js';
+import { CourseOutline } from './CourseOutline.js';
 import { useCourseSession } from '../hooks/useCourseSession.js';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
 
@@ -41,7 +43,10 @@ interface CourseSessionProps {
   entry: LibraryEntry;
   mode: SessionMode;
   chapterIds?: string[];
+  lineIds?: string[];
   onExit: () => void;
+  /** Jump to another line off the rail — starts a fresh study session on it. */
+  onPickLine: (lineId: string) => void;
   onProgress?: (progress: CourseProgress) => void;
   annotationThickness?: AnnotationThickness;
 }
@@ -59,13 +64,15 @@ export function CourseSession({
   entry,
   mode,
   chapterIds,
+  lineIds,
   onExit,
+  onPickLine,
   onProgress,
   annotationThickness,
 }: CourseSessionProps) {
   const session = useCourseSession(
     entry,
-    { mode, ...(chapterIds ? { chapterIds } : {}) },
+    { mode, ...(chapterIds ? { chapterIds } : {}), ...(lineIds ? { lineIds } : {}) },
     onProgress,
   );
   const { trainer, plan, feedback, answer } = session;
@@ -81,6 +88,16 @@ export function CourseSession({
   const asked = task?.quiz.length ?? 0;
   const done = Math.round(trainer.taskCompletion * asked);
   const run = trainer.run;
+
+  // The rail: every line of the course, grouped by chapter, with the one on the
+  // board picked out. Built off the library's progress, so it moves as you go.
+  const outline = useMemo(
+    () => courseOutline(entry.course, entry.progress),
+    [entry.course, entry.progress],
+  );
+  // A random-mode task's lineId carries the position it asks about after an `@`.
+  const activeLineId = task?.lineId.split('@')[0] ?? null;
+  const railLines = outline.reduce((sum, chapter) => sum + chapter.variations.length, 0);
 
   /**
    * Looking back through the line, as a ply count, or null for the live board.
@@ -185,9 +202,23 @@ export function CourseSession({
 
   const finished = trainer.status === 'complete' && !trainer.current;
   const betweenTasks = trainer.status === 'task-complete';
+  const showRail = railLines > 1;
 
   return (
-    <div className="trainer course-session">
+    <div className={`trainer course-session${showRail ? ' course-session--rail' : ''}`}>
+      {showRail && (
+        <aside className="panel course-session__rail">
+          <div className="course-head">
+            <h2>Lines</h2>
+          </div>
+          <CourseOutline
+            chapters={outline}
+            variant="rail"
+            activeLineId={activeLineId}
+            onPickLine={onPickLine}
+          />
+        </aside>
+      )}
       <div className="trainer__board">
         <Board
           game={lookbackGame ?? trainer.game}
@@ -328,11 +359,7 @@ export function CourseSession({
                 <strong>{lookbackNode?.san}</strong>{' '}
                 <span className="muted">{lookbackNode?.side === 'w' ? 'White' : 'Black'}</span>
               </h3>
-              {lookbackNode?.comment ? (
-                <p>{lookbackNode.comment}</p>
-              ) : (
-                <p className="muted">The author wrote nothing about this move.</p>
-              )}
+              {lookbackNode?.comment && <p>{lookbackNode.comment}</p>}
               <div className="card__actions">
                 <button type="button" className="primary" onClick={() => setLookback(null)}>
                   Back to the game

@@ -11,7 +11,13 @@ type View =
   | { kind: 'library' }
   | { kind: 'import' }
   | { kind: 'course'; id: string }
-  | { kind: 'session'; id: string; mode: SessionMode; chapterIds?: string[] };
+  | {
+      kind: 'session';
+      id: string;
+      mode: SessionMode;
+      chapterIds?: string[];
+      lineIds?: string[];
+    };
 
 interface CoursesViewProps {
   annotationThickness?: AnnotationThickness;
@@ -50,13 +56,19 @@ export function CoursesView({ annotationThickness }: CoursesViewProps) {
     const entry = entryOf(view.id);
     if (!entry) return <MissingCourse onBack={openLibrary} />;
     // No `app__body` wrapper: a session is board-plus-panel at full width, the
-    // same shape the sparring trainer uses.
+    // same shape the sparring trainer uses. The key makes picking a different
+    // line off the rail a clean remount rather than a plan swapped mid-answer.
     return (
       <CourseSession
+        key={`${view.mode}:${(view.chapterIds ?? []).join(',')}:${(view.lineIds ?? []).join(',')}`}
         entry={entry}
         mode={view.mode}
         {...(view.chapterIds ? { chapterIds: view.chapterIds } : {})}
+        {...(view.lineIds ? { lineIds: view.lineIds } : {})}
         onExit={() => setView({ kind: 'course', id: view.id })}
+        onPickLine={(lineId) =>
+          setView({ kind: 'session', id: view.id, mode: 'learn', lineIds: [lineId] })
+        }
         onProgress={(progress) => library.commitProgress(view.id, progress)}
         {...(annotationThickness ? { annotationThickness } : {})}
       />
@@ -71,8 +83,14 @@ export function CoursesView({ annotationThickness }: CoursesViewProps) {
         <CourseDashboard
           entry={entry}
           onBack={openLibrary}
-          onStart={(mode, chapterIds) =>
-            setView({ kind: 'session', id: view.id, mode, ...(chapterIds ? { chapterIds } : {}) })
+          onStart={(mode, chapterIds, lineIds) =>
+            setView({
+              kind: 'session',
+              id: view.id,
+              mode,
+              ...(chapterIds ? { chapterIds } : {}),
+              ...(lineIds ? { lineIds } : {}),
+            })
           }
           onResetProgress={() => void library.resetProgress(view.id)}
           onSetSide={(side: CourseSide) => void library.setSide(view.id, side)}

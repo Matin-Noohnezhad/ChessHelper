@@ -329,9 +329,36 @@ describe('course trainer UI', () => {
     expect(html).toContain('6mo');
   });
 
+  it('lists every line of a chapter with a ring and its notation', () => {
+    const html = renderToStaticMarkup(
+      <CourseDashboard
+        entry={entry}
+        onStart={() => {}}
+        onBack={() => {}}
+        onResetProgress={() => {}}
+        onSetSide={() => {}}
+      />,
+    );
+    // Both variations of the fixture, written out move by move, each with a ring.
+    expect(html).toContain('course-outline__line');
+    expect(html.match(/class="ring"/g)?.length).toBe(2);
+    expect(html).toContain('1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3');
+    expect(html).toContain('1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4');
+  });
+
+  it('puts a line rail beside the board in a session', () => {
+    const html = renderToStaticMarkup(
+      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
+    );
+    expect(html).toContain('course-session--rail');
+    expect(html).toContain('course-session__rail');
+    // The line being taught is marked active in the rail.
+    expect(html).toContain('is-new is-active');
+  });
+
   it('opens a learn session by offering to play the line, not by asking for it', () => {
     const html = renderToStaticMarkup(
-      <CourseSession entry={entry} mode="learn" onExit={() => {}} />,
+      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
     );
     expect(html.match(/data-square="/g)).toHaveLength(64);
     expect(html).toContain('Learning');
@@ -343,7 +370,7 @@ describe('course trainer UI', () => {
 
   it('counts the session in lines, and says which try at the line this is', () => {
     const html = renderToStaticMarkup(
-      <CourseSession entry={entry} mode="learn" onExit={() => {}} />,
+      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
     );
     // Two variations, each taught in two parts and then asked from the top:
     // two lines, three tries at this one — not "1 of 6 tasks", which is a
@@ -355,7 +382,7 @@ describe('course trainer UI', () => {
 
   it('says which part of a long line is being taught', () => {
     const html = renderToStaticMarkup(
-      <CourseSession entry={entry} mode="learn" onExit={() => {}} />,
+      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
     );
     // Seven moves of your own, four to a part.
     expect(html).toContain('Part 1 of 2');
@@ -372,7 +399,7 @@ describe('course trainer UI', () => {
       [first]: { key: first, level: 2, dueAt: 0, lastSeenAt: 0, correct: 2, wrong: 0 },
     });
     const html = renderToStaticMarkup(
-      <CourseSession entry={learned} mode="review" onExit={() => {}} />,
+      <CourseSession entry={learned} mode="review" onExit={() => {}} onPickLine={() => {}} />,
     );
     expect(html).toContain('Your turn');
     expect(html).toContain('to play');
@@ -383,7 +410,7 @@ describe('course trainer UI', () => {
 
   it('has nothing to review until something has been learned', () => {
     const html = renderToStaticMarkup(
-      <CourseSession entry={entry} mode="review" onExit={() => {}} />,
+      <CourseSession entry={entry} mode="review" onExit={() => {}} onPickLine={() => {}} />,
     );
     expect(html).toContain('Nothing to do here');
     expect(html).not.toContain('data-square=');
