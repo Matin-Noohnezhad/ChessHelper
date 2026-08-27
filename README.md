@@ -106,12 +106,12 @@ schedule.
   and the gap between the two is the whole point of the exercise. **Watch again**
   replays the demonstration whenever you want it — the line goes past once, and
   the moment you want it back is the moment you are stuck on the move after it.
-- **The demonstration runs at the pace you set.** Settings has four: *Slow*,
-  *Normal* and *Fast* auto-advance, stretching or compressing the reading pause;
-  *Manual* runs no clock at all — the line waits on the board and you step it
-  with the **Next** button, <kbd>→</kbd> or <kbd>Space</kbd>, reading each note
-  for as long as you like. The quick recap of a shared opening always plays
-  itself either way.
+- **The demonstration runs at the pace you set.** Settings has a slider — a
+  fraction of a second to four seconds a move, the reading pause on a move with
+  a note scaling up with it — and a *step through each move myself* switch that
+  turns the clock off entirely: the line then waits on the board and you advance
+  it with the **Next** button, <kbd>→</kbd> or <kbd>Space</kbd>. The quick recap
+  of a shared opening always plays itself either way.
 - **Long lines come in parts.** Four of your own moves at a time, split evenly
   rather than four-then-one: watch a part, play it back, watch the next, play
   that back — and when the parts are done, the whole line from the first move

@@ -8,7 +8,7 @@ import type { AnnotationThickness, BoardArrow } from './Board.js';
 import { CourseOutline } from './CourseOutline.js';
 import { useCourseSession } from '../hooks/useCourseSession.js';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
-import type { WatchPace } from '../hooks/useSettings.js';
+import { WATCH_SECONDS_DEFAULT } from '../hooks/useSettings.js';
 
 const MODE_LABELS: Record<SessionMode, string> = {
   learn: 'Learning',
@@ -25,28 +25,19 @@ const MODE_NOTES: Record<SessionMode, string> = {
 /**
  * How long a demonstrated move stays on the board before the next one.
  *
- * A move with something written about it gets long enough to read the first
- * sentence of it; a move without gets long enough to see it land. Both are
- * deliberately slower than feels necessary while writing the code and about
- * right while actually watching a line you do not know.
+ * The plain pause is the Settings dial (`watchMoveSeconds`); a move with
+ * something written about it holds this much longer, so there is time to read
+ * the first sentence of it whatever the dial is set to.
  */
-const WATCH_PAUSE = 1100;
-const WATCH_PAUSE_WITH_NOTE = 2600;
+const WATCH_NOTE_RATIO = 2600 / 1100;
 
 /**
  * The pace for the recap at the top of a first part — the shared opening you
  * were already taught in the line before this one. Quick enough not to be a
  * wait, slow enough to follow the pieces back to where this line branches off.
- * It ignores the pace setting: a recap is not the part you are here to read.
+ * It ignores the Settings dial: a recap is not the part you are here to read.
  */
 const WATCH_PAUSE_RECAP = 420;
-
-/** The pace setting, as a multiplier on the two teaching pauses above. */
-const PACE_FACTOR: Record<Exclude<WatchPace, 'manual'>, number> = {
-  slow: 1.8,
-  normal: 1,
-  fast: 0.45,
-};
 
 /** What one line of a session is called, which is not the same in all three. */
 const RUN_NOUN: Record<SessionMode, string> = {
@@ -65,8 +56,10 @@ interface CourseSessionProps {
   onPickLine: (lineId: string) => void;
   onProgress?: (progress: CourseProgress) => void;
   annotationThickness?: AnnotationThickness;
-  /** How the demonstration plays out — from Settings. Defaults to 'normal'. */
-  watchPace?: WatchPace;
+  /** Auto-advance the demonstration — from Settings. Off means step it yourself. */
+  watchAutoplay?: boolean;
+  /** Seconds a plain demonstrated move holds — from Settings. */
+  watchMoveSeconds?: number;
 }
 
 /**
@@ -87,7 +80,8 @@ export function CourseSession({
   onPickLine,
   onProgress,
   annotationThickness,
-  watchPace = 'normal',
+  watchAutoplay = true,
+  watchMoveSeconds = WATCH_SECONDS_DEFAULT,
 }: CourseSessionProps) {
   const session = useCourseSession(
     entry,
@@ -160,31 +154,39 @@ export function CourseSession({
     return info ? { from: info.from, to: info.to } : null;
   }, [lookbackGame, lookback, task, trainer.startFen]);
 
-  // The demonstration plays itself — unless the pace is Manual, when it waits
-  // for you to step it. Each move waits long enough to be seen, and longer when
-  // the author left something to read with it; the pace setting stretches or
-  // compresses both. It holds still entirely while you read back through what it
-  // has already played, and the recap at the top of a first part always runs at
-  // its own quick clock, Manual included.
+  // The demonstration plays itself — unless autoplay is off, when it waits for
+  // you to step it. Each move holds for the dial's `watchMoveSeconds`, longer
+  // when the author left something to read with it. It holds still entirely
+  // while you read back through what it has already played, and the recap at the
+  // top of a first part always runs at its own quick clock, autoplay off or on.
   const { advanceWatch } = session;
   const watchStep = watched?.id ?? '';
   const watchAt = trainer.watchAt;
   const recapUntil = trainer.watchRecapUntil;
   const inRecap = watching && recapUntil > 0 && watchAt <= recapUntil;
-  const manualWatch = watchPace === 'manual';
+  const manualWatch = !watchAutoplay;
   useEffect(() => {
     if (!watching || looking) return;
     if (manualWatch && !inRecap) return; // your move to make: step it yourself
-    const base = inRecap
+    const moveMs = watchMoveSeconds * 1000;
+    const pause = inRecap
       ? WATCH_PAUSE_RECAP
       : watched?.comment
-        ? WATCH_PAUSE_WITH_NOTE
-        : WATCH_PAUSE;
-    const pause = inRecap ? base : base * PACE_FACTOR[watchPace as Exclude<WatchPace, 'manual'>];
+        ? moveMs * WATCH_NOTE_RATIO
+        : moveMs;
     const timer = setTimeout(advanceWatch, pause);
     return () => clearTimeout(timer);
     // watchStep is the move currently on the board: a new one restarts the wait.
-  }, [watching, looking, watchStep, watched?.comment, inRecap, manualWatch, watchPace, advanceWatch]);
+  }, [
+    watching,
+    looking,
+    watchStep,
+    watched?.comment,
+    inRecap,
+    manualWatch,
+    watchMoveSeconds,
+    advanceWatch,
+  ]);
 
   // Arrow keys walk the trail, the way they do on the explore board — but while
   // the line is being demonstrated, → and Space step the demonstration instead,

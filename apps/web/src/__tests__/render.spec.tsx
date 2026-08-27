@@ -443,7 +443,7 @@ describe('course trainer UI', () => {
     expect(html).toContain('Reset progress for 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3');
   });
 
-  it('does not offer a scoped reset for a line with nothing learned', () => {
+  it('shows the scoped reset controls disabled when there is no progress to clear', () => {
     const html = renderToStaticMarkup(
       <CourseDashboard
         entry={entry}
@@ -455,23 +455,47 @@ describe('course trainer UI', () => {
         onSetSide={() => {}}
       />,
     );
-    expect(html).not.toContain('course-outline__line-reset');
-    expect(html).not.toContain('Reset chapter');
+    // The buttons are there — discoverable — but inert until something is learned.
+    expect(html).toContain('Reset chapter');
+    expect(html).toContain('course-outline__line-reset');
+    expect(html.match(/Reset chapter<\/button>/g)).toBeTruthy();
+    expect(html).toMatch(/course-outline__reset"[^>]*disabled/);
+    expect(html).toMatch(/course-outline__line-reset"[^>]*disabled/);
   });
 });
 
 describe('settings', () => {
-  it('offers the annotation thickness and the demonstration pace', () => {
+  it('offers the annotation thickness and a dial for the demonstration pace', () => {
     const html = renderToStaticMarkup(
       <SettingsPanel
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
-        watchPace="normal"
-        onWatchPaceChange={() => {}}
+        watchAutoplay
+        onWatchAutoplayChange={() => {}}
+        watchMoveSeconds={1.1}
+        onWatchMoveSecondsChange={() => {}}
         onClose={() => {}}
       />,
     );
     expect(html).toContain('Course line demonstration');
-    for (const label of ['Manual', 'Slow', 'Normal', 'Fast']) expect(html).toContain(label);
+    expect(html).toContain('Step through each move myself');
+    expect(html).toContain('type="range"');
+    expect(html).toContain('1.1s / move');
+  });
+
+  it('reads Manual on the dial when autoplay is off', () => {
+    const html = renderToStaticMarkup(
+      <SettingsPanel
+        annotationThickness="medium"
+        onAnnotationThicknessChange={() => {}}
+        watchAutoplay={false}
+        onWatchAutoplayChange={() => {}}
+        watchMoveSeconds={1.1}
+        onWatchMoveSecondsChange={() => {}}
+        onClose={() => {}}
+      />,
+    );
+    expect(html).toContain('Manual');
+    expect(html).toMatch(/type="range"[^>]*disabled/);
   });
 });

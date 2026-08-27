@@ -188,8 +188,10 @@ export default function App() {
         <SettingsPanel
           annotationThickness={settings.annotationThickness}
           onAnnotationThicknessChange={settings.setAnnotationThickness}
-          watchPace={settings.watchPace}
-          onWatchPaceChange={settings.setWatchPace}
+          watchAutoplay={settings.watchAutoplay}
+          onWatchAutoplayChange={settings.setWatchAutoplay}
+          watchMoveSeconds={settings.watchMoveSeconds}
+          onWatchMoveSecondsChange={settings.setWatchMoveSeconds}
           onClose={() => setSettingsOpen(false)}
         />
       )}
@@ -199,7 +201,8 @@ export default function App() {
       ) : mode === 'courses' ? (
         <CoursesView
           annotationThickness={settings.annotationThickness}
-          watchPace={settings.watchPace}
+          watchAutoplay={settings.watchAutoplay}
+          watchMoveSeconds={settings.watchMoveSeconds}
         />
       ) : mode === 'review' ? (
         <ReviewView

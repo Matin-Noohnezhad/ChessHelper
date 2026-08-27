@@ -100,12 +100,17 @@ export function CourseOutline({
                   {chapter.variations.length} line{chapter.variations.length === 1 ? '' : 's'}
                   {chapter.due > 0 ? ` · ${chapter.due} due` : ''}
                 </span>
-                {onResetChapter && chapter.seen > 0 && (
+                {onResetChapter && (
                   <button
                     type="button"
                     className="reset course-outline__reset"
                     onClick={() => onResetChapter(chapter.chapterId, chapter.name)}
-                    title="Reset this chapter's progress"
+                    disabled={chapter.seen === 0}
+                    title={
+                      chapter.seen === 0
+                        ? 'Nothing learned in this chapter yet'
+                        : "Reset this chapter's progress"
+                    }
                   >
                     Reset chapter
                   </button>
@@ -140,12 +145,17 @@ export function CourseOutline({
                         <span className="course-outline__due" title={`${variation.due} due now`} />
                       )}
                     </button>
-                    {onResetLine && variation.state !== 'new' && (
+                    {onResetLine && (
                       <button
                         type="button"
                         className="reset course-outline__line-reset"
                         onClick={() => onResetLine(variation.id, label)}
-                        title="Reset this line's progress"
+                        disabled={variation.state === 'new'}
+                        title={
+                          variation.state === 'new'
+                            ? 'Nothing learned in this line yet'
+                            : "Reset this line's progress"
+                        }
                         aria-label={`Reset progress for ${label}`}
                       >
                         ⟲

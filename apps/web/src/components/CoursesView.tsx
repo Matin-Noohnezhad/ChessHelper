@@ -6,7 +6,6 @@ import { CourseLibrary } from './CourseLibrary.js';
 import { CourseSession } from './CourseSession.js';
 import type { AnnotationThickness } from './Board.js';
 import { useCourseLibrary } from '../hooks/useCourseLibrary.js';
-import type { WatchPace } from '../hooks/useSettings.js';
 
 type View =
   | { kind: 'library' }
@@ -22,7 +21,8 @@ type View =
 
 interface CoursesViewProps {
   annotationThickness?: AnnotationThickness;
-  watchPace?: WatchPace;
+  watchAutoplay?: boolean;
+  watchMoveSeconds?: number;
 }
 
 /**
@@ -32,7 +32,11 @@ interface CoursesViewProps {
  * session, so finishing a line and stepping back out lands on a dashboard whose
  * numbers have already moved.
  */
-export function CoursesView({ annotationThickness, watchPace }: CoursesViewProps) {
+export function CoursesView({
+  annotationThickness,
+  watchAutoplay,
+  watchMoveSeconds,
+}: CoursesViewProps) {
   const library = useCourseLibrary();
   const [view, setView] = useState<View>({ kind: 'library' });
 
@@ -73,7 +77,8 @@ export function CoursesView({ annotationThickness, watchPace }: CoursesViewProps
         }
         onProgress={(progress) => library.commitProgress(view.id, progress)}
         {...(annotationThickness ? { annotationThickness } : {})}
-        {...(watchPace ? { watchPace } : {})}
+        {...(watchAutoplay !== undefined ? { watchAutoplay } : {})}
+        {...(watchMoveSeconds !== undefined ? { watchMoveSeconds } : {})}
       />
     );
   }
