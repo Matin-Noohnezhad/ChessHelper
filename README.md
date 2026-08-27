@@ -20,7 +20,7 @@ packages/
   trainer/        sparring engine: repertoire lines, variation
                   rotation, spaced repetition, off-book feedback   ✅ 19 tests
   course/         MoveTrainer-style course drilling: PGN import,
-                  chunked lessons, per-move spaced repetition      ✅ 98 tests
+                  chunked lessons, per-move spaced repetition     ✅ 111 tests
   imbalances/     static, Silman-style reading of a position       ✅ 8 tests
   review/         whole-game review: accuracy, phases, and
                   chess.com-style move classification             ✅ 50 tests
@@ -100,11 +100,18 @@ schedule.
   month → three → six. One miss puts that move back on the bottom rung.
 - **Learning a line means watching it first.** The moves are played out one at a
   time — animated, at a pace you can read at, the opponent's replies included —
-  with whatever the author wrote about each one beside it. Then the board rewinds
-  and asks for the same moves back. Watching a line is not knowing it, and the
-  gap between the two is the whole point of the exercise. **Watch again** replays
-  the demonstration whenever you want it — the line goes past once, and the
-  moment you want it back is the moment you are stuck on the move after it.
+  with whatever the author wrote about each one beside it, and any arrows or
+  circles they drew on it (`[%cal]` / `[%csl]` in the PGN) on the board. Then it
+  rewinds and asks for the same moves back. Watching a line is not knowing it,
+  and the gap between the two is the whole point of the exercise. **Watch again**
+  replays the demonstration whenever you want it — the line goes past once, and
+  the moment you want it back is the moment you are stuck on the move after it.
+- **The demonstration runs at the pace you set.** Settings has four: *Slow*,
+  *Normal* and *Fast* auto-advance, stretching or compressing the reading pause;
+  *Manual* runs no clock at all — the line waits on the board and you step it
+  with the **Next** button, <kbd>→</kbd> or <kbd>Space</kbd>, reading each note
+  for as long as you like. The quick recap of a shared opening always plays
+  itself either way.
 - **Long lines come in parts.** Four of your own moves at a time, split evenly
   rather than four-then-one: watch a part, play it back, watch the next, play
   that back — and when the parts are done, the whole line from the first move
@@ -138,6 +145,12 @@ schedule.
   shown until you have missed something. *Quick review* skips the replay and
   drops you straight into the position each due move sits in — the difference
   between an hour of review and ten minutes of it on a course of any size.
+- **Reset as much or as little as you mean to.** The whole course, a single
+  chapter from its row in the outline, or one line from the ⟲ beside it — each
+  puts the moves it covers back to unlearned and leaves the rest of the course
+  where it was. Because progress is keyed by position, a move a line shares by
+  transposition is reset with it, the same rule that let learning it once count
+  everywhere.
 - **Sidelines are the course.** A repertoire keeps most of its teaching in
   parentheses, so the import reads them as siblings of the move they replace, not
   as footnotes. At your own move the three kinds are told apart without asking the

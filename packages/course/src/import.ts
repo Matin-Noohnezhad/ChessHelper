@@ -37,6 +37,7 @@ const isDubious = (move: PgnMove): boolean =>
 interface RawNode {
   san: string;
   comment?: string;
+  shapes?: PgnMove['shapes'];
   nags: number[];
   suffix?: string;
   dubious: boolean;
@@ -61,6 +62,7 @@ function convert(line: PgnMove[]): RawNode[] {
     children: convert(line.slice(1)),
   };
   if (first.comment) node.comment = first.comment;
+  if (first.shapes) node.shapes = first.shapes;
   if (first.suffix) node.suffix = first.suffix;
 
   const siblings = [node];
@@ -80,6 +82,7 @@ function mergeSiblings(into: RawNode[], from: readonly RawNode[]): void {
     // chapter repeating the position should not overwrite the prose that taught
     // it, but it may fill a gap the first left.
     if (!existing.comment && incoming.comment) existing.comment = incoming.comment;
+    if (!existing.shapes && incoming.shapes) existing.shapes = incoming.shapes;
     if (!existing.suffix && incoming.suffix) existing.suffix = incoming.suffix;
     existing.dubious = existing.dubious || incoming.dubious;
     mergeSiblings(existing.children, incoming.children);
@@ -178,6 +181,7 @@ function place(context: PlaceContext, raw: readonly RawNode[], idPrefix: string)
       children: [],
     };
     if (entry.comment) node.comment = entry.comment;
+    if (entry.shapes) node.shapes = entry.shapes;
     if (entry.suffix) node.suffix = entry.suffix;
     if (entry.dubious) node.dubious = true;
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { buildCourse, courseStats } from '@coh/course';
+import { buildCourse, courseStats, progressKeys } from '@coh/course';
 import type { Course, CourseProgress, CourseSide, CourseStats } from '@coh/course';
 import {
   clearProgress,
@@ -7,6 +7,7 @@ import {
   listCourses,
   loadProgress,
   saveCourse,
+  saveProgress,
   uniqueCourseId,
 } from '../storage/courseStore.js';
 import type { StoredCourse } from '../storage/courseStore.js';
@@ -49,6 +50,11 @@ export interface CourseLibrary {
   importPgn: (pgn: string, options?: { name?: string; side?: CourseSide }) => Promise<string | null>;
   remove: (id: string) => Promise<void>;
   resetProgress: (id: string) => Promise<void>;
+  /** Wipe progress for just some chapters or lines, leaving the rest of the course. */
+  resetScope: (
+    id: string,
+    scope: { chapterIds?: string[]; lineIds?: string[] },
+  ) => Promise<void>;
   setSide: (id: string, side: CourseSide) => Promise<void>;
   /** Writes a session's progress back and refreshes the stats built on it. */
   commitProgress: (id: string, progress: CourseProgress) => void;
@@ -122,6 +128,23 @@ export function useCourseLibrary(): CourseLibrary {
     [refresh],
   );
 
+  const resetScope = useCallback(
+    async (id: string, scope: { chapterIds?: string[]; lineIds?: string[] }) => {
+      const entry = entries.find((item) => item.stored.id === id);
+      if (!entry) return;
+      const drop = progressKeys(entry.course, scope);
+      if (!drop.size) return;
+      const current = await loadProgress(id);
+      const kept: CourseProgress = {};
+      for (const [key, value] of Object.entries(current)) {
+        if (!drop.has(key)) kept[key] = value;
+      }
+      await saveProgress(id, kept);
+      await refresh();
+    },
+    [entries, refresh],
+  );
+
   const setSide = useCallback(
     async (id: string, side: CourseSide) => {
       const stored = entries.find((entry) => entry.stored.id === id)?.stored;
@@ -151,6 +174,7 @@ export function useCourseLibrary(): CourseLibrary {
     importPgn,
     remove,
     resetProgress,
+    resetScope,
     setSide,
     commitProgress,
   };

@@ -144,6 +144,8 @@ interface BoardProps {
   marks?: SquareMark[];
   /** Arrows drawn by the app rather than the user; cleared with the position, not by clicking. */
   hintArrows?: BoardArrow[];
+  /** Circled squares drawn by the app rather than the user; cleared with the position. */
+  hintCircles?: { square: string; color?: DrawColor }[];
   /** The verdict on the move that reached this position, stuck to the square it landed on. */
   badge?: SquareBadge | null;
   /** Stroke weight for drawn arrows and square marks; defaults to 'medium'. */
@@ -171,6 +173,7 @@ export function Board({
   interactive = true,
   marks = [],
   hintArrows = [],
+  hintCircles = [],
   badge = null,
   annotationThickness = 'medium',
   animateMoves = false,
@@ -529,7 +532,11 @@ export function Board({
               />
             );
           })}
-          {[...circles, ...(previewCircle ? [previewCircle] : [])].map((circle, i) => {
+          {[
+            ...hintCircles.map((circle) => ({ ...circle, color: circle.color ?? 'green' })),
+            ...circles,
+            ...(previewCircle ? [previewCircle] : []),
+          ].map((circle, i) => {
             const { x, y } = squareCenter(circle.square, orientation);
             const side = 9.6; // a rounded square, not a full circle — squarish highlight with soft corners
             const radius = side * 0.32;

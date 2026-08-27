@@ -6,6 +6,7 @@ import { CourseLibrary } from './CourseLibrary.js';
 import { CourseSession } from './CourseSession.js';
 import type { AnnotationThickness } from './Board.js';
 import { useCourseLibrary } from '../hooks/useCourseLibrary.js';
+import type { WatchPace } from '../hooks/useSettings.js';
 
 type View =
   | { kind: 'library' }
@@ -21,6 +22,7 @@ type View =
 
 interface CoursesViewProps {
   annotationThickness?: AnnotationThickness;
+  watchPace?: WatchPace;
 }
 
 /**
@@ -30,7 +32,7 @@ interface CoursesViewProps {
  * session, so finishing a line and stepping back out lands on a dashboard whose
  * numbers have already moved.
  */
-export function CoursesView({ annotationThickness }: CoursesViewProps) {
+export function CoursesView({ annotationThickness, watchPace }: CoursesViewProps) {
   const library = useCourseLibrary();
   const [view, setView] = useState<View>({ kind: 'library' });
 
@@ -71,6 +73,7 @@ export function CoursesView({ annotationThickness }: CoursesViewProps) {
         }
         onProgress={(progress) => library.commitProgress(view.id, progress)}
         {...(annotationThickness ? { annotationThickness } : {})}
+        {...(watchPace ? { watchPace } : {})}
       />
     );
   }
@@ -93,6 +96,18 @@ export function CoursesView({ annotationThickness }: CoursesViewProps) {
             })
           }
           onResetProgress={() => void library.resetProgress(view.id)}
+          onResetChapter={(chapterId, label) => {
+            if (
+              window.confirm(
+                `Reset your progress for “${label}”? The moves it teaches go back to unlearned.`,
+              )
+            )
+              void library.resetScope(view.id, { chapterIds: [chapterId] });
+          }}
+          onResetLine={(lineId, label) => {
+            if (window.confirm(`Reset your progress for ${label}? Its moves go back to unlearned.`))
+              void library.resetScope(view.id, { lineIds: [lineId] });
+          }}
           onSetSide={(side: CourseSide) => void library.setSide(view.id, side)}
         />
       </div>

@@ -194,6 +194,21 @@ describe('annotated PGN', () => {
     expect(game.result).toBe('0-1');
   });
 
+  it('reads [%cal] arrows and [%csl] circles into a move, prose kept', () => {
+    const game = parseAnnotatedPgn(
+      '1. e4 e5 2. Nf3 {[%cal Gf3e5,Rd1h5] [%csl Ye5] eyes the e5 pawn} Nc6 *',
+    );
+    expect(game.moves[2]!.shapes).toEqual({
+      arrows: [
+        { from: 'f3', to: 'e5', color: 'green' },
+        { from: 'd1', to: 'h5', color: 'red' },
+      ],
+      circles: [{ square: 'e5', color: 'yellow' }],
+    });
+    expect(game.moves[2]!.comment).toBe('eyes the e5 pawn');
+    expect(game.moves[0]!.shapes).toBeUndefined();
+  });
+
   it('keeps the main line clear of sidelines and their clocks', () => {
     const game = parseAnnotatedPgn(
       '1. e4 e5 (1... c5 {[%clk 0:01:00]} 2. Nf3 (2. Nc3)) 2. Nf3 {[%clk 0:02:00]} Nc6 *',

@@ -14,6 +14,7 @@ import { CourseLibrary } from '../components/CourseLibrary.js';
 import { CourseSession } from '../components/CourseSession.js';
 import { ReviewSetup } from '../components/ReviewSetup.js';
 import { ReviewReport, StructureNote, moveBadge } from '../components/ReviewView.js';
+import { SettingsPanel } from '../components/SettingsPanel.js';
 import { TrainerView } from '../components/TrainerView.js';
 import { entryFrom } from '../hooks/useCourseLibrary.js';
 
@@ -414,5 +415,63 @@ describe('course trainer UI', () => {
     );
     expect(html).toContain('Nothing to do here');
     expect(html).not.toContain('data-square=');
+  });
+
+  it('offers a per-chapter and per-line progress reset once there is progress', () => {
+    const learned = entryFrom(
+      stored,
+      Object.fromEntries(
+        [...trainableMoves(entry.course.chapters, entry.course.side).keys()].map((key) => [
+          key,
+          { key, level: 3, dueAt: 0, lastSeenAt: 0, correct: 3, wrong: 0 },
+        ]),
+      ),
+    );
+    const html = renderToStaticMarkup(
+      <CourseDashboard
+        entry={learned}
+        onStart={() => {}}
+        onBack={() => {}}
+        onResetProgress={() => {}}
+        onResetChapter={() => {}}
+        onResetLine={() => {}}
+        onSetSide={() => {}}
+      />,
+    );
+    expect(html).toContain('Reset chapter');
+    expect(html).toContain('course-outline__line-reset');
+    expect(html).toContain('Reset progress for 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3');
+  });
+
+  it('does not offer a scoped reset for a line with nothing learned', () => {
+    const html = renderToStaticMarkup(
+      <CourseDashboard
+        entry={entry}
+        onStart={() => {}}
+        onBack={() => {}}
+        onResetProgress={() => {}}
+        onResetChapter={() => {}}
+        onResetLine={() => {}}
+        onSetSide={() => {}}
+      />,
+    );
+    expect(html).not.toContain('course-outline__line-reset');
+    expect(html).not.toContain('Reset chapter');
+  });
+});
+
+describe('settings', () => {
+  it('offers the annotation thickness and the demonstration pace', () => {
+    const html = renderToStaticMarkup(
+      <SettingsPanel
+        annotationThickness="medium"
+        onAnnotationThicknessChange={() => {}}
+        watchPace="normal"
+        onWatchPaceChange={() => {}}
+        onClose={() => {}}
+      />,
+    );
+    expect(html).toContain('Course line demonstration');
+    for (const label of ['Manual', 'Slow', 'Normal', 'Fast']) expect(html).toContain(label);
   });
 });

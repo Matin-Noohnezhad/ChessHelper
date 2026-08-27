@@ -19,6 +19,10 @@ interface CourseOutlineProps {
   onPickLine: (lineId: string) => void;
   /** Chapter-level Learn / Review. Absent in the rail. */
   onChapter?: (mode: 'learn' | 'review', chapterId: string) => void;
+  /** Wipe progress for one chapter — `label` is its name, for a confirm prompt. */
+  onResetChapter?: (chapterId: string, label: string) => void;
+  /** Wipe progress for one line — `label` is its notation, for a confirm prompt. */
+  onResetLine?: (lineId: string, label: string) => void;
   variant?: 'full' | 'rail';
 }
 
@@ -27,6 +31,8 @@ export function CourseOutline({
   activeLineId,
   onPickLine,
   onChapter,
+  onResetChapter,
+  onResetLine,
   variant = 'full',
 }: CourseOutlineProps) {
   const activeChapter = chapters.find((chapter) =>
@@ -70,26 +76,40 @@ export function CourseOutline({
               </span>
             </summary>
 
-            {onChapter && (
+            {(onChapter || onResetChapter) && (
               <div className="course-outline__chapter-actions">
-                <button
-                  type="button"
-                  onClick={() => onChapter('learn', chapter.chapterId)}
-                  disabled={chapter.seen >= chapter.moves}
-                >
-                  Learn
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onChapter('review', chapter.chapterId)}
-                  disabled={chapter.due === 0 || chapter.seen === 0}
-                >
-                  Review
-                </button>
+                {onChapter && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => onChapter('learn', chapter.chapterId)}
+                      disabled={chapter.seen >= chapter.moves}
+                    >
+                      Learn
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onChapter('review', chapter.chapterId)}
+                      disabled={chapter.due === 0 || chapter.seen === 0}
+                    >
+                      Review
+                    </button>
+                  </>
+                )}
                 <span className="muted">
                   {chapter.variations.length} line{chapter.variations.length === 1 ? '' : 's'}
                   {chapter.due > 0 ? ` · ${chapter.due} due` : ''}
                 </span>
+                {onResetChapter && chapter.seen > 0 && (
+                  <button
+                    type="button"
+                    className="reset course-outline__reset"
+                    onClick={() => onResetChapter(chapter.chapterId, chapter.name)}
+                    title="Reset this chapter's progress"
+                  >
+                    Reset chapter
+                  </button>
+                )}
               </div>
             )}
 
@@ -97,7 +117,7 @@ export function CourseOutline({
               {chapter.variations.map((variation) => {
                 const label = sanLine(variation.line);
                 return (
-                  <li key={variation.id}>
+                  <li key={variation.id} className="course-outline__line-row">
                     <button
                       type="button"
                       className={[
@@ -120,6 +140,17 @@ export function CourseOutline({
                         <span className="course-outline__due" title={`${variation.due} due now`} />
                       )}
                     </button>
+                    {onResetLine && variation.state !== 'new' && (
+                      <button
+                        type="button"
+                        className="reset course-outline__line-reset"
+                        onClick={() => onResetLine(variation.id, label)}
+                        title="Reset this line's progress"
+                        aria-label={`Reset progress for ${label}`}
+                      >
+                        ⟲
+                      </button>
+                    )}
                   </li>
                 );
               })}

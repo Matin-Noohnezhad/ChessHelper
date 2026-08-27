@@ -19,6 +19,10 @@ interface CourseDashboardProps {
   onStart: (mode: SessionMode, chapterIds?: string[], lineIds?: string[]) => void;
   onBack: () => void;
   onResetProgress: () => void;
+  /** Wipe progress for one chapter. `label` is its name, for the confirm prompt. */
+  onResetChapter?: (chapterId: string, label: string) => void;
+  /** Wipe progress for one line. `label` is its notation, for the confirm prompt. */
+  onResetLine?: (lineId: string, label: string) => void;
   onSetSide: (side: CourseSide) => void;
 }
 
@@ -35,6 +39,8 @@ export function CourseDashboard({
   onStart,
   onBack,
   onResetProgress,
+  onResetChapter,
+  onResetLine,
   onSetSide,
 }: CourseDashboardProps) {
   const { course, stats, progress } = entry;
@@ -126,6 +132,8 @@ export function CourseDashboard({
           chapters={outline}
           onPickLine={(lineId) => onStart('learn', undefined, [lineId])}
           onChapter={(mode, chapterId) => onStart(mode, [chapterId])}
+          {...(onResetChapter ? { onResetChapter } : {})}
+          {...(onResetLine ? { onResetLine } : {})}
         />
       </section>
 

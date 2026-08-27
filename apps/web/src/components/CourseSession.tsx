@@ -8,6 +8,7 @@ import type { AnnotationThickness, BoardArrow } from './Board.js';
 import { CourseOutline } from './CourseOutline.js';
 import { useCourseSession } from '../hooks/useCourseSession.js';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
+import type { WatchPace } from '../hooks/useSettings.js';
 
 const MODE_LABELS: Record<SessionMode, string> = {
   learn: 'Learning',
@@ -36,8 +37,16 @@ const WATCH_PAUSE_WITH_NOTE = 2600;
  * The pace for the recap at the top of a first part — the shared opening you
  * were already taught in the line before this one. Quick enough not to be a
  * wait, slow enough to follow the pieces back to where this line branches off.
+ * It ignores the pace setting: a recap is not the part you are here to read.
  */
 const WATCH_PAUSE_RECAP = 420;
+
+/** The pace setting, as a multiplier on the two teaching pauses above. */
+const PACE_FACTOR: Record<Exclude<WatchPace, 'manual'>, number> = {
+  slow: 1.8,
+  normal: 1,
+  fast: 0.45,
+};
 
 /** What one line of a session is called, which is not the same in all three. */
 const RUN_NOUN: Record<SessionMode, string> = {
@@ -56,6 +65,8 @@ interface CourseSessionProps {
   onPickLine: (lineId: string) => void;
   onProgress?: (progress: CourseProgress) => void;
   annotationThickness?: AnnotationThickness;
+  /** How the demonstration plays out — from Settings. Defaults to 'normal'. */
+  watchPace?: WatchPace;
 }
 
 /**
@@ -76,6 +87,7 @@ export function CourseSession({
   onPickLine,
   onProgress,
   annotationThickness,
+  watchPace = 'normal',
 }: CourseSessionProps) {
   const session = useCourseSession(
     entry,
@@ -148,32 +160,43 @@ export function CourseSession({
     return info ? { from: info.from, to: info.to } : null;
   }, [lookbackGame, lookback, task, trainer.startFen]);
 
-  // The demonstration plays itself. Each move waits long enough to be seen, and
-  // longer when the author left something to read with it — and it holds still
-  // entirely while you are reading back through what it has already played. The
-  // shared opening at the top of a first part is a recap, and runs quicker.
+  // The demonstration plays itself — unless the pace is Manual, when it waits
+  // for you to step it. Each move waits long enough to be seen, and longer when
+  // the author left something to read with it; the pace setting stretches or
+  // compresses both. It holds still entirely while you read back through what it
+  // has already played, and the recap at the top of a first part always runs at
+  // its own quick clock, Manual included.
   const { advanceWatch } = session;
   const watchStep = watched?.id ?? '';
   const watchAt = trainer.watchAt;
   const recapUntil = trainer.watchRecapUntil;
   const inRecap = watching && recapUntil > 0 && watchAt <= recapUntil;
+  const manualWatch = watchPace === 'manual';
   useEffect(() => {
     if (!watching || looking) return;
-    const pause = inRecap
+    if (manualWatch && !inRecap) return; // your move to make: step it yourself
+    const base = inRecap
       ? WATCH_PAUSE_RECAP
       : watched?.comment
         ? WATCH_PAUSE_WITH_NOTE
         : WATCH_PAUSE;
+    const pause = inRecap ? base : base * PACE_FACTOR[watchPace as Exclude<WatchPace, 'manual'>];
     const timer = setTimeout(advanceWatch, pause);
     return () => clearTimeout(timer);
     // watchStep is the move currently on the board: a new one restarts the wait.
-  }, [watching, looking, watchStep, watched?.comment, inRecap, advanceWatch]);
+  }, [watching, looking, watchStep, watched?.comment, inRecap, manualWatch, watchPace, advanceWatch]);
 
-  // Arrow keys walk the trail, the way they do on the explore board.
+  // Arrow keys walk the trail, the way they do on the explore board — but while
+  // the line is being demonstrated, → and Space step the demonstration instead,
+  // which is the whole of how Manual pace is driven.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.target instanceof HTMLInputElement) return;
-      if (event.key === 'ArrowLeft') stepTo((lookback ?? livePly) - 1);
+      const steppingWatch = watching && !looking;
+      // Space also activates a focused button; only claim it when nothing is.
+      const spaceStep = event.key === ' ' && !(event.target instanceof HTMLButtonElement);
+      if ((event.key === 'ArrowRight' || spaceStep) && steppingWatch) advanceWatch();
+      else if (event.key === 'ArrowLeft') stepTo((lookback ?? livePly) - 1);
       else if (event.key === 'ArrowRight') stepTo((lookback ?? livePly) + 1);
       else if (event.key === 'ArrowUp') stepTo(0);
       else if (event.key === 'ArrowDown' || event.key === 'Escape') setLookback(null);
@@ -182,7 +205,7 @@ export function CourseSession({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [lookback, livePly, stepTo]);
+  }, [lookback, livePly, stepTo, watching, looking, advanceWatch]);
 
   const handleMove = (from: string, to: string, promotion?: PieceSymbol) => {
     session.submit({ from, to, promotion });
@@ -196,6 +219,20 @@ export function CourseSession({
     const info = probe.move(node.san);
     if (info) arrows.push({ from: info.from, to: info.to, color: 'blue' });
   }
+
+  // Whatever the author drew on the move you are looking at — carried through
+  // from the PGN's [%cal]/[%csl]. Shown while the line plays itself and while
+  // you read back through it; a move that is still a question keeps its secrets.
+  const shapeNode: CourseNode | null = looking ? lookbackNode : watching ? watched : null;
+  const shapeArrows: BoardArrow[] = (shapeNode?.shapes?.arrows ?? []).map((arrow) => ({
+    from: arrow.from,
+    to: arrow.to,
+    color: arrow.color,
+  }));
+  const shapeCircles = (shapeNode?.shapes?.circles ?? []).map((circle) => ({
+    square: circle.square,
+    color: circle.color,
+  }));
 
   if (!plan.tasks.length) {
     return (
@@ -241,7 +278,8 @@ export function CourseSession({
           lastMove={looking ? lookbackLast : trainer.lastMove}
           onMove={handleMove}
           interactive={!looking && trainer.isUsersTurn}
-          hintArrows={looking ? [] : arrows}
+          hintArrows={[...(looking ? [] : arrows), ...shapeArrows]}
+          hintCircles={shapeCircles}
           annotationThickness={annotationThickness}
           animateMoves={!looking}
         />
@@ -302,8 +340,13 @@ export function CourseSession({
               </button>
             ) : watching ? (
               <>
-                <button type="button" onClick={session.advanceWatch} title="Next move">
-                  ⏭
+                <button
+                  type="button"
+                  className={manualWatch && !inRecap ? 'primary' : undefined}
+                  onClick={session.advanceWatch}
+                  title="Next move (→ or Space)"
+                >
+                  Next ⏭
                 </button>
                 <button type="button" onClick={session.skipWatch}>
                   Let me try
@@ -400,6 +443,7 @@ export function CourseSession({
               upNext={trainer.watchNext}
               progress={trainer.watchCompletion}
               recap={inRecap}
+              manual={manualWatch && !inRecap}
             />
           ) : finished ? (
             <div className="card card--good">
@@ -524,6 +568,8 @@ interface DemonstrationProps {
   progress: number;
   /** The moves going past now are the shared opening, replayed at speed. */
   recap: boolean;
+  /** Manual pace: the line waits for you to step it rather than playing itself. */
+  manual: boolean;
 }
 
 /**
@@ -536,7 +582,7 @@ interface DemonstrationProps {
  * be shown again tomorrow. The exception is the recap — moves you were taught
  * in the line before this one, run through quickly to reach the branch.
  */
-function Demonstration({ watched, upNext, progress, recap }: DemonstrationProps) {
+function Demonstration({ watched, upNext, progress, recap, manual }: DemonstrationProps) {
   return (
     <div className="card card--info course-watch">
       <h3>
@@ -562,6 +608,11 @@ function Demonstration({ watched, upNext, progress, recap }: DemonstrationProps)
       ) : (
         <p className="muted">
           {upNext ? 'Watching the moves — you will be asked for them next.' : 'Now play it back.'}
+        </p>
+      )}
+      {manual && upNext && (
+        <p className="muted course-watch__step">
+          Press <kbd>→</kbd> or <strong>Next</strong> for {upNext.san}.
         </p>
       )}
       <div className="bar course-watch__bar">

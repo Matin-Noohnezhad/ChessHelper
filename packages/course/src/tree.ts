@@ -153,3 +153,31 @@ export function quizIndices(line: readonly CourseNode[], side: CourseSide): numb
 export function lineSan(line: readonly CourseNode[]): string[] {
   return line.map((node) => node.san);
 }
+
+/**
+ * The progress keys — position + move — a chapter or a set of lines covers.
+ *
+ * This is what "reset this chapter" or "reset this line" operates on. Progress
+ * is keyed by position, so a move a line shares with another by transposition is
+ * one entry and resetting either reaches it — which is the same rule that lets
+ * learning it once count everywhere.
+ */
+export function progressKeys(
+  course: Course,
+  scope: { chapterIds?: readonly string[]; lineIds?: readonly string[] } = {},
+): Set<string> {
+  const chapterFilter = scope.chapterIds?.length ? new Set(scope.chapterIds) : null;
+  const lineFilter = scope.lineIds?.length ? new Set(scope.lineIds) : null;
+  const keys = new Set<string>();
+
+  for (const chapter of course.chapters) {
+    if (chapterFilter && !chapterFilter.has(chapter.id)) continue;
+    for (const variation of variationsOf(chapter, course.side)) {
+      if (lineFilter && !lineFilter.has(variation.id)) continue;
+      for (const index of quizIndices(variation.line, course.side)) {
+        keys.add(moveKey(variation.line[index]!));
+      }
+    }
+  }
+  return keys;
+}

@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { buildCourse } from '../import.js';
-import { allVariations, moveKey, quizIndices, roleOf, trainableMoves, variationsOf } from '../tree.js';
+import {
+  allVariations,
+  moveKey,
+  progressKeys,
+  quizIndices,
+  roleOf,
+  trainableMoves,
+  variationsOf,
+} from '../tree.js';
 import type { CourseNode } from '../types.js';
 import { COURSE_PGN } from './fixture.js';
 
@@ -106,5 +114,34 @@ describe('trainable moves', () => {
 
   it('covers every chapter of the course', () => {
     expect(allVariations(course)).toHaveLength(5);
+  });
+});
+
+describe('progress keys for a scope', () => {
+  it('with no scope, matches every trainable move', () => {
+    const all = progressKeys(course);
+    expect(all).toEqual(new Set(trainableMoves(course.chapters, 'white').keys()));
+  });
+
+  it('narrows to one chapter', () => {
+    const chapterTwo = progressKeys(course, { chapterIds: [course.chapters[1]!.id] });
+    const expected = new Set(trainableMoves([course.chapters[1]!], 'white').keys());
+    expect(chapterTwo).toEqual(expected);
+    // Chapter two is all move-order into chapter one, so its keys are a subset.
+    for (const key of chapterTwo) expect(progressKeys(course)).toContain(key);
+  });
+
+  it('narrows to one line, and only its moves', () => {
+    const najdorf = variationsOf(course.chapters[0]!, 'white')[0]!;
+    const keys = progressKeys(course, { lineIds: [najdorf.id] });
+    const expected = new Set(
+      quizIndices(najdorf.line, 'white').map((i) => moveKey(najdorf.line[i]!)),
+    );
+    expect(keys).toEqual(expected);
+    // 5.Bb5 lives only in another line — resetting the Najdorf leaves it alone.
+    const bb5 = [...trainableMoves(course.chapters, 'white').entries()].find(
+      ([, node]) => node.san === 'Bb5',
+    )![0];
+    expect(keys.has(bb5)).toBe(false);
   });
 });

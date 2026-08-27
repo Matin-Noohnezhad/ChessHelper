@@ -92,6 +92,26 @@ describe('course import', () => {
     expect(course.chapters[0]!.roots[0]!.san).toBe('Kd2');
   });
 
+  it('carries the arrows and circles the author drew onto the move', () => {
+    const course = buildCourse(
+      `[Event "Shapes: Plan"]\n\n1. e4 c5 2. Nf3 d6 3. d4 {[%cal Gd4c5,Gf1b5] [%csl Rd4] the break} *`,
+    );
+    let nodes = course.chapters[0]!.roots;
+    let node = nodes[0]!;
+    for (const san of ['e4', 'c5', 'Nf3', 'd6', 'd4']) {
+      node = nodes.find((entry) => entry.san === san)!;
+      nodes = node.children;
+    }
+    expect(node.shapes).toEqual({
+      arrows: [
+        { from: 'd4', to: 'c5', color: 'green' },
+        { from: 'f1', to: 'b5', color: 'green' },
+      ],
+      circles: [{ square: 'd4', color: 'red' }],
+    });
+    expect(node.comment).toBe('the break');
+  });
+
   it('reports a move it cannot replay instead of dropping it in silence', () => {
     const course = buildCourse(`[Event "Bad: Line"]\n\n1. e4 e5 2. Nf7 Nc6 *`);
     expect(course.problems).toHaveLength(1);

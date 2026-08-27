@@ -9,6 +9,10 @@
  * repertoire and re-reading it.
  */
 
+import type { MoveShapes } from '@coh/chess-core';
+
+export type { MoveShapes, ShapeArrow, ShapeCircle, ShapeColor } from '@coh/chess-core';
+
 export type CourseSide = 'white' | 'black';
 
 /** One move, as the course file wrote it. */
@@ -28,6 +32,8 @@ export interface CourseNode {
   fromKey: string;
   /** The author's prose for this move — the teaching half of a course. */
   comment?: string;
+  /** Arrows and circles the author drew on this move — `[%cal]` / `[%csl]`. */
+  shapes?: MoveShapes;
   nags: number[];
   /** `!`, `?`, `!?` … as the file wrote it. */
   suffix?: string;
