@@ -90,6 +90,26 @@ export function parsePgn(pgn: string): PgnGame {
 
 /* ----------------------------------------------------- annotated PGN --- */
 
+/** The four colours lichess and chess.com draw with: `G`/`R`/`Y`/`B` in `[%cal …]`. */
+export type ShapeColor = 'green' | 'red' | 'yellow' | 'blue';
+
+export interface ShapeArrow {
+  from: string;
+  to: string;
+  color: ShapeColor;
+}
+
+export interface ShapeCircle {
+  square: string;
+  color: ShapeColor;
+}
+
+/** Board drawings the author left on a move — `[%cal Gd2d4]`, `[%csl Re4]`. */
+export interface MoveShapes {
+  arrows: ShapeArrow[];
+  circles: ShapeCircle[];
+}
+
 export interface PgnMove {
   san: string;
   /** `!`, `?`, `!?` … glued to the SAN token, if the exporter wrote any. */
@@ -98,6 +118,8 @@ export interface PgnMove {
   nags: number[];
   /** Comment text with the `[%…]` commands stripped out. */
   comment?: string;
+  /** Arrows and circles drawn on this move — from `[%cal …]` / `[%csl …]`. */
+  shapes?: MoveShapes;
   /** Clock left *after* the move, in seconds — `{[%clk 0:02:56.7]}`. */
   clockSeconds?: number;
   /** Time spent on the move, in seconds — `{[%emt 0:00:05]}`. */
@@ -155,6 +177,30 @@ function parseEval(text: string): { evalCp?: number; evalMate?: number } {
   return { evalCp: Math.round(pawns * 100) };
 }
 
+/** `G`/`R`/`Y`/`B` as `[%cal …]` writes them. */
+const SHAPE_COLORS: Record<string, ShapeColor> = {
+  G: 'green',
+  R: 'red',
+  Y: 'yellow',
+  B: 'blue',
+};
+
+/** Reads `Gd2d4,Re1e5` (arrows) or `Gd4,Re5` (circles) into a move's shapes. */
+function applyShapes(move: PgnMove, value: string, kind: 'cal' | 'csl'): void {
+  for (const raw of value.split(',')) {
+    const token = raw.trim();
+    const color = SHAPE_COLORS[token[0]?.toUpperCase() ?? ''];
+    if (!color) continue;
+    const body = token.slice(1).toLowerCase();
+    const shapes = (move.shapes ??= { arrows: [], circles: [] });
+    if (kind === 'cal' && /^[a-h][1-8][a-h][1-8]$/.test(body)) {
+      shapes.arrows.push({ from: body.slice(0, 2), to: body.slice(2, 4), color });
+    } else if (/^[a-h][1-8]$/.test(body)) {
+      shapes.circles.push({ square: body, color });
+    }
+  }
+}
+
 /** Pulls `[%clk …]`-style commands out of a comment, leaving the prose behind. */
 function applyComment(move: PgnMove, body: string): void {
   let prose = body;
@@ -176,8 +222,12 @@ function applyComment(move: PgnMove, body: string): void {
       case 'eval':
         Object.assign(move, parseEval(value));
         break;
+      case 'cal':
+      case 'csl':
+        applyShapes(move, value, match[1]!.toLowerCase() as 'cal' | 'csl');
+        break;
       default:
-        break; // %cal, %csl and friends: annotations we do not render yet
+        break; // other [%…] commands: nothing we render yet
     }
   }
   prose = prose.replace(commands, ' ').replace(/\s+/g, ' ').trim();

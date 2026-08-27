@@ -4,12 +4,19 @@ import { identifyOpening } from '@coh/opening-book';
 import { Chess } from '@coh/chess-core';
 import { QUALITY_LABELS, QUALITY_ORDER, reviewPgn } from '@coh/review';
 import type { PositionEvaluator } from '@coh/review';
+import { MAX_LEVEL, allVariations, buildCourse, trainableMoves } from '@coh/course';
 import App from '../App.js';
 import { Board } from '../components/Board.js';
 import { OpeningPanel } from '../components/OpeningPanel.js';
+import { CourseDashboard } from '../components/CourseDashboard.js';
+import { CourseImport, CoursePreview } from '../components/CourseImport.js';
+import { CourseLibrary } from '../components/CourseLibrary.js';
+import { CourseSession } from '../components/CourseSession.js';
 import { ReviewSetup } from '../components/ReviewSetup.js';
 import { ReviewReport, StructureNote, moveBadge } from '../components/ReviewView.js';
+import { SettingsPanel } from '../components/SettingsPanel.js';
 import { TrainerView } from '../components/TrainerView.js';
+import { entryFrom } from '../hooks/useCourseLibrary.js';
 
 /**
  * Smoke tests: the component tree has to actually execute. Type checking will
@@ -242,5 +249,253 @@ describe('game review UI', () => {
     }
     expect(html).toContain('Sacrifice');
     expect(html).toContain('is-empty');
+  });
+});
+
+describe('course trainer UI', () => {
+  const PGN = `[Event "Test Course: Open Sicilian"]
+
+1. e4 c5 2. Nf3 d6 {Entering the Najdorf complex — d6 keeps e5 covered.}
+(2... Nc6 3. d4 cxd4 4. Nxd4) 3. d4 (3. Be2) cxd4 4. Nxd4 Nf6 5. Nc3 *
+`;
+
+  const stored = {
+    id: 'test-course',
+    name: 'Test Course',
+    pgn: PGN,
+    side: 'white' as const,
+    importedAt: 0,
+  };
+  const entry = entryFrom(stored, {});
+
+  it('offers a paste box and a file picker for a course PGN', () => {
+    const html = renderToStaticMarkup(<CourseImport onImport={() => {}} />);
+    expect(html).toContain('Import a course');
+    expect(html).toContain('Open a .pgn file');
+  });
+
+  it('previews what the parse found before anything is saved', () => {
+    const course = buildCourse(PGN);
+    const html = renderToStaticMarkup(
+      <CoursePreview
+        course={course}
+        variations={allVariations(course).length}
+        moves={trainableMoves(course.chapters, course.side).size}
+        name={course.name}
+        side={course.side}
+        inferred
+        onNameChange={() => {}}
+        onSideChange={() => {}}
+        onConfirm={() => {}}
+      />,
+    );
+    expect(html).toContain('Open Sicilian');
+    expect(html).toContain('2 variations');
+    expect(html).toContain('side inferred from where the course branches');
+  });
+
+  it('lists a course with what is learned and what is waiting', () => {
+    // No IndexedDB in this environment: the library must build its entries from
+    // the stored PGN rather than crashing on the missing store.
+    const html = renderToStaticMarkup(
+      <CourseLibrary
+        entries={[entry]}
+        onOpen={() => {}}
+        onStart={() => {}}
+        onDelete={() => {}}
+        onImport={() => {}}
+      />,
+    );
+    expect(html).toContain('Test Course');
+    expect(html).toContain('1 chapter');
+    expect(html).toContain('not met yet');
+    expect(html).toContain('Quick review');
+  });
+
+  it('breaks a course down by chapter, in moves rather than lines', () => {
+    const html = renderToStaticMarkup(
+      <CourseDashboard
+        entry={entry}
+        onStart={() => {}}
+        onBack={() => {}}
+        onResetProgress={() => {}}
+        onSetSide={() => {}}
+      />,
+    );
+    expect(html).toContain('Open Sicilian');
+    expect(html).toContain('moves learned');
+    // The ladder is drawn with a rung per interval, "not met" included.
+    expect(html.match(/course-ladder__rung/g)).toHaveLength(MAX_LEVEL + 1);
+    expect(html).toContain('4h');
+    expect(html).toContain('6mo');
+  });
+
+  it('lists every line of a chapter with a ring and its notation', () => {
+    const html = renderToStaticMarkup(
+      <CourseDashboard
+        entry={entry}
+        onStart={() => {}}
+        onBack={() => {}}
+        onResetProgress={() => {}}
+        onSetSide={() => {}}
+      />,
+    );
+    // Both variations of the fixture, written out move by move, each with a ring.
+    expect(html).toContain('course-outline__line');
+    expect(html.match(/class="ring"/g)?.length).toBe(2);
+    expect(html).toContain('1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3');
+    expect(html).toContain('1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4');
+  });
+
+  it('puts a line rail beside the board in a session', () => {
+    const html = renderToStaticMarkup(
+      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
+    );
+    expect(html).toContain('course-session--rail');
+    expect(html).toContain('course-session__rail');
+    // The line being taught is marked active in the rail.
+    expect(html).toContain('is-new is-active');
+  });
+
+  it('opens a learn session by offering to play the line, not by asking for it', () => {
+    const html = renderToStaticMarkup(
+      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
+    );
+    expect(html.match(/data-square="/g)).toHaveLength(64);
+    expect(html).toContain('Learning');
+    expect(html).toContain('Watch the line');
+    expect(html).toContain('you will be asked for them next');
+    // The board is untouched — the demonstration has not started yet.
+    expect(html).toContain('data-square="e2"');
+  });
+
+  it('counts the session in lines, and says which try at the line this is', () => {
+    const html = renderToStaticMarkup(
+      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
+    );
+    // Two variations, each taught in two parts and then asked from the top:
+    // two lines, three tries at this one — not "1 of 6 tasks", which is a
+    // number about the machine rather than about the chapter.
+    expect(html).toContain('Line 1 of 2');
+    expect(html).toContain('try 1 of 3');
+    expect(html).not.toContain('of 6');
+  });
+
+  it('says which part of a long line is being taught', () => {
+    const html = renderToStaticMarkup(
+      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
+    );
+    // Seven moves of your own, four to a part.
+    expect(html).toContain('Part 1 of 2');
+    expect(html).toContain('then the whole thing from the top');
+    expect(html).toContain('Let me try');
+  });
+
+  it('asks for the part back without naming a move of it', () => {
+    // A review session on a course with one move learned puts the board
+    // straight into recall, which is where the prompt has to hold its tongue.
+    const moves = trainableMoves(entry.course.chapters, entry.course.side);
+    const first = [...moves.keys()][0]!;
+    const learned = entryFrom(stored, {
+      [first]: { key: first, level: 2, dueAt: 0, lastSeenAt: 0, correct: 2, wrong: 0 },
+    });
+    const html = renderToStaticMarkup(
+      <CourseSession entry={learned} mode="review" onExit={() => {}} onPickLine={() => {}} />,
+    );
+    expect(html).toContain('Your turn');
+    expect(html).toContain('to play');
+    // The move being asked for appears nowhere on the page.
+    expect(html).not.toContain('The move was');
+    expect(html).not.toContain('The course plays');
+  });
+
+  it('has nothing to review until something has been learned', () => {
+    const html = renderToStaticMarkup(
+      <CourseSession entry={entry} mode="review" onExit={() => {}} onPickLine={() => {}} />,
+    );
+    expect(html).toContain('Nothing to do here');
+    expect(html).not.toContain('data-square=');
+  });
+
+  it('offers a per-chapter and per-line progress reset once there is progress', () => {
+    const learned = entryFrom(
+      stored,
+      Object.fromEntries(
+        [...trainableMoves(entry.course.chapters, entry.course.side).keys()].map((key) => [
+          key,
+          { key, level: 3, dueAt: 0, lastSeenAt: 0, correct: 3, wrong: 0 },
+        ]),
+      ),
+    );
+    const html = renderToStaticMarkup(
+      <CourseDashboard
+        entry={learned}
+        onStart={() => {}}
+        onBack={() => {}}
+        onResetProgress={() => {}}
+        onResetChapter={() => {}}
+        onResetLine={() => {}}
+        onSetSide={() => {}}
+      />,
+    );
+    expect(html).toContain('Reset chapter');
+    expect(html).toContain('course-outline__line-reset');
+    expect(html).toContain('Reset progress for 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3');
+  });
+
+  it('shows the scoped reset controls disabled when there is no progress to clear', () => {
+    const html = renderToStaticMarkup(
+      <CourseDashboard
+        entry={entry}
+        onStart={() => {}}
+        onBack={() => {}}
+        onResetProgress={() => {}}
+        onResetChapter={() => {}}
+        onResetLine={() => {}}
+        onSetSide={() => {}}
+      />,
+    );
+    // The buttons are there — discoverable — but inert until something is learned.
+    expect(html).toContain('Reset chapter');
+    expect(html).toContain('course-outline__line-reset');
+    expect(html.match(/Reset chapter<\/button>/g)).toBeTruthy();
+    expect(html).toMatch(/course-outline__reset"[^>]*disabled/);
+    expect(html).toMatch(/course-outline__line-reset"[^>]*disabled/);
+  });
+});
+
+describe('settings', () => {
+  it('offers the annotation thickness and a dial for the demonstration pace', () => {
+    const html = renderToStaticMarkup(
+      <SettingsPanel
+        annotationThickness="medium"
+        onAnnotationThicknessChange={() => {}}
+        watchAutoplay
+        onWatchAutoplayChange={() => {}}
+        watchMoveSeconds={1.1}
+        onWatchMoveSecondsChange={() => {}}
+        onClose={() => {}}
+      />,
+    );
+    expect(html).toContain('Course line demonstration');
+    expect(html).toContain('Step through each move myself');
+    expect(html).toContain('type="range"');
+    expect(html).toContain('1.1s / move');
+  });
+
+  it('reads Manual on the dial when autoplay is off', () => {
+    const html = renderToStaticMarkup(
+      <SettingsPanel
+        annotationThickness="medium"
+        onAnnotationThicknessChange={() => {}}
+        watchAutoplay={false}
+        onWatchAutoplayChange={() => {}}
+        watchMoveSeconds={1.1}
+        onWatchMoveSecondsChange={() => {}}
+        onClose={() => {}}
+      />,
+    );
+    expect(html).toContain('Manual');
+    expect(html).toMatch(/type="range"[^>]*disabled/);
   });
 });

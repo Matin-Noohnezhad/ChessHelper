@@ -1,4 +1,4 @@
-import { useCallback, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
 import { Piece } from './Piece.js';
 import type { Orientation } from '../hooks/useChessGame.js';
@@ -117,6 +117,23 @@ export interface SquareBadge {
   className?: string;
 }
 
+/**
+ * A piece caught mid-move: it is already drawn on the square it arrived at, and
+ * `dx`/`dy` are how far back toward its old square to start it before letting
+ * it run home. Offsets are in pixels rather than percentages because a piece is
+ * a text glyph — its own box is the width of the letter, not of the square.
+ */
+interface Slide {
+  to: string;
+  dx: number;
+  dy: number;
+  /** False on the frame that positions it, true on the one that releases it. */
+  running: boolean;
+}
+
+/** Layout effects warn under server rendering, where there is nothing to lay out. */
+const useVisualEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 interface BoardProps {
   game: Chess;
   orientation: Orientation;
@@ -127,10 +144,20 @@ interface BoardProps {
   marks?: SquareMark[];
   /** Arrows drawn by the app rather than the user; cleared with the position, not by clicking. */
   hintArrows?: BoardArrow[];
+  /** Circled squares drawn by the app rather than the user; cleared with the position. */
+  hintCircles?: { square: string; color?: DrawColor }[];
   /** The verdict on the move that reached this position, stuck to the square it landed on. */
   badge?: SquareBadge | null;
   /** Stroke weight for drawn arrows and square marks; defaults to 'medium'. */
   annotationThickness?: AnnotationThickness;
+  /**
+   * Slide the piece into place when the position changes under the board.
+   *
+   * Off by default. On the explore board a move is something you just made and
+   * an animation is in your way; when the board is playing a line *to* you, a
+   * piece that teleports is a move you did not see happen.
+   */
+  animateMoves?: boolean;
 }
 
 interface Pending {
@@ -146,8 +173,10 @@ export function Board({
   interactive = true,
   marks = [],
   hintArrows = [],
+  hintCircles = [],
   badge = null,
   annotationThickness = 'medium',
+  animateMoves = false,
 }: BoardProps) {
   const annotationScale = ANNOTATION_SCALE[annotationThickness];
   const boardRef = useRef<HTMLDivElement>(null);
@@ -159,8 +188,63 @@ export function Board({
   const [circles, setCircles] = useState<DrawCircle[]>([]);
   const [drawStart, setDrawStart] = useState<{ square: string; color: DrawColor } | null>(null);
   const [drawCurrent, setDrawCurrent] = useState<string | null>(null);
+  const [slide, setSlide] = useState<Slide | null>(null);
+  const slidFrom = useRef<string | null>(null);
 
   const names = useMemo(() => squareNames(orientation), [orientation]);
+
+  /**
+   * Catch the arriving piece and start it where it came from.
+   *
+   * Keyed on the origin square rather than on the pair: a piece being dragged
+   * home by the person holding it has already visibly travelled, and re-running
+   * the trip under it looks like a stutter. What this is for is the moves the
+   * board makes on its own.
+   */
+  useVisualEffect(() => {
+    if (!animateMoves) {
+      slidFrom.current = null;
+      return;
+    }
+    const key = lastMove ? `${lastMove.from}${lastMove.to}` : null;
+    if (key === slidFrom.current) return;
+    slidFrom.current = key;
+    if (!lastMove || !boardRef.current) {
+      setSlide(null);
+      return;
+    }
+    const rect = boardRef.current.getBoundingClientRect();
+    const from = squareCenter(lastMove.from, orientation);
+    const to = squareCenter(lastMove.to, orientation);
+    setSlide({
+      to: lastMove.to,
+      dx: ((from.x - to.x) / 100) * rect.width,
+      dy: ((from.y - to.y) / 100) * rect.height,
+      running: false,
+    });
+  }, [animateMoves, lastMove, orientation]);
+
+  // A frame later, drop the offset and let the transition carry it across.
+  useEffect(() => {
+    if (!slide || slide.running) return;
+    const frame = requestAnimationFrame(() =>
+      setSlide((current) => (current && !current.running ? { ...current, running: true } : current)),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [slide]);
+
+  /**
+   * Everything below is derived from the *position*, so that is what it is keyed
+   * on — not the identity of the `Chess` holding it.
+   *
+   * The explore board builds a fresh game from the move list on every render, so
+   * identity would do there. The trainers do not: they own one board and make
+   * moves on it, handing back the same object with different pieces on it. Keyed
+   * on identity, a memo cannot tell that apart from nothing having happened, and
+   * the board silently stops redrawing after the first move.
+   */
+  const fen = game.fen();
+
   const contents = useMemo(() => {
     // game.board() is always a8..h1; index it by square name so the rendering
     // order and the data order can differ without a second source of truth.
@@ -171,14 +255,14 @@ export function Board({
       if (cell) map.set(straight[i]!, cell);
     });
     return map;
-  }, [game]);
+  }, [game, fen]);
 
   const targets = useMemo(() => {
     if (!selected || !interactive) return new Map<string, boolean>();
     const map = new Map<string, boolean>();
     for (const move of game.movesFrom(selected)) map.set(move.to, move.isCapture);
     return map;
-  }, [game, selected, interactive]);
+  }, [game, fen, selected, interactive]);
 
   const checkSquare = useMemo(() => {
     if (!game.isCheck()) return null;
@@ -187,7 +271,7 @@ export function Board({
       if (piece.type === 'k' && piece.color === turn) return square;
     }
     return null;
-  }, [game, contents]);
+  }, [game, fen, contents]);
 
   const markBySquare = useMemo(() => {
     const map = new Map<string, SquareMark>();
@@ -367,11 +451,24 @@ export function Board({
               onPointerDown={(e) => handlePointerDown(e, square)}
             >
               {piece && (
-                <Piece
-                  type={piece.type}
-                  color={piece.color}
-                  dragging={drag?.square === square}
-                />
+                <span
+                  className={slide?.to === square ? 'piece-slide' : undefined}
+                  style={
+                    slide?.to === square
+                      ? {
+                          transform: slide.running
+                            ? 'none'
+                            : `translate(${slide.dx}px, ${slide.dy}px)`,
+                        }
+                      : undefined
+                  }
+                >
+                  <Piece
+                    type={piece.type}
+                    color={piece.color}
+                    dragging={drag?.square === square}
+                  />
+                </span>
               )}
               {targets.has(square) && (
                 <span className={targets.get(square) ? 'target target--capture' : 'target'} />
@@ -435,7 +532,11 @@ export function Board({
               />
             );
           })}
-          {[...circles, ...(previewCircle ? [previewCircle] : [])].map((circle, i) => {
+          {[
+            ...hintCircles.map((circle) => ({ ...circle, color: circle.color ?? 'green' })),
+            ...circles,
+            ...(previewCircle ? [previewCircle] : []),
+          ].map((circle, i) => {
             const { x, y } = squareCenter(circle.square, orientation);
             const side = 9.6; // a rounded square, not a full circle — squarish highlight with soft corners
             const radius = side * 0.32;

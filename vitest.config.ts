@@ -12,6 +12,7 @@ export default defineConfig({
       '@coh/chess-core': pkg('chess-core'),
       '@coh/opening-book': pkg('opening-book'),
       '@coh/trainer': pkg('trainer'),
+      '@coh/course': pkg('course'),
       '@coh/imbalances': pkg('imbalances'),
       '@coh/review': pkg('review'),
     },

@@ -4,6 +4,7 @@ import type { PieceSymbol } from '@coh/chess-core';
 import { identifyOpening } from '@coh/opening-book';
 import { Board } from './components/Board.js';
 import type { SquareMark } from './components/Board.js';
+import { CoursesView } from './components/CoursesView.js';
 import { EnginePanel } from './components/EnginePanel.js';
 import { EvalBar } from './components/EvalBar.js';
 import { ImbalancesPanel } from './components/ImbalancesPanel.js';
@@ -17,7 +18,7 @@ import { useEngine } from './hooks/useEngine.js';
 import { useGameReview } from './hooks/useGameReview.js';
 import { useSettings } from './hooks/useSettings.js';
 
-type Mode = 'explore' | 'train' | 'review';
+type Mode = 'explore' | 'train' | 'courses' | 'review';
 
 export default function App() {
   const game = useChessGame();
@@ -137,6 +138,14 @@ export default function App() {
             </button>
             <button
               type="button"
+              className={mode === 'courses' ? 'is-active' : ''}
+              onClick={() => setMode('courses')}
+              title="Drill a repertoire PGN, a move at a time"
+            >
+              Courses
+            </button>
+            <button
+              type="button"
               className={mode === 'review' ? 'is-active' : ''}
               onClick={() => setMode('review')}
             >
@@ -179,12 +188,22 @@ export default function App() {
         <SettingsPanel
           annotationThickness={settings.annotationThickness}
           onAnnotationThicknessChange={settings.setAnnotationThickness}
+          watchAutoplay={settings.watchAutoplay}
+          onWatchAutoplayChange={settings.setWatchAutoplay}
+          watchMoveSeconds={settings.watchMoveSeconds}
+          onWatchMoveSecondsChange={settings.setWatchMoveSeconds}
           onClose={() => setSettingsOpen(false)}
         />
       )}
 
       {mode === 'train' ? (
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
+      ) : mode === 'courses' ? (
+        <CoursesView
+          annotationThickness={settings.annotationThickness}
+          watchAutoplay={settings.watchAutoplay}
+          watchMoveSeconds={settings.watchMoveSeconds}
+        />
       ) : mode === 'review' ? (
         <ReviewView
           controller={review}
