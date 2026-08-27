@@ -12,6 +12,7 @@
       "@coh/chess-core": ["../../packages/chess-core/src/index.ts"],
       "@coh/opening-book": ["../../packages/opening-book/src/index.ts"],
       "@coh/trainer": ["../../packages/trainer/src/index.ts"],
+      "@coh/course": ["../../packages/course/src/index.ts"],
       "@coh/imbalances": ["../../packages/imbalances/src/index.ts"],
       "@coh/review": ["../../packages/review/src/index.ts"]
     }

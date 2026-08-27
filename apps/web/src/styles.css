@@ -1681,3 +1681,275 @@ button.primary:hover:not(:disabled) {
   font-size: 0.85rem;
   font-style: italic;
 }
+
+/* ------------------------------------------------------------ courses --- */
+
+.course-library {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.course-empty {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+}
+.course-empty h2 {
+  margin: 0 0 0.5rem;
+}
+.course-empty p {
+  max-width: 46ch;
+  margin: 0 auto 1.25rem;
+}
+
+.course-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.2rem;
+}
+.course-card__name {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: left;
+}
+.course-card__name:hover {
+  background: none;
+  color: var(--accent);
+}
+.course-card__meta {
+  margin: 0 0 0.7rem;
+  font-size: 0.82rem;
+}
+.course-card__counts {
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
+}
+.course-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+}
+
+/* The ladder, drawn: how many moves sit at each interval. */
+.course-ladder {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 0.35rem;
+  align-items: end;
+  height: 84px;
+  margin: 1.1rem 0 0.4rem;
+}
+.course-ladder__rung {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  height: 100%;
+  min-width: 0;
+}
+.course-ladder__rung > span {
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+.course-ladder__bar {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  background: var(--surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.course-ladder__bar > div {
+  width: 100%;
+  background: var(--accent-dim);
+}
+.course-ladder__rung:first-child .course-ladder__bar > div {
+  background: var(--border);
+}
+
+.course-chapters td:first-child {
+  max-width: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.course-chapters__go {
+  display: flex;
+  gap: 0.35rem;
+  justify-content: flex-end;
+}
+.course-chapters__go button {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8rem;
+}
+
+.course-problems {
+  margin: 0.6rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+}
+
+.course-import__preview {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.course-import__fields {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem 1rem;
+  align-items: end;
+}
+.course-import__fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.course-import__fields label > span {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.course-import__fields input {
+  font: inherit;
+  color: inherit;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+}
+.course-import__counts {
+  margin: 0.8rem 0 0.4rem;
+  font-size: 0.82rem;
+}
+.course-import__chapters {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  columns: 2;
+}
+.course-import__problems {
+  margin: 0.7rem 0 0;
+  font-size: 0.85rem;
+  color: var(--danger);
+}
+
+.course-session__context {
+  margin: 0.6rem 0 0;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.8rem;
+}
+.course-session__line {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.85rem;
+}
+.course-session--empty {
+  max-width: 46rem;
+  margin: 1.5rem auto 0;
+  text-align: center;
+}
+.course-session--empty p {
+  max-width: 52ch;
+  margin: 0 auto 1.25rem;
+}
+
+.course-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+/* A row of controls with a title in it — the shelf, a course, a session. */
+.course-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+.course-head h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.15rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trainer__side .course-head {
+  margin-bottom: 0.4rem;
+}
+
+/*
+ * A piece arriving under its own steam. The transform is set by the board — it
+ * starts offset toward the square the move came from and is released a frame
+ * later — so all this has to supply is the trip and a layer above the squares
+ * it crosses.
+ */
+.piece-slide {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.19s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.course-watch h3 strong {
+  font-size: 1.05rem;
+}
+.course-watch__bar {
+  margin-top: 0.7rem;
+}
+
+.course-session__left {
+  margin: 0.7rem 0 0;
+  font-size: 0.82rem;
+}
+
+/* The moves played so far in a session: a way back to the notes. */
+.course-trail {
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+}
+.course-trail .move-list {
+  max-height: 132px;
+}
+.move-list__move.is-context {
+  color: var(--muted);
+}
+/* A move the author wrote about is a move worth going back to. */
+.move-list__move.has-note::after {
+  content: '·';
+  margin-left: 0.15rem;
+  color: var(--accent);
+}
+.move-list__move.is-current.has-note::after {
+  color: #fff;
+}
+.course-trail__hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.76rem;
+}
+
+.status--looking {
+  color: var(--accent);
+}
+
+/* Lines, and which run at the line — two counts, one column. */
+.course-session__count {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  font-size: 0.78rem;
+  text-align: center;
+}
+.course-session__count strong {
+  font-weight: 600;
+  color: var(--text);
+}
