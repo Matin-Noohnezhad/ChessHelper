@@ -18,11 +18,22 @@ import type { StoredCourse } from '../storage/courseStore.js';
  */
 const built = new Map<string, Course>();
 
+/** A stored name worth keeping — not empty, and not PGN's "?" placeholder. */
+const realName = (name: string | undefined): string | undefined => {
+  const trimmed = name?.trim();
+  return trimmed && trimmed !== '?' ? trimmed : undefined;
+};
+
 function courseFor(stored: StoredCourse): Course {
   const key = `${stored.id}:${stored.side}:${stored.pgn.length}`;
   let course = built.get(key);
   if (!course) {
-    course = buildCourse(stored.pgn, { id: stored.id, name: stored.name, side: stored.side });
+    const name = realName(stored.name);
+    course = buildCourse(stored.pgn, {
+      id: stored.id,
+      ...(name ? { name } : {}),
+      side: stored.side,
+    });
     built.set(key, course);
   }
   return course;
@@ -81,7 +92,7 @@ export function useCourseLibrary(): CourseLibrary {
 
   const importPgn = useCallback(
     async (pgn: string, options: { name?: string; side?: CourseSide } = {}) => {
-      const name = options.name?.trim();
+      const name = realName(options.name);
       const course = buildCourse(pgn, {
         ...(name ? { name } : {}),
         ...(options.side ? { side: options.side } : {}),

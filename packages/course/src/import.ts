@@ -88,12 +88,25 @@ function mergeSiblings(into: RawNode[], from: readonly RawNode[]): void {
 
 /* ------------------------------------------------------------- naming --- */
 
+/**
+ * A header value, or nothing.
+ *
+ * PGN's Seven Tag Roster fills a value it does not know with `"?"`, so an Event
+ * or White of `"?"` is the file saying it has no name — not a name. Treating it
+ * as one is how a course ends up on the shelf called "?".
+ */
+function named(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed && trimmed !== '?' ? trimmed : undefined;
+}
+
 /** Lichess and most publishers write `[Event "Course name: Chapter name"]`. */
 function splitEvent(event: string | undefined): { course?: string; chapter?: string } {
-  if (!event) return {};
-  const at = event.lastIndexOf(': ');
-  if (at <= 0) return { course: event };
-  return { course: event.slice(0, at).trim(), chapter: event.slice(at + 2).trim() };
+  const value = named(event);
+  if (!value) return {};
+  const at = value.lastIndexOf(': ');
+  if (at <= 0) return { course: value };
+  return { course: value.slice(0, at).trim(), chapter: value.slice(at + 2).trim() };
 }
 
 /**
@@ -109,8 +122,8 @@ function splitEvent(event: string | undefined): { course?: string; chapter?: str
 function chapterNames(games: readonly AnnotatedPgnGame[]): string[] {
   const schemes: { names: (string | undefined)[]; explicit: boolean }[] = [
     { names: games.map((game) => splitEvent(game.headers.Event).chapter), explicit: true },
-    { names: games.map((game) => game.headers.Event), explicit: false },
-    { names: games.map((game) => game.headers.White), explicit: false },
+    { names: games.map((game) => named(game.headers.Event)), explicit: false },
+    { names: games.map((game) => named(game.headers.White)), explicit: false },
   ];
 
   for (const { names, explicit } of schemes) {
@@ -121,12 +134,12 @@ function chapterNames(games: readonly AnnotatedPgnGame[]): string[] {
   return games.map((_, index) => `Chapter ${index + 1}`);
 }
 
-function courseName(games: readonly AnnotatedPgnGame[]): string {
+function courseName(games: readonly AnnotatedPgnGame[]): string | undefined {
   for (const game of games) {
     const { course } = splitEvent(game.headers.Event);
     if (course) return course;
   }
-  return games[0]?.headers.White?.trim() || 'Imported course';
+  return named(games[0]?.headers.White);
 }
 
 const slug = (text: string): string =>
@@ -239,7 +252,10 @@ export function inferSide(chapters: readonly Chapter[]): CourseSide {
 
 export interface BuildCourseOptions {
   id?: string;
+  /** Forces the course name, over anything the file says. */
   name?: string;
+  /** Used only when the file names nothing itself — e.g. the imported filename. */
+  fallbackName?: string;
   /** Overrides {@link inferSide}. */
   side?: CourseSide;
 }
@@ -289,7 +305,8 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
     return chapter;
   });
 
-  const name = options.name ?? courseName(games);
+  const name =
+    options.name ?? courseName(games) ?? named(options.fallbackName) ?? 'Imported course';
   const declared = games[0]?.headers.Orientation?.toLowerCase();
   const side: CourseSide =
     options.side ??

@@ -22,6 +22,9 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
   const [text, setText] = useState('');
   const [dragging, setDragging] = useState(false);
   const [name, setName] = useState('');
+  // The opened file's name, minus its extension — a decent course name for a
+  // PGN that never names itself in an `[Event]` header.
+  const [fileName, setFileName] = useState('');
   const [side, setSide] = useState<CourseSide | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -31,7 +34,10 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
   const preview = useMemo(() => {
     if (text.trim().length < 8) return null;
     try {
-      const course = buildCourse(text, { ...(side ? { side } : {}) });
+      const course = buildCourse(text, {
+        ...(fileName ? { fallbackName: fileName } : {}),
+        ...(side ? { side } : {}),
+      });
       if (!course.chapters.length) return null;
       return {
         course,
@@ -41,13 +47,14 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
     } catch {
       return null;
     }
-  }, [text, side]);
+  }, [text, side, fileName]);
 
   const readFile = (file: File | undefined) => {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => setText(String(reader.result ?? ''));
     reader.readAsText(file);
+    setFileName(file.name.replace(/\.[^./\\]+$/, '').trim());
   };
 
   const chosenSide = side ?? preview?.course.side ?? 'white';
