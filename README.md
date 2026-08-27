@@ -20,7 +20,7 @@ packages/
   trainer/        sparring engine: repertoire lines, variation
                   rotation, spaced repetition, off-book feedback   ✅ 19 tests
   course/         MoveTrainer-style course drilling: PGN import,
-                  chunked lessons, per-move spaced repetition      ✅ 90 tests
+                  chunked lessons, per-move spaced repetition      ✅ 98 tests
   imbalances/     static, Silman-style reading of a position       ✅ 8 tests
   review/         whole-game review: accuracy, phases, and
                   chess.com-style move classification             ✅ 50 tests
@@ -37,7 +37,7 @@ app or a Tauri desktop build later — only `apps/*` changes.
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # 257 tests across core, book, trainer, courses, review and UI
+npm test           # 266 tests across core, book, trainer, courses, review and UI
 npm run ingest:eco # regenerate the ECO tables from data/*.tsv
 npm run typecheck
 ```
@@ -119,6 +119,13 @@ schedule.
   is *two* lines, not six tasks: the board says `Line 1 of 2` with `try 1 of 3`
   under it, so the number tells you how much of the chapter is left as well as
   where you are inside it.
+- **The whole course is a list you can steer by.** Chapters down the side, each
+  with a percentage and a bar, and under each one every line written out move by
+  move with a ring beside it — empty for a line you have not touched, part-filled
+  as you work through it, a solid tick once every move in it has come back after
+  a night. It is on the course page and again as a rail beside the board during a
+  session; click any line in either place and that is what you drill next, taught
+  from the top whether or not the schedule had it due.
 - **Review and quick review.** *Review* replays whole variations with nothing
   shown until you have missed something. *Quick review* skips the replay and
   drops you straight into the position each due move sits in — the difference
