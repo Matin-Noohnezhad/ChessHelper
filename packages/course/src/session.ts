@@ -47,6 +47,13 @@ export interface SessionOptions {
   now?: number;
   /** Restricts the session to these chapters. All of them when absent. */
   chapterIds?: readonly string[];
+  /**
+   * Restricts the session to these variations, by {@link Variation.id}. A learn
+   * session narrowed this way teaches the whole of each picked line even when
+   * every move in it has been met — this is "study this line" on the variation
+   * list, not the new-move queue.
+   */
+  lineIds?: readonly string[];
   newMoves?: number;
   /** Your moves per part. 0 or less teaches the line in one go. */
   chunk?: number;
@@ -65,11 +72,17 @@ function defaultShuffle<T>(items: T[]): T[] {
   return out;
 }
 
-function scope(course: Course, chapterIds?: readonly string[]): Variation[] {
-  const wanted = chapterIds?.length ? new Set(chapterIds) : null;
+function scope(
+  course: Course,
+  chapterIds?: readonly string[],
+  lineIds?: readonly string[],
+): Variation[] {
+  const chapters = chapterIds?.length ? new Set(chapterIds) : null;
+  const lines = lineIds?.length ? new Set(lineIds) : null;
   return course.chapters
-    .filter((chapter) => !wanted || wanted.has(chapter.id))
-    .flatMap((chapter) => variationsOf(chapter, course.side));
+    .filter((chapter) => !chapters || chapters.has(chapter.id))
+    .flatMap((chapter) => variationsOf(chapter, course.side))
+    .filter((variation) => !lines || lines.has(variation.id));
 }
 
 /** Builds the queue of runs a session walks. */
@@ -79,7 +92,7 @@ export function buildSession(
   options: SessionOptions,
 ): SessionPlan {
   const now = options.now ?? Date.now();
-  const variations = scope(course, options.chapterIds);
+  const variations = scope(course, options.chapterIds, options.lineIds);
 
   switch (options.mode) {
     case 'learn':
@@ -118,14 +131,18 @@ function learnPlan(
   const budget = options.newMoves ?? DEFAULT_NEW_MOVES;
   const chunk = options.chunk ?? DEFAULT_CHUNK;
   const fullPasses = Math.max(1, options.fullPasses ?? DEFAULT_FULL_PASSES);
+  // Lines picked by name are taught in full, met or not; the new-move budget and
+  // the "skip lines with nothing fresh" rule are for the open-ended learn queue.
+  const picked = Boolean(options.lineIds?.length);
   const tasks: SessionTask[] = [];
   const taken = new Set<string>();
 
   for (const variation of variations) {
-    if (taken.size >= budget) break;
+    if (!picked && taken.size >= budget) break;
 
     const { line } = variation;
     const quiz = quizIndices(line, course.side);
+    if (!quiz.length) continue;
     // Which of this line's moves you have never met. Everything else in it is
     // context: it still gets asked on the run from move one, because you cannot
     // reach move 12 without playing moves 1 to 11, but it is not what the
@@ -133,14 +150,15 @@ function learnPlan(
     const fresh = quiz.filter(
       (index) => progressFor(progress, moveKey(line[index]!), now).level === 0,
     );
-    if (!fresh.length) continue;
+    if (!picked && !fresh.length) continue;
 
     for (const index of fresh) taken.add(moveKey(line[index]!));
 
-    // Teaching starts at the first move you have not met. Everything before it
-    // is put on the board in one go — being walked slowly through six moves you
-    // already know is how a lesson turns into a screensaver.
-    const from = fresh[0]!;
+    // Teaching starts at the first move you have not met — or at the top, for a
+    // line you asked to study again. Everything before the start is put on the
+    // board in one go: being walked slowly through six moves you already know is
+    // how a lesson turns into a screensaver.
+    const from = fresh.length ? fresh[0]! : quiz[0]!;
     const teach = quiz.filter((index) => index >= from);
     const sizes = evenParts(teach.length, chunk);
 

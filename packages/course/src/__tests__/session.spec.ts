@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildCourse } from '../import.js';
 import { buildSession, evenParts } from '../session.js';
-import { moveKey, trainableMoves } from '../tree.js';
+import { moveKey, trainableMoves, variationsOf } from '../tree.js';
 import type { Course, CourseProgress } from '../types.js';
 import { COURSE_PGN } from './fixture.js';
 
@@ -230,5 +230,37 @@ describe('counting a session in lines', () => {
     // answer, not one line asked repeatedly.
     const lines = new Set(plan.tasks.map((task) => task.lineId));
     expect(lines.size).toBe(plan.tasks.length);
+  });
+});
+
+describe('a single variation, picked off the list', () => {
+  const chapter = course.chapters[0]!;
+  const najdorf = variationsOf(chapter, 'white')[0]!;
+  const moscow = variationsOf(chapter, 'white')[1]!;
+
+  it('confines a learn session to the line asked for', () => {
+    const plan = buildSession(course, {}, { mode: 'learn', now: NOW, lineIds: [najdorf.id] });
+    expect(new Set(plan.tasks.map((task) => task.lineId))).toEqual(new Set([najdorf.id]));
+    const top = plan.tasks[plan.tasks.length - 1]!;
+    expect(sans(top.line)).toBe('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6');
+  });
+
+  it('teaches a picked line in full even when every move in it is known', () => {
+    // Nothing is fresh: the open-ended queue would skip this line entirely.
+    const known = progressAt(course, 5, NOW + 1_000 * HOUR);
+    const queue = buildSession(course, known, { mode: 'learn', now: NOW });
+    expect(queue.tasks).toHaveLength(0);
+
+    const picked = buildSession(course, known, { mode: 'learn', now: NOW, lineIds: [najdorf.id] });
+    expect(picked.tasks.length).toBeGreaterThan(0);
+    // Taught from the very first move, not from some later "first unmet" one.
+    expect(picked.tasks[0]!.watch?.from).toBe(0);
+    expect(picked.tasks[picked.tasks.length - 1]!.startIndex).toBe(0);
+  });
+
+  it('narrows a review session to the picked line too', () => {
+    const due = progressAt(course, 3, NOW - HOUR);
+    const plan = buildSession(course, due, { mode: 'review', now: NOW, lineIds: [moscow.id] });
+    expect(new Set(plan.tasks.map((task) => task.lineId))).toEqual(new Set([moscow.id]));
   });
 });
