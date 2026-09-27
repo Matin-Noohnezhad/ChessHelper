@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
 import { Piece } from './Piece.js';
+import { useBoardSoundVolume } from './BoardSoundContext.js';
+import { playBoardSound } from '../sound.js';
+import type { BoardSound } from '../sound.js';
 import type { Orientation } from '../hooks/useChessGame.js';
 
 const FILES = 'abcdefgh';
@@ -120,8 +123,7 @@ export interface SquareBadge {
 /**
  * A piece caught mid-move: it is already drawn on the square it arrived at, and
  * `dx`/`dy` are how far back toward its old square to start it before letting
- * it run home. Offsets are in pixels rather than percentages because a piece is
- * a text glyph — its own box is the width of the letter, not of the square.
+ * it run home. Offsets are in pixels, matching the board's measured size.
  */
 interface Slide {
   to: string;
@@ -153,9 +155,8 @@ interface BoardProps {
   /**
    * Slide the piece into place when the position changes under the board.
    *
-   * Off by default. On the explore board a move is something you just made and
-   * an animation is in your way; when the board is playing a line *to* you, a
-   * piece that teleports is a move you did not see happen.
+   * Off by default. Clicked and demonstrated moves can slide into place;
+   * dragged pieces are already at their destination and skip the animation.
    */
   animateMoves?: boolean;
 }
@@ -163,6 +164,15 @@ interface BoardProps {
 interface Pending {
   from: string;
   to: string;
+}
+
+interface Drag {
+  square: string;
+  x: number;
+  y: number;
+  originX: number;
+  originY: number;
+  active: boolean;
 }
 
 export function Board({
@@ -179,59 +189,21 @@ export function Board({
   animateMoves = false,
 }: BoardProps) {
   const annotationScale = ANNOTATION_SCALE[annotationThickness];
+  const soundVolume = useBoardSoundVolume();
   const boardRef = useRef<HTMLDivElement>(null);
   const uid = useId();
   const [selected, setSelected] = useState<string | null>(null);
-  const [drag, setDrag] = useState<{ square: string; x: number; y: number } | null>(null);
+  const [drag, setDrag] = useState<Drag | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   const [arrows, setArrows] = useState<DrawArrow[]>([]);
   const [circles, setCircles] = useState<DrawCircle[]>([]);
   const [drawStart, setDrawStart] = useState<{ square: string; color: DrawColor } | null>(null);
   const [drawCurrent, setDrawCurrent] = useState<string | null>(null);
   const [slide, setSlide] = useState<Slide | null>(null);
-  const slidFrom = useRef<string | null>(null);
+  const animationPosition = useRef<{ fen: string; orientation: Orientation; pieces: Map<string, SquareContents> } | null>(null);
+  const draggedMove = useRef<string | null>(null);
 
   const names = useMemo(() => squareNames(orientation), [orientation]);
-
-  /**
-   * Catch the arriving piece and start it where it came from.
-   *
-   * Keyed on the origin square rather than on the pair: a piece being dragged
-   * home by the person holding it has already visibly travelled, and re-running
-   * the trip under it looks like a stutter. What this is for is the moves the
-   * board makes on its own.
-   */
-  useVisualEffect(() => {
-    if (!animateMoves) {
-      slidFrom.current = null;
-      return;
-    }
-    const key = lastMove ? `${lastMove.from}${lastMove.to}` : null;
-    if (key === slidFrom.current) return;
-    slidFrom.current = key;
-    if (!lastMove || !boardRef.current) {
-      setSlide(null);
-      return;
-    }
-    const rect = boardRef.current.getBoundingClientRect();
-    const from = squareCenter(lastMove.from, orientation);
-    const to = squareCenter(lastMove.to, orientation);
-    setSlide({
-      to: lastMove.to,
-      dx: ((from.x - to.x) / 100) * rect.width,
-      dy: ((from.y - to.y) / 100) * rect.height,
-      running: false,
-    });
-  }, [animateMoves, lastMove, orientation]);
-
-  // A frame later, drop the offset and let the transition carry it across.
-  useEffect(() => {
-    if (!slide || slide.running) return;
-    const frame = requestAnimationFrame(() =>
-      setSlide((current) => (current && !current.running ? { ...current, running: true } : current)),
-    );
-    return () => cancelAnimationFrame(frame);
-  }, [slide]);
 
   /**
    * Everything below is derived from the *position*, so that is what it is keyed
@@ -245,6 +217,17 @@ export function Board({
    */
   const fen = game.fen();
 
+  // Position navigation and board flips must not leave a stale drag or promotion.
+  useEffect(() => {
+    setSelected(null);
+    setDrag(null);
+    setPending(null);
+    setArrows([]);
+    setCircles([]);
+    setDrawStart(null);
+    setDrawCurrent(null);
+  }, [fen, orientation, interactive]);
+
   const contents = useMemo(() => {
     // game.board() is always a8..h1; index it by square name so the rendering
     // order and the data order can differ without a second source of truth.
@@ -256,6 +239,72 @@ export function Board({
     });
     return map;
   }, [game, fen]);
+
+  // Animate only an arriving move. Loading a position, stepping back, and
+  // flipping the board must not replay the preceding move on an unrelated piece.
+  useVisualEffect(() => {
+    const previous = animationPosition.current;
+    animationPosition.current = { fen, orientation, pieces: contents };
+    if (previous?.fen === fen && previous.orientation === orientation) return;
+    setSlide(null);
+    const dragKey = draggedMove.current;
+    draggedMove.current = null;
+    if (!animateMoves || !previous || !lastMove || !boardRef.current ||
+        previous.orientation !== orientation ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const before = previous.pieces.get(lastMove.from);
+    const after = contents.get(lastMove.to);
+    if (!before || !after || before.color !== after.color || contents.has(lastMove.from)) return;
+    if (dragKey === `${lastMove.from}${lastMove.to}`) return;
+    const rect = boardRef.current.getBoundingClientRect();
+    const from = squareCenter(lastMove.from, orientation);
+    const to = squareCenter(lastMove.to, orientation);
+    setSlide({ to: lastMove.to, dx: ((from.x - to.x) / 100) * rect.width,
+      dy: ((from.y - to.y) / 100) * rect.height, running: false });
+  }, [animateMoves, fen, contents, lastMove, orientation]);
+
+  useEffect(() => {
+    if (!slide || slide.running) return;
+    let release = 0;
+    // Paint the starting offset before releasing the CSS transition.
+    const frame = requestAnimationFrame(() => {
+      release = requestAnimationFrame(() =>
+        setSlide((current) => current ? { ...current, running: true } : null));
+    });
+    return () => { cancelAnimationFrame(frame); cancelAnimationFrame(release); };
+  }, [slide]);
+
+  const previousPosition = useRef<{ fen: string; pieces: Map<string, SquareContents> } | null>(null);
+  useEffect(() => {
+    const previous = previousPosition.current;
+    previousPosition.current = { fen, pieces: contents };
+    if (!previous || previous.fen === fen) return;
+
+    const changed = names.filter((square) => {
+      const before = previous.pieces.get(square);
+      const after = contents.get(square);
+      return before?.type !== after?.type || before?.color !== after?.color;
+    }).length;
+    if (changed < 2 || changed > 4) return;
+
+    const before = lastMove ? previous.pieces.get(lastMove.from) : undefined;
+    const after = lastMove ? contents.get(lastMove.to) : undefined;
+    // Stepping backward has no forward mover at lastMove.from. Give it the
+    // plain board click; the richer sounds describe moves that just landed.
+    const forward = !!before && !!after && before.color === after.color;
+    const capture = forward && (previous.pieces.size > contents.size ||
+      !!previous.pieces.get(lastMove!.to));
+    const castle = forward && before.type === 'k' &&
+      Math.abs(FILES.indexOf(lastMove!.from[0]!) - FILES.indexOf(lastMove!.to[0]!)) === 2;
+    const kind: BoardSound = !forward ? 'move'
+      : game.isCheckmate() ? 'mate'
+      : game.isCheck() ? 'check'
+      : forward && before.type === 'p' && after.type !== 'p' ? 'promotion'
+      : castle ? 'castle'
+      : capture ? 'capture'
+      : 'move';
+    playBoardSound(kind, soundVolume);
+  }, [fen, contents, lastMove, game, names, soundVolume]);
 
   const targets = useMemo(() => {
     if (!selected || !interactive) return new Map<string, boolean>();
@@ -330,7 +379,7 @@ export function Board({
         event.preventDefault();
         setDrawStart({ square, color: colorForModifiers(event) });
         setDrawCurrent(square);
-        (event.target as Element).setPointerCapture?.(event.pointerId);
+        event.currentTarget.setPointerCapture?.(event.pointerId);
         return;
       }
       if (event.button !== 0) return;
@@ -354,15 +403,17 @@ export function Board({
       }
 
       setSelected(square);
-      setDrag({ square, x: event.clientX, y: event.clientY });
-      (event.target as Element).setPointerCapture?.(event.pointerId);
+      setDrag({ square, x: event.clientX, y: event.clientY,
+        originX: event.clientX, originY: event.clientY, active: false });
+      event.currentTarget.setPointerCapture?.(event.pointerId);
     },
     [interactive, pending, contents, game, selected, attemptMove, arrows, circles],
   );
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent) => {
-      if (drag) setDrag({ ...drag, x: event.clientX, y: event.clientY });
+      if (drag) setDrag({ ...drag, x: event.clientX, y: event.clientY,
+        active: drag.active || Math.hypot(event.clientX - drag.originX, event.clientY - drag.originY) > 5 });
       if (drawStart) setDrawCurrent(squareAtPoint(event.clientX, event.clientY));
     },
     [drag, drawStart, squareAtPoint],
@@ -383,8 +434,10 @@ export function Board({
       setDrag(null);
       // Releasing on the origin square means "select", not "move" — that is
       // what makes click-to-move and drag-to-move coexist.
-      if (!target || target === from) return;
+      if (!drag.active || !target || target === from) return;
+      draggedMove.current = `${from}${target}`;
       if (attemptMove(from, target)) setSelected(null);
+      else draggedMove.current = null;
     },
     [drag, drawStart, squareAtPoint, attemptMove, toggleDrawing],
   );
@@ -400,6 +453,7 @@ export function Board({
   );
 
   const dragPiece = drag ? contents.get(drag.square) : undefined;
+  const dropSquare = drag?.active ? squareAtPoint(drag.x, drag.y) : null;
 
   const previewArrow: DrawArrow | null =
     drawStart && drawCurrent && drawCurrent !== drawStart.square
@@ -413,7 +467,8 @@ export function Board({
   return (
     <div className="board-wrap">
       <div
-        className="board"
+        className={`board${interactive ? ' board--interactive' : ''}`}
+        aria-label={`Chessboard, ${orientation} at bottom`}
         ref={boardRef}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -434,9 +489,9 @@ export function Board({
             'square',
             dark ? 'square--dark' : 'square--light',
             selected === square ? 'square--selected' : '',
-            lastMove && (lastMove.from === square || lastMove.to === square)
-              ? 'square--last'
-              : '',
+            dropSquare === square && targets.has(square) ? 'square--drop' : '',
+            lastMove?.from === square ? 'square--last-from' : '',
+            lastMove?.to === square ? 'square--last-to' : '',
             checkSquare === square ? 'square--check' : '',
             mark ? `square--mark square--mark-${mark.kind}` : '',
           ]
@@ -452,10 +507,12 @@ export function Board({
             >
               {piece && (
                 <span
-                  className={slide?.to === square ? 'piece-slide' : undefined}
+                  className={slide?.to === square ? 'piece-holder piece-slide' : 'piece-holder'}
+                  onTransitionEnd={() => { if (slide?.to === square) setSlide(null); }}
                   style={
                     slide?.to === square
                       ? {
+                          transition: slide.running ? undefined : 'none',
                           transform: slide.running
                             ? 'none'
                             : `translate(${slide.dx}px, ${slide.dy}px)`,
@@ -466,7 +523,7 @@ export function Board({
                   <Piece
                     type={piece.type}
                     color={piece.color}
-                    dragging={drag?.square === square}
+                    dragging={drag?.active && drag.square === square}
                   />
                 </span>
               )}
@@ -489,7 +546,7 @@ export function Board({
           );
         })}
 
-        <svg className="board-draw" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg className="board-draw" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             {(Object.keys(DRAW_COLORS) as DrawColor[]).map((color) => (
               <marker
@@ -563,7 +620,8 @@ export function Board({
               <p>Promote to</p>
               <div className="promotion__choices">
                 {PROMOTION_CHOICES.map((choice) => (
-                  <button key={choice} type="button" onClick={() => finishPromotion(choice)}>
+                  <button key={choice} type="button" onClick={() => finishPromotion(choice)}
+                    aria-label={`Promote to ${{ q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn', k: 'king' }[choice]}`}>
                     <Piece type={choice} color={game.turn()} />
                   </button>
                 ))}
@@ -576,16 +634,18 @@ export function Board({
         )}
       </div>
 
-      {drag && dragPiece && (
+      {drag?.active && dragPiece && (
         <div className="drag-layer" style={{ left: drag.x, top: drag.y }}>
           <Piece type={dragPiece.type} color={dragPiece.color} />
         </div>
       )}
 
-      <p className="board-hint">
-        Right-click drag to draw an arrow, right-click a square to mark it — hold{' '}
-        <kbd>Shift</kbd> for red, <kbd>Ctrl</kbd> for blue, <kbd>Alt</kbd> for yellow.
-      </p>
+      <details className="board-hint">
+        <summary>Board controls</summary>
+        <p>Click a piece and its destination, or drag to move. Right-click drag to draw an arrow;
+          right-click a square to mark it. Hold <kbd>Shift</kbd> for red, <kbd>Ctrl</kbd> for blue,
+          or <kbd>Alt</kbd> for yellow.</p>
+      </details>
     </div>
   );
 }

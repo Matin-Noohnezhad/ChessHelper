@@ -3,6 +3,13 @@ import type { AnnotationThickness } from '../components/Board.js';
 
 const STORAGE_KEY = 'coh.settings.v1';
 
+export const BOARD_THEMES = [
+  { key: 'walnut', label: 'Walnut' },
+  { key: 'tournament', label: 'Tournament' },
+  { key: 'slate', label: 'Slate' },
+] as const;
+export type BoardTheme = typeof BOARD_THEMES[number]['key'];
+
 /**
  * The course line demonstration, as a dial rather than a few presets.
  *
@@ -22,7 +29,10 @@ const clampSeconds = (n: number): number => {
 };
 
 export interface AppSettings {
+  boardTheme: BoardTheme;
   annotationThickness: AnnotationThickness;
+  /** Board audio level, 0 = muted. */
+  soundVolume: number;
   /** Auto-advance the course line demonstration; false = step it yourself. */
   watchAutoplay: boolean;
   /** Seconds a plain demonstrated move holds; a move with a note holds longer. */
@@ -30,7 +40,9 @@ export interface AppSettings {
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
+  boardTheme: 'walnut',
   annotationThickness: 'medium',
+  soundVolume: 0.55,
   watchAutoplay: true,
   watchMoveSeconds: WATCH_SECONDS_DEFAULT,
 };
@@ -40,7 +52,14 @@ function loadSettings(): AppSettings {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_SETTINGS;
     const stored = { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<AppSettings>) };
-    return { ...stored, watchMoveSeconds: clampSeconds(stored.watchMoveSeconds) };
+    return {
+      ...stored,
+      boardTheme: BOARD_THEMES.some((theme) => theme.key === stored.boardTheme)
+        ? stored.boardTheme : DEFAULT_SETTINGS.boardTheme,
+      soundVolume: Number.isFinite(stored.soundVolume)
+        ? Math.min(1, Math.max(0, stored.soundVolume)) : DEFAULT_SETTINGS.soundVolume,
+      watchMoveSeconds: clampSeconds(stored.watchMoveSeconds),
+    };
   } catch {
     return DEFAULT_SETTINGS; // private mode, corrupt JSON — settings just fall back to defaults
   }
@@ -55,7 +74,9 @@ function saveSettings(settings: AppSettings): void {
 }
 
 export interface SettingsController extends AppSettings {
+  setBoardTheme: (value: BoardTheme) => void;
   setAnnotationThickness: (value: AnnotationThickness) => void;
+  setSoundVolume: (value: number) => void;
   setWatchAutoplay: (value: boolean) => void;
   setWatchMoveSeconds: (value: number) => void;
 }
@@ -75,6 +96,14 @@ export function useSettings(): SettingsController {
     (value: AnnotationThickness) => update({ annotationThickness: value }),
     [update],
   );
+  const setBoardTheme = useCallback(
+    (value: BoardTheme) => update({ boardTheme: value }),
+    [update],
+  );
+  const setSoundVolume = useCallback(
+    (value: number) => update({ soundVolume: Math.min(1, Math.max(0, value)) }),
+    [update],
+  );
   const setWatchAutoplay = useCallback(
     (value: boolean) => update({ watchAutoplay: value }),
     [update],
@@ -84,5 +113,5 @@ export function useSettings(): SettingsController {
     [update],
   );
 
-  return { ...settings, setAnnotationThickness, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setBoardTheme, setAnnotationThickness, setSoundVolume, setWatchAutoplay, setWatchMoveSeconds };
 }

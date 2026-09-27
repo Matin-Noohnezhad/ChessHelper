@@ -3,6 +3,7 @@ import { formatMoveText } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
 import { identifyOpening } from '@coh/opening-book';
 import { Board } from './components/Board.js';
+import { BoardSoundProvider } from './components/BoardSoundContext.js';
 import type { SquareMark } from './components/Board.js';
 import { CoursesView } from './components/CoursesView.js';
 import { EnginePanel } from './components/EnginePanel.js';
@@ -114,7 +115,7 @@ export default function App() {
   };
 
   return (
-    <div className="app">
+    <div className="app" data-board-theme={settings.boardTheme}>
       <header className="app__head">
         <h1>
           Chess Opening Helper
@@ -175,6 +176,16 @@ export default function App() {
           )}
           <button
             type="button"
+            className="sound-button"
+            onClick={() => settings.setSoundVolume(settings.soundVolume === 0 ? 0.55 : 0)}
+            title={settings.soundVolume === 0 ? 'Unmute board sounds' : 'Mute board sounds'}
+            aria-label={settings.soundVolume === 0 ? 'Unmute board sounds' : 'Mute board sounds'}
+            aria-pressed={settings.soundVolume === 0}
+          >
+            {settings.soundVolume === 0 ? 'Sound off' : 'Sound on'}
+          </button>
+          <button
+            type="button"
             onClick={() => setSettingsOpen(true)}
             title="Settings"
             aria-label="Settings"
@@ -186,8 +197,12 @@ export default function App() {
 
       {settingsOpen && (
         <SettingsPanel
+          boardTheme={settings.boardTheme}
+          onBoardThemeChange={settings.setBoardTheme}
           annotationThickness={settings.annotationThickness}
           onAnnotationThicknessChange={settings.setAnnotationThickness}
+          soundVolume={settings.soundVolume}
+          onSoundVolumeChange={settings.setSoundVolume}
           watchAutoplay={settings.watchAutoplay}
           onWatchAutoplayChange={settings.setWatchAutoplay}
           watchMoveSeconds={settings.watchMoveSeconds}
@@ -196,6 +211,7 @@ export default function App() {
         />
       )}
 
+      <BoardSoundProvider volume={settings.soundVolume}>
       {mode === 'train' ? (
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : mode === 'courses' ? (
@@ -223,6 +239,7 @@ export default function App() {
               onMove={handleMove}
               marks={marks}
               annotationThickness={settings.annotationThickness}
+              animateMoves
             />
           </div>
           <div className="board-bar">
@@ -264,6 +281,7 @@ export default function App() {
         </aside>
       </main>
       )}
+      </BoardSoundProvider>
     </div>
   );
 }

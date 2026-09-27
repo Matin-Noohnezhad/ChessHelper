@@ -470,6 +470,8 @@ describe('settings', () => {
       <SettingsPanel
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
+        soundVolume={0.55}
+        onSoundVolumeChange={() => {}}
         watchAutoplay
         onWatchAutoplayChange={() => {}}
         watchMoveSeconds={1.1}
@@ -478,6 +480,8 @@ describe('settings', () => {
       />,
     );
     expect(html).toContain('Course line demonstration');
+    expect(html).toContain('Board sounds');
+    expect(html).toContain('Board sound volume');
     expect(html).toContain('Step through each move myself');
     expect(html).toContain('type="range"');
     expect(html).toContain('1.1s / move');
@@ -488,6 +492,8 @@ describe('settings', () => {
       <SettingsPanel
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
+        soundVolume={0}
+        onSoundVolumeChange={() => {}}
         watchAutoplay={false}
         onWatchAutoplayChange={() => {}}
         watchMoveSeconds={1.1}
@@ -496,6 +502,7 @@ describe('settings', () => {
       />,
     );
     expect(html).toContain('Manual');
+    expect(html).toContain('Muted');
     expect(html).toMatch(/type="range"[^>]*disabled/);
   });
 });

@@ -1,14 +1,21 @@
 import { ANNOTATION_THICKNESS_OPTIONS } from './Board.js';
 import type { AnnotationThickness } from './Board.js';
+import { playBoardSound } from '../sound.js';
+import type { BoardTheme } from '../hooks/useSettings.js';
 import {
+  BOARD_THEMES,
   WATCH_SECONDS_MAX,
   WATCH_SECONDS_MIN,
   WATCH_SECONDS_STEP,
 } from '../hooks/useSettings.js';
 
 interface SettingsPanelProps {
+  boardTheme?: BoardTheme;
+  onBoardThemeChange?: (value: BoardTheme) => void;
   annotationThickness: AnnotationThickness;
   onAnnotationThicknessChange: (value: AnnotationThickness) => void;
+  soundVolume: number;
+  onSoundVolumeChange: (value: number) => void;
   watchAutoplay: boolean;
   onWatchAutoplayChange: (value: boolean) => void;
   watchMoveSeconds: number;
@@ -17,8 +24,12 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({
+  boardTheme = 'walnut',
+  onBoardThemeChange,
   annotationThickness,
   onAnnotationThicknessChange,
+  soundVolume,
+  onSoundVolumeChange,
   watchAutoplay,
   onWatchAutoplayChange,
   watchMoveSeconds,
@@ -33,6 +44,52 @@ export function SettingsPanel({
           <button type="button" className="modal__close" onClick={onClose} aria-label="Close settings">
             ✕
           </button>
+        </div>
+
+        <div className="settings-row">
+          <span className="settings-row__label">Board appearance</span>
+          <div className="board-themes" role="group" aria-label="Board color theme">
+            {BOARD_THEMES.map((theme) => (
+              <button key={theme.key} type="button" className="board-theme"
+                data-board-theme={theme.key} aria-pressed={boardTheme === theme.key}
+                onClick={() => onBoardThemeChange?.(theme.key)}>
+                <span className="board-theme__swatch" aria-hidden="true" />
+                {theme.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="settings-row">
+          <span className="settings-row__label">Board sounds</span>
+          <div className="settings-slider">
+            <button
+              type="button"
+              className="sound-toggle"
+              aria-label={soundVolume === 0 ? 'Unmute board sounds' : 'Mute board sounds'}
+              aria-pressed={soundVolume === 0}
+              onClick={() => onSoundVolumeChange(soundVolume === 0 ? 0.55 : 0)}
+            >
+              {soundVolume === 0 ? 'Muted' : 'On'}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={soundVolume}
+              onChange={(event) => onSoundVolumeChange(Number(event.target.value))}
+              aria-label="Board sound volume"
+            />
+            <span className="settings-slider__value">{Math.round(soundVolume * 100)}%</span>
+          </div>
+          <div className="sound-preview" role="group" aria-label="Preview board sounds">
+            <span>Preview</span>
+            {(['move', 'capture', 'castle', 'check'] as const).map((kind) => (
+              <button key={kind} type="button" disabled={soundVolume === 0}
+                onClick={() => playBoardSound(kind, soundVolume)}>{kind}</button>
+            ))}
+          </div>
         </div>
 
         <div className="settings-row">
