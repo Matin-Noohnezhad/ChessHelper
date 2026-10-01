@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { LEVELS, MAX_LEVEL, courseOutline, nextDueAt } from '@coh/course';
 import type { CourseSide, SessionMode } from '@coh/course';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
@@ -16,7 +17,9 @@ function rungLabel(level: number): string {
 
 interface CourseDashboardProps {
   entry: LibraryEntry;
+  initialSection?: 'learning' | 'reading';
   onStart: (mode: SessionMode, chapterIds?: string[], lineIds?: string[]) => void;
+  onRead?: (chapterId?: string, lineId?: string) => void;
   onBack: () => void;
   onResetProgress: () => void;
   /** Wipe progress for one chapter. `label` is its name, for the confirm prompt. */
@@ -36,17 +39,20 @@ interface CourseDashboardProps {
  */
 export function CourseDashboard({
   entry,
+  initialSection = 'learning',
   onStart,
+  onRead,
   onBack,
   onResetProgress,
   onResetChapter,
   onResetLine,
   onSetSide,
 }: CourseDashboardProps) {
+  const [section, setSection] = useState<'learning' | 'reading'>(initialSection);
   const { course, stats, progress } = entry;
   const next = nextDueAt(course, progress);
   const now = Date.now();
-  const outline = courseOutline(course, progress, now);
+  const outline = courseOutline(course, progress, now, section === 'reading');
 
   return (
     <div className="course-dashboard">
@@ -73,7 +79,15 @@ export function CourseDashboard({
         </div>
       </div>
 
-      <section className="panel">
+      <div className="segmented" role="group" aria-label="Course section">
+        <button type="button" className={section === 'learning' ? 'is-active' : ''} aria-pressed={section === 'learning'} onClick={() => setSection('learning')}>Learning</button>
+        <button type="button" className={section === 'reading' ? 'is-active' : ''} aria-pressed={section === 'reading'} onClick={() => setSection('reading')}>Reading</button>
+      </div>
+      {section === 'reading' ? <section className="panel">
+        <h3>Read the course</h3>
+        <p className="muted">Walk through the moves with short explanations, arrows and square highlights from the PGN. Open any chapter or line below, including its annotated sidelines.</p>
+        <button type="button" className="primary" onClick={() => onRead?.()}>Start reading</button>
+      </section> : <section className="panel">
         <div className="bar">
           <div
             className="bar__fill"
@@ -81,7 +95,7 @@ export function CourseDashboard({
           />
         </div>
         <p className="muted course-card__counts">
-          {stats.learned} of {stats.total} moves learned · {stats.due} due now
+          {stats.learned} of {stats.total} moves learned · {stats.total - stats.seen} new · {stats.due} due now
           {stats.due === 0 && next ? ` · next ${untilLabel(now, next)}` : ''}
         </p>
 
@@ -106,7 +120,7 @@ export function CourseDashboard({
         </p>
 
         <div className="course-card__actions">
-          <button type="button" className="primary" onClick={() => onStart('learn')}>
+          <button type="button" className="primary" disabled={stats.seen >= stats.total} onClick={() => onStart('learn')}>
             Learn new moves
           </button>
           <button type="button" disabled={stats.due === 0} onClick={() => onStart('review')}>
@@ -119,21 +133,22 @@ export function CourseDashboard({
             Reset progress
           </button>
         </div>
-      </section>
+      </section>}
 
       <section className="panel">
         <h3>Chapters &amp; lines</h3>
         <p className="muted course-outline__legend">
           The ring fills as you work through a line and turns solid with a tick once every move in
-          it has come back after a night. Click any line to study it now — a dot means something in
+          it has come back after a night. Click any line to {section === 'reading' ? 'read' : 'study'} it now — a dot means something in
           it is due.
         </p>
         <CourseOutline
           chapters={outline}
-          onPickLine={(lineId) => onStart('learn', undefined, [lineId])}
-          onChapter={(mode, chapterId) => onStart(mode, [chapterId])}
-          {...(onResetChapter ? { onResetChapter } : {})}
-          {...(onResetLine ? { onResetLine } : {})}
+          onPickLine={(lineId) => section === 'reading' ? onRead?.(undefined, lineId) : onStart('learn', undefined, [lineId])}
+          onReadChapter={section === 'reading' ? (chapterId) => onRead?.(chapterId) : undefined}
+          onChapter={section === 'learning' ? (mode, chapterId) => onStart(mode, [chapterId]) : undefined}
+          {...(section === 'learning' && onResetChapter ? { onResetChapter } : {})}
+          {...(section === 'learning' && onResetLine ? { onResetLine } : {})}
         />
       </section>
 

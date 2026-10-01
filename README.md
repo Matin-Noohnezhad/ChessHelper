@@ -91,6 +91,16 @@ paste or drop a repertoire PGN and it becomes a course, taught the way
 Chessable's MoveTrainer teaches one — a move at a time, each move on its own
 schedule.
 
+- **Reading** is a separate section on each course. Step through every move and
+  its explanation without a quiz or progress changes. Long notes start with a
+  short excerpt and can be expanded; PGN arrows and square highlights follow
+  the selected move. Illustrative and rejected sidelines are included too.
+- **Keyboard controls:** Space advances a demonstration, the next part, or the
+  next line. Left/Right browse moves; Home/End jump to the start/live position.
+  H gives a hint, R replays a part (or restarts a completed session), P pauses
+  autoplay, T starts practice, S skips, and Esc returns from lookback or finishes.
+  In Reading, [ and ] change lines and C expands the explanation. Each view has
+  a shortcut reference. Typing fields and dialogs keep their normal keys.
 - **The unit is the move, not the line.** Every move you have to produce carries
   its own level and its own due date. Miss the fifth move of a variation and the
   fifth move comes back this afternoon; the other four go on climbing. A line is
@@ -111,13 +121,15 @@ schedule.
   a note scaling up with it — and a *step through each move myself* switch that
   turns the clock off entirely: the line then waits on the board and you advance
   it with the **Next** button, <kbd>→</kbd> or <kbd>Space</kbd>. The quick recap
-  of a shared opening always plays itself either way.
-- **Long lines come in parts.** Four of your own moves at a time, split evenly
+  of a shared opening follows the same manual/automatic choice.
+- **Long lines come in parts.** By default, up to four of your own moves, split evenly
   rather than four-then-one: watch a part, play it back, watch the next, play
   that back — and when the parts are done, the whole line from the first move
   with nothing shown. Playing a variation in four-move instalments is not knowing
   it either; the run from the top is the only task in a learn session that asks
-  the question the board will ask you.
+  the question the board will ask you. Settings lets you choose up to 1–30 of
+  your moves per part or **Whole line**, plus 1–5 full-line practice rounds.
+  These choices are saved and apply to the next session.
 - **A line that opens like the last one is recapped, not re-taught.** When the
   next variation shares its first several moves with one you just learned, the
   first part rewinds to move one and replays that shared opening quickly — a few

@@ -18,12 +18,14 @@ interface CourseOutlineProps {
   activeLineId?: string | null;
   onPickLine: (lineId: string) => void;
   /** Chapter-level Learn / Review. Absent in the rail. */
+  onReadChapter?: (chapterId: string) => void;
   onChapter?: (mode: 'learn' | 'review', chapterId: string) => void;
   /** Wipe progress for one chapter — `label` is its name, for a confirm prompt. */
   onResetChapter?: (chapterId: string, label: string) => void;
   /** Wipe progress for one line — `label` is its notation, for a confirm prompt. */
   onResetLine?: (lineId: string, label: string) => void;
   variant?: 'full' | 'rail';
+  concealMoves?: boolean;
 }
 
 export function CourseOutline({
@@ -31,9 +33,11 @@ export function CourseOutline({
   activeLineId,
   onPickLine,
   onChapter,
+  onReadChapter,
   onResetChapter,
   onResetLine,
   variant = 'full',
+  concealMoves = false,
 }: CourseOutlineProps) {
   const activeChapter = chapters.find((chapter) =>
     chapter.variations.some((v) => v.id === activeLineId),
@@ -47,8 +51,7 @@ export function CourseOutline({
   }, [activeChapter]);
 
   const isOpen = (chapter: OutlineChapter): boolean => {
-    if (variant === 'full' || chapters.length === 1) return true;
-    return open[chapter.chapterId] ?? chapter.chapterId === activeChapter;
+    return open[chapter.chapterId] ?? (variant === 'full' || chapters.length === 1 || chapter.chapterId === activeChapter);
   };
 
   return (
@@ -76,8 +79,9 @@ export function CourseOutline({
               </span>
             </summary>
 
-            {(onChapter || onResetChapter) && (
+            {(onChapter || onReadChapter || onResetChapter) && (
               <div className="course-outline__chapter-actions">
+                {onReadChapter && <button type="button" onClick={() => onReadChapter(chapter.chapterId)}>Read</button>}
                 {onChapter && (
                   <>
                     <button
@@ -119,8 +123,8 @@ export function CourseOutline({
             )}
 
             <ul className="course-outline__lines">
-              {chapter.variations.map((variation) => {
-                const label = sanLine(variation.line);
+              {chapter.variations.map((variation, index) => {
+                const label = concealMoves ? `Line ${index + 1}` : sanLine(variation.line);
                 return (
                   <li key={variation.id} className="course-outline__line-row">
                     <button
@@ -176,7 +180,7 @@ export function CourseOutline({
 function sanLine(line: readonly CourseNode[]): string {
   const out: string[] = [];
   line.forEach((node, index) => {
-    const number = Math.ceil(node.ply / 2);
+    const number = node.moveNumber ?? Math.ceil(node.ply / 2);
     if (node.side === 'w') out.push(`${number}.${node.san}`);
     else if (index === 0) out.push(`${number}...${node.san}`);
     else out.push(node.san);

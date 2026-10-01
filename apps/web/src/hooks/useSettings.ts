@@ -3,6 +3,8 @@ import { PIECE_SETS } from '../components/Piece.js';
 import type { PieceSet } from '../components/Piece.js';
 import type { AnnotationThickness } from '../components/Board.js';
 
+import { DEFAULT_CHUNK, DEFAULT_FULL_PASSES } from '@coh/course';
+
 const STORAGE_KEY = 'coh.settings.v1';
 
 export const BOARD_THEMES = [
@@ -30,7 +32,21 @@ const clampSeconds = (n: number): number => {
   return Math.min(WATCH_SECONDS_MAX, Math.max(WATCH_SECONDS_MIN, Math.round(n * 10) / 10));
 };
 
-export interface AppSettings {
+export interface CourseLearningSettings {
+  courseChunk: number;
+  courseFullPasses: number;
+}
+
+export const DEFAULT_COURSE_LEARNING: CourseLearningSettings = {
+  courseChunk: DEFAULT_CHUNK,
+  courseFullPasses: DEFAULT_FULL_PASSES,
+};
+
+function clampInteger(value: number, min: number, max: number, fallback: number): number {
+  return Number.isFinite(value) ? Math.min(max, Math.max(min, Math.round(value))) : fallback;
+}
+
+export interface AppSettings extends CourseLearningSettings {
   boardTheme: BoardTheme;
   pieceSet: PieceSet;
   moveEntryMode: 'smart' | 'select';
@@ -44,6 +60,7 @@ export interface AppSettings {
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
+  ...DEFAULT_COURSE_LEARNING,
   boardTheme: 'walnut',
   pieceSet: 'original',
   moveEntryMode: 'smart',
@@ -69,6 +86,9 @@ function loadSettings(): AppSettings {
       soundVolume: Number.isFinite(stored.soundVolume)
         ? Math.min(1, Math.max(0, stored.soundVolume)) : DEFAULT_SETTINGS.soundVolume,
       watchMoveSeconds: clampSeconds(stored.watchMoveSeconds),
+      watchAutoplay: typeof stored.watchAutoplay === 'boolean' ? stored.watchAutoplay : true,
+      courseChunk: clampInteger(stored.courseChunk, 0, 30, DEFAULT_CHUNK),
+      courseFullPasses: clampInteger(stored.courseFullPasses, 1, 5, DEFAULT_FULL_PASSES),
     };
   } catch {
     return DEFAULT_SETTINGS; // private mode, corrupt JSON — settings just fall back to defaults
@@ -84,6 +104,7 @@ function saveSettings(settings: AppSettings): void {
 }
 
 export interface SettingsController extends AppSettings {
+  setCourseLearning: (value: CourseLearningSettings) => void;
   setPieceSet: (value: PieceSet) => void;
   setMoveEntryMode: (value: AppSettings['moveEntryMode']) => void;
   setBoardTheme: (value: BoardTheme) => void;
@@ -128,5 +149,10 @@ export function useSettings(): SettingsController {
     [update],
   );
 
-  return { ...settings, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setWatchAutoplay, setWatchMoveSeconds };
+  const setCourseLearning = useCallback((value: CourseLearningSettings) => update({
+    courseChunk: clampInteger(value.courseChunk, 0, 30, DEFAULT_CHUNK),
+    courseFullPasses: clampInteger(value.courseFullPasses, 1, 5, DEFAULT_FULL_PASSES),
+  }), [update]);
+
+  return { ...settings, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setWatchAutoplay, setWatchMoveSeconds };
 }

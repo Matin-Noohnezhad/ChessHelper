@@ -212,6 +212,8 @@ export default function App() {
           onWatchAutoplayChange={settings.setWatchAutoplay}
           watchMoveSeconds={settings.watchMoveSeconds}
           onWatchMoveSecondsChange={settings.setWatchMoveSeconds}
+          courseLearning={settings}
+          onCourseLearningChange={settings.setCourseLearning}
           onClose={() => setSettingsOpen(false)}
         />
       )}
@@ -222,6 +224,7 @@ export default function App() {
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : mode === 'courses' ? (
         <CoursesView
+          courseLearning={settings}
           annotationThickness={settings.annotationThickness}
           watchAutoplay={settings.watchAutoplay}
           watchMoveSeconds={settings.watchMoveSeconds}

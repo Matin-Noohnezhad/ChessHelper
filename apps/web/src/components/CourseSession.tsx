@@ -8,6 +8,8 @@ import type { AnnotationThickness, BoardArrow } from './Board.js';
 import { CourseOutline } from './CourseOutline.js';
 import { useCourseSession } from '../hooks/useCourseSession.js';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
+import type { CourseLearningSettings } from '../hooks/useSettings.js';
+import { courseShortcutBlocked } from '../courseShortcuts.js';
 import { WATCH_SECONDS_DEFAULT } from '../hooks/useSettings.js';
 
 const MODE_LABELS: Record<SessionMode, string> = {
@@ -49,6 +51,7 @@ const RUN_NOUN: Record<SessionMode, string> = {
 interface CourseSessionProps {
   entry: LibraryEntry;
   mode: SessionMode;
+  courseLearning?: CourseLearningSettings;
   chapterIds?: string[];
   lineIds?: string[];
   onExit: () => void;
@@ -80,12 +83,13 @@ export function CourseSession({
   onPickLine,
   onProgress,
   annotationThickness,
+  courseLearning,
   watchAutoplay = true,
   watchMoveSeconds = WATCH_SECONDS_DEFAULT,
 }: CourseSessionProps) {
   const session = useCourseSession(
     entry,
-    { mode, ...(chapterIds ? { chapterIds } : {}), ...(lineIds ? { lineIds } : {}) },
+    { mode, learning: courseLearning, ...(chapterIds ? { chapterIds } : {}), ...(lineIds ? { lineIds } : {}) },
     onProgress,
   );
   const { trainer, plan, feedback, answer } = session;
@@ -157,17 +161,18 @@ export function CourseSession({
   // The demonstration plays itself — unless autoplay is off, when it waits for
   // you to step it. Each move holds for the dial's `watchMoveSeconds`, longer
   // when the author left something to read with it. It holds still entirely
-  // while you read back through what it has already played, and the recap at the
-  // top of a first part always runs at its own quick clock, autoplay off or on.
+  // while you read back through what it has already played, and manual stepping
+  // applies to recaps too.
   const { advanceWatch } = session;
   const watchStep = watched?.id ?? '';
   const watchAt = trainer.watchAt;
   const recapUntil = trainer.watchRecapUntil;
   const inRecap = watching && recapUntil > 0 && watchAt <= recapUntil;
+  const [watchPaused, setWatchPaused] = useState(false);
   const manualWatch = !watchAutoplay;
   useEffect(() => {
-    if (!watching || looking) return;
-    if (manualWatch && !inRecap) return; // your move to make: step it yourself
+    if (!watching || looking || watchPaused) return;
+    if (manualWatch) return; // your move to make: step it yourself
     const moveMs = watchMoveSeconds * 1000;
     const pause = inRecap
       ? WATCH_PAUSE_RECAP
@@ -184,6 +189,7 @@ export function CourseSession({
     watched?.comment,
     inRecap,
     manualWatch,
+    watchPaused,
     watchMoveSeconds,
     advanceWatch,
   ]);
@@ -193,21 +199,28 @@ export function CourseSession({
   // which is the whole of how Manual pace is driven.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLInputElement) return;
-      const steppingWatch = watching && !looking;
-      // Space also activates a focused button; only claim it when nothing is.
-      const spaceStep = event.key === ' ' && !(event.target instanceof HTMLButtonElement);
-      if ((event.key === 'ArrowRight' || spaceStep) && steppingWatch) advanceWatch();
-      else if (event.key === 'ArrowLeft') stepTo((lookback ?? livePly) - 1);
-      else if (event.key === 'ArrowRight') stepTo((lookback ?? livePly) + 1);
-      else if (event.key === 'ArrowUp') stepTo(0);
-      else if (event.key === 'ArrowDown' || event.key === 'Escape') setLookback(null);
+      if (courseShortcutBlocked(event)) return;
+      const key = event.key.toLowerCase();
+      if (key === ' ' && !looking && trainer.status === 'task-complete') session.next();
+      else if (key === ' ' && !looking && trainer.status === 'complete') onExit();
+      else if ((key === 'arrowright' || key === ' ') && watching && !looking) advanceWatch();
+      else if (key === 'arrowleft') stepTo((lookback ?? livePly) - 1);
+      else if (key === 'arrowright' || (key === ' ' && looking)) stepTo((lookback ?? livePly) + 1);
+      else if (key === 'arrowup' || key === 'home') stepTo(0);
+      else if (key === 'arrowdown' || key === 'end' || (key === 'escape' && looking)) setLookback(null);
+      else if (key === 'escape') onExit();
+      else if (key === 'p' && watching && !manualWatch) setWatchPaused((paused) => !paused);
+      else if (key === 't' && watching && !looking) session.skipWatch();
+      else if (key === 'h' && !looking && trainer.isUsersTurn && !answer) session.reveal();
+      else if (key === 'r' && !looking && trainer.replayable) session.rewatch();
+      else if (key === 'r' && trainer.status === 'complete') session.restart();
+      else if (key === 's' && !watching && !looking && trainer.status !== 'complete') session.next();
       else return;
       event.preventDefault();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [lookback, livePly, stepTo, watching, looking, advanceWatch]);
+  }, [lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit]);
 
   const handleMove = (from: string, to: string, promotion?: PieceSymbol) => {
     session.submit({ from, to, promotion });
@@ -225,7 +238,8 @@ export function CourseSession({
   // Whatever the author drew on the move you are looking at — carried through
   // from the PGN's [%cal]/[%csl]. Shown while the line plays itself and while
   // you read back through it; a move that is still a question keeps its secrets.
-  const shapeNode: CourseNode | null = looking ? lookbackNode : watching ? watched : null;
+  const shapeNode: CourseNode | null = looking ? lookbackNode : watching ? watched
+    : trainer.status === 'complete' || trainer.status === 'task-complete' ? trail[trail.length - 1] ?? null : null;
   const shapeArrows: BoardArrow[] = (shapeNode?.shapes?.arrows ?? []).map((arrow) => ({
     from: arrow.from,
     to: arrow.to,
@@ -246,7 +260,7 @@ export function CourseSession({
               ? 'Every move in this selection has been met at least once. Review is what brings them back.'
               : 'Nothing in this selection is due yet. Come back when it is, or learn some new moves.'}
           </p>
-          <button type="button" className="primary" onClick={onExit}>
+          <button type="button" className="primary" onClick={onExit} title="Back to course (Esc)">
             Back to the course
           </button>
         </section>
@@ -268,6 +282,7 @@ export function CourseSession({
           <CourseOutline
             chapters={outline}
             variant="rail"
+            concealMoves={!watching && trainer.status !== 'complete'}
             activeLineId={activeLineId}
             onPickLine={onPickLine}
           />
@@ -344,13 +359,16 @@ export function CourseSession({
               <>
                 <button
                   type="button"
-                  className={manualWatch && !inRecap ? 'primary' : undefined}
+                  className={manualWatch ? 'primary' : undefined}
                   onClick={session.advanceWatch}
                   title="Next move (→ or Space)"
                 >
                   Next ⏭
                 </button>
-                <button type="button" onClick={session.skipWatch}>
+                {!manualWatch && <button type="button" title="Pause or resume (P)" onClick={() => setWatchPaused((paused) => !paused)}>
+                  {watchPaused ? 'Resume' : 'Pause'}
+                </button>}
+                <button type="button" onClick={session.skipWatch} title="Let me try (T)">
                   Let me try
                 </button>
               </>
@@ -360,7 +378,7 @@ export function CourseSession({
                   <button
                     type="button"
                     onClick={session.rewatch}
-                    title="Play the line out again — you will be asked for it after"
+                    title="Watch this part again — help on the current question counts as a miss (R)"
                   >
                     Watch again
                   </button>
@@ -369,11 +387,11 @@ export function CourseSession({
                   type="button"
                   onClick={session.reveal}
                   disabled={!trainer.isUsersTurn || Boolean(answer)}
-                  title="Show the move — it counts as a miss"
+                  title="Show the move — it counts as a miss (H)"
                 >
                   Hint
                 </button>
-                <button type="button" onClick={session.next} disabled={finished}>
+                <button type="button" onClick={session.next} disabled={finished} title="Skip (S)">
                   Skip
                 </button>
               </>
@@ -384,6 +402,9 @@ export function CourseSession({
 
       <aside className="trainer__side">
         <section className="panel">
+          <details className="course-shortcuts"><summary>Keyboard shortcuts</summary>
+            <p>Space: next move / part / line · ← →: browse moves · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
+          </details>
           <div className="course-head">
             <h2>{MODE_LABELS[mode]}</h2>
             {part && (
@@ -391,7 +412,7 @@ export function CourseSession({
                 Part {part.index + 1} of {part.total}
               </span>
             )}
-            <button type="button" onClick={onExit}>
+            <button type="button" onClick={onExit} title="Back to course (Esc)">
               Finish
             </button>
           </div>
@@ -445,35 +466,37 @@ export function CourseSession({
               upNext={trainer.watchNext}
               progress={trainer.watchCompletion}
               recap={inRecap}
-              manual={manualWatch && !inRecap}
+              manual={manualWatch}
             />
-          ) : finished ? (
+          ) : finished ? (<>
+            {feedback && <Feedback feedback={feedback} />}
             <div className="card card--good">
               <h3>Done</h3>
               <p>
-                {score.right} of {score.graded} answered without help. Everything you answered has
-                a new date; the ones you missed come back in four hours.
+                {score.right} of {score.graded} answered without help. New and due moves have
+                updated review dates; extra practice keeps its existing schedule. Missed moves come back in four hours.
               </p>
               <div className="card__actions">
                 <button type="button" onClick={session.restart}>
                   Go again
                 </button>
-                <button type="button" className="primary" onClick={onExit}>
+                <button type="button" className="primary" onClick={onExit} title="Back to course (Esc)">
                   Back to the course
                 </button>
               </div>
             </div>
-          ) : betweenTasks ? (
+          </>) : betweenTasks ? (<>
+            {feedback && <Feedback feedback={feedback} />}
             <div className="card card--good">
               <h3>{part ? `Part ${part.index + 1} done` : 'Line complete'}</h3>
-              <p className="course-session__line">{task?.line.map((n) => n.san).join(' ')}</p>
+              <p className="course-session__line">{trail.map((n) => n.san).join(' ')}</p>
               <div className="card__actions">
-                <button type="button" className="primary" onClick={session.next}>
-                  {part && part.index + 1 < part.total ? 'Next part' : 'Next'}
+                <button type="button" className="primary" onClick={session.next} title="Continue (Space)" aria-keyshortcuts="Space">
+                  {part && part.index + 1 < part.total ? 'Next part' : 'Next'} <kbd>Space</kbd>
                 </button>
               </div>
             </div>
-          ) : (
+          </>) : (
             <Prompt
               node={node}
               answer={answer}
@@ -481,6 +504,7 @@ export function CourseSession({
               asked={asked}
               done={done}
               part={part}
+              mode={mode}
               fromTheTop={mode === 'learn' && !task?.watch}
             />
           )}
@@ -507,9 +531,9 @@ interface MoveTrailProps {
  * button, and the ones the session merely replayed to reach the question are
  * dimmed rather than hidden, because they are also moves with notes on them.
  */
-function MoveTrail({ trail, cursor, startIndex, onSelect }: MoveTrailProps) {
+export function MoveTrail({ trail, cursor, startIndex, onSelect }: MoveTrailProps) {
   const rows: { number: number; white?: CourseNode; black?: CourseNode; whitePly?: number; blackPly?: number }[] = [];
-  let number = 1;
+  let number = trail[0]?.moveNumber ?? 1;
   for (let i = 0; i < trail.length; i++) {
     const node = trail[i]!;
     const row = rows[rows.length - 1];
@@ -625,6 +649,7 @@ function Demonstration({ watched, upNext, progress, recap, manual }: Demonstrati
 }
 
 interface PromptProps {
+  mode: SessionMode;
   node: { san: string; comment?: string } | null;
   answer: string | null;
   feedback: CourseOutcome | null;
@@ -645,7 +670,7 @@ interface PromptProps {
  * author wrote about the move you are *about* to make is worth nothing before
  * you know which move it is, and printing it would be printing the answer.
  */
-function Prompt({ node, answer, feedback, asked, done, part, fromTheTop }: PromptProps) {
+function Prompt({ mode, node, answer, feedback, asked, done, part, fromTheTop }: PromptProps) {
   const left = Math.max(asked - done, 0);
 
   return (
@@ -658,7 +683,9 @@ function Prompt({ node, answer, feedback, asked, done, part, fromTheTop }: Promp
               ? `From the first move, nothing shown — ${asked} move${asked === 1 ? '' : 's'} to play.`
               : part
                 ? `Play back the ${asked} move${asked === 1 ? '' : 's'} of part ${part.index + 1}.`
-                : `Play back the ${asked} move${asked === 1 ? '' : 's'} you just watched.`}
+                : mode === 'learn'
+                  ? `Play back the ${asked} move${asked === 1 ? '' : 's'} you just watched.`
+                  : `Recall ${asked === 1 ? 'the move' : `these ${asked} moves`} from your repertoire.`}
           </p>
         </div>
       )}

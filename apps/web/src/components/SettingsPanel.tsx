@@ -3,9 +3,10 @@ import type { PieceSet } from './Piece.js';
 import { ANNOTATION_THICKNESS_OPTIONS } from './Board.js';
 import type { AnnotationThickness } from './Board.js';
 import { playBoardSound } from '../sound.js';
-import type { BoardTheme } from '../hooks/useSettings.js';
+import type { CourseLearningSettings, BoardTheme } from '../hooks/useSettings.js';
 import {
   BOARD_THEMES,
+  DEFAULT_COURSE_LEARNING,
   WATCH_SECONDS_MAX,
   WATCH_SECONDS_MIN,
   WATCH_SECONDS_STEP,
@@ -26,6 +27,8 @@ interface SettingsPanelProps {
   onWatchAutoplayChange: (value: boolean) => void;
   watchMoveSeconds: number;
   onWatchMoveSecondsChange: (value: number) => void;
+  courseLearning?: CourseLearningSettings;
+  onCourseLearningChange?: (value: CourseLearningSettings) => void;
   onClose: () => void;
 }
 
@@ -42,6 +45,8 @@ export function SettingsPanel({
   watchMoveSeconds,
   onWatchMoveSecondsChange,
   onClose,
+  courseLearning = DEFAULT_COURSE_LEARNING,
+  onCourseLearningChange,
 }: SettingsPanelProps) {
   return (
     <div className="modal" role="dialog" aria-label="Settings" onClick={onClose}>
@@ -145,6 +150,22 @@ export function SettingsPanel({
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="settings-row">
+          <label className="settings-row__label" htmlFor="course-chunk">Moves before practice</label>
+          <select id="course-chunk" value={courseLearning.courseChunk}
+            onChange={(event) => onCourseLearningChange?.({ ...courseLearning, courseChunk: Number(event.target.value) })}>
+            <option value={0}>Whole line</option>
+            {Array.from({ length: 30 }, (_, i) => i + 1).map((n) => <option key={n} value={n}>Up to {n} {n === 1 ? 'move' : 'moves'}</option>)}
+          </select>
+          <span className="settings-row__hint">Counts your side’s moves; opponent replies are included. Long lines split into balanced parts. Applies to your next session.</span>
+          <label className="settings-row__label" htmlFor="course-passes">Full-line practice rounds</label>
+          <select id="course-passes" value={courseLearning.courseFullPasses}
+            onChange={(event) => onCourseLearningChange?.({ ...courseLearning, courseFullPasses: Number(event.target.value) })}>
+            {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n}</option>)}
+          </select>
+          <span className="settings-row__hint">After practicing each part, repeat the whole line this many times. Applies to your next session.</span>
         </div>
 
         <div className="settings-row">

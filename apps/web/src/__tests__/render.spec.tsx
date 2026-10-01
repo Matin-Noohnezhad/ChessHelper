@@ -12,6 +12,7 @@ import { CourseDashboard } from '../components/CourseDashboard.js';
 import { CourseImport, CoursePreview } from '../components/CourseImport.js';
 import { CourseLibrary } from '../components/CourseLibrary.js';
 import { CourseSession } from '../components/CourseSession.js';
+import { CourseReader } from '../components/CourseReader.js';
 import { ReviewSetup } from '../components/ReviewSetup.js';
 import { ReviewReport, StructureNote, moveBadge } from '../components/ReviewView.js';
 import { SettingsPanel } from '../components/SettingsPanel.js';
@@ -347,6 +348,24 @@ describe('course trainer UI', () => {
     expect(html).toContain('1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4');
   });
 
+  it('opens the reader without training controls', () => {
+    const html = renderToStaticMarkup(<CourseReader entry={entry} onExit={() => {}} />);
+    expect(html).toContain('Reading');
+    expect(html).toContain('Next move');
+    expect(html).toContain('Space');
+    expect(html).not.toContain('Let me try');
+    expect(html).not.toContain('moves answered');
+    expect(html.match(/data-square="/g)).toHaveLength(64);
+  });
+
+  it('uses configured lesson size and full-line repetitions', () => {
+    const html = renderToStaticMarkup(<CourseSession entry={entry} mode="learn"
+      courseLearning={{ courseChunk: 0, courseFullPasses: 3 }}
+      onExit={() => {}} onPickLine={() => {}} />);
+    expect(html).toContain('try 1 of 4');
+    expect(html).not.toContain('Part 1 of');
+  });
+
   it('puts a line rail beside the board in a session', () => {
     const html = renderToStaticMarkup(
       <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
@@ -407,6 +426,8 @@ describe('course trainer UI', () => {
     // The move being asked for appears nowhere on the page.
     expect(html).not.toContain('The move was');
     expect(html).not.toContain('The course plays');
+    expect(html).not.toContain('title="1.e4');
+    expect(html).toContain('Line 1');
   });
 
   it('has nothing to review until something has been learned', () => {

@@ -1956,10 +1956,12 @@ button.primary:hover:not(:disabled) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-width: 0;
 }
 /* A row of controls with a title in it — the shelf, a course, a session. */
 .course-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
   margin-bottom: 0.8rem;
@@ -2116,6 +2118,7 @@ button.primary:hover:not(:disabled) {
 
 .course-outline__chapter-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.4rem;
   padding: 0 0.8rem 0.6rem;
@@ -2401,3 +2404,12 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); 
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 0.75rem;
 }
+
+.course-notice { padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: 6px; color: var(--text); background: var(--surface-2); }
+
+.course-shortcuts { margin: 12px 0; color: var(--muted); font-size: 0.85rem; }
+.course-shortcuts summary { cursor: pointer; }
+.course-shortcuts p { line-height: 1.7; }
+.course-reader select { width: 100%; margin-bottom: 12px; }
+.course-reader__note p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.course-session kbd { margin-left: 5px; font-size: 0.75em; opacity: 0.7; }
