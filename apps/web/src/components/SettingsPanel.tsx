@@ -1,3 +1,5 @@
+import { Piece, PIECE_SETS } from './Piece.js';
+import type { PieceSet } from './Piece.js';
 import { ANNOTATION_THICKNESS_OPTIONS } from './Board.js';
 import type { AnnotationThickness } from './Board.js';
 import { playBoardSound } from '../sound.js';
@@ -10,6 +12,8 @@ import {
 } from '../hooks/useSettings.js';
 
 interface SettingsPanelProps {
+  pieceSet: PieceSet;
+  onPieceSetChange: (value: PieceSet) => void;
   boardTheme?: BoardTheme;
   onBoardThemeChange?: (value: BoardTheme) => void;
   annotationThickness: AnnotationThickness;
@@ -24,6 +28,7 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({
+  pieceSet, onPieceSetChange,
   boardTheme = 'walnut',
   onBoardThemeChange,
   annotationThickness,
@@ -58,6 +63,23 @@ export function SettingsPanel({
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="settings-row">
+          <span className="settings-row__label">Piece shapes</span>
+          <div className="piece-sets" role="group" aria-label="Piece shapes">
+            {PIECE_SETS.map((set) => <button key={set.key} type="button"
+              className="piece-set" aria-pressed={pieceSet === set.key}
+              onClick={() => onPieceSetChange(set.key)}>
+              <span className="piece-set__preview" aria-hidden="true">
+                <Piece type="n" color="w" pieceSet={set.key} />
+                <Piece type="b" color="b" pieceSet={set.key} />
+              </span>
+              <span>{set.label}</span>
+              {'note' in set && <small>{set.note}</small>}
+            </button>)}
+          </div>
+          <span className="settings-row__hint"><a href="/pieces/README.md" target="_blank" rel="noreferrer">Piece artwork credits</a></span>
         </div>
 
         <div className="settings-row">

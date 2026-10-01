@@ -1,3 +1,4 @@
+import { PieceSetContext } from './components/Piece.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatMoveText } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
@@ -197,6 +198,8 @@ export default function App() {
 
       {settingsOpen && (
         <SettingsPanel
+          pieceSet={settings.pieceSet}
+          onPieceSetChange={settings.setPieceSet}
           boardTheme={settings.boardTheme}
           onBoardThemeChange={settings.setBoardTheme}
           annotationThickness={settings.annotationThickness}
@@ -211,6 +214,7 @@ export default function App() {
         />
       )}
 
+      <PieceSetContext.Provider value={settings.pieceSet}>
       <BoardSoundProvider volume={settings.soundVolume}>
       {mode === 'train' ? (
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
@@ -282,6 +286,7 @@ export default function App() {
       </main>
       )}
       </BoardSoundProvider>
+      </PieceSetContext.Provider>
     </div>
   );
 }

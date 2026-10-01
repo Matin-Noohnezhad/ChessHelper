@@ -1,4 +1,6 @@
 import { useCallback, useState } from 'react';
+import { PIECE_SETS } from '../components/Piece.js';
+import type { PieceSet } from '../components/Piece.js';
 import type { AnnotationThickness } from '../components/Board.js';
 
 const STORAGE_KEY = 'coh.settings.v1';
@@ -30,6 +32,7 @@ const clampSeconds = (n: number): number => {
 
 export interface AppSettings {
   boardTheme: BoardTheme;
+  pieceSet: PieceSet;
   annotationThickness: AnnotationThickness;
   /** Board audio level, 0 = muted. */
   soundVolume: number;
@@ -41,6 +44,7 @@ export interface AppSettings {
 
 const DEFAULT_SETTINGS: AppSettings = {
   boardTheme: 'walnut',
+  pieceSet: 'original',
   annotationThickness: 'medium',
   soundVolume: 0.55,
   watchAutoplay: true,
@@ -54,6 +58,7 @@ function loadSettings(): AppSettings {
     const stored = { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<AppSettings>) };
     return {
       ...stored,
+      pieceSet: PIECE_SETS.some((set) => set.key === stored.pieceSet) ? stored.pieceSet : DEFAULT_SETTINGS.pieceSet,
       annotationThickness: ['thin', 'medium', 'thick', 'extra'].includes(stored.annotationThickness)
         ? stored.annotationThickness : DEFAULT_SETTINGS.annotationThickness,
       boardTheme: BOARD_THEMES.some((theme) => theme.key === stored.boardTheme)
@@ -76,6 +81,7 @@ function saveSettings(settings: AppSettings): void {
 }
 
 export interface SettingsController extends AppSettings {
+  setPieceSet: (value: PieceSet) => void;
   setBoardTheme: (value: BoardTheme) => void;
   setAnnotationThickness: (value: AnnotationThickness) => void;
   setSoundVolume: (value: number) => void;
@@ -93,6 +99,8 @@ export function useSettings(): SettingsController {
       return next;
     });
   }, []);
+
+  const setPieceSet = useCallback((value: PieceSet) => update({ pieceSet: value }), [update]);
 
   const setAnnotationThickness = useCallback(
     (value: AnnotationThickness) => update({ annotationThickness: value }),
@@ -115,5 +123,5 @@ export function useSettings(): SettingsController {
     [update],
   );
 
-  return { ...settings, setBoardTheme, setAnnotationThickness, setSoundVolume, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setPieceSet, setBoardTheme, setAnnotationThickness, setSoundVolume, setWatchAutoplay, setWatchMoveSeconds };
 }

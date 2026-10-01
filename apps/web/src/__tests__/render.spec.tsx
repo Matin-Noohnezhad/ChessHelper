@@ -468,6 +468,8 @@ describe('settings', () => {
   it('offers the annotation thickness and a dial for the demonstration pace', () => {
     const html = renderToStaticMarkup(
       <SettingsPanel
+        pieceSet="original"
+        onPieceSetChange={() => {}}
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
         soundVolume={0.55}
@@ -490,6 +492,8 @@ describe('settings', () => {
   it('reads Manual on the dial when autoplay is off', () => {
     const html = renderToStaticMarkup(
       <SettingsPanel
+        pieceSet="original"
+        onPieceSetChange={() => {}}
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
         soundVolume={0}

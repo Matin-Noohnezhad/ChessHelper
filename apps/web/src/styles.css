@@ -378,6 +378,17 @@ button:disabled {
   opacity: 0.28;
 }
 
+.piece--club.piece--w { --piece-fill: #fff; --piece-stroke: #343434; --piece-detail: #777; }
+.piece--club.piece--b { --piece-fill: #454545; --piece-stroke: #181818; --piece-detail: #ddd; }
+.piece--club .piece__body { stroke-width: 2; }
+.piece-sets { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
+.piece-set { display: flex; flex-direction: column; align-items: center; padding: 0.5rem; min-width: 0; }
+.piece-set[aria-pressed="true"] { outline: 2px solid var(--accent); background: var(--surface-2); }
+.piece-set__preview { display: flex; width: 100%; max-width: 100px; aspect-ratio: 2; }
+.piece-set__preview .piece { width: 50%; }
+.piece-set small { font-size: 0.65rem; color: var(--muted); }
+@media (max-width: 480px) { .piece-sets { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 .drag-layer {
   position: fixed;
   z-index: 30;
