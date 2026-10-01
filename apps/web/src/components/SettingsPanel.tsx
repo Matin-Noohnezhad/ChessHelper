@@ -100,6 +100,7 @@ export function SettingsPanel({
                 key={option.key}
                 type="button"
                 className={annotationThickness === option.key ? 'is-active' : ''}
+                aria-pressed={annotationThickness === option.key}
                 onClick={() => onAnnotationThicknessChange(option.key)}
               >
                 {option.label}

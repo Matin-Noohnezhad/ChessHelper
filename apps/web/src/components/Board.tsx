@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
 import { Piece } from './Piece.js';
 import { useBoardSoundVolume } from './BoardSoundContext.js';
@@ -84,10 +84,10 @@ export const ANNOTATION_THICKNESS_OPTIONS: { key: AnnotationThickness; label: st
 ];
 
 const ANNOTATION_SCALE: Record<AnnotationThickness, { arrow: number; circle: number; marker: number }> = {
-  thin: { arrow: 1.4, circle: 1.3, marker: 4.4 },
-  medium: { arrow: 2.2, circle: 2, marker: 6 },
-  thick: { arrow: 3.2, circle: 2.8, marker: 7.6 },
-  extra: { arrow: 4.4, circle: 3.6, marker: 9.2 },
+  thin: { arrow: 0.35, circle: 0.3, marker: 2.0 },
+  medium: { arrow: 0.65, circle: 0.5, marker: 2.8 },
+  thick: { arrow: 1.05, circle: 0.8, marker: 3.8 },
+  extra: { arrow: 1.4, circle: 1.3, marker: 4.4 },
 };
 
 /** An arrow the app draws itself, e.g. the engine's move in a review. */
@@ -191,7 +191,6 @@ export function Board({
   const annotationScale = ANNOTATION_SCALE[annotationThickness];
   const soundVolume = useBoardSoundVolume();
   const boardRef = useRef<HTMLDivElement>(null);
-  const uid = useId();
   const [selected, setSelected] = useState<string | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
@@ -547,46 +546,25 @@ export function Board({
         })}
 
         <svg className="board-draw" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            {(Object.keys(DRAW_COLORS) as DrawColor[]).map((color) => (
-              <marker
-                key={color}
-                id={`${uid}-arrowhead-${color}`}
-                viewBox="0 0 10 10"
-                refX="8.5"
-                refY="5"
-                markerWidth={annotationScale.marker}
-                markerHeight={annotationScale.marker}
-                markerUnits="userSpaceOnUse"
-                orient="auto"
-              >
-                <path d="M0,0 L10,5 L0,10 z" fill={DRAW_COLORS[color]} />
-              </marker>
-            ))}
-          </defs>
           {[
             ...hintArrows.map((arrow) => ({ ...arrow, color: arrow.color ?? 'blue' })),
             ...arrows,
             ...(previewArrow ? [previewArrow] : []),
           ].map((arrow, i) => {
             const start = squareCenter(arrow.from, orientation);
-            const end = shortenTowards(
-              start,
-              squareCenter(arrow.to, orientation),
-              annotationScale.marker * 0.9,
-            );
+            const tip = squareCenter(arrow.to, orientation);
+            const end = shortenTowards(start, tip, annotationScale.marker);
+            const length = Math.hypot(tip.x - start.x, tip.y - start.y) || 1;
+            const nx = -(tip.y - start.y) / length * annotationScale.marker * 0.48;
+            const ny = (tip.x - start.x) / length * annotationScale.marker * 0.48;
             return (
-              <line
-                key={`arrow-${arrow.from}-${arrow.to}-${i}`}
-                x1={start.x}
-                y1={start.y}
-                x2={end.x}
-                y2={end.y}
-                stroke={DRAW_COLORS[arrow.color]}
-                strokeWidth={annotationScale.arrow}
-                strokeLinecap="round"
-                markerEnd={`url(#${uid}-arrowhead-${arrow.color})`}
-              />
+              <g key={`arrow-${arrow.from}-${arrow.to}-${i}`} opacity="0.85">
+                <line x1={start.x} y1={start.y} x2={end.x} y2={end.y}
+                  stroke={DRAW_COLORS[arrow.color]} strokeWidth={annotationScale.arrow}
+                  strokeLinecap="round" />
+                <path d={`M${tip.x},${tip.y} L${end.x + nx},${end.y + ny} L${end.x - nx},${end.y - ny} Z`}
+                  fill={DRAW_COLORS[arrow.color]} />
+              </g>
             );
           })}
           {[
@@ -595,8 +573,8 @@ export function Board({
             ...(previewCircle ? [previewCircle] : []),
           ].map((circle, i) => {
             const { x, y } = squareCenter(circle.square, orientation);
-            const side = 9.6; // a rounded square, not a full circle — squarish highlight with soft corners
-            const radius = side * 0.32;
+            const side = 12.5 - annotationScale.circle - 0.8;
+            const radius = 0.55;
             return (
               <rect
                 key={`circle-${circle.square}-${i}`}

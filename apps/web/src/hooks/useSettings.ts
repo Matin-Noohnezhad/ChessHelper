@@ -54,6 +54,8 @@ function loadSettings(): AppSettings {
     const stored = { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<AppSettings>) };
     return {
       ...stored,
+      annotationThickness: ['thin', 'medium', 'thick', 'extra'].includes(stored.annotationThickness)
+        ? stored.annotationThickness : DEFAULT_SETTINGS.annotationThickness,
       boardTheme: BOARD_THEMES.some((theme) => theme.key === stored.boardTheme)
         ? stored.boardTheme : DEFAULT_SETTINGS.boardTheme,
       soundVolume: Number.isFinite(stored.soundVolume)
