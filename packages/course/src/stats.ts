@@ -37,7 +37,7 @@ function countKeys(keys: Iterable<string>, progress: CourseProgress, now: number
     levels[Math.min(entry.level, MAX_LEVEL)]!++;
     if (entry.level > 0) seen++;
     if (entry.level >= LEARNED_LEVEL) learned++;
-    if (isDue(entry, now)) due++;
+    if (entry.level > 0 && isDue(entry, now)) due++;
   }
 
   return { total, seen, learned, due, levels };

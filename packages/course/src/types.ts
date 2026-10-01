@@ -249,7 +249,7 @@ export interface MoveCounts {
   seen: number;
   /** Past the first day of the ladder, so they have survived a night's sleep. */
   learned: number;
-  /** Due now, including never-seen ones. */
+  /** Previously studied moves due for review now; excludes unseen moves. */
   due: number;
   /** How many moves sit at each level, index 0 being "never learned". */
   levels: number[];

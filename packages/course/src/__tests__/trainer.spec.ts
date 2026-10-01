@@ -543,3 +543,64 @@ describe('where the session has got to', () => {
     expect(trainer.startFen).toBe(fen);
   });
 });
+
+
+describe('training regressions', () => {
+  it('records hints and mistakes immediately, even if the task is abandoned', () => {
+    for (const hint of [true, false]) {
+      const trainer = najdorfTrainer();
+      const key = moveKey(trainer.current!);
+      if (hint) trainer.reveal(); else trainer.submit('h3');
+      expect(trainer.exportProgress()[key]).toMatchObject({ level: 1, wrong: 1, correct: 0 });
+      trainer.nextTask();
+      expect(trainer.exportProgress()[key]!.wrong).toBe(1);
+    }
+  });
+
+  it('counts repeated hints and retries as a single missed answer', () => {
+    const trainer = najdorfTrainer();
+    const key = moveKey(trainer.current!);
+    trainer.reveal(); trainer.reveal(); trainer.submit('h3'); trainer.submit('e4');
+    expect(trainer.exportProgress()[key]).toMatchObject({ correct: 0, wrong: 1 });
+    expect(trainer.scoreboard()).toMatchObject({ graded: 1, right: 0, wrong: 1 });
+  });
+
+  it('keeps early practice from climbing the spaced repetition ladder', () => {
+    const known = progressAt(course, 3, NOW + HOUR);
+    const plan = buildSession(course, known, {
+      mode: 'learn', lineIds: [buildSession(course, {}, { mode: 'learn' }).tasks[0]!.lineId], now: NOW,
+    });
+    const trainer = new CourseTrainer({ course, plan, progress: known, now: () => NOW });
+    trainer.skipWatch();
+    const key = moveKey(trainer.current!);
+    trainer.submit(trainer.current!.san);
+    expect(trainer.exportProgress()[key]).toEqual(known[key]);
+    expect(trainer.scoreboard()).toMatchObject({ right: 1 });
+  });
+
+  it('counts watching again during a question as help', () => {
+    const trainer = najdorfTrainer();
+    const key = moveKey(trainer.current!);
+    trainer.rewatch();
+    expect(trainer.exportProgress()[key]).toMatchObject({ wrong: 1 });
+  });
+
+  it('stops quick review on the answered position and fills the completed bar', () => {
+    const progress = progressAt(course, 3, NOW - HOUR);
+    const plan = buildSession(course, progress, { mode: 'random', now: NOW, dueMoves: 1, shuffle: (items) => items });
+    const trainer = new CourseTrainer({ course, plan, progress, now: () => NOW });
+    const before = trainer.ply;
+    trainer.submit(trainer.current!.san);
+    expect(trainer.ply).toBe(before + 1);
+    expect(trainer.scoreboard()).toMatchObject({ tasksDone: 1, tasksTotal: 1 });
+  });
+
+  it('advances due moves normally', () => {
+    const progress = progressAt(course, 3, NOW - HOUR);
+    const plan = buildSession(course, progress, { mode: 'review', now: NOW });
+    const trainer = new CourseTrainer({ course, plan, progress, now: () => NOW });
+    const key = moveKey(trainer.current!);
+    trainer.submit(trainer.current!.san);
+    expect(trainer.exportProgress()[key]).toMatchObject({ level: 4, dueAt: NOW + LEVELS[3]! });
+  });
+});

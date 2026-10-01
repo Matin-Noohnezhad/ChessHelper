@@ -16,8 +16,8 @@ describe('course statistics', () => {
     expect(stats.total).toBe(trainableMoves(course.chapters, course.side).size);
     expect(stats.seen).toBe(0);
     expect(stats.learned).toBe(0);
-    // Nothing learned means everything is due; that is the learn queue.
-    expect(stats.due).toBe(stats.total);
+    // Unseen moves belong to Learn, not the review queue.
+    expect(stats.due).toBe(0);
     expect(stats.levels[0]).toBe(stats.total);
   });
 
@@ -38,7 +38,8 @@ describe('course statistics', () => {
     expect(stats.seen).toBe(1);
     expect(stats.learned).toBe(1);
     expect(stats.levels[3]).toBe(1);
-    expect(stats.due).toBe(stats.total - 1);
+    expect(stats.due).toBe(0);
+    expect(courseStats(course, progress, entry.dueAt).due).toBe(1);
   });
 
   it('reports each chapter on its own terms', () => {

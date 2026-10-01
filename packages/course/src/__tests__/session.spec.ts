@@ -322,3 +322,25 @@ describe('a single variation, picked off the list', () => {
     expect(new Set(plan.tasks.map((task) => task.lineId))).toEqual(new Set([moscow.id]));
   });
 });
+
+
+describe('partially studied courses', () => {
+  it('demonstrates a picked line from the top even when only its prefix is known', () => {
+    const line = buildSession(course, {}, { mode: 'learn', now: NOW }).tasks[0]!;
+    const first = moveKey(line.line[0]!);
+    const known: CourseProgress = { [first]: { key: first, level: 2, dueAt: NOW + HOUR, lastSeenAt: NOW, correct: 2, wrong: 0 } };
+    const plan = buildSession(course, known, { mode: 'learn', now: NOW, lineIds: [line.lineId] });
+    expect(plan.tasks[0]!.watch?.from).toBe(0);
+    expect(plan.tasks[0]!.quiz).toContain(0);
+  });
+
+  it('does not quiz unseen moves during review of a partly learned line', () => {
+    const key = moveKey(course.chapters[0]!.roots[0]!);
+    const known: CourseProgress = { [key]: { key, level: 2, dueAt: NOW, lastSeenAt: NOW - HOUR, correct: 2, wrong: 0 } };
+    const plan = buildSession(course, known, { mode: 'review', now: NOW });
+    expect(plan.tasks.length).toBeGreaterThan(0);
+    for (const task of plan.tasks) {
+      expect(task.quiz.map((index) => moveKey(task.line[index]!))).toEqual([key]);
+    }
+  });
+});

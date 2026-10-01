@@ -208,7 +208,7 @@ function learnPlan(
     // board in one go: being walked slowly through six moves you already know is
     // how a lesson turns into a screensaver. The exception is a shared opening,
     // which the first part replays quickly rather than skipping outright.
-    const from = fresh.length ? fresh[0]! : (quiz.find((index) => index >= recap) ?? quiz[0]!);
+    const from = picked ? quiz[0]! : fresh.length ? fresh[0]! : (quiz.find((index) => index >= recap) ?? quiz[0]!);
     const teach = quiz.filter((index) => index >= from);
     const sizes = evenParts(teach.length, chunk);
 
@@ -270,11 +270,9 @@ function learnPlan(
 /* -------------------------------------------------------------- review --- */
 
 /**
- * A variation is chosen because something in it is due, and then *every* one of
- * your moves in it is asked and graded — not only the due one. That is the
- * bargain whole-variation review makes: you are replaying the line anyway, and a
- * move you produce cold from move one is a move you have shown you know, whether
- * or not its date had come round.
+ * A variation is chosen because something in it is due. Known moves are asked
+ * along the way; unseen moves are context rather than surprise questions.
+ * The trainer advances a successful move only when its review date has arrived.
  */
 function reviewPlan(
   course: Course,
@@ -289,7 +287,8 @@ function reviewPlan(
   // one that came due this morning.
   const candidates = variations
     .map((variation) => {
-      const quiz = quizIndices(variation.line, course.side);
+      const quiz = quizIndices(variation.line, course.side).filter((index) =>
+        progressFor(progress, moveKey(variation.line[index]!), now).level > 0);
       const due = quiz.filter((index) => {
         const entry = progressFor(progress, moveKey(variation.line[index]!), now);
         return entry.level > 0 && isDue(entry, now);
