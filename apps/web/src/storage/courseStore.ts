@@ -44,9 +44,23 @@ const memoryCourses = new Map<string, StoredCourse>();
 const memoryProgress = new Map<string, CourseProgress>();
 
 let dbPromise: Promise<IDBDatabase> | null = null;
+let memoryOnly = false;
+let storageWarning: string | null = null;
+const listeners = new Set<() => void>();
+export const getCourseStorageWarning = () => storageWarning;
+export function subscribeCourseStorage(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => { listeners.delete(listener); };
+}
+function useMemory(): void {
+  memoryOnly = true;
+  storageWarning = 'Browser storage is unavailable. Course changes and progress are kept only for this tab; they will be lost when you close or reload it.';
+  for (const listener of listeners) listener();
+}
 
 function openDb(): Promise<IDBDatabase> | null {
-  if (typeof indexedDB === 'undefined') return null;
+  if (memoryOnly) return null;
+  if (typeof indexedDB === 'undefined') { useMemory(); return null; }
   dbPromise ??= new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
     request.onupgradeneeded = () => {
@@ -56,8 +70,14 @@ function openDb(): Promise<IDBDatabase> | null {
         db.createObjectStore(PROGRESS, { keyPath: 'courseId' });
       }
     };
-    request.onsuccess = () => resolve(request.result);
+    request.onsuccess = () => {
+      const database = request.result;
+      if (memoryOnly) { database.close(); return; }
+      database.onversionchange = () => { database.close(); dbPromise = null; };
+      resolve(database);
+    };
     request.onerror = () => reject(request.error);
+    request.onblocked = () => reject(new Error('Course storage is blocked by another tab'));
   }).catch((error: unknown) => {
     dbPromise = null;
     throw error;
@@ -78,10 +98,12 @@ function run<T>(
       new Promise<T>((resolve, reject) => {
         const transaction = database.transaction(store, mode);
         const request = work(transaction.objectStore(store));
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
+        // Request success is provisional: quota errors can still abort commit.
+        transaction.oncomplete = () => resolve(request.result);
+        transaction.onabort = () => reject(transaction.error ?? new Error('Course save was aborted'));
+        transaction.onerror = () => reject(transaction.error ?? request.error);
       }),
-  );
+  ).catch((error: unknown) => { useMemory(); throw error; });
 }
 
 /* ------------------------------------------------------------- courses --- */
@@ -90,6 +112,7 @@ export async function listCourses(): Promise<StoredCourse[]> {
   const remembered = () => [...memoryCourses.values()];
   const pending = run<StoredCourse[]>(COURSES, 'readonly', (store) => store.getAll());
   const courses = pending ? await pending.catch(remembered) : remembered();
+  for (const course of courses) memoryCourses.set(course.id, course);
   return courses.sort((a, b) => b.importedAt - a.importedAt);
 }
 
@@ -113,6 +136,7 @@ export async function loadProgress(courseId: string): Promise<CourseProgress> {
   );
   if (!pending) return memoryProgress.get(courseId) ?? {};
   const record = await pending.catch(() => undefined);
+  if (record) memoryProgress.set(courseId, record.moves);
   return record?.moves ?? memoryProgress.get(courseId) ?? {};
 }
 

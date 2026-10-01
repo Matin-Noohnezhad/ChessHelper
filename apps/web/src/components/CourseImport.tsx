@@ -3,7 +3,7 @@ import { allVariations, buildCourse, trainableMoves } from '@coh/course';
 import type { Course, CourseSide } from '@coh/course';
 
 interface CourseImportProps {
-  onImport: (pgn: string, options: { name: string; side: CourseSide }) => void;
+  onImport: (pgn: string, options: { name: string; side: CourseSide }) => void | Promise<void>;
   onCancel?: () => void;
   busy?: boolean;
 }
@@ -20,16 +20,18 @@ interface CourseImportProps {
  */
 export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
   const [text, setText] = useState('');
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
+  const [error, setError] = useState<string | null>(null);
+  const locked = busy || saving;
   const [dragging, setDragging] = useState(false);
   const [name, setName] = useState('');
   const [side, setSide] = useState<CourseSide | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Parsing on every keystroke is fine for a pasted line and wasteful for a
-  // two-megabyte file, which is why this is only ever driven by a paste, a drop
-  // or a file — never by typing into the box character by character.
+  // Keep the preview and the saved PGN based on the same text and side.
   const preview = useMemo(() => {
-    if (text.trim().length < 8) return null;
+    if (!text.trim()) return null;
     try {
       const course = buildCourse(text, { ...(side ? { side } : {}) });
       if (!course.chapters.length) return null;
@@ -44,14 +46,25 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
   }, [text, side]);
 
   const readFile = (file: File | undefined) => {
-    if (!file) return;
+    if (!file || locked) return;
+    setError(null);
     const reader = new FileReader();
     reader.onload = () => setText(String(reader.result ?? ''));
+    reader.onerror = () => setError('That file could not be read. Please try opening it again.');
     reader.readAsText(file);
   };
 
   const chosenSide = side ?? preview?.course.side ?? 'white';
   const chosenName = name.trim() || preview?.course.name || '';
+  const confirmImport = async () => {
+    if (!preview?.moves || busy || savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    setError(null);
+    try { await onImport(text, { name: chosenName, side: chosenSide }); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : 'The course could not be imported.'); }
+    finally { savingRef.current = false; setSaving(false); }
+  };
 
   return (
     <section className="panel review-setup course-import">
@@ -76,8 +89,10 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
         }}
       >
         <textarea
+          aria-label="Course PGN"
+          disabled={locked}
           value={text}
-          onChange={(event) => setText(event.target.value)}
+          onChange={(event) => { setText(event.target.value); setError(null); }}
           placeholder={
             '[Event "My repertoire: The Najdorf"]\n\n1. e4 c5 2. Nf3 d6 {The move order matters…}'
           }
@@ -94,21 +109,23 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
           hidden
           onChange={(event) => readFile(event.target.files?.[0])}
         />
-        <button type="button" onClick={() => fileRef.current?.click()}>
+        <button type="button" disabled={locked} onClick={() => fileRef.current?.click()}>
           Open a .pgn file
         </button>
         {text && (
-          <button type="button" onClick={() => setText('')}>
+          <button type="button" disabled={locked} onClick={() => setText('')}>
             Clear
           </button>
         )}
         {onCancel && (
-          <button type="button" onClick={onCancel}>
+          <button type="button" disabled={locked} onClick={onCancel}>
             Cancel
           </button>
         )}
       </div>
 
+      {error && <p className="review-error" role="alert">{error}</p>}
+      {text.trim() && !preview && <p className="review-error" role="alert">No readable games found. Paste a PGN or open a .pgn file with legal moves.</p>}
       {preview && (
         <CoursePreview
           course={preview.course}
@@ -117,10 +134,10 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
           name={chosenName}
           side={chosenSide}
           inferred={side === null}
-          busy={busy}
+          busy={locked}
           onNameChange={setName}
           onSideChange={setSide}
-          onConfirm={() => onImport(text, { name: chosenName, side: chosenSide })}
+          onConfirm={() => void confirmImport()}
         />
       )}
     </section>
@@ -209,9 +226,10 @@ export function CoursePreview({
         </p>
       )}
 
+      {moves === 0 && <p className="review-error" role="alert">No trainable moves for this side. Check the PGN or choose the other side.</p>}
       <div className="review-setup__row review-setup__go">
-        <button type="button" className="primary" disabled={busy} onClick={onConfirm}>
-          Add to my courses
+        <button type="button" className="primary" disabled={busy || moves === 0} onClick={onConfirm}>
+          {busy ? 'Adding…' : 'Add to my courses'}
         </button>
       </div>
     </div>

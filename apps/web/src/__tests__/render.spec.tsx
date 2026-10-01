@@ -514,3 +514,14 @@ describe('settings', () => {
     expect(html).toMatch(/type="range"[^>]*disabled/);
   });
 });
+
+
+describe('course cache', () => {
+  it('rebuilds a replaced course even when the new PGN has the same length', () => {
+    const stored = { id: 'replaced', name: 'Before', pgn: '1. e4 *', side: 'white' as const, importedAt: 1 };
+    expect(entryFrom(stored, {}).course.chapters[0]!.roots[0]!.san).toBe('e4');
+    const updated = entryFrom({ ...stored, name: 'After', pgn: '1. d4 *' }, {});
+    expect(updated.course.name).toBe('After');
+    expect(updated.course.chapters[0]!.roots[0]!.san).toBe('d4');
+  });
+});

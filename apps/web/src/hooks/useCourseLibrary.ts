@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { buildCourse, courseStats, progressKeys } from '@coh/course';
 import type { Course, CourseProgress, CourseSide, CourseStats } from '@coh/course';
 import {
   clearProgress,
+  getCourseStorageWarning,
+  subscribeCourseStorage,
   deleteCourse,
   listCourses,
   loadProgress,
@@ -17,15 +19,14 @@ import type { StoredCourse } from '../storage/courseStore.js';
  * is a replay of every line in it, which is fast but not free, and the library
  * asks for one every time you step back out of a session.
  */
-const built = new Map<string, Course>();
+const built = new Map<string, { stored: StoredCourse; course: Course }>();
 
 function courseFor(stored: StoredCourse): Course {
-  const key = `${stored.id}:${stored.side}:${stored.pgn.length}`;
-  let course = built.get(key);
-  if (!course) {
-    course = buildCourse(stored.pgn, { id: stored.id, name: stored.name, side: stored.side });
-    built.set(key, course);
-  }
+  const cached = built.get(stored.id);
+  if (cached && cached.stored.name === stored.name && cached.stored.side === stored.side &&
+      cached.stored.pgn === stored.pgn) return cached.course;
+  const course = buildCourse(stored.pgn, { id: stored.id, name: stored.name, side: stored.side });
+  built.set(stored.id, { stored, course });
   return course;
 }
 
@@ -46,6 +47,7 @@ export interface CourseLibrary {
   entries: LibraryEntry[];
   loading: boolean;
   error: string | null;
+  storageWarning: string | null;
   refresh: () => Promise<void>;
   importPgn: (pgn: string, options?: { name?: string; side?: CourseSide }) => Promise<string | null>;
   remove: (id: string) => Promise<void>;
@@ -61,6 +63,7 @@ export interface CourseLibrary {
 }
 
 export function useCourseLibrary(): CourseLibrary {
+  const storageWarning = useSyncExternalStore(subscribeCourseStorage, getCourseStorageWarning, () => null);
   const [entries, setEntries] = useState<LibraryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,11 +72,12 @@ export function useCourseLibrary(): CourseLibrary {
     setLoading(true);
     try {
       const stored = await listCourses();
-      const loaded = await Promise.all(
+      const loaded = await Promise.allSettled(
         stored.map(async (course) => entryFrom(course, await loadProgress(course.id))),
       );
-      setEntries(loaded);
-      setError(null);
+      setEntries(loaded.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []));
+      const failed = loaded.flatMap((result, index) => result.status === 'rejected' ? [stored[index]!.name] : []);
+      setError(failed.length ? `Could not open: ${failed.join(', ')}. Other courses are still available.` : null);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
     } finally {
@@ -85,6 +89,16 @@ export function useCourseLibrary(): CourseLibrary {
     void refresh();
   }, [refresh]);
 
+  // Keep due counts current while the shelf stays open or the tab resumes.
+  useEffect(() => {
+    const updateDue = () => setEntries((current) => current.map((entry) => ({
+      ...entry, stats: courseStats(entry.course, entry.progress),
+    })));
+    const timer = setInterval(updateDue, 30_000);
+    window.addEventListener('focus', updateDue);
+    return () => { clearInterval(timer); window.removeEventListener('focus', updateDue); };
+  }, []);
+
   const importPgn = useCallback(
     async (pgn: string, options: { name?: string; side?: CourseSide } = {}) => {
       const name = options.name?.trim();
@@ -92,8 +106,8 @@ export function useCourseLibrary(): CourseLibrary {
         ...(name ? { name } : {}),
         ...(options.side ? { side: options.side } : {}),
       });
-      if (!course.chapters.length) {
-        setError('No games in that PGN.');
+      if (!courseStats(course, {}).total) {
+        setError('No trainable moves for the selected side in that PGN.');
         return null;
       }
 
@@ -115,6 +129,7 @@ export function useCourseLibrary(): CourseLibrary {
   const remove = useCallback(
     async (id: string) => {
       await deleteCourse(id);
+      built.delete(id);
       await refresh();
     },
     [refresh],
@@ -170,6 +185,7 @@ export function useCourseLibrary(): CourseLibrary {
     entries,
     loading,
     error,
+    storageWarning,
     refresh,
     importPgn,
     remove,
