@@ -470,6 +470,8 @@ describe('settings', () => {
       <SettingsPanel
         pieceSet="original"
         onPieceSetChange={() => {}}
+        moveEntryMode="smart"
+        onMoveEntryModeChange={() => {}}
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
         soundVolume={0.55}
@@ -494,6 +496,8 @@ describe('settings', () => {
       <SettingsPanel
         pieceSet="original"
         onPieceSetChange={() => {}}
+        moveEntryMode="smart"
+        onMoveEntryModeChange={() => {}}
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
         soundVolume={0}

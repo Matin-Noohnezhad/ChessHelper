@@ -33,6 +33,7 @@ const clampSeconds = (n: number): number => {
 export interface AppSettings {
   boardTheme: BoardTheme;
   pieceSet: PieceSet;
+  moveEntryMode: 'smart' | 'select';
   annotationThickness: AnnotationThickness;
   /** Board audio level, 0 = muted. */
   soundVolume: number;
@@ -45,6 +46,7 @@ export interface AppSettings {
 const DEFAULT_SETTINGS: AppSettings = {
   boardTheme: 'walnut',
   pieceSet: 'original',
+  moveEntryMode: 'smart',
   annotationThickness: 'medium',
   soundVolume: 0.55,
   watchAutoplay: true,
@@ -59,6 +61,7 @@ function loadSettings(): AppSettings {
     return {
       ...stored,
       pieceSet: PIECE_SETS.some((set) => set.key === stored.pieceSet) ? stored.pieceSet : DEFAULT_SETTINGS.pieceSet,
+      moveEntryMode: stored.moveEntryMode === 'select' ? 'select' : 'smart',
       annotationThickness: ['thin', 'medium', 'thick', 'extra'].includes(stored.annotationThickness)
         ? stored.annotationThickness : DEFAULT_SETTINGS.annotationThickness,
       boardTheme: BOARD_THEMES.some((theme) => theme.key === stored.boardTheme)
@@ -82,6 +85,7 @@ function saveSettings(settings: AppSettings): void {
 
 export interface SettingsController extends AppSettings {
   setPieceSet: (value: PieceSet) => void;
+  setMoveEntryMode: (value: AppSettings['moveEntryMode']) => void;
   setBoardTheme: (value: BoardTheme) => void;
   setAnnotationThickness: (value: AnnotationThickness) => void;
   setSoundVolume: (value: number) => void;
@@ -101,6 +105,7 @@ export function useSettings(): SettingsController {
   }, []);
 
   const setPieceSet = useCallback((value: PieceSet) => update({ pieceSet: value }), [update]);
+  const setMoveEntryMode = useCallback((value: AppSettings['moveEntryMode']) => update({ moveEntryMode: value }), [update]);
 
   const setAnnotationThickness = useCallback(
     (value: AnnotationThickness) => update({ annotationThickness: value }),
@@ -123,5 +128,5 @@ export function useSettings(): SettingsController {
     [update],
   );
 
-  return { ...settings, setPieceSet, setBoardTheme, setAnnotationThickness, setSoundVolume, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setWatchAutoplay, setWatchMoveSeconds };
 }

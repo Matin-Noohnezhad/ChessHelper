@@ -14,6 +14,8 @@ import {
 interface SettingsPanelProps {
   pieceSet: PieceSet;
   onPieceSetChange: (value: PieceSet) => void;
+  moveEntryMode: 'smart' | 'select';
+  onMoveEntryModeChange: (value: 'smart' | 'select') => void;
   boardTheme?: BoardTheme;
   onBoardThemeChange?: (value: BoardTheme) => void;
   annotationThickness: AnnotationThickness;
@@ -28,7 +30,7 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({
-  pieceSet, onPieceSetChange,
+  pieceSet, onPieceSetChange, moveEntryMode, onMoveEntryModeChange,
   boardTheme = 'walnut',
   onBoardThemeChange,
   annotationThickness,
@@ -80,6 +82,20 @@ export function SettingsPanel({
             </button>)}
           </div>
           <span className="settings-row__hint"><a href="/pieces/README.md" target="_blank" rel="noreferrer">Piece artwork credits</a></span>
+        </div>
+
+        <div className="settings-row">
+          <span className="settings-row__label">Move entry</span>
+          <div className="segmented" role="group" aria-label="Move entry mode">
+            <button type="button" className={moveEntryMode === 'smart' ? 'is-active' : ''}
+              aria-pressed={moveEntryMode === 'smart'} onClick={() => onMoveEntryModeChange('smart')}>Smart click</button>
+            <button type="button" className={moveEntryMode === 'select' ? 'is-active' : ''}
+              aria-pressed={moveEntryMode === 'select'} onClick={() => onMoveEntryModeChange('select')}>Select destinations</button>
+          </div>
+          <span className="settings-row__hint">Smart click plays a capture when available, otherwise a legal move.
+            Stockfish chooses among multiple options. Click an opponent’s piece to capture it.
+            Drag to choose a specific move. Applies to Explore; exercises keep manual selection.
+            Reverse capture dragging works in either mode.</span>
         </div>
 
         <div className="settings-row">

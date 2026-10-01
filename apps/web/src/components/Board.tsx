@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
+import { reverseCapture, smartCandidates, SmartMoveEngine } from '../smartMoves.js';
 import { Piece } from './Piece.js';
 import { useBoardSoundVolume } from './BoardSoundContext.js';
 import { playBoardSound } from '../sound.js';
@@ -159,6 +160,8 @@ interface BoardProps {
    * dragged pieces are already at their destination and skip the animation.
    */
   animateMoves?: boolean;
+  /** Smart entry is opt-in per board, so training remains a manual exercise. */
+  moveEntryMode?: 'smart' | 'select';
 }
 
 interface Pending {
@@ -187,10 +190,22 @@ export function Board({
   badge = null,
   annotationThickness = 'medium',
   animateMoves = false,
+  moveEntryMode = 'select',
 }: BoardProps) {
   const annotationScale = ANNOTATION_SCALE[annotationThickness];
   const soundVolume = useBoardSoundVolume();
   const boardRef = useRef<HTMLDivElement>(null);
+  const smartEngine = useRef<SmartMoveEngine | null>(null);
+  const smartRequest = useRef<AbortController | null>(null);
+  const [smartBusy, setSmartBusy] = useState(false);
+  const [smartError, setSmartError] = useState<string | null>(null);
+  const cancelSmartMove = useCallback(() => {
+    smartRequest.current?.abort();
+    smartRequest.current = null;
+    setSmartBusy(false);
+    setSmartError(null);
+  }, []);
+  useEffect(() => () => smartEngine.current?.dispose(), []);
   const [selected, setSelected] = useState<string | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
@@ -216,6 +231,11 @@ export function Board({
    */
   const fen = game.fen();
 
+  useVisualEffect(() => {
+    cancelSmartMove();
+    return () => { smartRequest.current?.abort(); };
+  }, [fen, orientation, interactive, moveEntryMode, cancelSmartMove]);
+
   // Position navigation and board flips must not leave a stale drag or promotion.
   useEffect(() => {
     setSelected(null);
@@ -225,7 +245,7 @@ export function Board({
     setCircles([]);
     setDrawStart(null);
     setDrawCurrent(null);
-  }, [fen, orientation, interactive]);
+  }, [fen, orientation, interactive, moveEntryMode]);
 
   const contents = useMemo(() => {
     // game.board() is always a8..h1; index it by square name so the rendering
@@ -308,9 +328,13 @@ export function Board({
   const targets = useMemo(() => {
     if (!selected || !interactive) return new Map<string, boolean>();
     const map = new Map<string, boolean>();
-    for (const move of game.movesFrom(selected)) map.set(move.to, move.isCapture);
+    if (contents.get(selected)?.color === game.turn()) {
+      for (const move of game.movesFrom(selected)) map.set(move.to, move.isCapture);
+    } else {
+      for (const move of smartCandidates(game, selected)) map.set(move.from, true);
+    }
     return map;
-  }, [game, fen, selected, interactive]);
+  }, [game, fen, selected, interactive, contents]);
 
   const checkSquare = useMemo(() => {
     if (!game.isCheck()) return null;
@@ -354,6 +378,29 @@ export function Board({
     [game, onMove],
   );
 
+  const playSmartMove = useCallback(async (square: string) => {
+    cancelSmartMove();
+    const candidates = smartCandidates(game, square);
+    if (!candidates.length) return;
+    const controller = new AbortController();
+    smartRequest.current = controller;
+    setSmartBusy(true);
+    try {
+      smartEngine.current ??= new SmartMoveEngine();
+      const move = await smartEngine.current.choose(fen, candidates, controller.signal);
+      if (controller.signal.aborted || smartRequest.current !== controller) return;
+      setSelected(null);
+      onMove(move.from, move.to, move.promotion);
+    } catch {
+      if (!controller.signal.aborted) setSmartError('Smart move unavailable. Choose a highlighted destination or drag to move.');
+    } finally {
+      if (smartRequest.current === controller) {
+        smartRequest.current = null;
+        setSmartBusy(false);
+      }
+    }
+  }, [game, fen, onMove, cancelSmartMove]);
+
   const toggleDrawing = useCallback((from: string, to: string, color: DrawColor) => {
     if (from === to) {
       setCircles((prev) => {
@@ -374,6 +421,7 @@ export function Board({
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent, square: string) => {
+      cancelSmartMove();
       if (event.button === 2) {
         event.preventDefault();
         setDrawStart({ square, color: colorForModifiers(event) });
@@ -391,12 +439,14 @@ export function Board({
       const piece = contents.get(square);
       const isOwn = piece?.color === game.turn();
 
-      if (selected && selected !== square && !isOwn) {
-        if (attemptMove(selected, square)) setSelected(null);
-        else setSelected(null);
-        return;
+      if (selected && selected !== square && !isOwn && contents.get(selected)?.color === game.turn()) {
+        if (attemptMove(selected, square)) { setSelected(null); return; }
       }
-      if (!isOwn) {
+      if (selected && isOwn && contents.get(selected)?.color !== game.turn()) {
+        const reverse = reverseCapture(game, selected, square);
+        if (reverse && attemptMove(reverse.from, reverse.to)) { setSelected(null); return; }
+      }
+      if (!piece) {
         setSelected(null);
         return;
       }
@@ -406,7 +456,7 @@ export function Board({
         originX: event.clientX, originY: event.clientY, active: false });
       event.currentTarget.setPointerCapture?.(event.pointerId);
     },
-    [interactive, pending, contents, game, selected, attemptMove, arrows, circles],
+    [interactive, pending, contents, game, selected, attemptMove, arrows, circles, cancelSmartMove],
   );
 
   const handlePointerMove = useCallback(
@@ -431,14 +481,20 @@ export function Board({
       const target = squareAtPoint(event.clientX, event.clientY);
       const from = drag.square;
       setDrag(null);
-      // Releasing on the origin square means "select", not "move" — that is
-      // what makes click-to-move and drag-to-move coexist.
-      if (!drag.active || !target || target === from) return;
-      draggedMove.current = `${from}${target}`;
-      if (attemptMove(from, target)) setSelected(null);
+      if (!drag.active && target === from) {
+        if (moveEntryMode === 'smart') void playSmartMove(from);
+        return;
+      }
+      if (!target || target === from) return;
+      const reverse = reverseCapture(game, from, target);
+      const source = reverse?.from ?? from;
+      const destination = reverse?.to ?? target;
+      // Reverse captures animate the actual attacker toward the victim.
+      draggedMove.current = reverse ? null : `${source}${destination}`;
+      if (attemptMove(source, destination)) setSelected(null);
       else draggedMove.current = null;
     },
-    [drag, drawStart, squareAtPoint, attemptMove, toggleDrawing],
+    [drag, drawStart, squareAtPoint, attemptMove, toggleDrawing, game, moveEntryMode, playSmartMove],
   );
 
   const finishPromotion = useCallback(
@@ -618,9 +674,15 @@ export function Board({
         </div>
       )}
 
+      {(smartBusy || smartError) && <p className="board-smart-status" role="status">
+        {smartBusy ? 'Choosing a move…' : smartError}
+      </p>}
       <details className="board-hint">
         <summary>Board controls</summary>
-        <p>Click a piece and its destination, or drag to move. Right-click drag to draw an arrow;
+        <p>{moveEntryMode === 'smart'
+          ? 'Click a piece to play its best capture, or its best move if no capture is available. Click an opponent’s piece to capture it. Drag to choose a specific move.'
+          : 'Click a piece and its destination, or drag to move.'}
+          {' '}Drag an opponent’s piece onto your piece to capture it in reverse. Right-click drag to draw an arrow;
           right-click a square to mark it. Hold <kbd>Shift</kbd> for red, <kbd>Ctrl</kbd> for blue,
           or <kbd>Alt</kbd> for yellow.</p>
       </details>

@@ -200,6 +200,8 @@ export default function App() {
         <SettingsPanel
           pieceSet={settings.pieceSet}
           onPieceSetChange={settings.setPieceSet}
+          moveEntryMode={settings.moveEntryMode}
+          onMoveEntryModeChange={settings.setMoveEntryMode}
           boardTheme={settings.boardTheme}
           onBoardThemeChange={settings.setBoardTheme}
           annotationThickness={settings.annotationThickness}
@@ -241,6 +243,7 @@ export default function App() {
               orientation={game.orientation}
               lastMove={game.lastMove}
               onMove={handleMove}
+              moveEntryMode={settings.moveEntryMode}
               marks={marks}
               annotationThickness={settings.annotationThickness}
               animateMoves
