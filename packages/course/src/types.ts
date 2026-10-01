@@ -22,6 +22,8 @@ export interface CourseNode {
   san: string;
   /** 1-based ply from the chapter's start position. */
   ply: number;
+  /** Full move number from the PGN starting position, including FEN chapters. */
+  moveNumber?: number;
   /** Who played it. */
   side: 'w' | 'b';
   /**

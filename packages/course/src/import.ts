@@ -175,6 +175,7 @@ function place(context: PlaceContext, raw: readonly RawNode[], idPrefix: string)
       id: idPrefix ? `${idPrefix}.${out.length}` : String(out.length),
       san,
       ply: path.length + 1,
+      moveNumber: pos.fullmoves,
       side: pos.turn === WHITE ? 'w' : 'b',
       fromKey: pos.key(),
       nags: entry.nags,

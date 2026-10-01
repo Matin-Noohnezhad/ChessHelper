@@ -81,9 +81,10 @@ export interface Variation {
  * first at each branch, which is the order a course is meant to be learned in.
  *
  * Alternatives and rejected moves are not variations: nobody needs to drill a
- * move the author showed and then dropped.
+ * move the author showed and then dropped. Pass `includeAnnotations` for a reader
+ * that also includes those illustrative sidelines.
  */
-export function variationsOf(chapter: Chapter, side: CourseSide): Variation[] {
+export function variationsOf(chapter: Chapter, side: CourseSide, includeAnnotations = false): Variation[] {
   const out: Variation[] = [];
   const line: CourseNode[] = [];
 
@@ -102,12 +103,12 @@ export function variationsOf(chapter: Chapter, side: CourseSide): Variation[] {
     }
     for (const node of nodes) {
       line.push(node);
-      descend(playableChildren(node, side));
+      descend(includeAnnotations ? node.children : playableChildren(node, side));
       line.pop();
     }
   };
 
-  descend(playableRoots(chapter, side));
+  descend(includeAnnotations ? chapter.roots : playableRoots(chapter, side));
   return out;
 }
 

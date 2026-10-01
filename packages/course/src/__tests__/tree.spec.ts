@@ -145,3 +145,15 @@ describe('progress keys for a scope', () => {
     expect(keys.has(bb5)).toBe(false);
   });
 });
+
+
+describe('reading variations', () => {
+  it('includes rejected and illustrative moves while training still excludes them', () => {
+    const course = buildCourse('1.e4 (1.d4? d5) (1.Nf3) e5 2.Nf3 *', { side: 'white' });
+    const chapter = course.chapters[0]!;
+    expect(variationsOf(chapter, 'white').map((v) => v.line.map((n) => n.san).join(' ')))
+      .toEqual(['e4 e5 Nf3']);
+    expect(variationsOf(chapter, 'white', true).map((v) => v.line.map((n) => n.san).join(' ')))
+      .toEqual(['e4 e5 Nf3', 'd4 d5', 'Nf3']);
+  });
+});

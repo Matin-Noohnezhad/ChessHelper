@@ -122,3 +122,13 @@ describe('course import', () => {
     expect(e5.children).toHaveLength(0);
   });
 });
+
+
+describe('FEN course move numbers', () => {
+  it('keeps the full move number for a chapter starting with Black', () => {
+    const course = buildCourse('[Event "Endgame"]\n[SetUp "1"]\n[FEN "4k3/8/8/8/8/8/8/4K3 b - - 0 27"]\n\n27... Kd7 28. Kd2 *');
+    const black = course.chapters[0]!.roots[0]!;
+    expect(black).toMatchObject({ san: 'Kd7', side: 'b', ply: 1, moveNumber: 27 });
+    expect(black.children[0]).toMatchObject({ san: 'Kd2', side: 'w', ply: 2, moveNumber: 28 });
+  });
+});

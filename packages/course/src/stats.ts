@@ -178,9 +178,10 @@ export function courseOutline(
   course: Course,
   progress: CourseProgress,
   now: number = Date.now(),
+  includeAnnotations = false,
 ): OutlineChapter[] {
   return course.chapters.map((chapter) => {
-    const variations = variationsOf(chapter, course.side).map((variation) =>
+    const variations = variationsOf(chapter, course.side, includeAnnotations).map((variation) =>
       variationStats(variation, course.side, progress, now),
     );
     const counts = countKeys(trainableMoves([chapter], course.side).keys(), progress, now);
