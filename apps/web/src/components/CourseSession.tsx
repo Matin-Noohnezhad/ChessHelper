@@ -106,6 +106,18 @@ export function CourseSession({
   // A random-mode task's lineId carries the position it asks about after an `@`.
   const activeLineId = task?.lineId.split('@')[0] ?? null;
   const railLines = outline.reduce((sum, chapter) => sum + chapter.variations.length, 0);
+  // A session opened from one line ends after its repetitions. Keep learning
+  // by following the course outline once that session's queue is finished.
+  const completedLineId = activeLineId ?? plan.tasks[plan.tasks.length - 1]?.lineId;
+  const courseLines = outline.flatMap((chapter) => chapter.variations);
+  const completedLineIndex = courseLines.findIndex((line) => line.id === completedLineId);
+  const nextVariation = mode === 'learn' && completedLineIndex >= 0
+    ? courseLines.slice(completedLineIndex + 1).find((line) => line.moves > 0)
+    : undefined;
+  const continueAfterSession = useCallback(() => {
+    if (nextVariation) onPickLine(nextVariation.id);
+    else onExit();
+  }, [nextVariation, onPickLine, onExit]);
 
   /**
    * Looking back through the line, as a ply count, or null for the live board.
@@ -188,7 +200,7 @@ export function CourseSession({
       if (courseShortcutBlocked(event)) return;
       const key = event.key.toLowerCase();
       if (key === ' ' && !looking && trainer.status === 'task-complete') session.next();
-      else if (key === ' ' && !looking && trainer.status === 'complete') onExit();
+      else if (key === ' ' && !looking && trainer.status === 'complete') continueAfterSession();
       else if ((key === 'arrowright' || key === ' ') && watching && !looking) advanceWatch();
       else if (key === 'arrowleft') stepTo((lookback ?? livePly) - 1);
       else if (key === 'arrowright' || (key === ' ' && looking)) stepTo((lookback ?? livePly) + 1);
@@ -206,7 +218,7 @@ export function CourseSession({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit]);
+  }, [lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit, continueAfterSession]);
 
   const handleMove = (from: string, to: string, promotion?: PieceSymbol) => {
     session.submit({ from, to, promotion });
@@ -466,7 +478,13 @@ export function CourseSession({
                 <button type="button" onClick={session.restart}>
                   Go again
                 </button>
-                <button type="button" className="primary" onClick={onExit} title="Back to course (Esc)">
+                {nextVariation && (
+                  <button type="button" className="primary" onClick={continueAfterSession}
+                    title="Next variation (Space)" aria-keyshortcuts="Space">
+                    Next variation <kbd>Space</kbd>
+                  </button>
+                )}
+                <button type="button" className={nextVariation ? undefined : 'primary'} onClick={onExit} title="Back to course (Esc)">
                   Back to the course
                 </button>
               </div>
