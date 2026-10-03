@@ -19,8 +19,8 @@ export type BoardTheme = typeof BOARD_THEMES[number]['key'];
 /**
  * The course line demonstration, as a dial rather than a few presets.
  *
- * `watchMoveSeconds` is how long a plain demonstrated move holds before the
- * next one; a move carrying a note holds proportionally longer. `watchAutoplay`
+ * `watchMoveSeconds` is how long each demonstrated move holds before the
+ * next one, including moves carrying notes. `watchAutoplay`
  * off means no clock at all — you step each move yourself and read for as long
  * as you like.
  */
@@ -58,7 +58,7 @@ export interface AppSettings extends CourseLearningSettings {
   soundStyle: SoundStyle;
   /** Auto-advance the course line demonstration; false = step it yourself. */
   watchAutoplay: boolean;
-  /** Seconds a plain demonstrated move holds; a move with a note holds longer. */
+  /** Seconds each demonstrated move holds, including moves with notes. */
   watchMoveSeconds: number;
 }
 

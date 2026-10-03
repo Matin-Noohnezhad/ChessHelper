@@ -25,15 +25,6 @@ const MODE_NOTES: Record<SessionMode, string> = {
 };
 
 /**
- * How long a demonstrated move stays on the board before the next one.
- *
- * The plain pause is the Settings dial (`watchMoveSeconds`); a move with
- * something written about it holds this much longer, so there is time to read
- * the first sentence of it whatever the dial is set to.
- */
-const WATCH_NOTE_RATIO = 2600 / 1100;
-
-/**
  * The pace for the recap at the top of a first part — the shared opening you
  * were already taught in the line before this one. Quick enough not to be a
  * wait, slow enough to follow the pieces back to where this line branches off.
@@ -61,7 +52,7 @@ interface CourseSessionProps {
   annotationThickness?: AnnotationThickness;
   /** Auto-advance the demonstration — from Settings. Off means step it yourself. */
   watchAutoplay?: boolean;
-  /** Seconds a plain demonstrated move holds — from Settings. */
+  /** Seconds each demonstrated move holds — from Settings. */
   watchMoveSeconds?: number;
 }
 
@@ -159,8 +150,8 @@ export function CourseSession({
   }, [lookbackGame, lookback, task, trainer.startFen]);
 
   // The demonstration plays itself — unless autoplay is off, when it waits for
-  // you to step it. Each move holds for the dial's `watchMoveSeconds`, longer
-  // when the author left something to read with it. It holds still entirely
+  // you to step it. Each move holds for the dial's `watchMoveSeconds`, including
+  // moves with explanations. It holds still entirely
   // while you read back through what it has already played, and manual stepping
   // applies to recaps too.
   const { advanceWatch } = session;
@@ -174,11 +165,7 @@ export function CourseSession({
     if (!watching || looking || watchPaused) return;
     if (manualWatch) return; // your move to make: step it yourself
     const moveMs = watchMoveSeconds * 1000;
-    const pause = inRecap
-      ? WATCH_PAUSE_RECAP
-      : watched?.comment
-        ? moveMs * WATCH_NOTE_RATIO
-        : moveMs;
+    const pause = inRecap ? WATCH_PAUSE_RECAP : moveMs;
     const timer = setTimeout(advanceWatch, pause);
     return () => clearTimeout(timer);
     // watchStep is the move currently on the board: a new one restarts the wait.
@@ -186,7 +173,6 @@ export function CourseSession({
     watching,
     looking,
     watchStep,
-    watched?.comment,
     inRecap,
     manualWatch,
     watchPaused,
