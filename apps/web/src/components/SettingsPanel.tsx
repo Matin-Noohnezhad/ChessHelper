@@ -2,7 +2,8 @@ import { Piece, PIECE_SETS } from './Piece.js';
 import type { PieceSet } from './Piece.js';
 import { ANNOTATION_THICKNESS_OPTIONS } from './Board.js';
 import type { AnnotationThickness } from './Board.js';
-import { playBoardSound } from '../sound.js';
+import { DEFAULT_SOUND_STYLE, SOUND_STYLES, playBoardSound } from '../sound.js';
+import type { SoundStyle } from '../sound.js';
 import type { CourseLearningSettings, BoardTheme } from '../hooks/useSettings.js';
 import {
   BOARD_THEMES,
@@ -23,6 +24,8 @@ interface SettingsPanelProps {
   onAnnotationThicknessChange: (value: AnnotationThickness) => void;
   soundVolume: number;
   onSoundVolumeChange: (value: number) => void;
+  soundStyle?: SoundStyle;
+  onSoundStyleChange?: (value: SoundStyle) => void;
   watchAutoplay: boolean;
   onWatchAutoplayChange: (value: boolean) => void;
   watchMoveSeconds: number;
@@ -40,6 +43,8 @@ export function SettingsPanel({
   onAnnotationThicknessChange,
   soundVolume,
   onSoundVolumeChange,
+  soundStyle = DEFAULT_SOUND_STYLE,
+  onSoundStyleChange,
   watchAutoplay,
   onWatchAutoplayChange,
   watchMoveSeconds,
@@ -106,6 +111,13 @@ export function SettingsPanel({
 
         <div className="settings-row">
           <span className="settings-row__label">Board sounds</span>
+          <label htmlFor="board-sound-style">Sound style</label>
+          <select id="board-sound-style" value={soundStyle}
+            onChange={(event) => onSoundStyleChange?.(event.target.value as SoundStyle)}>
+            {SOUND_STYLES.map((style) => <option key={style.key} value={style.key}>{style.label}</option>)}
+          </select>
+          <span className="settings-row__hint">{SOUND_STYLES.find((style) => style.key === soundStyle)?.description}
+            {' '}Inspired presets are original sounds, not official recordings.</span>
           <div className="settings-slider">
             <button
               type="button"
@@ -129,9 +141,9 @@ export function SettingsPanel({
           </div>
           <div className="sound-preview" role="group" aria-label="Preview board sounds">
             <span>Preview</span>
-            {(['move', 'capture', 'castle', 'check'] as const).map((kind) => (
+            {(['move', 'capture', 'castle', 'check', 'promotion', 'mate'] as const).map((kind) => (
               <button key={kind} type="button" disabled={soundVolume === 0}
-                onClick={() => playBoardSound(kind, soundVolume)}>{kind}</button>
+                onClick={() => playBoardSound(kind, soundVolume, soundStyle)}>{kind}</button>
             ))}
           </div>
         </div>

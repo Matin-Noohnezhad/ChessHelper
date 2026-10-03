@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
 import { reverseCapture, smartCandidates, SmartMoveEngine } from '../smartMoves.js';
 import { Piece } from './Piece.js';
-import { useBoardSoundVolume } from './BoardSoundContext.js';
+import { useBoardSoundSettings } from './BoardSoundContext.js';
 import { playBoardSound } from '../sound.js';
 import type { BoardSound } from '../sound.js';
 import type { Orientation } from '../hooks/useChessGame.js';
@@ -193,7 +193,7 @@ export function Board({
   moveEntryMode = 'select',
 }: BoardProps) {
   const annotationScale = ANNOTATION_SCALE[annotationThickness];
-  const soundVolume = useBoardSoundVolume();
+  const { volume: soundVolume, style: soundStyle } = useBoardSoundSettings();
   const boardRef = useRef<HTMLDivElement>(null);
   const smartEngine = useRef<SmartMoveEngine | null>(null);
   const smartRequest = useRef<AbortController | null>(null);
@@ -331,8 +331,8 @@ export function Board({
       : castle ? 'castle'
       : capture ? 'capture'
       : 'move';
-    playBoardSound(kind, soundVolume);
-  }, [fen, contents, lastMove, game, names, soundVolume]);
+    playBoardSound(kind, soundVolume, soundStyle);
+  }, [fen, contents, lastMove, game, names, soundVolume, soundStyle]);
 
   const targets = useMemo(() => {
     if (!selected || !interactive) return new Map<string, boolean>();

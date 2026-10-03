@@ -208,6 +208,8 @@ export default function App() {
           onAnnotationThicknessChange={settings.setAnnotationThickness}
           soundVolume={settings.soundVolume}
           onSoundVolumeChange={settings.setSoundVolume}
+          soundStyle={settings.soundStyle}
+          onSoundStyleChange={settings.setSoundStyle}
           watchAutoplay={settings.watchAutoplay}
           onWatchAutoplayChange={settings.setWatchAutoplay}
           watchMoveSeconds={settings.watchMoveSeconds}
@@ -219,7 +221,7 @@ export default function App() {
       )}
 
       <PieceSetContext.Provider value={settings.pieceSet}>
-      <BoardSoundProvider volume={settings.soundVolume}>
+      <BoardSoundProvider volume={settings.soundVolume} style={settings.soundStyle}>
       {mode === 'train' ? (
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : mode === 'courses' ? (

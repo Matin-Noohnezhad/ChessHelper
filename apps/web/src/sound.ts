@@ -1,7 +1,24 @@
 export type BoardSound = 'move' | 'capture' | 'castle' | 'promotion' | 'check' | 'mate';
 
+export const SOUND_STYLES = [
+  { key: 'wooden', label: 'Wooden (original)', description: 'Warm wooden taps with soft chimes.' },
+  { key: 'chessbase', label: 'ChessBase inspired', description: 'Dry, crisp clicks with a short board rattle.' },
+  { key: 'chesscom', label: 'Chess.com inspired', description: 'Deep, rounded knocks with a punchy capture.' },
+  { key: 'lichess', label: 'Lichess inspired', description: 'Light, bright ticks with a snappy capture.' },
+] as const;
+export type SoundStyle = typeof SOUND_STYLES[number]['key'];
+export const DEFAULT_SOUND_STYLE: SoundStyle = 'wooden';
+
+/** Original synthesis profiles, not recordings from the named applications. */
+const PROFILES = {
+  wooden: { pitch: 1, decay: 1, contact: 0.32, body: 1, filter: 0.3, harmonic: 2.71, rattle: 0, chime: 1 },
+  chessbase: { pitch: 1.7, decay: 1.8, contact: 0.7, body: 0.5, filter: 0.12, harmonic: 3.4, rattle: 0.3, chime: 1.25 },
+  chesscom: { pitch: 0.58, decay: 0.8, contact: 0.2, body: 1.3, filter: 0.55, harmonic: 2.2, rattle: 0.12, chime: 0.8 },
+  lichess: { pitch: 2.3, decay: 2.3, contact: 0.42, body: 0.7, filter: 0.2, harmonic: 1.8, rattle: 0, chime: 1.5 },
+} satisfies Record<SoundStyle, object>;
+
 let context: AudioContext | null = null;
-const buffers = new Map<BoardSound, AudioBuffer>();
+const buffers = new Map<string, AudioBuffer>();
 const playing = new Set<AudioBufferSourceNode>();
 let revision = 0;
 
@@ -38,7 +55,8 @@ export function stopBoardSounds(): void {
  * and a filtered contact transient give a piece-on-board sound without a pitched
  * electronic sweep. No downloads, codecs, or network delay during a move.
  */
-export function synthesizeBoardSound(kind: BoardSound, sampleRate: number): Float32Array {
+export function synthesizeBoardSound(kind: BoardSound, sampleRate: number, style: SoundStyle = DEFAULT_SOUND_STYLE): Float32Array {
+  const profile = PROFILES[style];
   const samples = new Float32Array(Math.ceil(sampleRate * 0.48));
   let seed = 173;
   const noise = () => {
@@ -46,21 +64,24 @@ export function synthesizeBoardSound(kind: BoardSound, sampleRate: number): Floa
     return (seed >>> 0) / 2147483648 - 1;
   };
   const tap = (offset: number, weight: number, pitch: number) => {
+    pitch *= profile.pitch;
     const start = Math.round(offset * sampleRate);
     let low = 0;
     for (let i = 0; i < sampleRate * 0.16 && start + i < samples.length; i++) {
       const t = i / sampleRate;
       const attack = Math.min(1, t / 0.0008);
       const random = noise();
-      low += 0.3 * (random - low);
-      const contact = (random - low) * Math.exp(-t * 270) * 0.32;
-      const body = Math.sin(2 * Math.PI * pitch * t) * Math.exp(-t * 65) * 0.4
-        + Math.sin(2 * Math.PI * pitch * 2.71 * t) * Math.exp(-t * 100) * 0.2
-        + Math.sin(2 * Math.PI * pitch * 4.13 * t) * Math.exp(-t * 150) * 0.09;
+      low += profile.filter * (random - low);
+      const contact = (random - low) * Math.exp(-t * 270 * profile.decay) * profile.contact;
+      const body = profile.body * (
+        Math.sin(2 * Math.PI * pitch * t) * Math.exp(-t * 65 * profile.decay) * 0.4
+        + Math.sin(2 * Math.PI * pitch * profile.harmonic * t) * Math.exp(-t * 100 * profile.decay) * 0.2
+        + Math.sin(2 * Math.PI * pitch * 4.13 * t) * Math.exp(-t * 150 * profile.decay) * 0.09);
       samples[start + i]! += (body + contact) * weight * attack;
     }
   };
   const chime = (offset: number, pitch: number, weight: number) => {
+    pitch *= profile.chime;
     const start = Math.round(offset * sampleRate);
     for (let i = 0; i < sampleRate * 0.25 && start + i < samples.length; i++) {
       const t = i / sampleRate;
@@ -78,6 +99,7 @@ export function synthesizeBoardSound(kind: BoardSound, sampleRate: number): Floa
   } else {
     tap(0, 0.85, 460);
   }
+  if (profile.rattle) tap(0.018, profile.rattle, 710);
   if (kind === 'check') chime(0.045, 880, 0.13);
   if (kind === 'promotion') {
     chime(0.055, 660, 0.11);
@@ -90,7 +112,7 @@ export function synthesizeBoardSound(kind: BoardSound, sampleRate: number): Floa
   return samples;
 }
 
-export function playBoardSound(kind: BoardSound, volume: number): void {
+export function playBoardSound(kind: BoardSound, volume: number, style: SoundStyle = DEFAULT_SOUND_STYLE): void {
   if (!Number.isFinite(volume) || volume <= 0) return;
   try {
     const audio = getAudio();
@@ -101,12 +123,13 @@ export function playBoardSound(kind: BoardSound, volume: number): void {
       // A blocked resume may resolve much later. Drop it instead of making a
       // burst of stale clicks when the user eventually interacts with the page.
       if (audio.state !== 'running' || revision !== requestedRevision || Date.now() - requestedAt > 250) return;
-      let buffer = buffers.get(kind);
+      const key = `${style}:${kind}`;
+      let buffer = buffers.get(key);
       if (!buffer) {
-        const data = synthesizeBoardSound(kind, audio.sampleRate);
+        const data = synthesizeBoardSound(kind, audio.sampleRate, style);
         buffer = audio.createBuffer(1, data.length, audio.sampleRate);
         buffer.getChannelData(0).set(data);
-        buffers.set(kind, buffer);
+        buffers.set(key, buffer);
       }
       const source = audio.createBufferSource();
       const gain = audio.createGain();

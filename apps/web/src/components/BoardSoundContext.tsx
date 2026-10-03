@@ -1,10 +1,13 @@
 import { createContext, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { stopBoardSounds, unlockBoardAudio } from '../sound.js';
+import { DEFAULT_SOUND_STYLE, stopBoardSounds, unlockBoardAudio } from '../sound.js';
+import type { SoundStyle } from '../sound.js';
 
-export const BoardSoundContext = createContext(0.55);
+export const BoardSoundContext = createContext({ volume: 0.55, style: DEFAULT_SOUND_STYLE });
 
-export function BoardSoundProvider({ volume, children }: { volume: number; children: ReactNode }) {
+export function BoardSoundProvider({ volume, style = DEFAULT_SOUND_STYLE, children }: {
+  volume: number; style?: SoundStyle; children: ReactNode;
+}) {
   useEffect(() => {
     stopBoardSounds();
     if (volume <= 0) return;
@@ -16,10 +19,10 @@ export function BoardSoundProvider({ volume, children }: { volume: number; child
       window.removeEventListener('keydown', unlock, { capture: true });
       stopBoardSounds();
     };
-  }, [volume]);
-  return <BoardSoundContext.Provider value={volume}>{children}</BoardSoundContext.Provider>;
+  }, [volume, style]);
+  return <BoardSoundContext.Provider value={{ volume, style }}>{children}</BoardSoundContext.Provider>;
 }
 
-export function useBoardSoundVolume(): number {
+export function useBoardSoundSettings(): { volume: number; style: SoundStyle } {
   return useContext(BoardSoundContext);
 }

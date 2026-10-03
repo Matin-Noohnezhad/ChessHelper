@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 import { PIECE_SETS } from '../components/Piece.js';
 import type { PieceSet } from '../components/Piece.js';
 import type { AnnotationThickness } from '../components/Board.js';
+import { DEFAULT_SOUND_STYLE, SOUND_STYLES } from '../sound.js';
+import type { SoundStyle } from '../sound.js';
 
 import { DEFAULT_CHUNK, DEFAULT_FULL_PASSES } from '@coh/course';
 
@@ -53,6 +55,7 @@ export interface AppSettings extends CourseLearningSettings {
   annotationThickness: AnnotationThickness;
   /** Board audio level, 0 = muted. */
   soundVolume: number;
+  soundStyle: SoundStyle;
   /** Auto-advance the course line demonstration; false = step it yourself. */
   watchAutoplay: boolean;
   /** Seconds a plain demonstrated move holds; a move with a note holds longer. */
@@ -66,6 +69,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   moveEntryMode: 'smart',
   annotationThickness: 'medium',
   soundVolume: 0.55,
+  soundStyle: DEFAULT_SOUND_STYLE,
   watchAutoplay: true,
   watchMoveSeconds: WATCH_SECONDS_DEFAULT,
 };
@@ -85,6 +89,8 @@ function loadSettings(): AppSettings {
         ? stored.boardTheme : DEFAULT_SETTINGS.boardTheme,
       soundVolume: Number.isFinite(stored.soundVolume)
         ? Math.min(1, Math.max(0, stored.soundVolume)) : DEFAULT_SETTINGS.soundVolume,
+      soundStyle: SOUND_STYLES.some((style) => style.key === stored.soundStyle)
+        ? stored.soundStyle : DEFAULT_SOUND_STYLE,
       watchMoveSeconds: clampSeconds(stored.watchMoveSeconds),
       watchAutoplay: typeof stored.watchAutoplay === 'boolean' ? stored.watchAutoplay : true,
       courseChunk: clampInteger(stored.courseChunk, 0, 30, DEFAULT_CHUNK),
@@ -110,6 +116,7 @@ export interface SettingsController extends AppSettings {
   setBoardTheme: (value: BoardTheme) => void;
   setAnnotationThickness: (value: AnnotationThickness) => void;
   setSoundVolume: (value: number) => void;
+  setSoundStyle: (value: SoundStyle) => void;
   setWatchAutoplay: (value: boolean) => void;
   setWatchMoveSeconds: (value: number) => void;
 }
@@ -140,6 +147,7 @@ export function useSettings(): SettingsController {
     (value: number) => update({ soundVolume: Math.min(1, Math.max(0, value)) }),
     [update],
   );
+  const setSoundStyle = useCallback((value: SoundStyle) => update({ soundStyle: value }), [update]);
   const setWatchAutoplay = useCallback(
     (value: boolean) => update({ watchAutoplay: value }),
     [update],
@@ -154,5 +162,5 @@ export function useSettings(): SettingsController {
     courseFullPasses: clampInteger(value.courseFullPasses, 1, 5, DEFAULT_FULL_PASSES),
   }), [update]);
 
-  return { ...settings, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setWatchAutoplay, setWatchMoveSeconds };
 }

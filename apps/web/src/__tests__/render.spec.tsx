@@ -507,6 +507,13 @@ describe('settings', () => {
     expect(html).toContain('Course line demonstration');
     expect(html).toContain('Board sounds');
     expect(html).toContain('Board sound volume');
+    expect(html).toContain('Sound style');
+    expect(html).toContain('Wooden (original)');
+    expect(html).toContain('ChessBase inspired');
+    expect(html).toContain('Chess.com inspired');
+    expect(html).toContain('Lichess inspired');
+    expect(html).toContain('>promotion</button>');
+    expect(html).toContain('>mate</button>');
     expect(html).toContain('Step through each move myself');
     expect(html).toContain('type="range"');
     expect(html).toContain('1.1s / move');
