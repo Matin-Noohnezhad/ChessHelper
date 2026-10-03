@@ -7,6 +7,30 @@ describe('fast move entry legality', () => {
     expect(smartCandidates(new Chess(), 'e2').map((m) => m.uci).sort()).toEqual(['e2e3', 'e2e4']);
   });
 
+  it('offers all legal movers to an empty destination', () => {
+    expect(smartCandidates(new Chess(), 'e4').map((m) => m.uci)).toEqual(['e2e4']);
+    const game = new Chess('4k3/8/8/8/8/8/8/1N2KN2 w - - 0 1');
+    expect(smartCandidates(game, 'd2').map((m) => m.uci).sort()).toEqual(['b1d2', 'e1d2', 'f1d2']);
+    expect(smartCandidates(new Chess(), 'e5')).toEqual([]);
+  });
+
+  it('excludes pinned movers to an empty square and supports Black', () => {
+    const pinned = new Chess('k3r3/8/8/8/4N3/8/8/4K3 w - - 0 1');
+    expect(smartCandidates(pinned, 'f6')).toEqual([]);
+    const black = new Chess();
+    black.move('e4');
+    expect(smartCandidates(black, 'e5').map((m) => m.uci)).toEqual(['e7e5']);
+  });
+
+  it('supports en passant, castling and promotions by destination', () => {
+    const ep = new Chess('4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1');
+    expect(smartCandidates(ep, 'd6').map((m) => m.uci)).toEqual(['e5d6']);
+    const castle = new Chess('4k3/8/8/8/8/8/8/4K2R w K - 0 1');
+    expect(smartCandidates(castle, 'g1').map((m) => m.uci)).toContain('e1g1');
+    const promotion = new Chess('4k3/P7/8/8/8/8/8/4K3 w - - 0 1');
+    expect(smartCandidates(promotion, 'a8').map((m) => m.uci).sort()).toEqual(['a7a8b', 'a7a8n', 'a7a8q', 'a7a8r']);
+  });
+
   it('prioritizes captures and supports clicking the victim', () => {
     const game = new Chess('4k3/8/5b2/2p5/4N3/8/8/4K3 w - - 0 1');
     expect(smartCandidates(game, 'e4').map((m) => m.uci).sort()).toEqual(['e4c5', 'e4f6']);
@@ -59,7 +83,7 @@ describe('smart move engine', () => {
     const worker = FakeWorker.instances[0]!;
     worker.emit('uciok'); worker.emit('readyok');
     expect(worker.messages).toContain(`position fen ${game.fen()}`);
-    expect(worker.messages.find((m) => m.startsWith('go '))).toMatch(/go movetime 250 searchmoves e2e[34] e2e[34]$/);
+    expect(worker.messages.find((m) => m.startsWith('go '))).toMatch(/go depth 4 movetime 80 searchmoves e2e[34] e2e[34]$/);
     worker.emit('bestmove e2e4');
     expect((await request).uci).toBe('e2e4');
     const next = engine.choose(game.fen(), smartCandidates(game, 'd2'), new AbortController().signal);
@@ -91,13 +115,66 @@ describe('smart move engine', () => {
     await expect(result).rejects.toThrow('no legal choice');
   });
 
-  it('times out an unresponsive worker and terminates it', async () => {
+  it('uses the latest eligible engine choice by 100 ms and ignores late results', async () => {
     vi.useFakeTimers(); vi.stubGlobal('Worker', FakeWorker);
     const game = new Chess();
-    const result = new SmartMoveEngine().choose(game.fen(), smartCandidates(game, 'e2'), new AbortController().signal);
-    const rejected = expect(result).rejects.toThrow('timed out');
-    await vi.advanceTimersByTimeAsync(12000);
+    const engine = new SmartMoveEngine();
+    const result = engine.choose(game.fen(), smartCandidates(game, 'e2'), new AbortController().signal);
+    const worker = FakeWorker.instances[0]!;
+    worker.emit('uciok'); worker.emit('readyok');
+    worker.emit('info depth 2 score cp 20 pv e2e4 e7e5');
+    worker.emit('info depth 3 score cp 25 pv d2d4');
+    await vi.advanceTimersByTimeAsync(100);
+    expect((await result).uci).toBe('e2e4');
+    expect(worker.terminated).toBe(true);
+    const next = engine.choose(game.fen(), smartCandidates(game, 'd2'), new AbortController().signal);
+    worker.emit('bestmove d2d4');
+    FakeWorker.instances[1]!.emit('bestmove d2d3');
+    expect((await next).uci).toBe('d2d3');
+    engine.dispose();
+  });
+
+  it('preloads without searching and plays a single candidate immediately', async () => {
+    vi.stubGlobal('Worker', FakeWorker);
+    const engine = new SmartMoveEngine();
+    engine.warmup();
+    const worker = FakeWorker.instances[0]!;
+    worker.emit('uciok'); worker.emit('readyok');
+    expect(worker.messages.some((m) => m.startsWith('go '))).toBe(false);
+    const game = new Chess();
+    expect((await engine.choose(game.fen(), smartCandidates(game, 'e4'), new AbortController().signal)).uci).toBe('e2e4');
+    expect(worker.messages.some((m) => m.startsWith('go '))).toBe(false);
+    engine.dispose();
+  });
+
+  it('falls back within 100 ms while loading, then reuses the warmed engine', async () => {
+    vi.useFakeTimers(); vi.stubGlobal('Worker', FakeWorker);
+    const engine = new SmartMoveEngine();
+    const game = new Chess('4k3/P7/8/8/8/8/8/4K3 w - - 0 1');
+    const result = engine.choose(game.fen(), smartCandidates(game, 'a8'), new AbortController().signal);
+    await vi.advanceTimersByTimeAsync(100);
+    expect((await result).uci).toBe('a7a8q');
+    const worker = FakeWorker.instances[0]!;
+    expect(worker.terminated).toBe(false);
+    worker.emit('uciok'); worker.emit('readyok');
+    expect(worker.messages.some((m) => m.startsWith('go '))).toBe(false);
+    const next = engine.choose(game.fen(), smartCandidates(game, 'a8'), new AbortController().signal);
+    expect(FakeWorker.instances).toHaveLength(1);
+    worker.emit('bestmove a7a8n');
+    expect((await next).uci).toBe('a7a8n');
+    engine.dispose();
+  });
+
+  it('cancels an old search even when the next click has only one candidate', async () => {
+    vi.stubGlobal('Worker', FakeWorker);
+    const engine = new SmartMoveEngine();
+    const game = new Chess();
+    const result = engine.choose(game.fen(), smartCandidates(game, 'e2'), new AbortController().signal);
+    const rejected = expect(result).rejects.toMatchObject({ name: 'AbortError' });
+    const next = engine.choose(game.fen(), smartCandidates(game, 'd4'), new AbortController().signal);
     await rejected;
+    expect((await next).uci).toBe('d2d4');
     expect(FakeWorker.instances[0]!.terminated).toBe(true);
+    engine.dispose();
   });
 });

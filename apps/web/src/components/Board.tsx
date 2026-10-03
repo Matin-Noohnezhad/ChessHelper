@@ -205,7 +205,16 @@ export function Board({
     setSmartBusy(false);
     setSmartError(null);
   }, []);
-  useEffect(() => () => smartEngine.current?.dispose(), []);
+  useEffect(() => {
+    if (!interactive || moveEntryMode !== 'smart') return;
+    const engine = new SmartMoveEngine();
+    smartEngine.current = engine;
+    engine.warmup();
+    return () => {
+      engine.dispose();
+      if (smartEngine.current === engine) smartEngine.current = null;
+    };
+  }, [interactive, moveEntryMode]);
   const [selected, setSelected] = useState<string | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
@@ -331,7 +340,7 @@ export function Board({
     if (contents.get(selected)?.color === game.turn()) {
       for (const move of game.movesFrom(selected)) map.set(move.to, move.isCapture);
     } else {
-      for (const move of smartCandidates(game, selected)) map.set(move.from, true);
+      for (const move of smartCandidates(game, selected)) map.set(move.from, move.isCapture);
     }
     return map;
   }, [game, fen, selected, interactive, contents]);
@@ -382,6 +391,12 @@ export function Board({
     cancelSmartMove();
     const candidates = smartCandidates(game, square);
     if (!candidates.length) return;
+    if (candidates.length === 1) {
+      const move = candidates[0]!;
+      setSelected(null);
+      onMove(move.from, move.to, move.promotion);
+      return;
+    }
     const controller = new AbortController();
     smartRequest.current = controller;
     setSmartBusy(true);
@@ -446,7 +461,7 @@ export function Board({
         const reverse = reverseCapture(game, selected, square);
         if (reverse && attemptMove(reverse.from, reverse.to)) { setSelected(null); return; }
       }
-      if (!piece) {
+      if (!piece && moveEntryMode !== 'smart') {
         setSelected(null);
         return;
       }
@@ -456,7 +471,7 @@ export function Board({
         originX: event.clientX, originY: event.clientY, active: false });
       event.currentTarget.setPointerCapture?.(event.pointerId);
     },
-    [interactive, pending, contents, game, selected, attemptMove, arrows, circles, cancelSmartMove],
+    [interactive, pending, contents, game, selected, attemptMove, arrows, circles, cancelSmartMove, moveEntryMode],
   );
 
   const handlePointerMove = useCallback(
@@ -485,7 +500,7 @@ export function Board({
         if (moveEntryMode === 'smart') void playSmartMove(from);
         return;
       }
-      if (!target || target === from) return;
+      if (!target || target === from || !game.pieceAt(from)) return;
       const reverse = reverseCapture(game, from, target);
       const source = reverse?.from ?? from;
       const destination = reverse?.to ?? target;
@@ -680,7 +695,7 @@ export function Board({
       <details className="board-hint">
         <summary>Board controls</summary>
         <p>{moveEntryMode === 'smart'
-          ? 'Click a piece to play its best capture, or its best move if no capture is available. Click an opponent’s piece to capture it. Drag to choose a specific move.'
+          ? 'Click a piece to play its best capture, or its best move if no capture is available. Click an empty square to move the best eligible piece there. Click an opponent’s piece to capture it. Drag to choose a specific move.'
           : 'Click a piece and its destination, or drag to move.'}
           {' '}Drag an opponent’s piece onto your piece to capture it in reverse. Right-click drag to draw an arrow;
           right-click a square to mark it. Hold <kbd>Shift</kbd> for red, <kbd>Ctrl</kbd> for blue,

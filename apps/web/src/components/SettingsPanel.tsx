@@ -98,7 +98,8 @@ export function SettingsPanel({
               aria-pressed={moveEntryMode === 'select'} onClick={() => onMoveEntryModeChange('select')}>Select destinations</button>
           </div>
           <span className="settings-row__hint">Smart click plays a capture when available, otherwise a legal move.
-            Stockfish chooses among multiple options. Click an opponent’s piece to capture it.
+            Click an empty square to move a piece there, or an opponent’s piece to capture it.
+            A quick engine search chooses among multiple options.
             Drag to choose a specific move. Applies to Explore; exercises keep manual selection.
             Reverse capture dragging works in either mode.</span>
         </div>
