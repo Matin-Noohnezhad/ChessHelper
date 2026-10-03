@@ -2221,6 +2221,20 @@ button.primary:hover:not(:disabled) {
 
 /* -------------------------------------------- session with the rail --- */
 
+.course-analysis {
+  grid-template-columns: calc(var(--board-size) + 34px) minmax(300px, 1fr);
+}
+.course-analysis__moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 1020px) {
+  .course-analysis { grid-template-columns: 1fr; }
+}
+
 .course-session--rail {
   --board-size: min(68vh, 560px, calc(100vw - 650px));
   grid-template-columns: minmax(200px, 240px) var(--board-size) minmax(300px, 1fr);

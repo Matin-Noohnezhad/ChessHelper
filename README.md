@@ -95,6 +95,11 @@ schedule.
   its explanation without a quiz or progress changes. Long notes start with a
   short excerpt and can be expanded; PGN arrows and square highlights follow
   the selected move. Illustrative and rejected sidelines are included too.
+- **Analyze position** pauses a MoveTrainer lesson and opens Stockfish on the
+  displayed position, including earlier moves you have browsed back to. Try
+  moves for either side, step back to compare alternatives, then choose
+  **Back to lesson** (Esc) to resume at the same point. Analysis moves do not
+  change your answers or course progress.
 - **Keyboard controls:** Space advances a demonstration, the next part, or the
   next line. Left/Right browse moves; Home/End jump to the start/live position.
   H gives a hint, R replays a part (or restarts a completed session), P pauses

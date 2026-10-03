@@ -6,6 +6,7 @@ import type { PieceSymbol } from '@coh/chess-core';
 import { Board } from './Board.js';
 import type { AnnotationThickness, BoardArrow } from './Board.js';
 import { CourseOutline } from './CourseOutline.js';
+import { CourseAnalysis } from './CourseAnalysis.js';
 import { useCourseSession } from '../hooks/useCourseSession.js';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
 import type { CourseLearningSettings } from '../hooks/useSettings.js';
@@ -128,6 +129,8 @@ export function CourseSession({
    * board of their own, with the live position untouched behind them.
    */
   const [lookback, setLookback] = useState<number | null>(null);
+  // The trainer stays mounted and untouched while a separate board is explored.
+  const [analyzing, setAnalyzing] = useState(false);
   const livePly = trainer.ply;
   const trail = trainer.played;
   const looking = lookback !== null;
@@ -174,7 +177,7 @@ export function CourseSession({
   const [watchPaused, setWatchPaused] = useState(false);
   const manualWatch = !watchAutoplay;
   useEffect(() => {
-    if (!watching || looking || watchPaused) return;
+    if (!watching || looking || watchPaused || analyzing) return;
     if (manualWatch) return; // your move to make: step it yourself
     const moveMs = watchMoveSeconds * 1000;
     const pause = inRecap ? WATCH_PAUSE_RECAP : moveMs;
@@ -188,6 +191,7 @@ export function CourseSession({
     inRecap,
     manualWatch,
     watchPaused,
+    analyzing,
     watchMoveSeconds,
     advanceWatch,
   ]);
@@ -196,6 +200,7 @@ export function CourseSession({
   // the line is being demonstrated, → and Space step the demonstration instead,
   // which is the whole of how Manual pace is driven.
   useEffect(() => {
+    if (analyzing) return;
     const onKey = (event: KeyboardEvent) => {
       if (courseShortcutBlocked(event)) return;
       const key = event.key.toLowerCase();
@@ -218,7 +223,7 @@ export function CourseSession({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit, continueAfterSession]);
+  }, [analyzing, lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit, continueAfterSession]);
 
   const handleMove = (from: string, to: string, promotion?: PieceSymbol) => {
     session.submit({ from, to, promotion });
@@ -269,6 +274,18 @@ export function CourseSession({
   const finished = trainer.status === 'complete' && !trainer.current;
   const betweenTasks = trainer.status === 'task-complete';
   const showRail = railLines > 1;
+
+  if (analyzing) {
+    return (
+      <CourseAnalysis
+        initialFen={(lookbackGame ?? trainer.game).fen()}
+        initialLastMove={looking ? lookbackLast : trainer.lastMove}
+        orientation={orientation}
+        annotationThickness={annotationThickness}
+        onReturn={() => setAnalyzing(false)}
+      />
+    );
+  }
 
   return (
     <div className={`trainer course-session${showRail ? ' course-session--rail' : ''}`}>
@@ -333,6 +350,10 @@ export function CourseSession({
             </span>
           )}
           <div className="nav">
+            <button type="button" onClick={() => setAnalyzing(true)}
+              title="Pause the lesson and try moves with Stockfish">
+              Analyze position
+            </button>
             <button
               type="button"
               onClick={() => stepTo((lookback ?? livePly) - 1)}
