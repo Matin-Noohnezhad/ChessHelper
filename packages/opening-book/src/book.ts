@@ -1,15 +1,16 @@
 /**
  * Lookup over the opening tree.
  *
- * The book has two layers. The ECO tables give near-complete *coverage* — 3,810
- * named lines, so almost any legal opening sequence has a name. The hand-written
+ * The book has two layers. The ECO tables give broad coverage of named
+ * variations. The hand-written
  * entries give *understanding* — plans, structures, breaks. They are merged into
  * one tree here: curated entries win wherever both name the same position, and
  * theory is inherited downwards, so a deep ECO line still teaches the ideas of
  * the opening it belongs to.
  *
  * Openings are addressed by their SAN move sequence, so identification is a
- * longest-prefix match.
+ * longest-prefix match. Review uses the separate position-based theory index
+ * for transpositions and deeper continuations from repeated master games.
  */
 
 import { CURATED_OPENINGS } from './openings.js';

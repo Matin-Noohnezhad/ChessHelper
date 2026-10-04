@@ -15,6 +15,7 @@
     "dev": "npm run dev -w @coh/web",
     "build": "npm run build --workspaces --if-present",
     "ingest:eco": "vite-node packages/opening-book/scripts/ingest-eco.ts",
+    "ingest:theory": "npm run ingest:eco && vite-node packages/opening-book/scripts/ingest-theory.ts",
     "index:corpus": "vite-node packages/opening-book/scripts/index-corpus.ts --",
     "report:coverage": "vite-node packages/opening-book/scripts/corpus-coverage.ts --",
     "digest:node": "vite-node packages/opening-book/scripts/digest-node.ts --",

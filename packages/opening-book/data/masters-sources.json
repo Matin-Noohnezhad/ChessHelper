@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/rozim/ChessData/ed88abd2716da58ee55d42b662455c1c8ebe0776/mega2600_part_01.pgn",
+      "sha256": "1f30d3ae839c69e1154e57237845adb865011648188e5923eebe844f92ddbac6"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/rozim/ChessData/ed88abd2716da58ee55d42b662455c1c8ebe0776/mega2600_part_02.pgn",
+      "sha256": "24e99e0978aa4825fb01f11d603e13bd378e185e07033efc0dce5be85d00e21e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/rozim/ChessData/ed88abd2716da58ee55d42b662455c1c8ebe0776/mega2600_part_03.pgn",
+      "sha256": "36722b84423ce2a1df410bec339045b615bfcfaef8f72b5b4190a04b5e53e3c9"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/rozim/ChessData/ed88abd2716da58ee55d42b662455c1c8ebe0776/mega2600_part_04.pgn",
+      "sha256": "52480e5af7e52782fade3cb15016eb42ce01c532a65f7dff15bf2d888bfc8632"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/rozim/ChessData/ed88abd2716da58ee55d42b662455c1c8ebe0776/mega2600_part_05.pgn",
+      "sha256": "8bf55aadc978a4a7284f569c22c9ce49c979cc38b68bf8a501f08e8ab79c8a56"
+    }
+  ],
+  "minimumEloBothPlayers": 2400,
+  "minimumDistinctGames": 8,
+  "minimumDistinctPlayers": 4,
+  "maxPlies": 50,
+  "qualifyingGames": 138348,
+  "lines": 7221,
+  "linesAtLeast21FullMoves": 7
+}
