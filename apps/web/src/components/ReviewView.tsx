@@ -103,7 +103,7 @@ function MoveDetail({
   const alternative = move.best && move.best.uci !== move.uci ? move.best : null;
 
   return (
-    <section className="panel review-detail">
+    <section className={`panel review-detail q--${move.quality}`}>
       <div className="panel__head">
         <div className="panel__title">
           <h2>{numbered}</h2>
@@ -225,15 +225,20 @@ export function ReviewReport({
     setSelectedPly((ply) => Math.max(0, Math.min(review.moves.length, ply + delta)));
   };
 
+  const selectPly = (ply: number) => {
+    setShowBest(false);
+    setSelectedPly(ply);
+  };
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select, button, summary, [contenteditable="true"]')) {
         return;
       }
       if (event.key === 'ArrowLeft') step(-1);
       else if (event.key === 'ArrowRight') step(1);
-      else if (event.key === 'ArrowUp') setSelectedPly(0);
-      else if (event.key === 'ArrowDown') setSelectedPly(review.moves.length);
+      else if (event.key === 'ArrowUp') selectPly(0);
+      else if (event.key === 'ArrowDown') selectPly(review.moves.length);
       else if (event.key === 'f') setOrientation((o) => (o === 'white' ? 'black' : 'white'));
       else return;
       event.preventDefault();
@@ -246,7 +251,14 @@ export function ReviewReport({
   const showClocks = review.moves.some((entry) => entry.secondsSpent !== null);
 
   return (
-    <main className="app__body">
+    <main className="app__body review-report">
+      <header className="review-report__heading">
+        <div><span className="review-eyebrow">Learn from every move</span><h2>Game review</h2></div>
+        <div className="review-actions">
+          <button type="button" onClick={onReset}>Review another game</button>
+          {onReviewBoardGame && <button type="button" onClick={onReviewBoardGame}>Review the board again</button>}
+        </div>
+      </header>
       <div className="app__board">
         <div className="board-row">
           <EvalBar
@@ -272,14 +284,15 @@ export function ReviewReport({
               : 'Starting position'}
           </span>
           <div className="nav">
-            <button type="button" onClick={() => setSelectedPly(0)} disabled={selectedPly === 0}>
+            <button type="button" aria-label="Starting position" onClick={() => selectPly(0)} disabled={selectedPly === 0}>
               ⏮
             </button>
-            <button type="button" onClick={() => step(-1)} disabled={selectedPly === 0}>
+            <button type="button" aria-label="Previous move" onClick={() => step(-1)} disabled={selectedPly === 0}>
               ◀
             </button>
             <button
               type="button"
+              aria-label="Next move"
               onClick={() => step(1)}
               disabled={selectedPly === review.moves.length}
             >
@@ -287,7 +300,8 @@ export function ReviewReport({
             </button>
             <button
               type="button"
-              onClick={() => setSelectedPly(review.moves.length)}
+              aria-label="Final position"
+              onClick={() => selectPly(review.moves.length)}
               disabled={selectedPly === review.moves.length}
             >
               ⏭
@@ -298,6 +312,8 @@ export function ReviewReport({
           </button>
         </div>
 
+        <ReviewGraph review={review} selectedPly={selectedPly} onSelect={selectPly} />
+
         {move && (
           <MoveDetail
             move={move}
@@ -306,36 +322,18 @@ export function ReviewReport({
             onToggleBest={() => setShowBest((v) => !v)}
           />
         )}
+        {!move && <div className="panel review-detail review-detail--empty"><h3>Every move has a story</h3><p className="muted">Select a move or a point on the graph to explore it. Use ← and → to step through the game.</p></div>}
       </div>
 
       <aside className="app__side">
-        <div className="review-actions">
-          <button type="button" onClick={onReset}>
-            Review another game
-          </button>
-          {onReviewBoardGame && (
-            <button type="button" onClick={onReviewBoardGame}>
-              Review the board again
-            </button>
-          )}
-        </div>
-
         <ReviewSummary review={review} />
-        <ReviewGraph
-          review={review}
-          selectedPly={selectedPly}
-          onSelect={(ply) => {
-            setShowBest(false);
-            setSelectedPly(ply);
-          }}
-        />
 
         {moments.length > 0 && (
           <section className="panel review-moments">
             <div className="panel__head">
               <div className="panel__title">
                 <h2>Turning points</h2>
-                <span className="muted">worst first</span>
+                <span className="review-chip">{moments.length} to revisit</span>
               </div>
             </div>
             <ul>
@@ -362,7 +360,7 @@ export function ReviewReport({
         )}
 
         <section className="moves">
-          <h3>Moves</h3>
+          <div className="review-section-heading"><h3>Moves</h3><span className="muted">{selectedPly} / {review.moves.length} plies</span></div>
           <ReviewMoveList
             moves={review.moves}
             selectedPly={selectedPly}
@@ -397,7 +395,7 @@ export function ReviewView({
 }: ReviewViewProps) {
   if (!controller.review) {
     return (
-      <main className="app__body app__body--single">
+      <main className="app__body app__body--single review-entry">
         <ReviewSetup
           controller={controller}
           currentGamePgn={currentGamePgn}

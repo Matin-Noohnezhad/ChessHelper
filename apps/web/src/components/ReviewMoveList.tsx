@@ -1,4 +1,5 @@
-import { formatSeconds } from '@coh/review';
+import { useEffect, useRef } from 'react';
+import { formatSeconds, QUALITY_LABELS } from '@coh/review';
 import type { ReviewedMove } from '@coh/review';
 import { QualityBadge, qualityClass } from './QualityBadge.js';
 
@@ -27,6 +28,8 @@ function MoveButton({
       className={`review-move ${qualityClass(move.quality)}${selected ? ' is-current' : ''}`}
       onClick={() => onSelect(move.ply)}
       title={move.explanation}
+      aria-current={selected ? 'step' : undefined}
+      aria-label={`${move.moveNumber}${move.color === 'w' ? '.' : '…'} ${move.san}, ${QUALITY_LABELS[move.quality]}`}
     >
       <QualityBadge quality={move.quality} />
       <span className="review-move__san">{move.san}</span>
@@ -39,6 +42,15 @@ function MoveButton({
 
 /** The game as a scannable list: colour tells you where it went wrong at a glance. */
 export function ReviewMoveList({ moves, selectedPly, onSelect, showClocks }: ReviewMoveListProps) {
+  const listRef = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const list = listRef.current;
+    const selected = list?.querySelector<HTMLElement>('[aria-current="step"]');
+    if (!list || !selected) return;
+    const row = selected.getBoundingClientRect();
+    const box = list.getBoundingClientRect();
+    if (row.top < box.top || row.bottom > box.bottom) list.scrollTop += row.top - box.top - list.clientHeight / 2;
+  }, [selectedPly]);
   const rows: { number: number; white?: ReviewedMove; black?: ReviewedMove }[] = [];
   for (const move of moves) {
     const last = rows[rows.length - 1];
@@ -50,7 +62,7 @@ export function ReviewMoveList({ moves, selectedPly, onSelect, showClocks }: Rev
   }
 
   return (
-    <ol className="review-moves">
+    <ol className="review-moves" ref={listRef}>
       {rows.map((row) => (
         <li key={`${row.number}-${row.white?.ply ?? row.black?.ply}`}>
           <span className="review-moves__number">{row.number}.</span>

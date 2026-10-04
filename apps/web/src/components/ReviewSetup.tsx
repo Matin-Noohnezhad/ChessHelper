@@ -65,13 +65,21 @@ export function ReviewSetup({ controller, currentGamePgn, onReviewBoardGame }: R
   const boardMoves = currentGamePgn ? parseAnnotatedPgn(currentGamePgn).moves.length : 0;
 
   return (
-    <section className="panel review-setup">
-      <div className="panel__head">
-        <div className="panel__title">
+    <section className="review-setup">
+      <div className="review-setup__intro">
+        <span className="review-eyebrow">Your game, understood</span>
           <h2>Review a game</h2>
-          <span className="muted">the moves on the board, or any PGN</span>
-        </div>
+          <p>Find the turning points.<br />Build on what you know.</p>
+          <span className="muted">Replay your decisions, explore stronger moves, and see how far your opening preparation took you.</span>
+          <div className="review-setup__features">
+            <div><span aria-hidden="true">01</span><div><strong>Opening knowledge</strong><small>Recognize theory, including transpositions.</small></div></div>
+            <div><span aria-hidden="true">02</span><div><strong>The moments that matter</strong><small>Jump to mistakes and missed opportunities.</small></div></div>
+            <div><span aria-hidden="true">03</span><div><strong>A clearer next move</strong><small>Compare your play with engine suggestions.</small></div></div>
+          </div>
       </div>
+
+      <div className="panel review-setup__form">
+      <div className="review-section-heading"><h3>Bring your game</h3><span className="review-chip">PGN import</span></div>
 
       {currentGamePgn && (
         <>
@@ -113,7 +121,9 @@ export function ReviewSetup({ controller, currentGamePgn, onReviewBoardGame }: R
           readFile(event.dataTransfer.files[0]);
         }}
       >
+        <span className="review-drop__label">Paste PGN or drop a file here</span>
         <textarea
+          aria-label="Game PGN"
           value={text}
           onChange={(event) => load(event.target.value)}
           placeholder={'[Event "Rated blitz"]\n[White "you"]\n…\n\n1. e4 {[%clk 0:02:58]} c5 …'}
@@ -154,12 +164,13 @@ export function ReviewSetup({ controller, currentGamePgn, onReviewBoardGame }: R
       )}
 
       <div className="review-setup__row review-setup__go">
-        <div className="segmented">
+        <div className="segmented" role="group" aria-label="Analysis depth">
           {REVIEW_SPEEDS.map((option) => (
             <button
               key={option.key}
               type="button"
               className={controller.speed === option.key ? 'is-active' : ''}
+              aria-pressed={controller.speed === option.key}
               onClick={() => controller.setSpeed(option.key)}
               title={`depth ${option.depth} — ${option.note}`}
               disabled={running}
@@ -183,10 +194,11 @@ export function ReviewSetup({ controller, currentGamePgn, onReviewBoardGame }: R
           </button>
         )}
       </div>
+      <p className="review-setup__hint">{REVIEW_SPEEDS.find((option) => option.key === controller.speed)?.note}. Theory recognition is the same at every analysis depth.</p>
 
       {running && (
-        <div className="review-progress">
-          <div className="bar">
+        <div className="review-progress" role="status" aria-live="polite">
+          <div className="bar" role="progressbar" aria-label="Game analysis" aria-valuemin={0} aria-valuemax={controller.progress.total || 1} aria-valuenow={controller.progress.done}>
             <div
               className="bar__fill"
               style={{
@@ -196,13 +208,14 @@ export function ReviewSetup({ controller, currentGamePgn, onReviewBoardGame }: R
           </div>
           <p className="muted">
             {controller.progress.total
-              ? `Position ${controller.progress.done} of ${controller.progress.total} — the engine keeps the board it has already seen, so repetitions are free.`
+              ? `Analyzing position ${controller.progress.done} of ${controller.progress.total}…`
               : 'Starting the engine…'}
           </p>
         </div>
       )}
 
-      {controller.error && <p className="review-error">{controller.error}</p>}
+      {controller.error && <p className="review-error" role="alert">{controller.error}</p>}
+      </div>
     </section>
   );
 }

@@ -40,8 +40,8 @@ export function ReviewGraph({ review, selectedPly, onSelect }: ReviewGraphProps)
     };
   }, [review]);
 
-  // The legend sits under the span each phase really occupies, so the labels
-  // line up with the separators instead of being three evenly spaced words.
+  // Size the legend to the phases, with a readable minimum width in CSS for
+  // very short phases (for example, a game ending one move into an endgame).
   const spans = useMemo(() => {
     const total = review.moves.length || 1;
     const openingPlies = Math.min(review.bounds.middlegameStartPly - 1, total);
@@ -61,6 +61,7 @@ export function ReviewGraph({ review, selectedPly, onSelect }: ReviewGraphProps)
 
   return (
     <div className="review-graph">
+      <div className="review-section-heading"><h3>Game momentum</h3><span className="muted">White’s win expectancy</span></div>
       {/* Scaled uniformly, so the blunder dots stay round however wide the panel is. */}
       <svg
         viewBox={`0 0 100 ${HEIGHT}`}
@@ -121,6 +122,7 @@ export function ReviewGraph({ review, selectedPly, onSelect }: ReviewGraphProps)
           </span>
         ))}
       </div>
+      <input className="review-graph__seek" type="range" min={0} max={review.moves.length} value={selectedPly} onChange={(event) => onSelect(Number(event.target.value))} aria-label="Move on evaluation graph" aria-valuetext={`Ply ${selectedPly} of ${review.moves.length}`} />
     </div>
   );
 }

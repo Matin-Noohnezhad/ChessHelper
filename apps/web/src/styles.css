@@ -2427,3 +2427,100 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); 
 .course-reader select { width: 100%; margin-bottom: 12px; }
 .course-reader__note p { white-space: pre-wrap; overflow-wrap: anywhere; }
 .course-session kbd { margin-left: 5px; font-size: 0.75em; opacity: 0.7; }
+
+/* Review workspace */
+.review-entry { grid-template-columns: minmax(0, 1120px); padding-top: 2.5rem; }
+.review-setup { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 3rem; align-items: start; width: 100%; }
+.review-setup__intro { padding: 2rem 0; }
+.review-eyebrow { color: var(--accent); font-size: 0.7rem; font-weight: 650; letter-spacing: 0.14em; text-transform: uppercase; }
+.review-setup__intro h2 { margin: 0.7rem 0; font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.1; letter-spacing: -0.045em; }
+.review-setup__intro > p { font-size: 1.25rem; line-height: 1.55; color: #c9c2b5; margin: 1.2rem 0 0.8rem; }
+.review-setup__intro > .muted { display: block; max-width: 35ch; font-size: 0.88rem; line-height: 1.8; }
+.review-setup__features { margin-top: 2.4rem; display: grid; gap: 1.3rem; }
+.review-setup__features > div { display: flex; gap: 0.9rem; align-items: start; }
+.review-setup__features > div > span { font-size: 0.72rem; color: var(--accent); border: 1px solid var(--border); border-radius: 50%; padding: 0.4rem 0.5rem; }
+.review-setup__features strong, .review-setup__features small { display: block; }
+.review-setup__features strong { font-size: 0.88rem; font-weight: 550; }
+.review-setup__features small { color: var(--muted); margin-top: 0.2rem; font-size: 0.78rem; }
+.review-setup__form { padding: 1.6rem; box-shadow: 0 18px 60px #0002; border-top: 2px solid var(--accent-dim); }
+.review-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.review-section-heading h2, .review-section-heading h3 { font-size: 0.95rem; font-weight: 600; margin: 0; }
+.review-section-heading > .muted { font-size: 0.72rem; }
+.review-chip { display: inline-block; flex: none; padding: 0.2rem 0.5rem; border: 1px solid var(--border); border-radius: 5px; color: var(--muted); font-size: 0.68rem; letter-spacing: 0.025em; }
+.review-drop__label { display: block; margin-top: 1.4rem; font-size: 0.8rem; color: var(--muted); }
+.review-setup textarea { margin-top: 0.5rem; min-height: 15rem; padding: 1rem; line-height: 1.75; }
+.review-setup__go { border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1.3rem; }
+.review-setup__hint { color: var(--muted); font-size: 0.73rem; margin: 0.8rem 0 0; }
+.review-report { column-gap: 1.5rem; row-gap: 1.25rem; }
+.review-report__heading { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 1rem; align-items: center; width: 100%; }
+.review-report__heading h2 { margin: 0.2rem 0 0; font-size: 1.6rem; letter-spacing: -0.035em; }
+.review-report .app__board { width: calc(var(--board-size) + 34px); min-width: 0; }
+.review-report .board-bar { margin-top: 0.5rem; padding: 0.6rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.review-report .board-bar .status { font-size: 0.8rem; flex: 1 1 100%; color: var(--muted); font-weight: 450; }
+.review-report .board-bar .nav { gap: 0.35rem; }
+.review-report .nav button { min-width: 2.6rem; min-height: 2.25rem; }
+.review-report .review-summary { padding: 1.15rem; }
+.review-summary .accuracy-cards { margin-top: 1rem; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0.6rem; }
+.review-summary .accuracy-card { padding: 0.85rem; gap: 0.2rem; background: linear-gradient(145deg, var(--surface-2), var(--surface)); }
+.review-summary .accuracy-card__value { font-size: clamp(1.6rem, 2.5vw, 2.3rem); margin-top: 0.45rem; font-weight: 550; }
+.review-summary .accuracy-card__name { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; }
+.accuracy-card__loss { font-size: 0.65rem; color: var(--muted); margin-top: 0.5rem; }
+.review-player-dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; flex: none; }
+.review-player-dot--w { background: var(--eval-white); }
+.review-player-dot--b { background: #292720; border: 1px solid var(--muted); }
+.review-summary .accuracy-cards__mid { color: var(--muted); font-size: 0.72rem; }
+.review-theory { display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem 0.9rem; margin-top: 0.9rem; border: 1px solid #b089683d; border-radius: 8px; background: #b089680b; }
+.review-theory > .quality-badge { font-size: 1.2rem; }
+.review-theory strong { display: block; font-size: 0.82rem; font-weight: 550; line-height: 1.4; }
+.review-theory > div > span { display: block; font-size: 0.7rem; color: #bda58e; margin-top: 0.3rem; }
+.review-table caption { text-align: left; font-weight: 600; font-size: 0.8rem; margin-bottom: 0.6rem; }
+.review-summary .review-table--counts { table-layout: fixed; }
+.review-summary .review-table--counts td { width: 26%; position: relative; }
+.review-summary .review-table--counts th { width: 48%; }
+.review-summary .review-table--counts thead th:first-child, .review-summary .review-table--counts thead th:last-child { width: 26%; }
+.review-summary .review-table--counts tbody th { display: table-cell; font-size: 0.8rem; }
+.review-summary .review-table--counts tbody th .quality-badge { margin-right: 0.45rem; }
+.review-summary .review-table--counts td, .review-summary .review-table--counts th { padding: 0.28rem 0.4rem; border-bottom-color: #35322a80; }
+.review-summary .review-table--counts tr.q--book { background: #b0896812; }
+.review-summary .review-table--counts tr.q--book th, .review-summary .review-table--counts tr.q--book td { color: #d2b394; font-weight: 600; }
+.review-count { position: relative; z-index: 1; }
+.review-count-bar { display: block; position: absolute; height: 65%; top: 17.5%; background: var(--q); opacity: 0.13; border-radius: 3px; max-width: 100%; }
+.review-table--counts td:first-child .review-count-bar { right: 0; }
+.review-table--counts td:last-child .review-count-bar { left: 0; }
+.review-count-note { color: var(--muted); font-size: 0.69rem; text-align: center; margin: 0.65rem 0 1rem; }
+.review-breakdown { border-top: 1px solid var(--border); padding-top: 0.65rem; margin-top: 0.65rem; }
+.review-breakdown summary { cursor: pointer; font-size: 0.78rem; color: #c9c2b5; }
+.review-breakdown .review-table { margin-top: 0.5rem; font-size: 0.78rem; }
+.review-report .review-graph { margin-top: 0.85rem; padding: 0.9rem; }
+.review-graph .review-section-heading { margin-bottom: 0.75rem; }
+.review-graph .review-section-heading h3 { font-size: 0.8rem; }
+.review-report .review-graph__legend span { min-width: max-content; padding: 0 0.2rem; }
+.review-graph__seek { width: 100%; margin: 0.6rem 0 0; accent-color: var(--accent); cursor: pointer; }
+.review-report .review-detail { border-top: 2px solid var(--q, var(--border)); }
+.review-detail--empty h3 { font-size: 0.95rem; margin: 0; }
+.review-detail--empty p { font-size: 0.8rem; margin-bottom: 0; }
+.review-report .review-moves { max-height: 18rem; }
+.review-report .review-move { padding: 0.45rem; }
+.review-report .review-moves li:nth-child(even) { background: #ffffff03; }
+.review-report button:focus-visible, .review-setup button:focus-visible, .review-breakdown summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 1020px) {
+  .review-report .app__side { width: calc(var(--board-size) + 34px); }
+  .review-setup { gap: 1.5rem; }
+}
+@media (max-width: 700px) {
+  .review-entry { padding-top: 1.25rem; }
+  .review-setup { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .review-setup__intro { padding: 0; }
+  .review-setup__intro > p { font-size: 1rem; margin-top: 0.6rem; }
+  .review-setup__intro > .muted { max-width: none; }
+  .review-setup__features { display: none; }
+  .review-setup__form { padding: 1rem; }
+  .review-setup textarea { min-height: 12rem; }
+  .review-report__heading { align-items: start; }
+  .review-report__heading .review-actions { max-width: 45%; }
+  .review-report__heading button { font-size: 0.73rem; }
+  .review-report .review-summary { padding: 0.85rem; }
+  .review-summary .accuracy-card { padding: 0.7rem; }
+  .review-report .review-graph { padding: 0.65rem; }
+  .review-graph .review-section-heading > .muted { font-size: 0.62rem; }
+}

@@ -15,11 +15,13 @@ function AccuracyCard({ side }: { side: SideReport }) {
   return (
     <div className={`accuracy-card accuracy-card--${side.color === 'w' ? 'white' : 'black'}`}>
       <span className="accuracy-card__name">
+        <span className={`review-player-dot review-player-dot--${side.color}`} aria-hidden="true" />
         {side.name ?? (side.color === 'w' ? 'White' : 'Black')}
         {side.elo !== null && <em> {side.elo}</em>}
       </span>
       <strong className="accuracy-card__value">{percent(side.accuracy)}</strong>
-      <span className="muted">accuracy · {cp(side.averageCentipawnLoss)} cp lost per move</span>
+      <span className="muted">accuracy</span>
+      <span className="accuracy-card__loss">{cp(side.averageCentipawnLoss)} cp lost / move</span>
     </div>
   );
 }
@@ -35,24 +37,50 @@ function AccuracyCard({ side }: { side: SideReport }) {
  * games cannot be read at a glance. Empty rows are dimmed, not dropped.
  */
 export function ReviewSummary({ review }: { review: GameReview }) {
+  const theoryMoves = review.moves.filter((move) => move.quality === 'book');
+  const lastTheory = theoryMoves[theoryMoves.length - 1];
   return (
     <section className="panel review-summary">
+      <div className="review-section-heading"><h2>Game overview</h2><span className="review-chip">Depth {review.depth}</span></div>
       <div className="accuracy-cards">
         <AccuracyCard side={review.white} />
         <div className="accuracy-cards__mid">
           <strong>{review.result}</strong>
-          {review.opening && (
-            <span className="muted">
-              {review.opening.eco} {review.opening.name}
-            </span>
-          )}
-          <span className="muted">depth {review.depth}</span>
         </div>
         <AccuracyCard side={review.black} />
       </div>
 
       {review.truncated && <p className="review-error">{review.truncated}</p>}
 
+      <div className="review-theory">
+        <QualityBadge quality="book" />
+        <div>
+          <strong>{review.opening?.name ?? 'Opening theory'}</strong>
+          <span>{review.opening ? `${review.opening.eco} · ` : ''}{theoryMoves.length} book moves across both sides
+            {lastTheory ? ` · last book move ${lastTheory.moveNumber}${lastTheory.color === 'w' ? '.' : '…'} ${lastTheory.san}` : ''}</span>
+        </div>
+      </div>
+
+      <table className="review-table review-table--counts">
+        <caption>Move classification</caption>
+        <thead><tr><th scope="col">White</th><th scope="col">Category</th><th scope="col">Black</th></tr></thead>
+        <tbody>
+          {QUALITY_ORDER.map((quality) => (
+            <tr
+              key={quality}
+              className={`q--${quality} ${review.white.counts[quality] || review.black.counts[quality] ? '' : 'is-empty'}`}
+            >
+              <td><span className="review-count">{review.white.counts[quality]}</span><span aria-hidden="true" className="review-count-bar" style={{ width: `${100 * review.white.counts[quality] / Math.max(1, review.white.moves)}%` }} /></td>
+              <th scope="row"><QualityBadge quality={quality} />{QUALITY_LABELS[quality]}</th>
+              <td><span className="review-count">{review.black.counts[quality]}</span><span aria-hidden="true" className="review-count-bar" style={{ width: `${100 * review.black.counts[quality] / Math.max(1, review.black.moves)}%` }} /></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="review-count-note">Each move counts once. Book moves count only as Theory.</p>
+
+      <details className="review-breakdown">
+      <summary>Accuracy by phase</summary>
       <table className="review-table">
         <thead>
           <tr>
@@ -77,28 +105,10 @@ export function ReviewSummary({ review }: { review: GameReview }) {
           ))}
         </tbody>
       </table>
-
-      <table className="review-table review-table--counts">
-        <tbody>
-          {QUALITY_ORDER.map((quality) => (
-            <tr
-              key={quality}
-              className={
-                review.white.counts[quality] || review.black.counts[quality] ? '' : 'is-empty'
-              }
-            >
-              <td>{review.white.counts[quality]}</td>
-              <th scope="row">
-                <QualityBadge quality={quality} />
-                {QUALITY_LABELS[quality]}
-              </th>
-              <td>{review.black.counts[quality]}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      </details>
 
       {(review.white.time || review.black.time) && (
+        <details className="review-breakdown"><summary>Time management</summary>
         <table className="review-table">
           <thead>
             <tr>
@@ -134,6 +144,7 @@ export function ReviewSummary({ review }: { review: GameReview }) {
             </tr>
           </tbody>
         </table>
+        </details>
       )}
     </section>
   );
