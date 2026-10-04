@@ -8,7 +8,7 @@
  */
 
 import { Chess } from '@coh/chess-core';
-import { getOpeningByMoves, isLeafLine } from '@coh/opening-book';
+import { theoryFlags } from '@coh/opening-book';
 import { nonPawnMaterial } from './material.js';
 import type { GamePhase, PhaseBounds } from './types.js';
 
@@ -16,18 +16,12 @@ import type { GamePhase, PhaseBounds } from './types.js';
 const ENDGAME_MATERIAL_CP = 2600;
 /** Even an offbeat first move gets a five-move opening to be judged on. */
 const MIN_OPENING_PLIES = 10;
-/** Deep theory is still theory, but past this the player deserves the credit. */
-const MAX_OPENING_PLIES = 30;
 
 /** How many leading plies are still in the opening book. */
 export function bookPlies(sans: readonly string[]): number {
-  let count = 0;
-  for (let i = 0; i < Math.min(sans.length, MAX_OPENING_PLIES); i++) {
-    const line = sans.slice(0, i + 1);
-    if (!getOpeningByMoves(line) && isLeafLine(line)) break;
-    count++;
-  }
-  return count;
+  const flags = theoryFlags(sans);
+  const firstUnknown = flags.indexOf(false);
+  return firstUnknown < 0 ? flags.length : firstUnknown;
 }
 
 /**
@@ -42,6 +36,7 @@ export function computeBounds(
   sans: readonly string[],
   fens: readonly string[],
   fromInitialPosition = true,
+  knownMoves?: readonly boolean[],
 ): PhaseBounds {
   let endgameStartPly: number | null = null;
   for (let i = 0; i < fens.length - 1; i++) {
@@ -52,7 +47,10 @@ export function computeBounds(
   }
 
   const floor = fromInitialPosition ? MIN_OPENING_PLIES : 0;
-  const inBook = fromInitialPosition ? bookPlies(sans) : 0;
+  // Classification is per position; phase boundaries follow the last known
+  // book continuation, including transpositions back into the opening.
+  const flags = knownMoves ?? (fromInitialPosition ? theoryFlags(sans) : []);
+  const inBook = flags.lastIndexOf(true) + 1;
   const middlegameStartPly = Math.min(
     Math.max(inBook, floor) + 1,
     endgameStartPly ?? Number.MAX_SAFE_INTEGER,

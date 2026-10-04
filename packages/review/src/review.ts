@@ -12,7 +12,7 @@
 
 import { Chess, parseAnnotatedPgn } from '@coh/chess-core';
 import type { AnnotatedPgnGame, ColorName, PgnMove } from '@coh/chess-core';
-import { deepestOpening } from '@coh/opening-book';
+import { deepestOpening, isTheoryMove, theoryOpeningAt } from '@coh/opening-book';
 import {
   centipawnLoss,
   centipawnsFor,
@@ -25,7 +25,7 @@ import {
 import { classifyMove, emptyCounts } from './classify.js';
 import { explainMove } from './explain.js';
 import { materialInvested } from './material.js';
-import { computeBounds, bookPlies, phaseOfPly } from './phases.js';
+import { computeBounds, phaseOfPly } from './phases.js';
 import { TIME_PRESSURE_FRACTION, buildTimeReport, parseTimeControl } from './timing.js';
 import type {
   CandidateMove,
@@ -256,8 +256,9 @@ export async function reviewGame(
   const weights = volatilityWeights(scores.map(winPercent));
   const sans = played.map((move) => move.san);
   const fromInitialPosition = !parsed.startFen;
-  const bounds = computeBounds(sans, fens, fromInitialPosition);
-  const inBook = fromInitialPosition ? bookPlies(sans) : 0;
+  const inBook = played.map((move) => isTheoryMove(move.fenBefore, move.uci));
+  const bounds = computeBounds(sans, fens, fromInitialPosition, inBook);
+  let named = theoryOpeningAt(fens[0]!);
 
   const reviewed: ReviewedMove[] = played.map((move, i) => {
     const scoreBefore = scores[i]!;
@@ -273,7 +274,7 @@ export async function reviewGame(
       ? winPercentFor(candidates[1].score, move.color)
       : null;
 
-    const isBook = move.ply <= inBook;
+    const isBook = inBook[i]!;
     const investedCp = materialInvested(move.fenBefore, move.uci);
     const clockBefore = clockBeforeMove(played, i, control.initialSeconds);
     const inTimePressure =
@@ -301,7 +302,9 @@ export async function reviewGame(
       inTimePressure,
     });
 
-    const opening = isBook ? deepestOpening(sans.slice(0, move.ply)) : undefined;
+    const positionOpening = theoryOpeningAt(move.fenAfter);
+    if (positionOpening) named = positionOpening;
+    const opening = isBook ? named : undefined;
     const cpLoss = centipawnLoss(scoreBefore, scoreAfter, move.color);
 
     const reviewedMove: ReviewedMove = {
@@ -350,7 +353,10 @@ export async function reviewGame(
     return reviewedMove;
   });
 
-  const named = deepestOpening(sans);
+  named ??= fromInitialPosition ? deepestOpening(sans) : undefined;
+  const searchedDepths = evaluations
+    .filter((evaluation) => evaluation.candidates.length > 0)
+    .map((evaluation) => evaluation.depth);
   const review: GameReview = {
     headers: parsed.headers,
     result: parsed.result,
@@ -359,7 +365,9 @@ export async function reviewGame(
     white: sideReport('w', reviewed, weights, parsed.headers),
     black: sideReport('b', reviewed, weights, parsed.headers),
     bounds,
-    depth: Math.min(...evaluations.map((evaluation) => evaluation.depth)),
+    // Terminal positions need no search and can report depth 0; they should
+    // not make an otherwise depth-12 review display as a depth-0 review.
+    depth: searchedDepths.length ? Math.min(...searchedDepths) : 0,
   };
   if (truncated) review.truncated = truncated;
   return review;
@@ -372,7 +380,7 @@ export async function reviewGame(
  */
 export function keyMoments(review: GameReview, limit = 6): ReviewedMove[] {
   return [...review.moves]
-    .filter((move) => move.loss >= 5 || move.quality === 'sacrifice' || move.quality === 'great')
+    .filter((move) => move.quality !== 'book' && (move.loss >= 5 || move.quality === 'sacrifice' || move.quality === 'great'))
     .sort((a, b) => b.loss - a.loss)
     .slice(0, limit);
 }
