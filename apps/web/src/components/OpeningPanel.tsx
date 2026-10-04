@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { OpeningMatch, PawnBreak, StructureMatch } from '@coh/opening-book';
 import { classifyStructure, structuresFor } from '@coh/opening-book';
 import { StructureCard } from './StructureAdvice.js';
+import { PositionPlans } from './PositionPlans.js';
 import type { SquareMark } from './Board.js';
 
 type Tab = 'plans' | 'breaks' | 'structures' | 'notes';
@@ -60,6 +61,7 @@ export function OpeningPanel({ match, fen, plies, onPlayMove, onMarks }: Opening
           Make a move and this panel fills in with the opening’s name, the ideas behind it, the
           pawn structures it produces and the breaks each side is aiming for.
         </p>
+        {plies > 0 && <PositionPlans fen={fen} />}
       </section>
     );
   }
@@ -90,8 +92,11 @@ export function OpeningPanel({ match, fen, plies, onPlayMove, onMarks }: Opening
         </div>
       </header>
 
+      {(!exact || !theory) && <PositionPlans fen={fen} />}
+
       {theory ? (
         <>
+          {!exact && <p className="panel__note">Opening reference: the plans below describe the earlier opening and may need adapting to this position.</p>}
           <p className="panel__idea">{theory.idea}</p>
           {inherited && (
             <p className="panel__note">

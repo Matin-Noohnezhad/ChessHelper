@@ -71,6 +71,35 @@ describe('web app renders', () => {
     expect(html).toContain('half-open c-file');
     // Continuation chips offer the next named move from here.
     expect(html).toContain('Nf3');
+    expect(html).not.toContain('Plans for this position');
+  });
+
+  it('shows current-position plans above opening references after leaving theory', () => {
+    const moves = ['e4', 'c5'];
+    const match = identifyOpening(moves)!;
+    const html = renderToStaticMarkup(
+      <OpeningPanel match={{ ...match, exact: false }} fen={fenAfter(moves)} plies={2}
+        onPlayMove={() => {}} onMarks={() => {}} />,
+    );
+    expect(html).toContain('past known theory');
+    expect(html).toContain('Plans for this position');
+    expect(html).toContain('White plans');
+    expect(html).toContain('Black plans');
+    expect(html).toContain('Bring your minor pieces into play');
+    expect(html.indexOf('Plans for this position')).toBeLessThan(html.indexOf('Opening reference:'));
+  });
+
+  it('provides plans even without written theory or a recognized opening', () => {
+    const moves = ['e4', 'c5'];
+    const match = identifyOpening(moves)!;
+    for (const opening of [{ ...match, theory: undefined }, null]) {
+      const html = renderToStaticMarkup(
+        <OpeningPanel match={opening} fen={fenAfter(moves)} plies={2}
+          onPlayMove={() => {}} onMarks={() => {}} />,
+      );
+      expect(html).toContain('Plans for this position');
+      expect(html).toContain('Bring your minor pieces into play');
+    }
   });
 
   it('renders the trainer with a board, an opening picker and its variations', () => {

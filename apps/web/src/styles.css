@@ -680,6 +680,24 @@ button:disabled {
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 }
+.position-plans {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--accent-dim);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+.position-plans > h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+.position-plans li p {
+  margin: 0.3rem 0;
+}
+.position-plans__reason {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
 @media (max-width: 620px) {
   .plan-columns {
     grid-template-columns: 1fr;
