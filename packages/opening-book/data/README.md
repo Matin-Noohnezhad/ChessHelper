@@ -21,6 +21,14 @@ an engine's preferred move or that every opening has 25 moves of forced theory.
 
 ## Recognition
 
+Study recognition uses `src/book-positions.generated.ts` to match the board
+after each played move, regardless of move order. It retains side to move,
+castling rights and legally capturable en-passant targets, and ignores clocks.
+The latest named position supplies the opening and its inherited plans;
+continuations are rebased onto the actual played moves, including extra plies
+from a detour. Leaving book retains the last recognized opening, and returning
+to a known position restores its name and plans.
+
 `src/theory.generated.ts` contains 33,124 position/move edges from 22,983 source
 positions. The builder replays every line with our chess library, aborting on
 illegal input. Named trap lines are truncated before moves that allow mate in
@@ -52,11 +60,15 @@ From the repository root:
 npm run ingest:theory
 ```
 
-This validates the vendored inputs and deterministically rebuilds both generated
+This validates the vendored inputs and deterministically rebuilds all generated
 TypeScript files. The browser loads a lookup table, never replays the corpus.
 `npm run ingest:eco -- --fetch` restores the two pinned upstream named datasets;
 change the pinned revisions in the script and this document for a deliberate
 source update, then regenerate theory too.
+
+After editing curated opening move sequences, run `npm run ingest:positions`
+to refresh the study position table. Data integrity tests verify every prefix
+against the chess library. Name and plan edits do not require regeneration.
 
 To reproduce the master aggregation, download the five files listed in
 `masters-sources.json` to a directory and copy that manifest there as

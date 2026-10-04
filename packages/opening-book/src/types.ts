@@ -95,14 +95,14 @@ export interface Opening {
   aliases?: string[];
 }
 
-/** A resolved identification: the deepest entry matching the moves played. */
+/** A resolved identification: the last named position reached in the game. */
 export interface OpeningMatch {
   opening: Opening;
-  /** How many of the played moves the entry accounts for. */
+  /** Played ply at the last match; may differ from the entry's move count. */
   depth: number;
-  /** True when every move played is accounted for by the entry. */
+  /** True when the current position matches a named opening position. */
   exact: boolean;
-  /** Named continuations available from here. */
+  /** Named continuations, with move sequences rebased onto the played moves. */
   continuations: Opening[];
   /**
    * Where the displayed theory comes from. Specific variations rarely repeat

@@ -83,6 +83,30 @@ describe('web app renders', () => {
     expect(html).toContain('You play');
   });
 
+  it('shows the opening, plans and next moves after a transposition with extra plies', () => {
+    const moves = 'Nf3 Nf6 Ng1 Ng8 d4 e6 e4 d5'.split(' ');
+    const match = identifyOpening(moves)!;
+    const html = renderToStaticMarkup(
+      <OpeningPanel
+        match={match}
+        fen={fenAfter(moves)}
+        plies={moves.length}
+        onPlayMove={() => {}}
+        onMarks={() => {}}
+      />,
+    );
+    expect(html).toContain('French Defence');
+    expect(html).toContain('in book');
+    expect(html).not.toContain('past known theory');
+    expect(html).not.toContain('No written theory');
+    expect(html).toContain('<h3>White</h3>');
+    expect(html).toContain('<h3>Black</h3>');
+    expect(html).toContain(renderToStaticMarkup(<li>{match.theory!.whitePlans[0]}</li>));
+    expect(html).toContain(renderToStaticMarkup(<li>{match.theory!.blackPlans[0]}</li>));
+    expect(html).toContain('<strong>Nc3</strong>');
+    expect(html).toContain('<strong>Nd2</strong>');
+  });
+
   it('renders a deep line by inheriting the parent opening’s theory', () => {
     // One ply past the Mar del Plata, which carries its own theory, so what is
     // shown here has to have been inherited from it.
