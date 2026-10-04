@@ -189,6 +189,7 @@ export {
   mirrorFen,
   pawnSkeleton,
   plansFor,
+  structureFor,
 } from './classify.js';
 export type { PawnSkeleton, StructureMatch } from './classify.js';
 

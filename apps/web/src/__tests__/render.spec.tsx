@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { identifyOpening } from '@coh/opening-book';
+import { classifyStructureBest, getStructure, identifyOpening } from '@coh/opening-book';
 import { Chess } from '@coh/chess-core';
 import { QUALITY_LABELS, QUALITY_ORDER, reviewPgn } from '@coh/review';
 import type { PositionEvaluator } from '@coh/review';
@@ -8,6 +8,7 @@ import { MAX_LEVEL, allVariations, buildCourse, trainableMoves } from '@coh/cour
 import App from '../App.js';
 import { Board } from '../components/Board.js';
 import { OpeningPanel } from '../components/OpeningPanel.js';
+import { StructureCard } from '../components/StructureAdvice.js';
 import { CourseDashboard } from '../components/CourseDashboard.js';
 import { CourseImport, CoursePreview } from '../components/CourseImport.js';
 import { CourseLibrary } from '../components/CourseLibrary.js';
@@ -200,15 +201,69 @@ describe('game review UI', () => {
 
     const black = renderToStaticMarkup(<StructureNote fen={fen} toMove="black" />);
     expect(black).toContain('French Pawn Chain');
-    expect(black).toContain('Black breaks here');
+    expect(black).toContain('Black breaks to prepare');
     expect(black).toContain('f6'); // ...f6, the break at the head of White's chain
+    expect(black).toContain('Black pawn break f6');
+    expect(black).not.toContain('Black pawn break c5'); // already played
+    expect(black).toContain('Prepare first');
+    expect(black).toContain('e6 defensible after the exchange on f6');
+    expect(black).toContain('Win the d4 pawn'); // third plan, previously hidden
+    expect(black).toContain('White plans');
+    expect(black).toContain('Endgame:');
 
     const white = renderToStaticMarkup(<StructureNote fen={fen} toMove="white" />);
-    expect(white).toContain('White breaks here');
-    expect(white).not.toContain('Black breaks here');
+    expect(white).toContain('White breaks to prepare');
+    expect(white).not.toContain('Black breaks to prepare');
 
     // Nothing to say about a position with no structure yet.
     expect(renderToStaticMarkup(<StructureNote fen={fenAfter(['e4'])} toMove="black" />)).toBe('');
+  });
+
+  it('renders both sides’ structure plans, preparation and a representative diagram', () => {
+    const structure = getStructure('french-chain')!;
+    const typical = renderToStaticMarkup(
+      <StructureCard match={{ structure, mirrored: false }} onMarks={() => {}} />,
+    );
+    expect(typical).toContain('White plans');
+    expect(typical).toContain('Black plans');
+    expect(typical).toContain('Keep the e5 wedge');
+    expect(typical).toContain('Win the d4 pawn');
+    expect(typical).toContain('Typical pawn placement');
+    expect(typical).toContain('typical of this line');
+    expect(typical).toContain('Black pawn break c5');
+    expect(typical).toContain('Ready to answer dxc5');
+
+    const fen = fenAfter('e4 e6 d4 d5 e5 c5'.split(' '));
+    const current = renderToStaticMarkup(
+      <StructureCard match={classifyStructureBest(fen)!} positionFen={fen} onMarks={() => {}} />,
+    );
+    expect(current).toContain('on the board');
+    expect(current).not.toContain('Black pawn break c5');
+    expect(current).toContain('Black pawn break f6');
+  });
+
+  it('renders corrected advice for a black isolated pawn in review', () => {
+    const fen = fenAfter('d4 d5 c4 e6 Nc3 c5 cxd5 exd5 Nf3 Nc6 g3 Nf6 Bg2 Be7 O-O O-O dxc5 Bxc5'.split(' '));
+    const html = renderToStaticMarkup(<StructureNote fen={fen} toMove="black" />);
+    expect(html).toContain('Time d5-d4');
+    expect(html).toContain('Blockade d4');
+    expect(html).toContain('Black pawn break d4');
+    expect(html).toContain('Rook on d8, ideally opposite the white queen');
+    expect(html).not.toContain('Time d4-d5');
+  });
+
+  it('shows detected structure advice even without written opening theory', () => {
+    const fen = fenAfter('e4 e6 d4 d5 e5 c5'.split(' '));
+    const html = renderToStaticMarkup(
+      <OpeningPanel
+        match={{ opening: { name: 'Unnamed line', eco: 'C00', moves: [] }, depth: 0, exact: false, continuations: [] }}
+        fen={fen} plies={6} onPlayMove={() => {}} onMarks={() => {}}
+      />,
+    );
+    expect(html).toContain('No written theory');
+    expect(html).toContain('French Pawn Chain');
+    expect(html).toContain('White plans');
+    expect(html).toContain('Black plans');
   });
 
   it('renders a full report: accuracies, phases, categories and the move list', async () => {

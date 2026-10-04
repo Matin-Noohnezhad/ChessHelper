@@ -206,24 +206,79 @@ export interface StructureMatch {
 
 const other = (side: Side): Side => (side === 'white' ? 'black' : 'white');
 
+/**
+ * Reflect the encyclopedia's teaching prose with its diagram. Rank reflection
+ * also reverses square colours. Omit move ellipses in reflected prose: the
+ * side headings and explicit colour references identify the players instead.
+ * This is for our controlled structure text, not arbitrary PGN or annotations.
+ */
+function mirrorText(text: string): string {
+  return text
+    .replace(/([a-h])([1-8])(?![a-zA-Z0-9])/g, (_, file: string, rank: string) => `${file}${9 - Number(rank)}`)
+    .replace(/\b(White|Black|white|black|light-squared|dark-squared)\b/g, (word) => ({
+      White: 'Black', Black: 'White', white: 'black', black: 'white',
+      'light-squared': 'dark-squared', 'dark-squared': 'light-squared',
+    })[word]!)
+    .replace(/\.\.\.|…/g, '');
+}
+
 /** The plans that belong to `side` in a match, accounting for the mirror. */
 export function plansFor(match: StructureMatch, side: Side): string[] {
   const wantsWhite = match.mirrored ? side === 'black' : side === 'white';
-  return wantsWhite ? match.structure.whitePlans : match.structure.blackPlans;
+  const plans = wantsWhite ? match.structure.whitePlans : match.structure.blackPlans;
+  return match.mirrored ? plans.map(mirrorText) : plans;
 }
 
 /**
  * The structure's breaks as they apply to this match. A mirrored match swaps
- * whose break it is and which rank it lands on — Black's freeing ...d5 in an
- * isolani position is White's d4 when White is the one blockading.
+ * whose break it is and which rank it lands on: the white isolani's d4-d5
+ * becomes d5-d4 for a black isolani. With a FEN, keep only pushes that the
+ * current pawn placement can still support, possibly after preparation.
  */
-export function breaksFor(match: StructureMatch): PawnBreak[] {
-  if (!match.mirrored) return match.structure.breaks;
-  return match.structure.breaks.map((brk) => ({
+export function breaksFor(match: StructureMatch, fen?: string): PawnBreak[] {
+  const breaks = !match.mirrored ? match.structure.breaks : match.structure.breaks.map((brk) => ({
     ...brk,
     side: other(brk.side),
-    move: brk.move.replace(/([1-8])/g, (rank) => String(9 - Number(rank))),
+    move: mirrorText(brk.move),
+    note: mirrorText(brk.note),
+    ...(brk.prerequisites && { prerequisites: brk.prerequisites.map(mirrorText) }),
   }));
+  if (!fen) return breaks;
+
+  // These are future pawn pushes, not engine recommendations or necessarily
+  // legal moves this turn. Pieces can move out of the way during preparation;
+  // a pawn on or beyond the target, a missing pawn, or a pawn blocking its path
+  // means this particular push no longer fits the current skeleton.
+  const skeleton = pawnSkeleton(fen);
+  return breaks.filter((brk) => {
+    const target = /^([a-h])([2-7])$/.exec(brk.move);
+    if (!target) return false;
+    const [, file, rank] = target;
+    const direction = brk.side === 'white' ? 1 : -1;
+    const targetRank = Number(rank);
+    if (skeleton.has('white', brk.move) || skeleton.has('black', brk.move)) return false;
+    for (let r = targetRank - direction; r >= 2 && r <= 7; r -= direction) {
+      if (skeleton.has(brk.side, `${file}${r}`)) return true;
+      if (skeleton.has(other(brk.side), `${file}${r}`)) return false;
+    }
+    return false;
+  });
+}
+
+/** All teaching content in the same orientation as the matched position. */
+export function structureFor(match: StructureMatch): PawnStructure {
+  if (!match.mirrored) return match.structure;
+  const structure = match.structure;
+  return {
+    ...structure,
+    name: mirrorText(structure.name),
+    fen: mirrorFen(structure.fen),
+    description: mirrorText(structure.description),
+    whitePlans: plansFor(match, 'white'),
+    blackPlans: plansFor(match, 'black'),
+    breaks: breaksFor(match),
+    ...(structure.endgameNote && { endgameNote: mirrorText(structure.endgameNote) }),
+  };
 }
 
 /**

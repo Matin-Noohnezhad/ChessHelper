@@ -10,6 +10,7 @@ import {
   mirrorFen,
   pawnSkeleton,
   plansFor,
+  structureFor,
 } from '../classify.js';
 
 /** Plays a line from the start and hands back the FEN it reaches. */
@@ -71,8 +72,10 @@ describe('structure classification', () => {
     expect(best.structure.id).toBe('iqp');
     expect(best.mirrored).toBe(true);
     // The entry's white plans are written for whoever owns the pawn — Black here.
-    expect(plansFor(best, 'black')).toEqual(best.structure.whitePlans);
-    expect(plansFor(best, 'white')).toEqual(best.structure.blackPlans);
+    expect(plansFor(best, 'black')).toContain('Occupy e4 with a knight; it is the square the isolated pawn pays for.');
+    expect(plansFor(best, 'black').join(' ')).toContain('Time d5-d4');
+    expect(plansFor(best, 'white')[0]).toContain('Blockade d4');
+    expect(plansFor(best, 'white')[1]).toContain('dark-squared bishop and the e4 knight');
   });
 
   it('names the structures the openings that reach them are built around', () => {
@@ -122,9 +125,10 @@ describe('structure classification', () => {
 
     // Upright, the isolani's freeing break is White's d4-d5. Mirrored, it is
     // Black's ...d5-d4, and it belongs to Black.
-    const upright = best.structure.breaks.find((b) => b.move === 'd5' && b.side === 'white')!;
     const flipped = breaksFor(best).find((b) => b.side === 'black' && b.move === 'd4')!;
-    expect(flipped.note).toBe(upright.note);
+    expect(flipped.note).toContain('underdeveloped white king');
+    expect(flipped.prerequisites).toContain('More pieces pointing at d4 than White has blockading it');
+    expect(flipped.prerequisites).toContain('Rook on d8, ideally opposite the white queen');
 
     // The diagram is drawn with White holding the isolani on d4; mirrored, it
     // is Black's on d5, which is what the position actually shown looks like.
@@ -147,5 +151,65 @@ describe('structure classification', () => {
   it('says nothing about a position that has no structure yet', () => {
     expect(classifyStructure(fenAfter('e4 e5 Nf3 Nc6 Bb5'))).toEqual([]);
     expect(classifyStructureBest(fenAfter(''))).toBeUndefined();
+  });
+});
+
+describe('structure advice', () => {
+  const french = PAWN_STRUCTURES.find((s) => s.id === 'french-chain')!;
+
+  it('adapts names, descriptions, routes and endgame advice without changing the encyclopedia', () => {
+    const original = JSON.stringify(PAWN_STRUCTURES);
+    const reflected = structureFor({ structure: french, mirrored: true });
+    expect(reflected.name).toBe('French Pawn Chain (e4/d5/c6 vs d4/e3)');
+    expect(reflected.description).toContain('White’s dark-squared bishop, walled in behind e3');
+    expect(reflected.whitePlans[0]).toContain('Attack the base d5 with c4, Nc3, Qb3 and Nge2-f4');
+    expect(reflected.endgameNote).toContain('White’s queenside majority and Black’s kingside space');
+    expect(reflected.endgameNote).toContain('dark-squared bishop');
+    const spanish = PAWN_STRUCTURES.find((s) => s.id === 'spanish-closed')!;
+    expect(structureFor({ structure: spanish, mirrored: true }).blackPlans[0]).toContain('Nb8-d7-f8-g6 (or -e6)');
+    expect(JSON.stringify(PAWN_STRUCTURES)).toBe(original);
+  });
+
+  it('leaves upright advice unchanged', () => {
+    expect(structureFor({ structure: french, mirrored: false })).toEqual(french);
+  });
+
+  it('removes a played French c5 break while retaining f6 and the future f5 plan', () => {
+    const before = fenAfter('e4 e6 d4 d5 e5');
+    const after = fenAfter('e4 e6 d4 d5 e5 c5');
+    const match = classifyStructureBest(after)!;
+    expect(breaksFor(match, before).map((b) => b.move)).toContain('c5');
+    expect(breaksFor(match, after).map((b) => b.move)).toEqual(['f6', 'f5']);
+    // Without a current board, the encyclopedia still lists the general motif.
+    expect(breaksFor(match).map((b) => b.move)).toContain('c5');
+  });
+
+  it('removes breaks with missing, advanced or blocking pawns', () => {
+    const match = { structure: french, mirrored: false };
+    const cases = [
+      '4k3/pp4pp/4p3/2ppP3/3P4/2P5/PP3PPP/4K3 w - - 0 1', // no black f-pawn
+      '4k3/pp4pp/4p3/2ppPp2/3P4/2P5/PP3PPP/4K3 w - - 0 1', // ...f5 already played
+      '4k3/pp3ppp/4pP2/2ppP3/3P4/2P5/PP4PP/4K3 w - - 0 1', // target occupied
+    ];
+    for (const fen of cases) {
+      expect(breaksFor(match, fen).some((b) => b.side === 'black' && b.move === 'f6')).toBe(false);
+    }
+    // An opposing pawn between the pawn and its multi-move target blocks it.
+    const blocked = '4k3/pp3ppp/4p3/2ppP3/3P4/2P2p2/PP3PPP/4K3 w - - 0 1';
+    expect(breaksFor(match, blocked).some((b) => b.side === 'white' && b.move === 'f5')).toBe(false);
+  });
+
+  it('keeps preparation plans when a piece must move first', () => {
+    const fen = fenAfter('d4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5');
+    const match = classifyStructureBest(fen)!;
+    expect(new Chess(fen).legalMoves().some((m) => m.san === 'f5')).toBe(false);
+    expect(breaksFor(match, fen).some((b) => b.side === 'black' && b.move === 'f5')).toBe(true);
+  });
+
+  it('filters the breaks after reflecting their side and target', () => {
+    const fen = mirrorFen(fenAfter('e4 e6 d4 d5 e5 c5'));
+    const match = classifyStructureBest(fen)!;
+    expect(match.mirrored).toBe(true);
+    expect(breaksFor(match, fen).map((b) => `${b.side}:${b.move}`)).toEqual(['white:f3', 'black:f4']);
   });
 });

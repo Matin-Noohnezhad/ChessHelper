@@ -9,7 +9,7 @@ import {
   winPercent,
 } from '@coh/review';
 import type { GameReview, MoveTag, ReviewedMove } from '@coh/review';
-import { breaksFor, classifyStructureBest, plansFor } from '@coh/opening-book';
+import { breaksFor, classifyStructureBest, structureFor } from '@coh/opening-book';
 import type { Side } from '@coh/opening-book';
 import { Board } from './Board.js';
 import type { AnnotationThickness, SquareBadge } from './Board.js';
@@ -19,6 +19,7 @@ import { ReviewGraph } from './ReviewGraph.js';
 import { ReviewMoveList } from './ReviewMoveList.js';
 import { ReviewSetup } from './ReviewSetup.js';
 import { ReviewSummary } from './ReviewSummary.js';
+import { StructureBreaks, StructurePlans } from './StructureAdvice.js';
 import type { ReviewController } from '../hooks/useGameReview.js';
 import type { Orientation } from '../hooks/useChessGame.js';
 
@@ -48,18 +49,18 @@ export function StructureNote({ fen, toMove }: { fen: string; toMove: Side }) {
   const match = classifyStructureBest(fen);
   if (!match) return null;
 
-  const plans = plansFor(match, toMove);
-  const breaks = breaksFor(match).filter((brk) => brk.side === toMove);
+  const structure = structureFor(match);
+  const breaks = breaksFor(match, fen).filter((brk) => brk.side === toMove);
 
   return (
     <div className="review-detail__structure">
-      <h3>{match.structure.name}</h3>
-      {plans[0] && <p>{plans[0]}</p>}
-      {breaks.length > 0 && (
-        <p className="muted">
-          {toMove === 'white' ? 'White' : 'Black'} breaks here:{' '}
-          {breaks.map((brk) => brk.move).join(', ')}
-        </p>
+      <h3>{structure.name}</h3>
+      <p className="muted">Typical plans for this pawn structure; choose them with the pieces and king safety in mind.</p>
+      <StructurePlans structure={structure} firstSide={toMove} />
+      <h4>{toMove === 'white' ? 'White' : 'Black'} breaks to prepare</h4>
+      <StructureBreaks breaks={breaks} />
+      {structure.endgameNote && (
+        <p className="structure__endgame"><strong>Endgame:</strong> {structure.endgameNote}</p>
       )}
     </div>
   );

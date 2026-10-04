@@ -685,7 +685,8 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
-.plan-columns h3 {
+.plan-columns h3,
+.plan-columns h4 {
   margin: 0 0 0.4rem;
   font-size: 0.78rem;
   text-transform: uppercase;
@@ -716,14 +717,14 @@ button:disabled {
   background: var(--accent-dim);
 }
 
-.breaks li {
+.breaks > li {
   display: flex;
   gap: 0.7rem;
   padding: 0.55rem 0.5rem;
   border-radius: 6px;
   margin: 0 -0.5rem;
 }
-.breaks li:hover {
+.breaks > li:hover {
   background: var(--surface-2);
 }
 .breaks p {
@@ -802,7 +803,7 @@ button:disabled {
   margin: 0;
   font-size: 0.92rem;
 }
-.structure__breaks li {
+.structure__breaks > li {
   display: flex;
   gap: 0.5rem;
   align-items: baseline;
@@ -811,13 +812,33 @@ button:disabled {
   border-radius: 5px;
   font-size: 0.9rem;
 }
-.structure__breaks li:hover {
+.structure__breaks > li:hover {
   background: var(--surface-2);
 }
 .structure__endgame {
   margin-top: 0.6rem;
   font-size: 0.88rem;
   color: var(--muted);
+}
+.structure .structure__endgame {
+  margin-top: 0.6rem;
+}
+.structure .structure__caption {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+}
+.structure__prepare {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+}
+.review-detail__structure .plan-columns {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+}
+.review-detail__structure h4 {
+  margin: 0.6rem 0 0.35rem;
+  font-size: 0.8rem;
 }
 
 .mini-board {
