@@ -285,8 +285,8 @@ export class CourseTrainer {
 
   /**
    * Plays the next move of the demonstration and returns it. When the last one
-   * has been played the board goes back to where the part began and the same
-   * moves are asked for — which is the only reason to have watched them.
+   * has been played the board goes back to the practice start. The first part
+   * asks for the trained opening too, although its animation skips that prefix.
    */
   advanceWatch(): CourseNode | null {
     const task = this.task;

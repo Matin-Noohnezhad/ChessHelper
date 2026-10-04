@@ -453,7 +453,7 @@ describe('watching the line first', () => {
   });
 });
 
-describe('recapping a shared opening', () => {
+describe('animating new moves and practising the shared opening', () => {
   // Two variations that share 1.e4 e5 2.Nf3 Nc6 3.Bb5 a6, then part ways.
   const shared = buildCourse(
     `[Event "S: Main"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 *\n\n` +
@@ -470,35 +470,41 @@ describe('recapping a shared opening', () => {
     return trainer;
   }
 
-  it('opens the second line by replaying its shared moves, from move one', () => {
+  it('opens the animation after the already-trained prefix', () => {
     const trainer = atSecondLine();
     expect(trainer.status).toBe('watching');
-    expect(trainer.watchAt).toBe(0);
-    expect(trainer.watchRecapUntil).toBe(6);
-    expect(trainer.game.history()).toEqual([]);
+    expect(trainer.watchAt).toBe(6);
+    expect(trainer.watchRecapUntil).toBe(0);
+    expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
   });
 
-  it('is on the branch, teaching the new move, once the recap is played', () => {
+  it('animates only the new section, then asks for every move from the beginning', () => {
     const trainer = atSecondLine();
-    for (let i = 0; i < 6; i++) trainer.advanceWatch();
     expect(trainer.watchAt).toBe(6);
     expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
     expect(trainer.watchNext?.san).toBe('Bxc6');
 
     while (trainer.watching) trainer.advanceWatch();
     expect(trainer.status).toBe('asking');
-    expect(trainer.current?.san).toBe('Bxc6');
-    // Only the new moves are asked; the shared six stay on the board.
-    expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
+    expect(trainer.current?.san).toBe('e4');
+    expect(trainer.game.history()).toEqual([]);
+    for (const san of ['e4', 'Nf3', 'Bb5', 'Bxc6', 'O-O']) {
+      expect(trainer.current?.san).toBe(san);
+      expect(trainer.submit(san).status).toBe('correct');
+    }
+    expect(trainer.status).toBe('task-complete');
   });
 
-  it('replays the recap too when the part is watched again', () => {
+  it('rewatches only the new section and still practices from the beginning', () => {
     const trainer = atSecondLine();
     while (trainer.watching) trainer.advanceWatch();
     expect(trainer.status).toBe('asking');
 
     expect(trainer.rewatch()).toBe(true);
-    expect(trainer.watchAt).toBe(0);
+    expect(trainer.watchAt).toBe(6);
+    expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
+    trainer.skipWatch();
+    expect(trainer.current?.san).toBe('e4');
     expect(trainer.game.history()).toEqual([]);
   });
 });

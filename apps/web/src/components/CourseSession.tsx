@@ -531,6 +531,7 @@ export function CourseSession({
               part={part}
               mode={mode}
               fromTheTop={mode === 'learn' && !task?.watch}
+              includesOpening={Boolean(task?.watch && task.startIndex < task.watch.from)}
             />
           )}
         </section>
@@ -684,6 +685,7 @@ interface PromptProps {
   part: { index: number; total: number } | null;
   /** True on the run that asks for the whole line rather than a part of it. */
   fromTheTop: boolean;
+  includesOpening: boolean;
 }
 
 /**
@@ -695,7 +697,7 @@ interface PromptProps {
  * author wrote about the move you are *about* to make is worth nothing before
  * you know which move it is, and printing it would be printing the answer.
  */
-function Prompt({ mode, node, answer, feedback, asked, done, part, fromTheTop }: PromptProps) {
+function Prompt({ mode, node, answer, feedback, asked, done, part, fromTheTop, includesOpening }: PromptProps) {
   const left = Math.max(asked - done, 0);
 
   return (
@@ -706,6 +708,8 @@ function Prompt({ mode, node, answer, feedback, asked, done, part, fromTheTop }:
           <p className="muted">
             {fromTheTop
               ? `From the first move, nothing shown — ${asked} move${asked === 1 ? '' : 's'} to play.`
+              : includesOpening
+                ? `Play from the first move through this part, including the opening you already trained — ${asked} move${asked === 1 ? '' : 's'} to play.`
               : part
                 ? `Play back the ${asked} move${asked === 1 ? '' : 's'} of part ${part.index + 1}.`
                 : mode === 'learn'
