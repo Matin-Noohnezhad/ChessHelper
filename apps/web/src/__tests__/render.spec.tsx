@@ -8,6 +8,7 @@ import { MAX_LEVEL, allVariations, buildCourse, trainableMoves } from '@coh/cour
 import App from '../App.js';
 import { Board } from '../components/Board.js';
 import { OpeningPanel } from '../components/OpeningPanel.js';
+import { PositionPlans } from '../components/PositionPlans.js';
 import { StructureCard } from '../components/StructureAdvice.js';
 import { CourseDashboard } from '../components/CourseDashboard.js';
 import { CourseImport, CoursePreview } from '../components/CourseImport.js';
@@ -83,6 +84,10 @@ describe('web app renders', () => {
     );
     expect(html).toContain('past known theory');
     expect(html).toContain('Plans for this position');
+    expect(html).toContain('7Q planning guide');
+    expect(html).toContain('Which exchanges would help me?');
+    expect(html).toContain('What might my opponent try next?');
+    expect(html).toContain('GM Avetik Grigoryan');
     expect(html).toContain('White plans');
     expect(html).toContain('Black plans');
     expect(html).toContain('Bring your minor pieces into play');
@@ -100,6 +105,20 @@ describe('web app renders', () => {
       expect(html).toContain('Plans for this position');
       expect(html).toContain('Bring your minor pieces into play');
     }
+  });
+
+  it('shows the 7Q plan for the side to move and suppresses it during check or game over', () => {
+    const game = new Chess();
+    game.move('e4');
+    const html = renderToStaticMarkup(<PositionPlans fen={game.fen()} />);
+    expect(html).toContain('Black: a possible plan');
+    expect(html.match(/class="seven-q__number"/g)).toHaveLength(7);
+    const check = renderToStaticMarkup(<PositionPlans fen="4k3/8/8/8/8/8/4r3/4K3 w - - 0 1" />);
+    expect(check).toContain('Get out of check first');
+    expect(check).not.toContain('7Q planning guide');
+    const mate = renderToStaticMarkup(<PositionPlans fen="7k/6Q1/5K2/8/8/8/8/8 b - - 0 1" />);
+    expect(mate).toContain('game is over');
+    expect(mate).not.toContain('7Q planning guide');
   });
 
   it('renders the trainer with a board, an opening picker and its variations', () => {

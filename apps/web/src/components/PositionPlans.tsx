@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Chess } from '@coh/chess-core';
 import { suggestPlans } from '@coh/imbalances';
+import { SevenQuestionPlans } from './SevenQuestionPlans.js';
 
 export function PositionPlans({ fen }: { fen: string }) {
   const plans = useMemo(() => suggestPlans(new Chess(fen)), [fen]);
@@ -12,6 +13,9 @@ export function PositionPlans({ fen }: { fen: string }) {
       ) : (
         <>
           <p className="muted">Ideas based on the current board and basic strategy. Check threats, captures, and king safety before choosing a move.</p>
+          {plans.status === 'playing' && <SevenQuestionPlans fen={fen} />}
+          <details className="position-plans__basic" open={plans.status === 'check'}>
+            <summary>{plans.status === 'check' ? 'Respond to check' : 'Basic strategy suggestions for both sides'}</summary>
           <div className="plan-columns">
             {(['white', 'black'] as const).filter((side) => plans[side].length).map((side) => (
               <div key={side}>
@@ -28,6 +32,7 @@ export function PositionPlans({ fen }: { fen: string }) {
               </div>
             ))}
           </div>
+          </details>
         </>
       )}
     </section>

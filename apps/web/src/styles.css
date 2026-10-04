@@ -698,6 +698,58 @@ button:disabled {
   color: var(--muted);
   font-size: 0.85rem;
 }
+.seven-q__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.seven-q__header h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+.seven-q__header label,
+.seven-q__intro {
+  font-size: 0.85rem;
+}
+.seven-q__priorities {
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  background: var(--surface);
+  border-radius: 6px;
+}
+.seven-q__priorities h5 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.seven-q ul {
+  padding-left: 1.2rem;
+}
+.seven-q li + li {
+  margin-top: 0.7rem;
+}
+.seven-q__priorities > p:last-child {
+  margin-bottom: 0;
+  font-size: 0.8rem;
+}
+.seven-q__questions details,
+.position-plans__basic {
+  border-top: 1px solid var(--border);
+  padding: 0.65rem 0;
+}
+.seven-q summary,
+.position-plans__basic > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.seven-q__number {
+  color: var(--accent);
+  margin-right: 0.3rem;
+}
+.position-plans__basic > .plan-columns {
+  margin-top: 0.8rem;
+}
 @media (max-width: 620px) {
   .plan-columns {
     grid-template-columns: 1fr;
