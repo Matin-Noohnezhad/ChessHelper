@@ -7,6 +7,7 @@ import { Board } from './Board.js';
 import type { AnnotationThickness, BoardArrow } from './Board.js';
 import { CourseOutline } from './CourseOutline.js';
 import { CourseAnalysis } from './CourseAnalysis.js';
+import { CourseReader } from './CourseReader.js';
 import { useCourseSession } from '../hooks/useCourseSession.js';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
 import type { CourseLearningSettings } from '../hooks/useSettings.js';
@@ -41,6 +42,7 @@ const RUN_NOUN: Record<SessionMode, string> = {
 };
 
 interface CourseSessionProps {
+  moveEntryMode?: 'smart' | 'select';
   entry: LibraryEntry;
   mode: SessionMode;
   courseLearning?: CourseLearningSettings;
@@ -67,6 +69,7 @@ interface CourseSessionProps {
  * you are being asked for until you have either produced it or given up on it.
  */
 export function CourseSession({
+  moveEntryMode = 'smart',
   entry,
   mode,
   chapterIds,
@@ -109,7 +112,7 @@ export function CourseSession({
   const railLines = outline.reduce((sum, chapter) => sum + chapter.variations.length, 0);
   // A session opened from one line ends after its repetitions. Keep learning
   // by following the course outline once that session's queue is finished.
-  const completedLineId = activeLineId ?? plan.tasks[plan.tasks.length - 1]?.lineId;
+  const completedLineId = activeLineId ?? plan.tasks[plan.tasks.length - 1]?.lineId.split('@')[0];
   const courseLines = outline.flatMap((chapter) => chapter.variations);
   const completedLineIndex = courseLines.findIndex((line) => line.id === completedLineId);
   const nextVariation = mode === 'learn' && completedLineIndex >= 0
@@ -131,6 +134,7 @@ export function CourseSession({
   const [lookback, setLookback] = useState<number | null>(null);
   // The trainer stays mounted and untouched while a separate board is explored.
   const [analyzing, setAnalyzing] = useState(false);
+  const [reading, setReading] = useState(false);
   const livePly = trainer.ply;
   const trail = trainer.played;
   const looking = lookback !== null;
@@ -177,7 +181,7 @@ export function CourseSession({
   const [watchPaused, setWatchPaused] = useState(false);
   const manualWatch = !watchAutoplay;
   useEffect(() => {
-    if (!watching || looking || watchPaused || analyzing) return;
+    if (!watching || looking || watchPaused || analyzing || reading) return;
     if (manualWatch) return; // your move to make: step it yourself
     const moveMs = watchMoveSeconds * 1000;
     const pause = inRecap ? WATCH_PAUSE_RECAP : moveMs;
@@ -192,6 +196,7 @@ export function CourseSession({
     manualWatch,
     watchPaused,
     analyzing,
+    reading,
     watchMoveSeconds,
     advanceWatch,
   ]);
@@ -200,11 +205,13 @@ export function CourseSession({
   // the line is being demonstrated, → and Space step the demonstration instead,
   // which is the whole of how Manual pace is driven.
   useEffect(() => {
-    if (analyzing) return;
+    if (analyzing || reading) return;
     const onKey = (event: KeyboardEvent) => {
       if (courseShortcutBlocked(event)) return;
       const key = event.key.toLowerCase();
-      if (key === ' ' && !looking && trainer.status === 'task-complete') session.next();
+      if (key === 'b') setReading(true);
+      else if (key === 'a' && plan.tasks.length) setAnalyzing(true);
+      else if (key === ' ' && !looking && trainer.status === 'task-complete') session.next();
       else if (key === ' ' && !looking && trainer.status === 'complete') continueAfterSession();
       else if ((key === 'arrowright' || key === ' ') && watching && !looking) advanceWatch();
       else if (key === 'arrowleft') stepTo((lookback ?? livePly) - 1);
@@ -223,7 +230,7 @@ export function CourseSession({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [analyzing, lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit, continueAfterSession]);
+  }, [analyzing, reading, plan.tasks.length, lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit, continueAfterSession]);
 
   const handleMove = (from: string, to: string, promotion?: PieceSymbol) => {
     session.submit({ from, to, promotion });
@@ -253,6 +260,13 @@ export function CourseSession({
     color: circle.color,
   }));
 
+  if (reading) {
+    return <CourseReader entry={entry} lineId={activeLineId ?? completedLineId ?? lineIds?.[0]}
+      chapterId={chapterIds?.[0]} initialPly={lookback ?? livePly}
+      annotationThickness={annotationThickness} moveEntryMode={moveEntryMode}
+      onExit={() => setReading(false)} onTrain={() => setReading(false)} resumeTraining />;
+  }
+
   if (!plan.tasks.length) {
     return (
       <div className="course-session course-session--empty">
@@ -266,6 +280,9 @@ export function CourseSession({
           <button type="button" className="primary" onClick={onExit} title="Back to course (Esc)">
             Back to the course
           </button>
+          <button type="button" onClick={() => setReading(true)} title="Go to reading (B)" aria-keyshortcuts="b">
+            Reading <kbd>B</kbd>
+          </button>
         </section>
       </div>
     );
@@ -278,6 +295,7 @@ export function CourseSession({
   if (analyzing) {
     return (
       <CourseAnalysis
+        moveEntryMode={moveEntryMode}
         initialFen={(lookbackGame ?? trainer.game).fen()}
         initialLastMove={looking ? lookbackLast : trainer.lastMove}
         orientation={orientation}
@@ -305,6 +323,7 @@ export function CourseSession({
       )}
       <div className="trainer__board">
         <Board
+          moveEntryMode={moveEntryMode}
           game={lookbackGame ?? trainer.game}
           orientation={orientation}
           lastMove={looking ? lookbackLast : trainer.lastMove}
@@ -351,8 +370,8 @@ export function CourseSession({
           )}
           <div className="nav">
             <button type="button" onClick={() => setAnalyzing(true)}
-              title="Pause the lesson and try moves with Stockfish">
-              Analyze position
+              title="Pause the lesson and try moves with Stockfish (A)" aria-keyshortcuts="a">
+              Analyze position <kbd>A</kbd>
             </button>
             <button
               type="button"
@@ -371,7 +390,7 @@ export function CourseSession({
               ▶
             </button>
             {looking ? (
-              <button type="button" className="primary" onClick={() => setLookback(null)}>
+              <button type="button" className="primary" onClick={() => setLookback(null)} title="Back to the game (End or Esc)" aria-keyshortcuts="End Escape">
                 Back to the game
               </button>
             ) : watching ? (
@@ -422,10 +441,13 @@ export function CourseSession({
       <aside className="trainer__side">
         <section className="panel">
           <details className="course-shortcuts"><summary>Keyboard shortcuts</summary>
-            <p>Space: next move / part / line · ← →: browse moves · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
+            <p>A: analyze position · B: reading · Space: next move / part / line · ← →: browse moves · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
           </details>
           <div className="course-head">
             <h2>{MODE_LABELS[mode]}</h2>
+            <button type="button" onClick={() => setReading(true)} title="Go to reading (B)" aria-keyshortcuts="b">
+              Reading <kbd>B</kbd>
+            </button>
             {part && (
               <span className="tag tag--book">
                 Part {part.index + 1} of {part.total}
@@ -474,7 +496,7 @@ export function CourseSession({
               </h3>
               {lookbackNode?.comment && <p>{lookbackNode.comment}</p>}
               <div className="card__actions">
-                <button type="button" className="primary" onClick={() => setLookback(null)}>
+                <button type="button" className="primary" onClick={() => setLookback(null)} title="Back to the game (End or Esc)" aria-keyshortcuts="End Escape">
                   Back to the game
                 </button>
               </div>
@@ -496,7 +518,7 @@ export function CourseSession({
                 updated review dates; extra practice keeps its existing schedule. Missed moves come back in four hours.
               </p>
               <div className="card__actions">
-                <button type="button" onClick={session.restart}>
+                <button type="button" onClick={session.restart} title="Go again (R)" aria-keyshortcuts="r">
                   Go again
                 </button>
                 {nextVariation && (

@@ -14,6 +14,8 @@ interface CourseAnalysisProps {
   initialLastMove: { from: string; to: string } | null;
   orientation: Orientation;
   annotationThickness?: AnnotationThickness;
+  moveEntryMode?: 'smart' | 'select';
+  returnLabel?: string;
   onReturn: () => void;
 }
 
@@ -26,6 +28,7 @@ interface Position {
 /** A disposable analysis line: none of its moves reach the course trainer. */
 export function CourseAnalysis({
   initialFen, initialLastMove, orientation, annotationThickness, onReturn,
+  moveEntryMode = 'smart', returnLabel = 'Back to lesson',
 }: CourseAnalysisProps) {
   const [positions, setPositions] = useState<Position[]>([
     { fen: initialFen, lastMove: initialLastMove, label: 'Lesson position' },
@@ -57,7 +60,7 @@ export function CourseAnalysis({
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (courseShortcutBlocked(event)) return;
-      if (event.key === 'Escape') onReturn();
+      if (event.key === 'Escape' || event.key.toLowerCase() === 'a') onReturn();
       else if (event.key === 'ArrowLeft') setCursor((i) => Math.max(0, i - 1));
       else if (event.key === 'ArrowRight') setCursor((i) => Math.min(positions.length - 1, i + 1));
       else if (event.key === 'Home' || event.key === 'ArrowUp') setCursor(0);
@@ -79,6 +82,7 @@ export function CourseAnalysis({
         <div className="board-row">
           <EvalBar engine={engine} orientation={orientation} />
           <Board game={game} orientation={orientation} lastMove={position.lastMove}
+            moveEntryMode={moveEntryMode}
             onMove={play} annotationThickness={annotationThickness} animateMoves />
         </div>
         <div className="board-bar">
@@ -88,8 +92,8 @@ export function CourseAnalysis({
               title="Back (←)" aria-label="Previous analysis move">◀</button>
             <button type="button" onClick={() => setCursor(cursor + 1)} disabled={atEnd}
               title="Forward (→)" aria-label="Next analysis move">▶</button>
-            <button type="button" onClick={() => setCursor(0)} disabled={atStart}>
-              Reset position
+            <button type="button" onClick={() => setCursor(0)} disabled={atStart} title="Reset position (Home)" aria-keyshortcuts="Home">
+              Reset position <kbd>Home</kbd>
             </button>
           </div>
         </div>
@@ -102,10 +106,10 @@ export function CourseAnalysis({
           </div>
           <p className="muted">Try moves for either side and compare the engine’s suggestions.
             Your lesson position and progress are kept while you explore.</p>
-          <button type="button" className="primary" onClick={onReturn} title="Back to lesson (Esc)">
-            Back to lesson
+          <button type="button" className="primary" onClick={onReturn} title={`${returnLabel} (A or Esc)`} aria-keyshortcuts="a Escape">
+            {returnLabel} <kbd>A</kbd>
           </button>
-          <p className="muted">← →: browse your moves · Home: lesson position · End: latest move · Esc: back to lesson.</p>
+          <p className="muted">← →: browse your moves · Home: lesson position · End: latest move · A / Esc: {returnLabel.toLowerCase()}.</p>
           {positions.length > 1 && (
             <div className="course-analysis__moves" aria-label="Analysis moves">
               {positions.map((item, index) => (

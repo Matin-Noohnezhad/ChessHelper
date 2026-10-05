@@ -226,6 +226,7 @@ export default function App() {
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : mode === 'courses' ? (
         <CoursesView
+          moveEntryMode={settings.moveEntryMode}
           courseLearning={settings}
           annotationThickness={settings.annotationThickness}
           watchAutoplay={settings.watchAutoplay}

@@ -23,6 +23,7 @@ type View =
     };
 
 interface CoursesViewProps {
+  moveEntryMode?: 'smart' | 'select';
   courseLearning?: CourseLearningSettings;
   annotationThickness?: AnnotationThickness;
   watchAutoplay?: boolean;
@@ -37,6 +38,7 @@ interface CoursesViewProps {
  * numbers have already moved.
  */
 export function CoursesView({
+  moveEntryMode,
   annotationThickness,
   courseLearning,
   watchAutoplay,
@@ -71,6 +73,9 @@ export function CoursesView({
     const entry = entryOf(view.id);
     if (!entry) return <MissingCourse onBack={openLibrary} />;
     return <>{notices}<CourseReader key={view.id} entry={entry} chapterId={view.chapterId} lineId={view.lineId}
+      moveEntryMode={moveEntryMode}
+      onTrain={(chapterId, lineId) => setView({ kind: 'session', id: view.id, mode: 'learn',
+        chapterIds: [chapterId], ...(lineId ? { lineIds: [lineId] } : {}) })}
       annotationThickness={annotationThickness} onExit={() => setView({ kind: 'course', id: view.id, section: 'reading' })} /></>;
   }
 
@@ -83,6 +88,7 @@ export function CoursesView({
     return (<>
       {notices}
       <CourseSession
+        moveEntryMode={moveEntryMode}
         key={`${view.id}:${view.mode}:${(view.chapterIds ?? []).join(',')}:${(view.lineIds ?? []).join(',')}`}
         entry={entry}
         mode={view.mode}

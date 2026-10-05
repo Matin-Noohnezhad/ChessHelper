@@ -6,27 +6,41 @@ import { courseShortcutBlocked } from '../courseShortcuts.js';
 import { Board } from './Board.js';
 import type { AnnotationThickness } from './Board.js';
 import { MoveTrail } from './CourseSession.js';
+import { CourseAnalysis } from './CourseAnalysis.js';
 
 interface CourseReaderProps {
   entry: LibraryEntry;
   chapterId?: string;
   lineId?: string;
+  initialPly?: number;
+  moveEntryMode?: 'smart' | 'select';
+  onTrain?: (chapterId: string, lineId?: string) => void;
+  resumeTraining?: boolean;
   annotationThickness?: AnnotationThickness;
   onExit: () => void;
 }
 
 /** A read-only walk through every PGN variation, including the author's examples. */
-export function CourseReader({ entry, chapterId, lineId, annotationThickness, onExit }: CourseReaderProps) {
+export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEntryMode = 'smart',
+  annotationThickness, onExit, onTrain, resumeTraining = false }: CourseReaderProps) {
   const chapters = useMemo(() => entry.course.chapters.map((chapter) => ({
     ...chapter, lines: variationsOf(chapter, entry.course.side, true),
   })), [entry.course]);
   const lines = useMemo(() => chapters.flatMap((chapter) => chapter.lines), [chapters]);
   const [index, setIndex] = useState(() => Math.max(0, lines.findIndex((line) =>
-    lineId ? line.id === lineId : line.chapterId === chapterId)));
-  const [ply, setPly] = useState(0);
+    lineId ? line.id === lineId || line.line.some((node) => `${line.chapterId}/${node.id}` === lineId)
+      : line.chapterId === chapterId)));
+  const [ply, setPly] = useState(() => Math.min(initialPly, lines[index]?.line.length ?? 0));
   const [expanded, setExpanded] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const line = lines[index];
   const chapter = chapters.find((item) => item.id === line?.chapterId);
+  const trainingLine = useMemo(() => chapter
+    ? variationsOf(chapter, entry.course.side).find((item) => item.id === line?.id ||
+      item.line.every((node, index) => node.id === line?.line[index]?.id))
+    : undefined, [chapter, entry.course.side, line]);
+  const train = () => { if (chapter) onTrain?.(chapter.id, trainingLine?.id); };
+  const trainingLabel = resumeTraining ? 'Back to training' : trainingLine ? 'Train this line' : 'Train this chapter';
   const node = line?.line[ply - 1];
   const { game, lastMove } = useMemo(() => {
     const game = new Chess(chapter?.startFen ?? START_FEN);
@@ -51,10 +65,13 @@ export function CourseReader({ entry, chapterId, lineId, annotationThickness, on
     else onExit();
   };
   useEffect(() => {
+    if (analyzing) return;
     const onKey = (event: KeyboardEvent) => {
       if (courseShortcutBlocked(event)) return;
       const key = event.key.toLowerCase();
-      if (key === ' ') forward();
+      if (key === 't' && onTrain && chapter) train();
+      else if (key === 'a' && line) setAnalyzing(true);
+      else if (key === ' ') forward();
       else if (key === 'arrowright') setPly((value) => Math.min(line?.line.length ?? 0, value + 1));
       else if (key === 'arrowleft') setPly((value) => Math.max(0, value - 1));
       else if (key === 'home' || key === 'arrowup') setPly(0);
@@ -71,6 +88,9 @@ export function CourseReader({ entry, chapterId, lineId, annotationThickness, on
   });
 
   if (!line) return <section className="panel"><p>No moves to read.</p><button onClick={onExit}>Back to course</button></section>;
+  if (analyzing) return <CourseAnalysis initialFen={game.fen()} initialLastMove={lastMove}
+    orientation={entry.course.side} annotationThickness={annotationThickness} moveEntryMode={moveEntryMode}
+    returnLabel="Back to reading" onReturn={() => setAnalyzing(false)} />;
   const comment = node?.comment ?? '';
   const brief = comment.length > 240 ? `${comment.slice(0, 240).replace(/\s+\S*$/, '')}…` : comment;
   const atEnd = ply === line.line.length;
@@ -98,6 +118,9 @@ export function CourseReader({ entry, chapterId, lineId, annotationThickness, on
         <div className="board-bar">
           <span className="status">{ply === 0 ? 'Starting position' : `${node?.moveNumber ?? Math.ceil(ply / 2)}${node?.side === 'w' ? '.' : '…'} ${node?.san}`} · {ply} / {line.line.length}</span>
           <div className="nav">
+            <button type="button" onClick={() => setAnalyzing(true)} title="Analyze position (A)" aria-keyshortcuts="a">
+              Analyze position <kbd>A</kbd>
+            </button>
             <button type="button" onClick={() => setPly(0)} disabled={!ply} title="Start (Home)">⏮</button>
             <button type="button" onClick={() => setPly(ply - 1)} disabled={!ply} title="Previous move (←)">◀</button>
             <button type="button" className="primary" onClick={forward} title="Continue (Space)" aria-keyshortcuts="Space">
@@ -108,7 +131,12 @@ export function CourseReader({ entry, chapterId, lineId, annotationThickness, on
         </div>
       </div>
       <aside className="trainer__side"><section className="panel">
-        <div className="course-head"><h2>Reading</h2><button type="button" onClick={onExit} title="Back to course (Esc)">Finish</button></div>
+        <div className="course-head"><h2>Reading</h2>
+          {onTrain && <button type="button" onClick={train} title={`${trainingLabel} (T)`} aria-keyshortcuts="t">
+            {trainingLabel} <kbd>T</kbd>
+          </button>}
+          <button type="button" onClick={onExit} title={`${resumeTraining ? 'Back to training' : 'Back to course'} (Esc)`} aria-keyshortcuts="Escape">Finish</button>
+        </div>
         <p className="muted">{chapter?.name} · Line {index + 1} of {lines.length}. Read at your own pace; training progress stays as it is.</p>
         <div className="card card--info course-reader__note">
           <h3>{node ? `${node.moveNumber ?? Math.ceil(ply / 2)}${node.side === 'w' ? '.' : '…'} ${node.san}${node.suffix ?? ''}` : 'Start reading'}</h3>
@@ -120,7 +148,7 @@ export function CourseReader({ entry, chapterId, lineId, annotationThickness, on
           <button type="button" disabled={index === 0} onClick={() => pick(index - 1)} title="Previous line ([)">Previous line</button>
           <button type="button" disabled={index === lines.length - 1} onClick={() => pick(index + 1)} title="Next line (])">Next line</button>
         </div>
-        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>Space: continue · ← →: previous / next move · Home / End: first / last position · [ / ]: previous / next line · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
+        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · Home / End: first / last position · [ / ]: previous / next line · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
       </section></aside>
     </div>
   );

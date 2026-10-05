@@ -485,6 +485,33 @@ describe('course trainer UI', () => {
     expect(html.match(/data-square="/g)).toHaveLength(64);
   });
 
+  it('opens the paused training line even when reading includes a rejected continuation', () => {
+    const annotated = entryFrom({ ...stored, pgn: `[Event "First chapter"]
+1. d4 d5 *
+
+[Event "Second chapter"]
+1. e4 e5 {The paused position} 2. Nf3? {An illustrative mistake} *` }, {});
+    const line = allVariations(annotated.course).find((item) => item.chapterName === 'Second chapter')!;
+    expect(line.line.map((node) => node.san)).toEqual(['e4', 'e5']);
+    const html = renderToStaticMarkup(<CourseReader entry={annotated} lineId={line.id}
+      initialPly={2} onExit={() => {}} onTrain={() => {}} />);
+    expect(html).toContain('The paused position');
+    expect(html).toContain('2 / 3');
+    expect(html).toContain('Train this line');
+    expect(html).toContain('aria-keyshortcuts="t"');
+  });
+
+  it('offers chapter training for an annotation-only sideline', () => {
+    const annotated = entryFrom({ ...stored, pgn: '1. e4 (1. d4) e5 *' }, {});
+    const chapter = annotated.course.chapters[0]!;
+    const sideline = chapter.roots.find((node) => node.san === 'd4')!;
+    const html = renderToStaticMarkup(<CourseReader entry={annotated}
+      lineId={`${chapter.id}/${sideline.id}`} initialPly={10} onExit={() => {}} onTrain={() => {}} />);
+    expect(html).toContain('Train this chapter');
+    expect(html).toContain('1 / 1');
+    expect(html).not.toContain('Train this line');
+  });
+
   it('uses configured lesson size and full-line repetitions', () => {
     const html = renderToStaticMarkup(<CourseSession entry={entry} mode="learn"
       courseLearning={{ courseChunk: 0, courseFullPasses: 3 }}
