@@ -194,9 +194,13 @@ schedule.
   a White repertoire answers 1...c5, 1...e5 and 1...e6 but plays one move against
   each — and shown next to a switch at import, since a course imported for the
   wrong colour asks you to play your opponent's moves.
-- Courses live in IndexedDB rather than `localStorage`: a real course is a
-  megabyte or two of PGN and people own several. What is stored is the PGN, so a
-  fix to the importer reaches courses imported last month.
+- Courses live on disk, in `user-data/` at the repo root, kept by the dev server
+  (`npm run dev` or `vite preview`) — so a course imported in Chrome is there in
+  Firefox too, progress included. Courses a browser kept for itself before are
+  moved there the first time it opens the app. Served as plain static files,
+  with no server to keep them, they fall back to the browser's IndexedDB. What
+  is stored is the PGN, so a fix to the importer reaches courses imported last
+  month.
 
 ### Game review
 
