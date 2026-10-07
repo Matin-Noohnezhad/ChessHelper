@@ -72,6 +72,14 @@ export interface Chapter {
   startFen?: string;
   /** First moves of the chapter. More than one when the author branched at move 1. */
   roots: CourseNode[];
+  /** Original PGN games, kept intact for reading within merged chapters. */
+  games?: CourseGame[];
+  headers: Record<string, string>;
+}
+
+export interface CourseGame {
+  id: string;
+  roots: CourseNode[];
   headers: Record<string, string>;
 }
 

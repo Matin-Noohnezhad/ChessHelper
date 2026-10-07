@@ -3,10 +3,11 @@ import type { ButtonHTMLAttributes } from 'react';
 
 type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> & {
   onStep: () => void;
+  repeat?: boolean;
 };
 
 /** Step immediately, then repeat while the pointer remains pressed. */
-export function MoveStepButton({ onStep, disabled, style, ...props }: Props) {
+export function MoveStepButton({ onStep, disabled, repeat = true, style, ...props }: Props) {
   const step = useRef(onStep);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pointer = useRef<number | null>(null);
@@ -19,8 +20,8 @@ export function MoveStepButton({ onStep, disabled, style, ...props }: Props) {
 
   useEffect(() => {
     step.current = onStep;
-    if (disabled) stop();
-  }, [onStep, disabled]);
+    if (disabled || !repeat) stop();
+  }, [onStep, disabled, repeat]);
 
   useEffect(() => {
     const release = (event: PointerEvent) => {
@@ -54,12 +55,13 @@ export function MoveStepButton({ onStep, disabled, style, ...props }: Props) {
         pointer.current = event.pointerId;
         event.currentTarget.setPointerCapture(event.pointerId);
         onStep();
-        const repeat = () => {
+        if (!repeat) return;
+        const repeatStep = () => {
           if (pointer.current === null) return;
           step.current();
-          timer.current = setTimeout(repeat, 100);
+          timer.current = setTimeout(repeatStep, 100);
         };
-        timer.current = setTimeout(repeat, 350);
+        timer.current = setTimeout(repeatStep, 350);
       }}
       onPointerUp={stop}
       onPointerCancel={stop}

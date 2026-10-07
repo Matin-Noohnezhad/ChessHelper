@@ -76,6 +76,31 @@ export interface Variation {
   line: CourseNode[];
 }
 
+/** A source game is one reading line, with all its branches still attached. */
+export interface ReadingLine extends Variation {
+  roots: CourseNode[];
+}
+
+/** Follow the author's first continuation, optionally via a training node ID. */
+export function readingPath(roots: readonly CourseNode[], targetId?: string): CourseNode[] {
+  const path: CourseNode[] = [];
+  let siblings = roots;
+  while (siblings.length) {
+    const node = siblings.find((item) => targetId === item.id || targetId?.startsWith(`${item.id}.`)) ?? siblings[0]!;
+    path.push(node);
+    siblings = node.children;
+  }
+  return path;
+}
+
+export function readingLinesOf(chapter: Chapter): ReadingLine[] {
+  const games = chapter.games ?? [{ id: `${chapter.id}/game-1`, roots: chapter.roots }];
+  return games.filter((game) => game.roots.length).map((game) => ({
+    id: game.id, chapterId: chapter.id, chapterName: chapter.name,
+    roots: game.roots, line: readingPath(game.roots),
+  }));
+}
+
 /**
  * Every variation in a chapter, in the order the file wrote them — main line
  * first at each branch, which is the order a course is meant to be learned in.

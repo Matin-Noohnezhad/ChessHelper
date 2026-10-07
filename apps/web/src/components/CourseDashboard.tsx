@@ -88,7 +88,7 @@ export function CourseDashboard({
       </div>
       {section === 'reading' ? <section className="panel">
         <h3>Read the course</h3>
-        <p className="muted">Walk through the moves with short explanations, arrows and square highlights from the PGN. Open any chapter or line below, including its annotated sidelines.</p>
+        <p className="muted">Each game stays in one line, with its explanations, arrows and square highlights. At a branch, use ↑ ↓ to choose a variation and → to continue; the main line is selected by default.</p>
         <button type="button" className="primary" onClick={() => onRead?.()}>Start reading</button>
       </section> : <section className="panel">
         <div className="bar">

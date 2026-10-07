@@ -11,7 +11,7 @@
  */
 
 import { LEARNED_LEVEL, MAX_LEVEL, isDue, progressFor } from './scheduler.js';
-import { colorOf, moveKey, trainableMoves, variationsOf } from './tree.js';
+import { colorOf, moveKey, readingLinesOf, trainableMoves, variationsOf } from './tree.js';
 import type { Variation } from './tree.js';
 import type {
   Chapter,
@@ -182,7 +182,7 @@ export function courseOutline(
   includeAnnotations = false,
 ): OutlineChapter[] {
   return course.chapters.map((chapter) => {
-    const variations = variationsOf(chapter, course.side, includeAnnotations).map((variation) =>
+    const variations = (includeAnnotations ? readingLinesOf(chapter) : variationsOf(chapter, course.side)).map((variation) =>
       variationStats(variation, course.side, progress, now),
     );
     const counts = countKeys(trainableMoves([chapter], course.side).keys(), progress, now);

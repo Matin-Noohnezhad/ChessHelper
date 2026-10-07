@@ -1,7 +1,7 @@
 import { MoveStepButton } from './MoveStepButton.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Chess, START_FEN } from '@coh/chess-core';
-import { variationsOf } from '@coh/course';
+import { readingLinesOf, readingPath, variationsOf } from '@coh/course';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
 import { courseShortcutBlocked } from '../courseShortcuts.js';
 import { groupCourseSections } from '../courseSections.js';
@@ -27,25 +27,38 @@ interface CourseReaderProps {
 export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEntryMode = 'smart',
   annotationThickness, onExit, onTrain, resumeTraining = false }: CourseReaderProps) {
   const chapters = useMemo(() => entry.course.chapters.map((chapter) => ({
-    ...chapter, lines: variationsOf(chapter, entry.course.side, true),
+    ...chapter, lines: readingLinesOf(chapter),
   })), [entry.course]);
   const lines = useMemo(() => chapters.flatMap((chapter) => chapter.lines), [chapters]);
   const [index, setIndex] = useState(() => Math.max(0, lines.findIndex((line) =>
-    lineId ? line.id === lineId || line.line.some((node) => `${line.chapterId}/${node.id}` === lineId)
+    lineId ? line.id === lineId || (lineId.startsWith(`${line.chapterId}/`) &&
+      readingPath(line.roots, lineId.slice(line.chapterId.length + 1)).some((node) => `${line.chapterId}/${node.id}` === lineId))
       : line.chapterId === chapterId)));
-  const [ply, setPly] = useState(() => Math.min(initialPly, lines[index]?.line.length ?? 0));
+  const [path, setPath] = useState(() => readingPath(lines[index]?.roots ?? [],
+    lineId?.slice((lines[index]?.chapterId.length ?? 0) + 1)));
+  const [ply, updatePly] = useState(() => Math.min(initialPly, path.length));
+  const [choice, setChoice] = useState(0);
+  const setPly = (value: number) => {
+    updatePly(Math.max(0, Math.min(path.length, value)));
+    setChoice(0);
+  };
   const [expanded, setExpanded] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const line = lines[index];
+  const sourceLine = lines[index];
+  const line = useMemo(() => sourceLine ? { ...sourceLine, line: path } : undefined, [sourceLine, path]);
+  const continuations = ply ? path[ply - 1]?.children ?? [] : sourceLine?.roots ?? [];
+  const branch = continuations.length > 1;
+  const variationList = useRef<HTMLDivElement>(null);
+  const branchPly = path.slice(0, ply).reduce((last, node, i) =>
+    (i ? path[i - 1]!.children : sourceLine?.roots)?.[0]?.id !== node.id ? i : last, -1);
   const chapter = chapters.find((item) => item.id === line?.chapterId);
   const sections = useMemo(() => groupCourseSections(chapters), [chapters]);
   const hasSections = sections.some((item) => item.section);
   const sectionIndex = sections.findIndex((item) => item.section === chapter?.section);
   const sectionChapters = sections[sectionIndex]?.chapters ?? [];
-  const trainingLine = useMemo(() => chapter
-    ? variationsOf(chapter, entry.course.side).find((item) => item.id === line?.id ||
-      item.line.every((node, index) => node.id === line?.line[index]?.id))
-    : undefined, [chapter, entry.course.side, line]);
+  const trainingLines = useMemo(() => chapter ? variationsOf(chapter, entry.course.side) : [], [chapter, entry.course.side]);
+  const trainingLine = useMemo(() => trainingLines.find((item) => item.id === line?.id ||
+    item.line.every((node, index) => node.id === line?.line[index]?.id)), [trainingLines, line]);
   const train = () => { if (chapter) onTrain?.(chapter.id, trainingLine?.id); };
   const trainingLabel = resumeTraining ? 'Back to training' : trainingLine ? 'Train this line' : 'Train this chapter';
   const node = line?.line[ply - 1];
@@ -60,14 +73,31 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
   }, [chapter, line, ply]);
 
   useEffect(() => setExpanded(false), [index, ply]);
+  useEffect(() => {
+    const list = variationList.current;
+    const option = list?.children[choice] as HTMLElement | undefined;
+    if (!list || !option) return;
+    if (option.offsetTop < list.scrollTop) list.scrollTop = option.offsetTop;
+    else if (option.offsetTop + option.offsetHeight > list.scrollTop + list.clientHeight)
+      list.scrollTop = option.offsetTop + option.offsetHeight - list.clientHeight;
+  }, [choice, index, ply]);
 
   const pick = (next: number) => {
     if (next < 0 || next >= lines.length) return;
     setIndex(next);
-    setPly(0);
+    setPath(lines[next]!.line);
+    updatePly(0);
+    setChoice(0);
+  };
+  const advance = (selected = choice) => {
+    const next = continuations[selected];
+    if (!next) return;
+    setPath([...path.slice(0, ply), ...readingPath([next])]);
+    updatePly(ply + 1);
+    setChoice(0);
   };
   const forward = () => {
-    if (line && ply < line.line.length) setPly(ply + 1);
+    if (continuations.length) advance();
     else if (index < lines.length - 1) pick(index + 1);
     else onExit();
   };
@@ -79,10 +109,12 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
       if (key === 't' && onTrain && chapter) train();
       else if (key === 'a' && line) setAnalyzing(true);
       else if (key === ' ') forward();
-      else if (key === 'arrowright') setPly((value) => Math.min(line?.line.length ?? 0, value + 1));
-      else if (key === 'arrowleft') setPly((value) => Math.max(0, value - 1));
-      else if (key === 'home' || key === 'arrowup') setPly(0);
-      else if (key === 'end' || key === 'arrowdown') setPly(line?.line.length ?? 0);
+      else if (key === 'arrowright') { if (!event.repeat || !branch) advance(); }
+      else if (key === 'arrowleft') setPly(ply - 1);
+      else if (key === 'arrowup' && branch) setChoice(Math.max(0, choice - 1));
+      else if (key === 'arrowdown' && branch) setChoice(Math.min(continuations.length - 1, choice + 1));
+      else if (key === 'home') setPly(0);
+      else if (key === 'end') setPly(path.length);
       else if (key === ']') pick(index + 1);
       else if (key === '[') pick(index - 1);
       else if (key === 'c') setExpanded((value) => !value);
@@ -138,6 +170,7 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
         <div className="course-reader__lines-head">
           <h3>Lines</h3><span className="muted">{chapter?.lines.length}</span>
         </div>
+        <p className="muted course-reader__line-help">One line per game. Variations appear at the move where they branch.</p>
         <ul className="course-outline__lines">
           {chapter?.lines.map((item, i) => <li key={item.id}>
             <button type="button" className={`course-outline__line${line.id === item.id ? ' is-active' : ''}`}
@@ -160,6 +193,7 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
             </button>
             <button type="button" onClick={() => setPly(0)} disabled={!ply} title="Start (Home)">⏮</button>
             <MoveStepButton type="button" onStep={() => setPly(ply - 1)} disabled={!ply} title="Previous move (←)">◀</MoveStepButton>
+            <MoveStepButton type="button" onStep={() => advance()} disabled={atEnd} title="Next move (→)" repeat={!branch}>▶</MoveStepButton>
             <button type="button" className="primary" onClick={forward} title="Continue (Space)" aria-keyshortcuts="Space">
               {atEnd ? index === lines.length - 1 ? 'Finish reading' : 'Next line' : 'Next move'} <kbd>Space</kbd>
             </button>
@@ -180,12 +214,30 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
           <p>{comment ? expanded ? comment : brief : node ? 'No explanation for this move in the PGN.' : 'Press Space to read the first move and its explanation.'}</p>
           {brief !== comment && <button type="button" onClick={() => setExpanded(!expanded)} title="Expand or shorten explanation (C)">{expanded ? 'Show less' : 'Read full explanation'}</button>}
         </div>
+        {branch && <section className="course-variations" aria-label="Choose variation">
+          <div className="course-variations__head"><h3>Variations</h3><span>{continuations.length} continuations</span></div>
+          <div ref={variationList} className="course-variations__list" role="listbox" aria-label="Continuations"
+            tabIndex={0} aria-activedescendant={`course-variation-${choice}`}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' && !event.repeat) { event.preventDefault(); advance(); }
+            }}>
+            {continuations.map((move, i) => <div key={move.id} id={`course-variation-${i}`}
+              role="option" aria-selected={i === choice} className={`course-variations__option${i === choice ? ' is-selected' : ''}`}
+              onClick={() => advance(i)}>
+              <span className="course-variations__moves">{readingPath([move]).slice(0, 5).map((node, n) =>
+                `${node.side === 'w' ? `${node.moveNumber ?? Math.ceil(node.ply / 2)}.` : n === 0 ? `${node.moveNumber ?? Math.ceil(node.ply / 2)}…` : ''}${node.san}${node.suffix ?? ''}`).join(' ')}</span>
+              <span className="course-variations__label">{i === 0 ? 'Main line' : move.dubious ? 'Marked dubious' : 'Variation'}</span>
+            </div>)}
+          </div>
+          <p><strong>↑ ↓</strong> choose <span>·</span> <strong>→</strong> play <span>·</span> Main line selected by default</p>
+        </section>}
+        {branchPly >= 0 && <button type="button" className="course-reader__return" onClick={() => setPly(branchPly)}>↩ Back to branch</button>}
         <MoveTrail trail={line.line} cursor={ply} startIndex={0} onSelect={setPly} />
         <div className="course-card__actions">
           <button type="button" disabled={index === 0} onClick={() => pick(index - 1)} title="Previous line ([)">Previous line</button>
           <button type="button" disabled={index === lines.length - 1} onClick={() => pick(index + 1)} title="Next line (])">Next line</button>
         </div>
-        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · Home / End: first / last position · [ / ]: previous / next line · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
+        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · ↑ ↓: choose variation · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
       </section></aside>
     </div>
   );

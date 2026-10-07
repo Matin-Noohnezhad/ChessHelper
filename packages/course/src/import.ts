@@ -67,11 +67,15 @@ function convert(line: PgnMove[]): RawNode[] {
 
   const siblings = [node];
   for (const variation of first.variations ?? []) siblings.push(...convert(variation));
-  return siblings;
+  // Exporters sometimes repeat a move to attach another note or continuation.
+  // Coalesce those occurrences at every depth before assigning tree IDs.
+  const combined: RawNode[] = [];
+  mergeSiblings(combined, siblings, true);
+  return combined;
 }
 
 /** Folds one sibling list into another, matching on the move itself. */
-function mergeSiblings(into: RawNode[], from: readonly RawNode[]): void {
+function mergeSiblings(into: RawNode[], from: readonly RawNode[], combineNotes = false): void {
   for (const incoming of from) {
     const existing = into.find((node) => normalizeSan(node.san) === normalizeSan(incoming.san));
     if (!existing) {
@@ -82,10 +86,23 @@ function mergeSiblings(into: RawNode[], from: readonly RawNode[]): void {
     // chapter repeating the position should not overwrite the prose that taught
     // it, but it may fill a gap the first left.
     if (!existing.comment && incoming.comment) existing.comment = incoming.comment;
+    else if (combineNotes && incoming.comment && existing.comment !== incoming.comment)
+      existing.comment += `\n\n${incoming.comment}`;
+    if (combineNotes) {
+      existing.nags = [...new Set([...existing.nags, ...incoming.nags])];
+      if (existing.shapes && incoming.shapes) {
+        existing.shapes = {
+          arrows: [...existing.shapes.arrows, ...incoming.shapes.arrows].filter((shape, index, all) =>
+            all.findIndex((item) => item.from === shape.from && item.to === shape.to && item.color === shape.color) === index),
+          circles: [...existing.shapes.circles, ...incoming.shapes.circles].filter((shape, index, all) =>
+            all.findIndex((item) => item.square === shape.square && item.color === shape.color) === index),
+        };
+      }
+    }
     if (!existing.shapes && incoming.shapes) existing.shapes = incoming.shapes;
     if (!existing.suffix && incoming.suffix) existing.suffix = incoming.suffix;
     existing.dubious = existing.dubious || incoming.dubious;
-    mergeSiblings(existing.children, incoming.children);
+    mergeSiblings(existing.children, incoming.children, combineNotes);
   }
 }
 
@@ -276,6 +293,7 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
     section?: string;
     startFen?: string;
     roots: RawNode[];
+    games: AnnotatedPgnGame[];
     headers: Record<string, string>;
   }
   const drafts: Draft[] = [];
@@ -288,12 +306,13 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
     // from different positions are two chapters, whatever the header says.
     let draft = drafts.find((entry) => entry.name === name && entry.section === section && entry.startFen === startFen);
     if (!draft) {
-      draft = { name, roots: [], headers: game.headers };
+      draft = { name, roots: [], games: [], headers: game.headers };
       if (section) draft.section = section;
       if (startFen) draft.startFen = startFen;
       drafts.push(draft);
     }
     mergeSiblings(draft.roots, convert(game.moves));
+    draft.games.push(game);
   });
 
   const chapters: Chapter[] = drafts.map((draft, index) => {
@@ -308,6 +327,20 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
     };
     if (draft.startFen) chapter.startFen = draft.startFen;
     if (draft.section) chapter.section = draft.section;
+    // Keep each source game's order and annotations, but share node IDs with
+    // the merged training tree so paused lessons can open the same position.
+    const alignIds = (nodes: CourseNode[], merged: CourseNode[]): void => {
+      for (const node of nodes) {
+        const match = merged.find((item) => item.san === node.san)!;
+        node.id = match.id;
+        alignIds(node.children, match.children);
+      }
+    };
+    chapter.games = draft.games.map((game, gameIndex) => {
+      const roots = place({ ...context, problems: [] }, convert(game.moves), '');
+      alignIds(roots, chapter.roots);
+      return { id: `${chapter.id}/game-${gameIndex + 1}`, roots, headers: game.headers };
+    });
     return chapter;
   });
 
