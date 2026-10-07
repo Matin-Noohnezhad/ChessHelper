@@ -182,8 +182,7 @@ export function SettingsPanel({
             onChange={(event) => onSoundStyleChange?.(event.target.value as SoundStyle)}>
             {SOUND_STYLES.map((style) => <option key={style.key} value={style.key}>{style.label}</option>)}
           </select>
-          <span className="settings-row__hint">{SOUND_STYLES.find((style) => style.key === soundStyle)?.description}
-            {' '}Inspired presets are original sounds, not official recordings.</span>
+          <span className="settings-row__hint">{SOUND_STYLES.find((style) => style.key === soundStyle)?.description}</span>
           <div className="settings-slider">
             <button
               type="button"

@@ -312,7 +312,7 @@ export function Board({
       : castle ? 'castle'
       : capture ? 'capture'
       : 'move';
-    playBoardSound(kind, soundVolume, soundStyle);
+    playBoardSound(kind, soundVolume, soundStyle, capture, castle);
   }, [fen, contents, lastMove, game, names, soundVolume, soundStyle, replay, replaySounds]);
 
   const targets = useMemo(() => {

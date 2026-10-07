@@ -1,0 +1,255 @@
+{
+  "retrieved": "2026-10-06",
+  "source": "https://replay.chessbase.com/",
+  "implementation": "https://replay.chessbase.com/Scripts/CBReplay.js",
+  "files": [
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move1.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move1.mp3",
+      "bytes": 5634,
+      "sha256": "9561f10751ef4f04971e799598f7456d3cff79da4b7170b7793c725b5a67e312"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move2.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move2.mp3",
+      "bytes": 5008,
+      "sha256": "8c39ceef095337b39477b45e8e313c9da59214af36e5d5de65041dde385b6aca"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move3.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move3.mp3",
+      "bytes": 6260,
+      "sha256": "3753c50e58990da81f85dda413de5d059c2e5163d07e82cad3ec872dcb2c26f1"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move4.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move4.mp3",
+      "bytes": 5634,
+      "sha256": "6915502511d7351af0727a7ba00b019d66259db7138373b47d0498f34d05858d"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move5.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move5.mp3",
+      "bytes": 6260,
+      "sha256": "d0ce0aa3996b7be711695313902091c5837779d5122b5316bea6910de84c5e71"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move6.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move6.mp3",
+      "bytes": 6260,
+      "sha256": "621ff36c4ef4af27c2d9d874a3b29662982faf25d08fb659ae649360f9e943cf"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move7.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move7.mp3",
+      "bytes": 6886,
+      "sha256": "55da61a09f2d254352854f31c3f205353c7cf778a376dc5b7cba4686a0ff3f7b"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move8.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move8.mp3",
+      "bytes": 5634,
+      "sha256": "3b99deb5007ba7c42c151907d0c8d7e9a835e7470d5c30f0e854f818e72465e4"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move9.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move9.mp3",
+      "bytes": 5634,
+      "sha256": "1fde7aae272c600677dda4d4dbec9e4ac20df0adaf06efe591869fc2d1c3d203"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move10.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move10.mp3",
+      "bytes": 5008,
+      "sha256": "b105cef93ea8d1378e5e2d226ffc7e17396c93f8fe5e78bc288e574da7763123"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/move11.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/move11.mp3",
+      "bytes": 6260,
+      "sha256": "ea8a0c304cf4ab572a4d4673fb965e561ebbccf564394d559105e8762802fdaf"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture1.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture1.mp3",
+      "bytes": 4382,
+      "sha256": "7823aad7ad46268f4972ef994cfbb81092a08356f38f3d06675078e1ba40d89c"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture2.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture2.mp3",
+      "bytes": 3756,
+      "sha256": "e1d5ba244e927208b4ab5489fb634f90dead9bc1d0f6111b62273f2320c07609"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture3.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture3.mp3",
+      "bytes": 4382,
+      "sha256": "67a79769ba219fc0b5ee85b255265522387fef3a2175e7fe3855d091ccfb885f"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture4.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture4.mp3",
+      "bytes": 5008,
+      "sha256": "e174d59ce0efa6f03bd2f5a5281b5386550493c3acccfa63ae7176a2a72c99d8"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture5.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture5.mp3",
+      "bytes": 5008,
+      "sha256": "c2ab3570f08a36cd6d2d6e95410483bdea1549727eff0607b14f6fb77b5a7cb8"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture6.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture6.mp3",
+      "bytes": 5634,
+      "sha256": "29e82bdc249ab29d0092df564676d363a6d4adb49062f104fb0ee02cc2edd166"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture7.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture7.mp3",
+      "bytes": 5634,
+      "sha256": "2cd736055fc03f63874df0b448265f802a7f4f503ce770d0383f121bff7c30da"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture8.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture8.mp3",
+      "bytes": 4382,
+      "sha256": "b0e8b1c2cd385b1175af795b330bf2927818f36c5cfc5400b697ad7c49a6057d"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture9.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture9.mp3",
+      "bytes": 5634,
+      "sha256": "0e3c579bc0324648641fcd4b70676efb87f5b2194ba82710c64c640487485b5d"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture10.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture10.mp3",
+      "bytes": 6260,
+      "sha256": "09cf68641b4b2a4323201195f2c09ae8b1aad91b80b4daec17af8f025724d2cf"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture11.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture11.mp3",
+      "bytes": 4382,
+      "sha256": "ea37bbe6f04f18cd69985cdb748f8cffb0eec541dd7f0f5d7c1b72a1d503bb42"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture12.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture12.mp3",
+      "bytes": 3130,
+      "sha256": "5b3c74beacde48b782607e048393199da01b37dbb5c4ba4b55f3bd47dc25345f"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture13.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture13.mp3",
+      "bytes": 5634,
+      "sha256": "c1feeea162d5890aaaa0a7323fb560bc461d54c3a70987aadeed4113e9a814d9"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture14.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture14.mp3",
+      "bytes": 5008,
+      "sha256": "7ed87c2dd0d809b99b73751649b14c3a6c637b98b137db5f7c27622c190468dc"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/capture15.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/capture15.mp3",
+      "bytes": 3756,
+      "sha256": "e9bca58d8d953d83716fbd511aa61405bdaab7a466de43b5fdd53f9bbc66b34f"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/castle.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/castle.mp3",
+      "bytes": 14398,
+      "sha256": "ac75ee092a4c63409fdf23f902f128376f93f78b4008eebad8c5216add059ef0"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/newgame.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/newgame.mp3",
+      "bytes": 72616,
+      "sha256": "ea1476c4e55d54242ad08f83947efad147710e39f35d79d5ed5fdafc2c936fa7"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/CaptStrong.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/CaptStrong.mp3",
+      "bytes": 6886,
+      "sha256": "cbda8b3edec42f8a3656377bbf63d7548a7cdde8233657156114f56399235a48"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/moveStrong1.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/moveStrong1.mp3",
+      "bytes": 3756,
+      "sha256": "0b5b066ea363570259b61afe8c0c9404192f28a15c82fa36273b59e204cd1704"
+    },
+    {
+      "site": "ChessBase",
+      "set": "Web board",
+      "file": "chessbase/board/moveStrong2.mp3",
+      "url": "https://pgn.chessbase.com/common/Media/Sounds/Board/moveStrong2.mp3",
+      "bytes": 6260,
+      "sha256": "2fe6991accb11b0cfb3d7c1df1325eaad128259ab2ddcbcbf3c6880f5443dd3b"
+    }
+  ]
+}

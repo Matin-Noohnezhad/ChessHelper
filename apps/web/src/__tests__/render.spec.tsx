@@ -664,8 +664,12 @@ describe('settings', () => {
     expect(html).toContain('Sound style');
     expect(html).toContain('Wooden (original)');
     expect(html).toContain('ChessBase inspired');
-    expect(html).toContain('Chess.com inspired');
-    expect(html).toContain('Lichess inspired');
+    expect(html).toContain('ChessBase — Web board');
+    expect(html).toContain('ChessBase — Desktop (classic)');
+    expect(html).toContain('ChessBase — Desktop (varied)');
+    expect(html).toContain('Chess.com — Default');
+    expect(html).toContain('Lichess — Standard');
+    expect(html).toContain('Lichess — Lisp');
     expect(html).toContain('>promotion</button>');
     expect(html).toContain('>mate</button>');
     expect(html).toMatch(/<input type="checkbox"\/> Sound replayed moves/);

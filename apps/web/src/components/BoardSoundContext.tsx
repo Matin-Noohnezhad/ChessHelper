@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { DEFAULT_SOUND_STYLE, stopBoardSounds, unlockBoardAudio } from '../sound.js';
+import { DEFAULT_SOUND_STYLE, prepareBoardSounds, stopBoardSounds, unlockBoardAudio } from '../sound.js';
 import type { SoundStyle } from '../sound.js';
 
 interface BoardSoundSettings {
@@ -18,6 +18,7 @@ export function BoardSoundProvider({ volume, style = DEFAULT_SOUND_STYLE, replay
   useEffect(() => {
     stopBoardSounds();
     if (volume <= 0) return;
+    void prepareBoardSounds(style);
     const unlock = () => unlockBoardAudio();
     window.addEventListener('pointerdown', unlock, { capture: true });
     window.addEventListener('keydown', unlock, { capture: true });

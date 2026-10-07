@@ -1,0 +1,27 @@
+{
+  "retrieved": "2026-10-06",
+  "page": "https://lichess.org/analysis",
+  "set": "lisp",
+  "files": [
+    {
+      "event": "move",
+      "url": "https://lichess1.org/assets/hashed/Move.2b161d54.mp3",
+      "sha256": "2b161d54b1cbdb683175b09c29cc65a5575c635e9d946e52ae471dcbf69f727d"
+    },
+    {
+      "event": "capture",
+      "url": "https://lichess1.org/assets/hashed/Capture.b933f1a3.mp3",
+      "sha256": "b933f1a39a97e45e35450d8b757cab34c66ef7f3e1548e289f1bf182bebd7030"
+    },
+    {
+      "event": "check",
+      "url": "https://lichess1.org/assets/hashed/Check.3b85d980.mp3",
+      "sha256": "3b85d980931cd531ae5980b1770325da8fd74c2930d30f93a50fc0215d7c4bc3"
+    },
+    {
+      "event": "checkmate",
+      "url": "https://lichess1.org/assets/hashed/Checkmate.3b85d980.mp3",
+      "sha256": "3b85d980931cd531ae5980b1770325da8fd74c2930d30f93a50fc0215d7c4bc3"
+    }
+  ]
+}

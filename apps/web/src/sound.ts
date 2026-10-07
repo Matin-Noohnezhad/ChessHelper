@@ -1,24 +1,24 @@
+import { RECORDED_SOUND_SETS } from './recordedSoundSets.js';
+
 export type BoardSound = 'move' | 'capture' | 'castle' | 'promotion' | 'check' | 'mate';
 
-export const SOUND_STYLES = [
+export const SYNTHETIC_SOUND_STYLES = [
   { key: 'wooden', label: 'Wooden (original)', description: 'Warm wooden taps with soft chimes.' },
-  { key: 'chessbase', label: 'ChessBase inspired', description: 'Dry, crisp clicks with a short board rattle.' },
-  { key: 'chesscom', label: 'Chess.com inspired', description: 'Deep, rounded knocks with a punchy capture.' },
-  { key: 'lichess', label: 'Lichess inspired', description: 'Light, bright ticks with a snappy capture.' },
+  { key: 'chessbase', label: 'ChessBase inspired', description: 'Original synthesized clicks with a short board rattle.' },
 ] as const;
+export const SOUND_STYLES = [...SYNTHETIC_SOUND_STYLES, ...RECORDED_SOUND_SETS] as const;
 export type SoundStyle = typeof SOUND_STYLES[number]['key'];
+type SyntheticSoundStyle = typeof SYNTHETIC_SOUND_STYLES[number]['key'];
 export const DEFAULT_SOUND_STYLE: SoundStyle = 'wooden';
 
-/** Original synthesis profiles, not recordings from the named applications. */
 const PROFILES = {
   wooden: { pitch: 1, decay: 1, contact: 0.32, body: 1, filter: 0.3, harmonic: 2.71, rattle: 0, chime: 1 },
   chessbase: { pitch: 1.7, decay: 1.8, contact: 0.7, body: 0.5, filter: 0.12, harmonic: 3.4, rattle: 0.3, chime: 1.25 },
-  chesscom: { pitch: 0.58, decay: 0.8, contact: 0.2, body: 1.3, filter: 0.55, harmonic: 2.2, rattle: 0.12, chime: 0.8 },
-  lichess: { pitch: 2.3, decay: 2.3, contact: 0.42, body: 0.7, filter: 0.2, harmonic: 1.8, rattle: 0, chime: 1.5 },
-} satisfies Record<SoundStyle, object>;
+} satisfies Record<SyntheticSoundStyle, object>;
 
 let context: AudioContext | null = null;
 const buffers = new Map<string, AudioBuffer>();
+const pendingBuffers = new Map<string, Promise<AudioBuffer>>();
 const playing = new Set<AudioBufferSourceNode>();
 let revision = 0;
 
@@ -27,6 +27,7 @@ function getAudio(): AudioContext | null {
   if (!context || context.state === 'closed') {
     context = new window.AudioContext();
     buffers.clear();
+    pendingBuffers.clear();
   }
   return context;
 }
@@ -55,7 +56,7 @@ export function stopBoardSounds(): void {
  * and a filtered contact transient give a piece-on-board sound without a pitched
  * electronic sweep. No downloads, codecs, or network delay during a move.
  */
-export function synthesizeBoardSound(kind: BoardSound, sampleRate: number, style: SoundStyle = DEFAULT_SOUND_STYLE): Float32Array {
+export function synthesizeBoardSound(kind: BoardSound, sampleRate: number, style: SyntheticSoundStyle = 'wooden'): Float32Array {
   const profile = PROFILES[style];
   const samples = new Float32Array(Math.ceil(sampleRate * 0.48));
   let seed = 173;
@@ -112,29 +113,74 @@ export function synthesizeBoardSound(kind: BoardSound, sampleRate: number, style
   return samples;
 }
 
-export function playBoardSound(kind: BoardSound, volume: number, style: SoundStyle = DEFAULT_SOUND_STYLE): void {
+/** Preserve each site's event mapping, including layering and random variants. */
+export function boardSoundFiles(kind: BoardSound, style: SoundStyle, capture = false, castle = false): string[] {
+  const set = RECORDED_SOUND_SETS.find((item) => item.key === style);
+  if (!set) return [];
+  if (set.source === 'ChessBase') {
+    // ChessBase presets use the underlying move rather than a separate chime.
+    // Keep capture/castling information when a higher-priority event masks it.
+    const files = set.sounds[capture || kind === 'capture' ? 'capture'
+      : castle || kind === 'castle' ? 'castle' : 'move'];
+    return [typeof files === 'string' ? files : files[Math.floor(Math.random() * files.length)]!];
+  }
+  const file = set.sounds[kind];
+  if (set.source === 'Lichess') {
+    const base = set.sounds[capture || kind === 'capture' ? 'capture' : 'move'];
+    return kind === 'check' || kind === 'mate' ? [base, file] : [base];
+  }
+  return [file];
+}
+
+function loadRecording(audio: AudioContext, file: string): Promise<AudioBuffer> {
+  const cached = buffers.get(file);
+  if (cached) return Promise.resolve(cached);
+  const pending = pendingBuffers.get(file);
+  if (pending) return pending;
+  const request = fetch(`${import.meta.env.BASE_URL}sounds/${file}`)
+    .then((response) => {
+      if (!response.ok) throw new Error(`Sound download failed: ${response.status}`);
+      return response.arrayBuffer();
+    })
+    .then((data) => audio.decodeAudioData(data))
+    .then((buffer) => {
+      if (context === audio) buffers.set(file, buffer);
+      return buffer;
+    })
+    .finally(() => {
+      if (pendingBuffers.get(file) === request) pendingBuffers.delete(file);
+    });
+  pendingBuffers.set(file, request);
+  return request;
+}
+
+/** Load only the selected set, ahead of the first move or preview. */
+export async function prepareBoardSounds(style: SoundStyle): Promise<void> {
+  const set = RECORDED_SOUND_SETS.find((item) => item.key === style);
+  if (!set) return;
+  try {
+    const audio = getAudio();
+    if (audio) await Promise.allSettled([...new Set(Object.values(set.sounds).flat())].map((file) => loadRecording(audio, file)));
+  } catch {
+    // Audio/device failures must not prevent a board from rendering.
+  }
+}
+
+export function playBoardSound(kind: BoardSound, volume: number, style: SoundStyle = DEFAULT_SOUND_STYLE, capture = false, castle = false): void {
   if (!Number.isFinite(volume) || volume <= 0) return;
   try {
     const audio = getAudio();
     if (!audio) return;
     const requestedAt = Date.now();
     const requestedRevision = revision;
-    const play = () => {
-      // A blocked resume may resolve much later. Drop it instead of making a
-      // burst of stale clicks when the user eventually interacts with the page.
-      if (audio.state !== 'running' || revision !== requestedRevision || Date.now() - requestedAt > 250) return;
-      const key = `${style}:${kind}`;
-      let buffer = buffers.get(key);
-      if (!buffer) {
-        const data = synthesizeBoardSound(kind, audio.sampleRate, style);
-        buffer = audio.createBuffer(1, data.length, audio.sampleRate);
-        buffer.getChannelData(0).set(data);
-        buffers.set(key, buffer);
-      }
+    const isCurrent = () => audio.state === 'running' && revision === requestedRevision && Date.now() - requestedAt <= 250;
+    const playBuffer = (buffer: AudioBuffer, recorded: boolean) => {
+      // Discard delayed downloads/resumes after mute, a style change, or navigation.
+      if (!isCurrent()) return;
       const source = audio.createBufferSource();
       const gain = audio.createGain();
       source.buffer = buffer;
-      gain.gain.value = Math.min(1, volume) * 0.8;
+      gain.gain.value = Math.min(1, volume) * (recorded ? 1 : 0.8);
       source.connect(gain).connect(audio.destination);
       source.onended = () => {
         playing.delete(source);
@@ -144,8 +190,28 @@ export function playBoardSound(kind: BoardSound, volume: number, style: SoundSty
       playing.add(source);
       source.start();
     };
-    if (audio.state === 'running') play();
-    else void audio.resume().then(play).catch(() => {});
+    const files = boardSoundFiles(kind, style, capture, castle);
+    if (files.length) {
+      const ready = audio.state === 'running' ? Promise.resolve() : audio.resume();
+      void Promise.all([ready, Promise.all(files.map((file) => loadRecording(audio, file)))])
+        .then(([, loaded]) => loaded.forEach((buffer) => playBuffer(buffer, true)))
+        .catch(() => {});
+    } else {
+      const play = () => {
+        if (!isCurrent()) return;
+        const key = `${style}:${kind}`;
+        let buffer = buffers.get(key);
+        if (!buffer) {
+          const data = synthesizeBoardSound(kind, audio.sampleRate, style as SyntheticSoundStyle);
+          buffer = audio.createBuffer(1, data.length, audio.sampleRate);
+          buffer.getChannelData(0).set(data);
+          buffers.set(key, buffer);
+        }
+        playBuffer(buffer, false);
+      };
+      if (audio.state === 'running') play();
+      else void audio.resume().then(play).catch(() => {});
+    }
   } catch {
     // Audio is optional; device or autoplay errors must never interrupt play.
   }
