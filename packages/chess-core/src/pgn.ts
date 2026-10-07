@@ -289,15 +289,23 @@ function scanMovetext(text: string): PgnMove[] {
     if (ch === '(') {
       const owner = last();
       const line: PgnMove[] = [];
-      // A sideline with no move before it cannot be attached to anything, but
-      // it still gets a frame so the parentheses stay balanced.
+      // Some course exports wrap the entire example in parentheses. Keep its
+      // introductory comment and promote it when the otherwise empty frame closes.
       if (owner) (owner.variations ??= []).push(line);
-      stack.push({ line });
+      const pending = owner ? undefined : top().pending;
+      if (!owner) top().pending = undefined;
+      stack.push({ line, pending });
       i++;
       continue;
     }
     if (ch === ')') {
-      if (stack.length > 1) stack.pop();
+      if (stack.length > 1) {
+        const frame = stack.pop()!;
+        if (!top().line.length) {
+          top().line.push(...frame.line);
+          if (frame.pending) top().pending = frame.pending;
+        }
+      }
       i++;
       continue;
     }
