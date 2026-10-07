@@ -81,6 +81,7 @@ export interface CourseGame {
   id: string;
   roots: CourseNode[];
   headers: Record<string, string>;
+  initialShapes?: MoveShapes;
 }
 
 /** A move the file wrote that could not be replayed, kept so an import can say so. */

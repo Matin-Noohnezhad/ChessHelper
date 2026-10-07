@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { buildCourse } from '../import.js';
+import { readingLinesOf } from '../tree.js';
 import { BLACK_COURSE_PGN, COURSE_PGN } from './fixture.js';
 
 describe('course import', () => {
+  it('keeps starting-position drawings separate from first-move drawings', () => {
+    const course = buildCourse('{[%cal Ge2e4]} 1. e4 {[%csl Re4]} e5 *');
+    const line = readingLinesOf(course.chapters[0]!)[0]!;
+    expect(line.initialShapes?.arrows).toEqual([{ color: 'green', from: 'e2', to: 'e4' }]);
+    expect(line.roots[0]!.shapes).toEqual({ arrows: [], circles: [{ color: 'red', square: 'e4' }] });
+  });
   it('uses the uploaded filename and keeps an explicit title override', () => {
     const pgn = '[Event "?"]\n[White "?"]\n[Black "?"]\n\n1. e4 e5 *';
     expect(buildCourse(pgn, { fileName: 'Scotch Gambit.PGN' }).name).toBe('Scotch Gambit');

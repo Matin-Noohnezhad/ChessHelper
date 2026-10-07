@@ -79,6 +79,7 @@ export interface Variation {
 /** A source game is one reading line, with all its branches still attached. */
 export interface ReadingLine extends Variation {
   roots: CourseNode[];
+  initialShapes?: import('@coh/chess-core').MoveShapes;
 }
 
 /** Follow the author's first continuation, optionally via a training node ID. */
@@ -94,10 +95,11 @@ export function readingPath(roots: readonly CourseNode[], targetId?: string): Co
 }
 
 export function readingLinesOf(chapter: Chapter): ReadingLine[] {
-  const games = chapter.games ?? [{ id: `${chapter.id}/game-1`, roots: chapter.roots }];
+  const games = chapter.games ?? [{ id: `${chapter.id}/game-1`, roots: chapter.roots, initialShapes: undefined }];
   return games.filter((game) => game.roots.length).map((game) => ({
     id: game.id, chapterId: chapter.id, chapterName: chapter.name,
     roots: game.roots, line: readingPath(game.roots),
+    ...(game.initialShapes ? { initialShapes: game.initialShapes } : {}),
   }));
 }
 

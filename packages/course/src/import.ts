@@ -339,7 +339,8 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
     chapter.games = draft.games.map((game, gameIndex) => {
       const roots = place({ ...context, problems: [] }, convert(game.moves), '');
       alignIds(roots, chapter.roots);
-      return { id: `${chapter.id}/game-${gameIndex + 1}`, roots, headers: game.headers };
+      return { id: `${chapter.id}/game-${gameIndex + 1}`, roots, headers: game.headers,
+        ...(game.initialShapes ? { initialShapes: game.initialShapes } : {}) };
     });
     return chapter;
   });

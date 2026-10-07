@@ -183,7 +183,8 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
       </aside>
       <div className="trainer__board">
         <Board game={game} orientation={entry.course.side} lastMove={lastMove} onMove={() => {}} interactive={false} replay
-          hintArrows={node?.shapes?.arrows ?? []} hintCircles={node?.shapes?.circles ?? []}
+          hintArrows={(node ? node.shapes : sourceLine?.initialShapes)?.arrows ?? []}
+          hintCircles={(node ? node.shapes : sourceLine?.initialShapes)?.circles ?? []}
           annotationThickness={annotationThickness} animateMoves />
         <div className="board-bar">
           <span className="status">{ply === 0 ? 'Starting position' : `${node?.moveNumber ?? Math.ceil(ply / 2)}${node?.side === 'w' ? '.' : '…'} ${node?.san}`} · {ply} / {line.line.length}</span>
