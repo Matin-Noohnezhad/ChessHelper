@@ -1,9 +1,12 @@
 import { useCallback, useState } from 'react';
 import { PIECE_SETS } from '../components/Piece.js';
 import type { PieceSet } from '../components/Piece.js';
-import type { AnnotationThickness } from '../components/Board.js';
+import { ANNOTATION_STYLES, DEFAULT_LAST_MOVE_ARROW, DRAW_COLOR_OPTIONS } from '../components/BoardAnnotations.js';
+import type { AnnotationStyle, AnnotationThickness, DrawColor, LastMoveArrowSettings } from '../components/BoardAnnotations.js';
 import { DEFAULT_SOUND_STYLE, SOUND_STYLES } from '../sound.js';
 import type { SoundStyle } from '../sound.js';
+import { DEFAULT_BOARD_ANIMATION, MOVEMENT_SPEEDS, MOVEMENT_STYLES } from '../boardAnimation.js';
+import type { BoardAnimationSettings, MovementStyle, MovementSpeed } from '../boardAnimation.js';
 
 import { DEFAULT_CHUNK, DEFAULT_FULL_PASSES } from '@coh/course';
 
@@ -48,11 +51,12 @@ function clampInteger(value: number, min: number, max: number, fallback: number)
   return Number.isFinite(value) ? Math.min(max, Math.max(min, Math.round(value))) : fallback;
 }
 
-export interface AppSettings extends CourseLearningSettings {
+export interface AppSettings extends CourseLearningSettings, BoardAnimationSettings, LastMoveArrowSettings {
   boardTheme: BoardTheme;
   pieceSet: PieceSet;
   moveEntryMode: 'smart' | 'select';
   annotationThickness: AnnotationThickness;
+  annotationStyle: AnnotationStyle;
   /** Board audio level, 0 = muted. */
   soundVolume: number;
   soundStyle: SoundStyle;
@@ -64,10 +68,13 @@ export interface AppSettings extends CourseLearningSettings {
 
 const DEFAULT_SETTINGS: AppSettings = {
   ...DEFAULT_COURSE_LEARNING,
+  ...DEFAULT_BOARD_ANIMATION,
+  ...DEFAULT_LAST_MOVE_ARROW,
   boardTheme: 'walnut',
   pieceSet: 'original',
   moveEntryMode: 'smart',
   annotationThickness: 'medium',
+  annotationStyle: 'original',
   soundVolume: 0.55,
   soundStyle: DEFAULT_SOUND_STYLE,
   watchAutoplay: true,
@@ -81,10 +88,20 @@ function loadSettings(): AppSettings {
     const stored = { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<AppSettings>) };
     return {
       ...stored,
+      movementStyle: MOVEMENT_STYLES.some((style) => style.key === stored.movementStyle)
+        ? stored.movementStyle : DEFAULT_BOARD_ANIMATION.movementStyle,
+      movementSpeed: MOVEMENT_SPEEDS.some((speed) => speed.key === stored.movementSpeed)
+        ? stored.movementSpeed : DEFAULT_BOARD_ANIMATION.movementSpeed,
       pieceSet: PIECE_SETS.some((set) => set.key === stored.pieceSet) ? stored.pieceSet : DEFAULT_SETTINGS.pieceSet,
       moveEntryMode: stored.moveEntryMode === 'select' ? 'select' : 'smart',
       annotationThickness: ['thin', 'medium', 'thick', 'extra'].includes(stored.annotationThickness)
         ? stored.annotationThickness : DEFAULT_SETTINGS.annotationThickness,
+      annotationStyle: ANNOTATION_STYLES.some((style) => style.key === stored.annotationStyle)
+        ? stored.annotationStyle : DEFAULT_SETTINGS.annotationStyle,
+      showLastMoveArrow: typeof stored.showLastMoveArrow === 'boolean'
+        ? stored.showLastMoveArrow : DEFAULT_LAST_MOVE_ARROW.showLastMoveArrow,
+      lastMoveArrowColor: DRAW_COLOR_OPTIONS.some((color) => color.key === stored.lastMoveArrowColor)
+        ? stored.lastMoveArrowColor : DEFAULT_LAST_MOVE_ARROW.lastMoveArrowColor,
       boardTheme: BOARD_THEMES.some((theme) => theme.key === stored.boardTheme)
         ? stored.boardTheme : DEFAULT_SETTINGS.boardTheme,
       soundVolume: Number.isFinite(stored.soundVolume)
@@ -110,11 +127,16 @@ function saveSettings(settings: AppSettings): void {
 }
 
 export interface SettingsController extends AppSettings {
+  setMovementStyle: (value: MovementStyle) => void;
+  setMovementSpeed: (value: MovementSpeed) => void;
   setCourseLearning: (value: CourseLearningSettings) => void;
   setPieceSet: (value: PieceSet) => void;
   setMoveEntryMode: (value: AppSettings['moveEntryMode']) => void;
   setBoardTheme: (value: BoardTheme) => void;
   setAnnotationThickness: (value: AnnotationThickness) => void;
+  setAnnotationStyle: (value: AnnotationStyle) => void;
+  setShowLastMoveArrow: (value: boolean) => void;
+  setLastMoveArrowColor: (value: DrawColor) => void;
   setSoundVolume: (value: number) => void;
   setSoundStyle: (value: SoundStyle) => void;
   setWatchAutoplay: (value: boolean) => void;
@@ -133,6 +155,11 @@ export function useSettings(): SettingsController {
   }, []);
 
   const setPieceSet = useCallback((value: PieceSet) => update({ pieceSet: value }), [update]);
+  const setMovementStyle = useCallback((value: MovementStyle) => update({ movementStyle: value }), [update]);
+  const setAnnotationStyle = useCallback((value: AnnotationStyle) => update({ annotationStyle: value }), [update]);
+  const setShowLastMoveArrow = useCallback((value: boolean) => update({ showLastMoveArrow: value }), [update]);
+  const setLastMoveArrowColor = useCallback((value: DrawColor) => update({ lastMoveArrowColor: value }), [update]);
+  const setMovementSpeed = useCallback((value: MovementSpeed) => update({ movementSpeed: value }), [update]);
   const setMoveEntryMode = useCallback((value: AppSettings['moveEntryMode']) => update({ moveEntryMode: value }), [update]);
 
   const setAnnotationThickness = useCallback(
@@ -162,5 +189,5 @@ export function useSettings(): SettingsController {
     courseFullPasses: clampInteger(value.courseFullPasses, 1, 5, DEFAULT_FULL_PASSES),
   }), [update]);
 
-  return { ...settings, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setWatchAutoplay, setWatchMoveSeconds };
 }

@@ -5,6 +5,8 @@ import type { PieceSymbol } from '@coh/chess-core';
 import { identifyOpening } from '@coh/opening-book';
 import { Board } from './components/Board.js';
 import { BoardSoundProvider } from './components/BoardSoundContext.js';
+import { BoardAnimationContext } from './components/BoardAnimationContext.js';
+import { AnnotationStyleContext, LastMoveArrowContext } from './components/BoardAnnotations.js';
 import type { SquareMark } from './components/Board.js';
 import { CoursesView } from './components/CoursesView.js';
 import { EnginePanel } from './components/EnginePanel.js';
@@ -202,9 +204,19 @@ export default function App() {
           onPieceSetChange={settings.setPieceSet}
           moveEntryMode={settings.moveEntryMode}
           onMoveEntryModeChange={settings.setMoveEntryMode}
+          movementStyle={settings.movementStyle}
+          onMovementStyleChange={settings.setMovementStyle}
+          movementSpeed={settings.movementSpeed}
+          onMovementSpeedChange={settings.setMovementSpeed}
           boardTheme={settings.boardTheme}
           onBoardThemeChange={settings.setBoardTheme}
           annotationThickness={settings.annotationThickness}
+          annotationStyle={settings.annotationStyle}
+          onAnnotationStyleChange={settings.setAnnotationStyle}
+          showLastMoveArrow={settings.showLastMoveArrow}
+          onShowLastMoveArrowChange={settings.setShowLastMoveArrow}
+          lastMoveArrowColor={settings.lastMoveArrowColor}
+          onLastMoveArrowColorChange={settings.setLastMoveArrowColor}
           onAnnotationThicknessChange={settings.setAnnotationThickness}
           soundVolume={settings.soundVolume}
           onSoundVolumeChange={settings.setSoundVolume}
@@ -221,6 +233,9 @@ export default function App() {
       )}
 
       <PieceSetContext.Provider value={settings.pieceSet}>
+      <BoardAnimationContext.Provider value={settings}>
+      <AnnotationStyleContext.Provider value={settings.annotationStyle}>
+      <LastMoveArrowContext.Provider value={settings}>
       <BoardSoundProvider volume={settings.soundVolume} style={settings.soundStyle}>
       {mode === 'train' ? (
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
@@ -295,6 +310,9 @@ export default function App() {
       </main>
       )}
       </BoardSoundProvider>
+      </LastMoveArrowContext.Provider>
+      </AnnotationStyleContext.Provider>
+      </BoardAnimationContext.Provider>
       </PieceSetContext.Provider>
     </div>
   );

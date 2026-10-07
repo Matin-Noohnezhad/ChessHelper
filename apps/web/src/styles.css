@@ -2071,15 +2071,21 @@ button.primary:hover:not(:disabled) {
 }
 
 /*
- * A piece arriving under its own steam. The transform is set by the board — it
- * starts offset toward the square the move came from and is released a frame
- * later — so all this has to supply is the trip and a layer above the squares
- * it crosses.
+ * Board motion owns its transform and timing; keep the moving piece above
+ * the squares it crosses without layering a second CSS transition on top.
  */
 .piece-slide {
   z-index: 2;
-  transition: transform 0.19s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
 }
+
+.movement-preview { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+.annotation-preview { display: block; width: 100%; max-width: 24rem; height: auto; }
+.last-move-arrow-preview { display: block; width: 9rem; max-width: 100%; height: auto; }
+.movement-preview__board { position: relative; display: flex; width: 12rem; max-width: 100%; }
+.movement-preview__square { width: 25%; aspect-ratio: 1; background: var(--sq-light); }
+.movement-preview__square:nth-child(even) { background: var(--sq-dark); }
+.movement-preview__piece { position: absolute; right: 0; top: 0; width: 25%; height: 100%; display: grid; place-items: center; pointer-events: none; }
 
 .course-watch h3 strong {
   font-size: 1.05rem;
@@ -2444,10 +2450,6 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); 
   .nav button { padding: 0.3rem 0.45rem; }
   .settings-row .segmented { flex-wrap: wrap; }
   .settings-row .segmented button { flex: 1; font-size: 0.78rem; padding: 0.4rem 0.5rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .piece-slide { transition: none; }
 }
 
 .course-outline__reset {

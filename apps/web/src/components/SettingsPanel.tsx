@@ -1,7 +1,10 @@
 import { Piece, PIECE_SETS } from './Piece.js';
 import type { PieceSet } from './Piece.js';
-import { ANNOTATION_THICKNESS_OPTIONS } from './Board.js';
-import type { AnnotationThickness } from './Board.js';
+import { MovementPreview } from './MovementPreview.js';
+import { MOVEMENT_SPEEDS, MOVEMENT_STYLES } from '../boardAnimation.js';
+import type { MovementStyle, MovementSpeed } from '../boardAnimation.js';
+import { ANNOTATION_THICKNESS_OPTIONS, ANNOTATION_STYLES, AnnotationPreview, AnnotationArrow, DRAW_COLOR_OPTIONS, DEFAULT_LAST_MOVE_ARROW } from './BoardAnnotations.js';
+import type { AnnotationStyle, AnnotationThickness, DrawColor } from './BoardAnnotations.js';
 import { DEFAULT_SOUND_STYLE, SOUND_STYLES, playBoardSound } from '../sound.js';
 import type { SoundStyle } from '../sound.js';
 import type { CourseLearningSettings, BoardTheme } from '../hooks/useSettings.js';
@@ -14,6 +17,10 @@ import {
 } from '../hooks/useSettings.js';
 
 interface SettingsPanelProps {
+  movementStyle?: MovementStyle;
+  onMovementStyleChange?: (value: MovementStyle) => void;
+  movementSpeed?: MovementSpeed;
+  onMovementSpeedChange?: (value: MovementSpeed) => void;
   pieceSet: PieceSet;
   onPieceSetChange: (value: PieceSet) => void;
   moveEntryMode: 'smart' | 'select';
@@ -21,6 +28,12 @@ interface SettingsPanelProps {
   boardTheme?: BoardTheme;
   onBoardThemeChange?: (value: BoardTheme) => void;
   annotationThickness: AnnotationThickness;
+  annotationStyle?: AnnotationStyle;
+  onAnnotationStyleChange?: (value: AnnotationStyle) => void;
+  showLastMoveArrow?: boolean;
+  onShowLastMoveArrowChange?: (value: boolean) => void;
+  lastMoveArrowColor?: DrawColor;
+  onLastMoveArrowColorChange?: (value: DrawColor) => void;
   onAnnotationThicknessChange: (value: AnnotationThickness) => void;
   soundVolume: number;
   onSoundVolumeChange: (value: number) => void;
@@ -36,10 +49,15 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({
+  movementStyle = 'lichess', onMovementStyleChange,
+  movementSpeed = 'medium', onMovementSpeedChange,
   pieceSet, onPieceSetChange, moveEntryMode, onMoveEntryModeChange,
   boardTheme = 'walnut',
   onBoardThemeChange,
   annotationThickness,
+  annotationStyle = 'original', onAnnotationStyleChange,
+  showLastMoveArrow = DEFAULT_LAST_MOVE_ARROW.showLastMoveArrow, onShowLastMoveArrowChange,
+  lastMoveArrowColor = DEFAULT_LAST_MOVE_ARROW.lastMoveArrowColor, onLastMoveArrowColorChange,
   onAnnotationThicknessChange,
   soundVolume,
   onSoundVolumeChange,
@@ -92,6 +110,25 @@ export function SettingsPanel({
             </button>)}
           </div>
           <span className="settings-row__hint"><a href="/pieces/README.md" target="_blank" rel="noreferrer">Piece artwork credits</a></span>
+        </div>
+
+        <div className="settings-row">
+          <span className="settings-row__label">Piece movement</span>
+          <div className="segmented" role="group" aria-label="Piece movement style">
+            {MOVEMENT_STYLES.map((style) => (
+              <button key={style.key} type="button" className={movementStyle === style.key ? 'is-active' : ''}
+                aria-pressed={movementStyle === style.key} onClick={() => onMovementStyleChange?.(style.key)}>{style.label}</button>
+            ))}
+          </div>
+          <span className="settings-row__hint">{MOVEMENT_STYLES.find((style) => style.key === movementStyle)?.description}</span>
+          <label htmlFor="piece-movement-speed">Animation speed</label>
+          <select id="piece-movement-speed" value={movementSpeed}
+            onChange={(event) => onMovementSpeedChange?.(event.target.value as MovementSpeed)}>
+            {MOVEMENT_SPEEDS.map((speed) => <option key={speed.key} value={speed.key}>{speed.label}</option>)}
+          </select>
+          <MovementPreview movementStyle={movementStyle} movementSpeed={movementSpeed} pieceSet={pieceSet} />
+          <span className="settings-row__hint">Applies to clicked moves, replies, and move-by-move playback. Dragged pieces follow your pointer.
+            Course demonstration timing is set separately below.</span>
         </div>
 
         <div className="settings-row">
@@ -149,8 +186,16 @@ export function SettingsPanel({
         </div>
 
         <div className="settings-row">
+          <span className="settings-row__label">Arrows &amp; square marks</span>
+          <div className="segmented" role="group" aria-label="Arrow and square style">
+            {ANNOTATION_STYLES.map((style) => <button key={style.key} type="button"
+              className={annotationStyle === style.key ? 'is-active' : ''} aria-pressed={annotationStyle === style.key}
+              onClick={() => onAnnotationStyleChange?.(style.key)}>{style.label}</button>)}
+          </div>
+          <span className="settings-row__hint">{ANNOTATION_STYLES.find((style) => style.key === annotationStyle)?.description}</span>
+          <AnnotationPreview style={annotationStyle} thickness={annotationThickness} />
           <span className="settings-row__label">Arrow &amp; square-mark thickness</span>
-          <div className="segmented">
+          <div className="segmented" role="group" aria-label="Arrow and square thickness">
             {ANNOTATION_THICKNESS_OPTIONS.map((option) => (
               <button
                 key={option.key}
@@ -163,6 +208,30 @@ export function SettingsPanel({
               </button>
             ))}
           </div>
+          <span className="settings-row__hint">Applies to your drawings and study hints. Right-click a square to mark it, or right-drag for an arrow.
+            Hold Shift for red, Ctrl for blue, or Alt for yellow. Draw the same mark again to remove it.</span>
+        </div>
+
+        <div className="settings-row">
+          <span className="settings-row__label">Last-move arrow</span>
+          <label className="settings-check">
+            <input type="checkbox" checked={showLastMoveArrow}
+              onChange={(event) => onShowLastMoveArrowChange?.(event.target.checked)} />
+            Show last-move arrow
+          </label>
+          <span className="settings-row__hint">Shows the most recent move, such as e2 to e4. Hides when you draw an arrow or mark a square,
+            and returns for the next move. Uses your chosen arrow style and thickness.</span>
+          <label htmlFor="last-move-arrow-color">Last-move arrow color</label>
+          <select id="last-move-arrow-color" value={lastMoveArrowColor} disabled={!showLastMoveArrow}
+            onChange={(event) => onLastMoveArrowColorChange?.(event.target.value as DrawColor)}>
+            {DRAW_COLOR_OPTIONS.map((color) => <option key={color.key} value={color.key}>{color.label}</option>)}
+          </select>
+          {showLastMoveArrow && <svg className="last-move-arrow-preview" viewBox="0 0 37.5 12.5" role="img" aria-label="Last-move arrow preview">
+            {[0, 1, 2].map((i) => <rect key={i} x={i * 12.5} y="0" width="12.5" height="12.5"
+              fill={i % 2 ? 'var(--sq-dark)' : 'var(--sq-light)'} />)}
+            <AnnotationArrow from={{ x: 6.25, y: 6.25 }} to={{ x: 31.25, y: 6.25 }}
+              color={lastMoveArrowColor} style={annotationStyle} thickness={annotationThickness} />
+          </svg>}
         </div>
 
         <div className="settings-row">

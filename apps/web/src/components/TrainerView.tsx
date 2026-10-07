@@ -43,6 +43,7 @@ export function TrainerView({ onStudyLine, annotationThickness }: TrainerViewPro
           lastMove={trainer.lastMove}
           onMove={handleMove}
           interactive={trainer.isUsersTurn}
+          animateMoves
           annotationThickness={annotationThickness}
         />
         <div className="board-bar">

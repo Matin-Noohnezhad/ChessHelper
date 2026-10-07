@@ -1,11 +1,19 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
 import { reverseCapture, smartCandidates, SmartMoveEngine } from '../smartMoves.js';
 import { Piece } from './Piece.js';
+import { AnnotationArrow, AnnotationSquare, AnnotationStyleContext, LastMoveArrowContext } from './BoardAnnotations.js';
+import type { AnnotationThickness, DrawColor } from './BoardAnnotations.js';
+import { movementDuration, movementFrames, movementPlan } from '../boardAnimation.js';
+import type { AnimationPosition } from '../boardAnimation.js';
+import { useBoardAnimationSettings, useReducedMotion } from './BoardAnimationContext.js';
 import { useBoardSoundSettings } from './BoardSoundContext.js';
 import { playBoardSound } from '../sound.js';
 import type { BoardSound } from '../sound.js';
 import type { Orientation } from '../hooks/useChessGame.js';
+
+export { ANNOTATION_THICKNESS_OPTIONS } from './BoardAnnotations.js';
+export type { AnnotationThickness } from './BoardAnnotations.js';
 
 const FILES = 'abcdefgh';
 const PROMOTION_CHOICES: PieceSymbol[] = ['q', 'r', 'b', 'n'];
@@ -18,16 +26,6 @@ function squareNames(orientation: Orientation): string[] {
   }
   return orientation === 'white' ? names : [...names].reverse();
 }
-
-/** Right-click annotations, lichess-style: drag for an arrow, click for a rounded-square mark. */
-type DrawColor = 'green' | 'red' | 'blue' | 'yellow';
-
-const DRAW_COLORS: Record<DrawColor, string> = {
-  green: 'rgba(21, 120, 27, 0.82)',
-  red: 'rgba(200, 45, 45, 0.82)',
-  blue: 'rgba(30, 100, 220, 0.82)',
-  yellow: 'rgba(230, 158, 0, 0.85)',
-};
 
 interface DrawArrow {
   from: string;
@@ -61,36 +59,6 @@ function squareCenter(square: string, orientation: Orientation): { x: number; y:
   return { x: (col + 0.5) * 12.5, y: (row + 0.5) * 12.5 };
 }
 
-/** Pulls the arrow's end point back toward its start so the arrowhead clears the target square's center. */
-function shortenTowards(
-  from: { x: number; y: number },
-  to: { x: number; y: number },
-  amount: number,
-): { x: number; y: number } {
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
-  const len = Math.hypot(dx, dy) || 1;
-  const ratio = Math.max(0, (len - amount) / len);
-  return { x: from.x + dx * ratio, y: from.y + dy * ratio };
-}
-
-export type AnnotationThickness = 'thin' | 'medium' | 'thick' | 'extra';
-
-/** Ordered for a settings picker; label is what the user sees. */
-export const ANNOTATION_THICKNESS_OPTIONS: { key: AnnotationThickness; label: string }[] = [
-  { key: 'thin', label: 'Thin' },
-  { key: 'medium', label: 'Medium' },
-  { key: 'thick', label: 'Thick' },
-  { key: 'extra', label: 'Extra thick' },
-];
-
-const ANNOTATION_SCALE: Record<AnnotationThickness, { arrow: number; circle: number; marker: number }> = {
-  thin: { arrow: 0.35, circle: 0.3, marker: 2.0 },
-  medium: { arrow: 0.65, circle: 0.5, marker: 2.8 },
-  thick: { arrow: 1.05, circle: 0.8, marker: 3.8 },
-  extra: { arrow: 1.4, circle: 1.3, marker: 4.4 },
-};
-
 /** An arrow the app draws itself, e.g. the engine's move in a review. */
 export interface BoardArrow {
   from: string;
@@ -121,19 +89,6 @@ export interface SquareBadge {
   className?: string;
 }
 
-/**
- * A piece caught mid-move: it is already drawn on the square it arrived at, and
- * `dx`/`dy` are how far back toward its old square to start it before letting
- * it run home. Offsets are in pixels, matching the board's measured size.
- */
-interface Slide {
-  to: string;
-  dx: number;
-  dy: number;
-  /** False on the frame that positions it, true on the one that releases it. */
-  running: boolean;
-}
-
 /** Layout effects warn under server rendering, where there is nothing to lay out. */
 const useVisualEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
@@ -156,7 +111,7 @@ interface BoardProps {
   /**
    * Slide the piece into place when the position changes under the board.
    *
-   * Off by default. Clicked and demonstrated moves can slide into place;
+   * Off by default. Clicked moves and single steps forward or back can slide;
    * dragged pieces are already at their destination and skip the animation.
    */
   animateMoves?: boolean;
@@ -192,7 +147,15 @@ export function Board({
   animateMoves = false,
   moveEntryMode = 'select',
 }: BoardProps) {
-  const annotationScale = ANNOTATION_SCALE[annotationThickness];
+  const annotationStyle = useContext(AnnotationStyleContext);
+  const { showLastMoveArrow, lastMoveArrowColor } = useContext(LastMoveArrowContext);
+  const [lastMoveArrowDismissed, setLastMoveArrowDismissed] = useState(false);
+  const animationSettings = useBoardAnimationSettings();
+  const { movementStyle, movementSpeed } = animationSettings;
+  const duration = movementDuration(animationSettings);
+  const reducedMotion = useReducedMotion();
+  const moveFrom = lastMove?.from;
+  const moveTo = lastMove?.to;
   const { volume: soundVolume, style: soundStyle } = useBoardSoundSettings();
   const boardRef = useRef<HTMLDivElement>(null);
   const smartEngine = useRef<SmartMoveEngine | null>(null);
@@ -222,8 +185,7 @@ export function Board({
   const [circles, setCircles] = useState<DrawCircle[]>([]);
   const [drawStart, setDrawStart] = useState<{ square: string; color: DrawColor } | null>(null);
   const [drawCurrent, setDrawCurrent] = useState<string | null>(null);
-  const [slide, setSlide] = useState<Slide | null>(null);
-  const animationPosition = useRef<{ fen: string; orientation: Orientation; pieces: Map<string, SquareContents> } | null>(null);
+  const animationPosition = useRef<(AnimationPosition & { orientation: Orientation }) | null>(null);
   const draggedMove = useRef<string | null>(null);
 
   const names = useMemo(() => squareNames(orientation), [orientation]);
@@ -239,6 +201,12 @@ export function Board({
    * the board silently stops redrawing after the first move.
    */
   const fen = game.fen();
+
+  // Manual drawing hides only this position's move arrow. A new move or a
+  // navigation step restores it; clearing marks or flipping the board does not.
+  useVisualEffect(() => {
+    setLastMoveArrowDismissed(false);
+  }, [fen, moveFrom, moveTo]);
 
   useVisualEffect(() => {
     cancelSmartMove();
@@ -268,39 +236,41 @@ export function Board({
     return map;
   }, [game, fen]);
 
-  // Animate only an arriving move. Loading a position, stepping back, and
-  // flipping the board must not replay the preceding move on an unrelated piece.
+  // Validate the entire transition so resets and jumps cannot animate unrelated pieces.
+  // Web Animations start before paint and are cancelled when navigation interrupts a move.
   useVisualEffect(() => {
+    const move = moveFrom && moveTo ? { from: moveFrom, to: moveTo } : null;
     const previous = animationPosition.current;
-    animationPosition.current = { fen, orientation, pieces: contents };
-    if (previous?.fen === fen && previous.orientation === orientation) return;
-    setSlide(null);
+    animationPosition.current = { fen, orientation, lastMove: move };
     const dragKey = draggedMove.current;
     draggedMove.current = null;
-    if (!animateMoves || !previous || !lastMove || !boardRef.current ||
-        previous.orientation !== orientation ||
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const before = previous.pieces.get(lastMove.from);
-    const after = contents.get(lastMove.to);
-    if (!before || !after || before.color !== after.color || contents.has(lastMove.from)) return;
-    if (dragKey === `${lastMove.from}${lastMove.to}`) return;
+    if (!animateMoves || !duration || reducedMotion || !previous || !boardRef.current ||
+        previous.fen === fen || previous.orientation !== orientation) return;
+    const moves = movementPlan(previous, { fen, lastMove: move });
     const rect = boardRef.current.getBoundingClientRect();
-    const from = squareCenter(lastMove.from, orientation);
-    const to = squareCenter(lastMove.to, orientation);
-    setSlide({ to: lastMove.to, dx: ((from.x - to.x) / 100) * rect.width,
-      dy: ((from.y - to.y) / 100) * rect.height, running: false });
-  }, [animateMoves, fen, contents, lastMove, orientation]);
-
-  useEffect(() => {
-    if (!slide || slide.running) return;
-    let release = 0;
-    // Paint the starting offset before releasing the CSS transition.
-    const frame = requestAnimationFrame(() => {
-      release = requestAnimationFrame(() =>
-        setSlide((current) => current ? { ...current, running: true } : null));
-    });
-    return () => { cancelAnimationFrame(frame); cancelAnimationFrame(release); };
-  }, [slide]);
+    const active: { animation: Animation; element: HTMLElement }[] = [];
+    for (const move of moves) {
+      if (dragKey === `${move.from}${move.to}`) continue;
+      const element = boardRef.current.querySelector<HTMLElement>(`[data-square="${move.to}"] .piece-holder`);
+      if (!element?.animate) continue;
+      const from = squareCenter(move.from, orientation);
+      const to = squareCenter(move.to, orientation);
+      const animation = element.animate(movementFrames(
+        ((from.x - to.x) / 100) * rect.width,
+        ((from.y - to.y) / 100) * rect.height,
+        movementStyle,
+      ), { duration, easing: 'linear' });
+      element.classList.add('piece-slide');
+      animation.onfinish = () => element.classList.remove('piece-slide');
+      active.push({ animation, element });
+    }
+    return () => {
+      for (const { animation, element } of active) {
+        animation.cancel();
+        element.classList.remove('piece-slide');
+      }
+    };
+  }, [animateMoves, fen, moveFrom, moveTo, orientation, duration, movementStyle, movementSpeed, reducedMotion]);
 
   const previousPosition = useRef<{ fen: string; pieces: Map<string, SquareContents> } | null>(null);
   useEffect(() => {
@@ -417,6 +387,7 @@ export function Board({
   }, [game, fen, onMove, cancelSmartMove]);
 
   const toggleDrawing = useCallback((from: string, to: string, color: DrawColor) => {
+    setLastMoveArrowDismissed(true);
     if (from === to) {
       setCircles((prev) => {
         const existing = prev.find((c) => c.square === from);
@@ -576,20 +547,7 @@ export function Board({
               onPointerDown={(e) => handlePointerDown(e, square)}
             >
               {piece && (
-                <span
-                  className={slide?.to === square ? 'piece-holder piece-slide' : 'piece-holder'}
-                  onTransitionEnd={() => { if (slide?.to === square) setSlide(null); }}
-                  style={
-                    slide?.to === square
-                      ? {
-                          transition: slide.running ? undefined : 'none',
-                          transform: slide.running
-                            ? 'none'
-                            : `translate(${slide.dx}px, ${slide.dy}px)`,
-                        }
-                      : undefined
-                  }
-                >
+                <span className="piece-holder">
                   <Piece
                     type={piece.type}
                     color={piece.color}
@@ -617,50 +575,29 @@ export function Board({
         })}
 
         <svg className="board-draw" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          {showLastMoveArrow && lastMove && !lastMoveArrowDismissed && !drawStart && (
+            <g data-last-move-arrow={`${lastMove.from}${lastMove.to}`}>
+              <AnnotationArrow from={squareCenter(lastMove.from, orientation)} to={squareCenter(lastMove.to, orientation)}
+                color={lastMoveArrowColor} style={annotationStyle} thickness={annotationThickness} />
+            </g>
+          )}
           {[
             ...hintArrows.map((arrow) => ({ ...arrow, color: arrow.color ?? 'blue' })),
             ...arrows,
             ...(previewArrow ? [previewArrow] : []),
-          ].map((arrow, i) => {
-            const start = squareCenter(arrow.from, orientation);
-            const tip = squareCenter(arrow.to, orientation);
-            const end = shortenTowards(start, tip, annotationScale.marker);
-            const length = Math.hypot(tip.x - start.x, tip.y - start.y) || 1;
-            const nx = -(tip.y - start.y) / length * annotationScale.marker * 0.48;
-            const ny = (tip.x - start.x) / length * annotationScale.marker * 0.48;
-            return (
-              <g key={`arrow-${arrow.from}-${arrow.to}-${i}`} opacity="0.85">
-                <line x1={start.x} y1={start.y} x2={end.x} y2={end.y}
-                  stroke={DRAW_COLORS[arrow.color]} strokeWidth={annotationScale.arrow}
-                  strokeLinecap="round" />
-                <path d={`M${tip.x},${tip.y} L${end.x + nx},${end.y + ny} L${end.x - nx},${end.y - ny} Z`}
-                  fill={DRAW_COLORS[arrow.color]} />
-              </g>
-            );
-          })}
+          ].map((arrow, i) => (
+            <AnnotationArrow key={`arrow-${arrow.from}-${arrow.to}-${i}`}
+              from={squareCenter(arrow.from, orientation)} to={squareCenter(arrow.to, orientation)}
+              color={arrow.color} style={annotationStyle} thickness={annotationThickness} />
+          ))}
           {[
             ...hintCircles.map((circle) => ({ ...circle, color: circle.color ?? 'green' })),
             ...circles,
             ...(previewCircle ? [previewCircle] : []),
-          ].map((circle, i) => {
-            const { x, y } = squareCenter(circle.square, orientation);
-            const side = 12.5 - annotationScale.circle - 0.8;
-            const radius = 0.55;
-            return (
-              <rect
-                key={`circle-${circle.square}-${i}`}
-                x={x - side / 2}
-                y={y - side / 2}
-                width={side}
-                height={side}
-                rx={radius}
-                ry={radius}
-                fill="none"
-                stroke={DRAW_COLORS[circle.color]}
-                strokeWidth={annotationScale.circle}
-              />
-            );
-          })}
+          ].map((circle, i) => (
+            <AnnotationSquare key={`circle-${circle.square}-${i}`} center={squareCenter(circle.square, orientation)}
+              color={circle.color} style={annotationStyle} thickness={annotationThickness} />
+          ))}
         </svg>
 
         {pending && (

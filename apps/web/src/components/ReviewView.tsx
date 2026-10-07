@@ -272,6 +272,7 @@ export function ReviewReport({
             lastMove={lastMove}
             onMove={() => {}}
             interactive={false}
+            animateMoves
             hintArrows={hintArrows}
             badge={badge}
             {...(annotationThickness ? { annotationThickness } : {})}
