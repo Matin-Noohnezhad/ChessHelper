@@ -61,6 +61,8 @@ export interface AppSettings extends CourseLearningSettings, BoardAnimationSetti
   /** Board audio level, 0 = muted. */
   soundVolume: number;
   soundStyle: SoundStyle;
+  /** Also sound moves replayed by stepping back and forward, not just new ones. */
+  replaySounds: boolean;
   /** Auto-advance the course line demonstration; false = step it yourself. */
   watchAutoplay: boolean;
   /** Seconds each demonstrated move holds, including moves with notes. */
@@ -79,6 +81,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   annotationStyle: 'original',
   soundVolume: 0.55,
   soundStyle: DEFAULT_SOUND_STYLE,
+  replaySounds: false,
   watchAutoplay: true,
   watchMoveSeconds: WATCH_SECONDS_DEFAULT,
 };
@@ -111,6 +114,7 @@ function loadSettings(): AppSettings {
         ? Math.min(1, Math.max(0, stored.soundVolume)) : DEFAULT_SETTINGS.soundVolume,
       soundStyle: SOUND_STYLES.some((style) => style.key === stored.soundStyle)
         ? stored.soundStyle : DEFAULT_SOUND_STYLE,
+      replaySounds: stored.replaySounds === true,
       watchMoveSeconds: clampSeconds(stored.watchMoveSeconds),
       watchAutoplay: typeof stored.watchAutoplay === 'boolean' ? stored.watchAutoplay : true,
       courseChunk: clampInteger(stored.courseChunk, 0, 30, DEFAULT_CHUNK),
@@ -143,6 +147,7 @@ export interface SettingsController extends AppSettings {
   setLastMoveArrowColor: (value: DrawColor) => void;
   setSoundVolume: (value: number) => void;
   setSoundStyle: (value: SoundStyle) => void;
+  setReplaySounds: (value: boolean) => void;
   setWatchAutoplay: (value: boolean) => void;
   setWatchMoveSeconds: (value: number) => void;
 }
@@ -180,6 +185,7 @@ export function useSettings(): SettingsController {
     [update],
   );
   const setSoundStyle = useCallback((value: SoundStyle) => update({ soundStyle: value }), [update]);
+  const setReplaySounds = useCallback((value: boolean) => update({ replaySounds: value }), [update]);
   const setWatchAutoplay = useCallback(
     (value: boolean) => update({ watchAutoplay: value }),
     [update],
@@ -194,5 +200,5 @@ export function useSettings(): SettingsController {
     courseFullPasses: clampInteger(value.courseFullPasses, 1, 5, DEFAULT_FULL_PASSES),
   }), [update]);
 
-  return { ...settings, setShowCoordinates, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setShowCoordinates, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setReplaySounds, setWatchAutoplay, setWatchMoveSeconds };
 }

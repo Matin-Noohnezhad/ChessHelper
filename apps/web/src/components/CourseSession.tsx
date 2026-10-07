@@ -1,5 +1,5 @@
 import { MoveStepButton } from './MoveStepButton.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { courseOutline } from '@coh/course';
 import type { CourseNode, CourseOutcome, CourseProgress, SessionMode } from '@coh/course';
 import { Chess, START_FEN } from '@coh/chess-core';
@@ -150,6 +150,14 @@ export function CourseSession({
     (ply: number) => setLookback(ply >= livePly ? null : Math.max(0, ply)),
     [livePly],
   );
+
+  // Leaving a lookback steps back onto the live board through a move already
+  // played, so the render that returns there is still a replay.
+  const lookedBack = useRef(false);
+  const replaying = looking || lookedBack.current;
+  useEffect(() => {
+    lookedBack.current = looking;
+  }, [looking]);
 
   // The board as it stood after `lookback` plies. Rebuilt rather than unwound,
   // because the trainer's own board is the live one and must not be touched.
@@ -330,6 +338,7 @@ export function CourseSession({
           lastMove={looking ? lookbackLast : trainer.lastMove}
           onMove={handleMove}
           interactive={!looking && trainer.isUsersTurn}
+          replay={replaying}
           hintArrows={[...(looking ? [] : arrows), ...shapeArrows]}
           hintCircles={shapeCircles}
           annotationThickness={annotationThickness}

@@ -41,6 +41,8 @@ interface SettingsPanelProps {
   onSoundVolumeChange: (value: number) => void;
   soundStyle?: SoundStyle;
   onSoundStyleChange?: (value: SoundStyle) => void;
+  replaySounds?: boolean;
+  onReplaySoundsChange?: (value: boolean) => void;
   watchAutoplay: boolean;
   onWatchAutoplayChange: (value: boolean) => void;
   watchMoveSeconds: number;
@@ -66,6 +68,8 @@ export function SettingsPanel({
   onSoundVolumeChange,
   soundStyle = DEFAULT_SOUND_STYLE,
   onSoundStyleChange,
+  replaySounds = false,
+  onReplaySoundsChange,
   watchAutoplay,
   onWatchAutoplayChange,
   watchMoveSeconds,
@@ -195,6 +199,13 @@ export function SettingsPanel({
                 onClick={() => playBoardSound(kind, soundVolume, soundStyle)}>{kind}</button>
             ))}
           </div>
+          <label>
+            <input type="checkbox" checked={replaySounds}
+              onChange={(event) => onReplaySoundsChange?.(event.target.checked)} />
+            {' '}Sound replayed moves
+          </label>
+          <span className="settings-row__hint">Only new moves make a sound by default. Turn this on to also hear moves
+            when you step back and forward through a game, line or review.</span>
         </div>
 
         <div className="settings-row">

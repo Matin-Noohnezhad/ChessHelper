@@ -7,7 +7,8 @@ import { DRAW_COLOR_OPTIONS } from '../components/BoardAnnotations.js';
 
 function SoundSettings() {
   const settings = useSettings();
-  return <output data-style={settings.soundStyle} data-volume={settings.soundVolume} />;
+  return <output data-style={settings.soundStyle} data-volume={settings.soundVolume}
+    data-replay={settings.replaySounds} />;
 }
 
 function load(stored: unknown) {
@@ -87,6 +88,14 @@ describe('saved sound settings', () => {
     for (const style of SOUND_STYLES) {
       expect(load({ soundStyle: style.key, soundVolume: 0.7 }))
         .toContain(`data-style="${style.key}" data-volume="0.7"`);
+    }
+  });
+
+  it('keeps replayed moves silent unless replay sounds were saved on', () => {
+    expect(load({})).toContain('data-replay="false"');
+    expect(load({ replaySounds: true })).toContain('data-replay="true"');
+    for (const replaySounds of ['yes', 1, null]) {
+      expect(load({ replaySounds })).toContain('data-replay="false"');
     }
   });
 

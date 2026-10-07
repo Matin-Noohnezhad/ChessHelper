@@ -149,7 +149,7 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
         </ul>
       </aside>
       <div className="trainer__board">
-        <Board game={game} orientation={entry.course.side} lastMove={lastMove} onMove={() => {}} interactive={false}
+        <Board game={game} orientation={entry.course.side} lastMove={lastMove} onMove={() => {}} interactive={false} replay
           hintArrows={node?.shapes?.arrows ?? []} hintCircles={node?.shapes?.circles ?? []}
           annotationThickness={annotationThickness} animateMoves />
         <div className="board-bar">

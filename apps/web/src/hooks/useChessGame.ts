@@ -21,6 +21,8 @@ export interface ChessGame {
   atStart: boolean;
   atEnd: boolean;
   lastMove: { from: string; to: string } | null;
+  /** The cursor last moved through the line (a step, a jump, a take-back) rather than playing a move. */
+  replaying: boolean;
   orientation: Orientation;
   play: (input: MoveInput) => MoveInfo | null;
   goTo: (index: number) => void;
@@ -51,6 +53,7 @@ function replay(sans: string[], upTo: number): { game: Chess; lastMove: ChessGam
 export function useChessGame(): ChessGame {
   const [sans, setSans] = useState<string[]>([]);
   const [cursor, setCursor] = useState(0);
+  const [replaying, setReplaying] = useState(false);
   const [orientation, setOrientation] = useState<Orientation>('white');
 
   const { game, lastMove } = useMemo(() => replay(sans, cursor), [sans, cursor]);
@@ -62,13 +65,17 @@ export function useChessGame(): ChessGame {
       if (!info) return null;
       setSans((prev) => [...prev.slice(0, cursor), info.san]);
       setCursor((prev) => prev + 1);
+      setReplaying(false);
       return info;
     },
     [sans, cursor],
   );
 
   const goTo = useCallback(
-    (index: number) => setCursor(Math.max(0, Math.min(index, sans.length))),
+    (index: number) => {
+      setCursor(Math.max(0, Math.min(index, sans.length)));
+      setReplaying(true);
+    },
     [sans.length],
   );
 
@@ -76,16 +83,19 @@ export function useChessGame(): ChessGame {
     if (cursor === 0) return;
     setSans((prev) => prev.slice(0, cursor - 1));
     setCursor((prev) => prev - 1);
+    setReplaying(true);
   }, [cursor]);
 
   const loadLine = useCallback((line: string[]) => {
     setSans(line);
     setCursor(line.length);
+    setReplaying(true);
   }, []);
 
   const reset = useCallback(() => {
     setSans([]);
     setCursor(0);
+    setReplaying(true);
   }, []);
 
   return {
@@ -95,6 +105,7 @@ export function useChessGame(): ChessGame {
     atStart: cursor === 0,
     atEnd: cursor === sans.length,
     lastMove,
+    replaying,
     orientation,
     play,
     goTo,

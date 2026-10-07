@@ -668,6 +668,7 @@ describe('settings', () => {
     expect(html).toContain('Lichess inspired');
     expect(html).toContain('>promotion</button>');
     expect(html).toContain('>mate</button>');
+    expect(html).toMatch(/<input type="checkbox"\/> Sound replayed moves/);
     expect(html).toContain('Step through each move myself');
     expect(html).toContain('type="range"');
     expect(html).toContain('1.1s / move');

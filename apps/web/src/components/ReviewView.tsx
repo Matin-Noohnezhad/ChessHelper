@@ -273,6 +273,7 @@ export function ReviewReport({
             lastMove={lastMove}
             onMove={() => {}}
             interactive={false}
+            replay
             animateMoves
             hintArrows={hintArrows}
             badge={badge}

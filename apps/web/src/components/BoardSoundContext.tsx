@@ -3,10 +3,17 @@ import type { ReactNode } from 'react';
 import { DEFAULT_SOUND_STYLE, stopBoardSounds, unlockBoardAudio } from '../sound.js';
 import type { SoundStyle } from '../sound.js';
 
-export const BoardSoundContext = createContext({ volume: 0.55, style: DEFAULT_SOUND_STYLE });
+interface BoardSoundSettings {
+  volume: number;
+  style: SoundStyle;
+  /** Sound moves replayed by stepping back and forward too, not just new ones. */
+  replay: boolean;
+}
 
-export function BoardSoundProvider({ volume, style = DEFAULT_SOUND_STYLE, children }: {
-  volume: number; style?: SoundStyle; children: ReactNode;
+export const BoardSoundContext = createContext<BoardSoundSettings>({ volume: 0.55, style: DEFAULT_SOUND_STYLE, replay: false });
+
+export function BoardSoundProvider({ volume, style = DEFAULT_SOUND_STYLE, replay = false, children }: {
+  volume: number; style?: SoundStyle; replay?: boolean; children: ReactNode;
 }) {
   useEffect(() => {
     stopBoardSounds();
@@ -20,9 +27,9 @@ export function BoardSoundProvider({ volume, style = DEFAULT_SOUND_STYLE, childr
       stopBoardSounds();
     };
   }, [volume, style]);
-  return <BoardSoundContext.Provider value={{ volume, style }}>{children}</BoardSoundContext.Provider>;
+  return <BoardSoundContext.Provider value={{ volume, style, replay }}>{children}</BoardSoundContext.Provider>;
 }
 
-export function useBoardSoundSettings(): { volume: number; style: SoundStyle } {
+export function useBoardSoundSettings(): BoardSoundSettings {
   return useContext(BoardSoundContext);
 }

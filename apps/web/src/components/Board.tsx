@@ -118,6 +118,14 @@ interface BoardProps {
   animateMoves?: boolean;
   /** Smart entry is opt-in per board, so training remains a manual exercise. */
   moveEntryMode?: 'smart' | 'select';
+  /**
+   * The position changed by stepping through moves already played — back,
+   * forward, or a jump in a move list — rather than by a new move.
+   *
+   * Read on the render the position changes. Replayed moves are silent unless
+   * the replay-sound setting is on; new moves always sound.
+   */
+  replay?: boolean;
 }
 
 interface Pending {
@@ -147,6 +155,7 @@ export function Board({
   annotationThickness = 'medium',
   animateMoves = false,
   moveEntryMode = 'select',
+  replay = false,
 }: BoardProps) {
   const showCoordinates = useContext(BoardCoordinatesContext);
   const annotationStyle = useContext(AnnotationStyleContext);
@@ -158,7 +167,7 @@ export function Board({
   const reducedMotion = useReducedMotion();
   const moveFrom = lastMove?.from;
   const moveTo = lastMove?.to;
-  const { volume: soundVolume, style: soundStyle } = useBoardSoundSettings();
+  const { volume: soundVolume, style: soundStyle, replay: replaySounds } = useBoardSoundSettings();
   const boardRef = useRef<HTMLDivElement>(null);
   const smartEngine = useRef<SmartMoveEngine | null>(null);
   const smartRequest = useRef<AbortController | null>(null);
@@ -278,7 +287,7 @@ export function Board({
   useEffect(() => {
     const previous = previousPosition.current;
     previousPosition.current = { fen, pieces: contents };
-    if (!previous || previous.fen === fen) return;
+    if (!previous || previous.fen === fen || (replay && !replaySounds)) return;
 
     const changed = names.filter((square) => {
       const before = previous.pieces.get(square);
@@ -304,7 +313,7 @@ export function Board({
       : capture ? 'capture'
       : 'move';
     playBoardSound(kind, soundVolume, soundStyle);
-  }, [fen, contents, lastMove, game, names, soundVolume, soundStyle]);
+  }, [fen, contents, lastMove, game, names, soundVolume, soundStyle, replay, replaySounds]);
 
   const targets = useMemo(() => {
     if (!selected || !interactive) return new Map<string, boolean>();

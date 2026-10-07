@@ -1,5 +1,6 @@
 import { MoveStepButton } from './MoveStepButton.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { SetStateAction } from 'react';
 import { Chess } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
 import { Board } from './Board.js';
@@ -35,6 +36,12 @@ export function CourseAnalysis({
     { fen: initialFen, lastMove: initialLastMove, label: 'Lesson position' },
   ]);
   const [cursor, setCursor] = useState(0);
+  // Only `play` adds a move; every other cursor change steps through ones already played.
+  const [replaying, setReplaying] = useState(false);
+  const browse = useCallback((to: SetStateAction<number>) => {
+    setCursor(to);
+    setReplaying(true);
+  }, []);
   const position = positions[cursor]!;
   const game = useMemo(() => new Chess(position.fen), [position.fen]);
   const controller = useEngine(position.fen, true);
@@ -56,22 +63,23 @@ export function CourseAnalysis({
       fen: next.fen(), lastMove: { from: move.from, to: move.to }, label,
     }]);
     setCursor(cursor + 1);
+    setReplaying(false);
   };
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (courseShortcutBlocked(event)) return;
       if (event.key === 'Escape' || event.key.toLowerCase() === 'a') onReturn();
-      else if (event.key === 'ArrowLeft') setCursor((i) => Math.max(0, i - 1));
-      else if (event.key === 'ArrowRight') setCursor((i) => Math.min(positions.length - 1, i + 1));
-      else if (event.key === 'Home' || event.key === 'ArrowUp') setCursor(0);
-      else if (event.key === 'End' || event.key === 'ArrowDown') setCursor(positions.length - 1);
+      else if (event.key === 'ArrowLeft') browse((i) => Math.max(0, i - 1));
+      else if (event.key === 'ArrowRight') browse((i) => Math.min(positions.length - 1, i + 1));
+      else if (event.key === 'Home' || event.key === 'ArrowUp') browse(0);
+      else if (event.key === 'End' || event.key === 'ArrowDown') browse(positions.length - 1);
       else return;
       event.preventDefault();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [positions.length, onReturn]);
+  }, [positions.length, onReturn, browse]);
 
   const status = game.isCheckmate() ? 'Checkmate'
     : game.isStalemate() ? 'Stalemate'
@@ -82,18 +90,18 @@ export function CourseAnalysis({
       <div className="trainer__board">
         <div className="board-row">
           <EvalBar engine={engine} orientation={orientation} />
-          <Board game={game} orientation={orientation} lastMove={position.lastMove}
+          <Board game={game} orientation={orientation} lastMove={position.lastMove} replay={replaying}
             moveEntryMode={moveEntryMode}
             onMove={play} annotationThickness={annotationThickness} animateMoves />
         </div>
         <div className="board-bar">
           <span className="status">Analysis · {status}</span>
           <div className="nav">
-            <MoveStepButton type="button" onStep={() => setCursor(cursor - 1)} disabled={atStart}
+            <MoveStepButton type="button" onStep={() => browse(cursor - 1)} disabled={atStart}
               title="Back (←)" aria-label="Previous analysis move">◀</MoveStepButton>
-            <MoveStepButton type="button" onStep={() => setCursor(cursor + 1)} disabled={atEnd}
+            <MoveStepButton type="button" onStep={() => browse(cursor + 1)} disabled={atEnd}
               title="Forward (→)" aria-label="Next analysis move">▶</MoveStepButton>
-            <button type="button" onClick={() => setCursor(0)} disabled={atStart} title="Reset position (Home)" aria-keyshortcuts="Home">
+            <button type="button" onClick={() => browse(0)} disabled={atStart} title="Reset position (Home)" aria-keyshortcuts="Home">
               Reset position <kbd>Home</kbd>
             </button>
           </div>
@@ -114,7 +122,7 @@ export function CourseAnalysis({
           {positions.length > 1 && (
             <div className="course-analysis__moves" aria-label="Analysis moves">
               {positions.map((item, index) => (
-                <button type="button" key={index} onClick={() => setCursor(index)}
+                <button type="button" key={index} onClick={() => browse(index)}
                   className={cursor === index ? 'is-active' : undefined}
                   aria-current={cursor === index ? 'step' : undefined}>
                   {item.label}

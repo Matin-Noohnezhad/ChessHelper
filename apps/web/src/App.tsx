@@ -246,6 +246,8 @@ export default function App() {
           onSoundVolumeChange={settings.setSoundVolume}
           soundStyle={settings.soundStyle}
           onSoundStyleChange={settings.setSoundStyle}
+          replaySounds={settings.replaySounds}
+          onReplaySoundsChange={settings.setReplaySounds}
           watchAutoplay={settings.watchAutoplay}
           onWatchAutoplayChange={settings.setWatchAutoplay}
           watchMoveSeconds={settings.watchMoveSeconds}
@@ -261,7 +263,7 @@ export default function App() {
       <BoardAnimationContext.Provider value={settings}>
       <AnnotationStyleContext.Provider value={settings.annotationStyle}>
       <LastMoveArrowContext.Provider value={settings}>
-      <BoardSoundProvider volume={settings.soundVolume} style={settings.soundStyle}>
+      <BoardSoundProvider volume={settings.soundVolume} style={settings.soundStyle} replay={settings.replaySounds}>
       {mode === 'train' ? (
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : mode === 'courses' ? (
@@ -288,6 +290,7 @@ export default function App() {
               game={game.game}
               orientation={game.orientation}
               lastMove={game.lastMove}
+              replay={game.replaying}
               onMove={handleMove}
               moveEntryMode={settings.moveEntryMode}
               marks={marks}
