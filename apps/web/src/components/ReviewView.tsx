@@ -20,6 +20,7 @@ import { ReviewGraph } from './ReviewGraph.js';
 import { ReviewMoveList } from './ReviewMoveList.js';
 import { ReviewSetup } from './ReviewSetup.js';
 import { ReviewSummary } from './ReviewSummary.js';
+import { ReviewPlayer, reviewClocks } from './ReviewPlayer.js';
 import { StructureBreaks, StructurePlans } from './StructureAdvice.js';
 import type { ReviewController } from '../hooks/useGameReview.js';
 import type { Orientation } from '../hooks/useChessGame.js';
@@ -218,9 +219,13 @@ export function ReviewReport({
   const hintArrows =
     showingBefore && alternative
       ? [{ from: alternative.uci.slice(0, 2), to: alternative.uci.slice(2, 4) }]
-      : [];
+      : ((move ? move.shapes : review.initialShapes)?.arrows ?? []);
 
   const badge = moveBadge(move, showingBefore);
+  const clocks = reviewClocks(review, showingBefore ? selectedPly - 1 : selectedPly);
+  const hasClockData = review.moves.some((entry) => entry.clockSeconds !== null);
+  const topColor = orientation === 'white' ? 'b' : 'w';
+  const bottomColor = orientation === 'white' ? 'w' : 'b';
 
   const step = (delta: number) => {
     setShowBest(false);
@@ -250,7 +255,7 @@ export function ReviewReport({
   }, [review.moves.length]);
 
   const moments = useMemo(() => keyMoments(review), [review]);
-  const showClocks = review.moves.some((entry) => entry.secondsSpent !== null);
+  const showClocks = hasClockData || review.moves.some((entry) => entry.secondsSpent !== null);
 
   return (
     <main className="app__body review-report">
@@ -262,6 +267,7 @@ export function ReviewReport({
         </div>
       </header>
       <div className="app__board">
+        <ReviewPlayer review={review} color={topColor} seconds={clocks[topColor]} showClock={hasClockData} active={game.turn() === topColor} />
         <div className="board-row">
           <EvalBar
             reading={{ fraction: winPercent(score) / 100, label: formatScore(score) }}
@@ -276,10 +282,12 @@ export function ReviewReport({
             replay
             animateMoves
             hintArrows={hintArrows}
+            hintCircles={!showingBefore ? (move ? move.shapes : review.initialShapes)?.circles : undefined}
             badge={badge}
             {...(annotationThickness ? { annotationThickness } : {})}
           />
         </div>
+        <ReviewPlayer review={review} color={bottomColor} seconds={clocks[bottomColor]} showClock={hasClockData} active={game.turn() === bottomColor} />
 
         <div className="board-bar">
           <span className="status">

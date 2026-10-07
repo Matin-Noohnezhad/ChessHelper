@@ -2693,3 +2693,11 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); 
   .app--focus :is(.trainer, .app__body):has(.board) { --board-size: var(--focus-board-size); }
   .app--focus .course-session__rail { order: 3; }
 }
+
+.review-player { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.55rem 0.75rem; margin: 0.4rem 0 0.4rem 34px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.review-player__identity { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+.review-player__identity strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.review-player__piece--w { color: #f8fafc; text-shadow: 0 0 2px #111; }
+.review-player__piece--b { color: #171c27; text-shadow: 0 0 2px #eee; }
+.review-player__clock { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; padding: 0.15rem 0.5rem; border-radius: 4px; background: var(--bg); white-space: nowrap; }
+.review-player.is-to-move .review-player__clock { outline: 1px solid var(--accent); }

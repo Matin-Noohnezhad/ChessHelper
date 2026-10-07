@@ -7,7 +7,7 @@
  * is pure, so the classification rules can be tested without a search.
  */
 
-import type { ColorName } from '@coh/chess-core';
+import type { ColorName, MoveShapes } from '@coh/chess-core';
 
 /** An evaluation, always from White's point of view. */
 export interface Score {
@@ -106,6 +106,8 @@ export interface ReviewedMove {
   secondsSpent: number | null;
   /** Clock left after the move, when the PGN carried clocks. */
   clockSeconds: number | null;
+  /** Colored board drawings from the PGN. */
+  shapes?: MoveShapes;
   /** Opening this move belongs to, while the game is still in book. */
   openingName?: string;
   eco?: string;
@@ -162,6 +164,7 @@ export interface PhaseBounds {
 }
 
 export interface GameReview {
+  initialShapes?: MoveShapes;
   headers: Record<string, string>;
   result: string;
   opening: { name: string; eco: string } | null;

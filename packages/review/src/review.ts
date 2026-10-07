@@ -337,6 +337,7 @@ export async function reviewGame(
       reviewedMove.eco = opening.eco;
     }
     if (move.annotation.comment) reviewedMove.comment = move.annotation.comment;
+    if (move.annotation.shapes) reviewedMove.shapes = move.annotation.shapes;
 
     reviewedMove.explanation = explainMove({
       quality,
@@ -370,6 +371,7 @@ export async function reviewGame(
     depth: searchedDepths.length ? Math.min(...searchedDepths) : 0,
   };
   if (truncated) review.truncated = truncated;
+  if (parsed.initialShapes) review.initialShapes = parsed.initialShapes;
   return review;
 }
 
