@@ -2694,6 +2694,14 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); 
   .app--focus .course-session__rail { order: 3; }
 }
 
+.explore-tree { max-height: 19rem; overflow: auto; line-height: 2.1; padding: 0.4rem 0; }
+.explore-move { border: 0; background: transparent; padding: 0.15rem 0.35rem; margin: 0.1rem; }
+.explore-move.is-active { background: var(--accent); color: var(--bg); }
+.explore-move.is-active .muted { color: inherit; }
+.explore-variation { margin: 0.3rem 0 0.3rem 0.65rem; padding-left: 0.55rem; border-left: 2px solid var(--border); font-size: 0.9em; }
+.explore-line-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; border-top: 1px solid var(--border); padding-top: 0.7rem; }
+.explore-line-actions button { font-size: 0.8rem; }
+.explore-shortcuts { font-size: 0.75rem; line-height: 1.5; margin: 0.65rem 0 0; }
 .review-player { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.55rem 0.75rem; margin: 0.4rem 0 0.4rem 34px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
 .review-player__identity { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
 .review-player__identity strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -1,122 +1,53 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Chess } from '@coh/chess-core';
-import type { MoveInput, MoveInfo } from '@coh/chess-core';
+import type { MoveInput, MoveShapes } from '@coh/chess-core';
+import { deleteTreeLine, exportExplorePgn, newExploreTree, nodePath, playTreeMove, positionAt, promoteTreeLine, selectedLine, selectTreeNode, setTreeShapes } from '../exploreTree.js';
 
 export type Orientation = 'white' | 'black';
 
-/**
- * Game state as a line plus a cursor.
- *
- * Keeping the SAN line as the single source of truth (rather than a mutable
- * board) means stepping backwards through a game is free, and playing a move
- * from an earlier point simply truncates — which is exactly the interaction an
- * opening trainer needs when the user wants to try a different reply.
- */
-export interface ChessGame {
-  /** Position at the cursor, not necessarily the end of the line. */
-  game: Chess;
-  /** Full SAN line, including moves after the cursor. */
-  sans: string[];
-  cursor: number;
-  atStart: boolean;
-  atEnd: boolean;
-  lastMove: { from: string; to: string } | null;
-  /** The cursor last moved through the line (a step, a jump, a take-back) rather than playing a move. */
-  replaying: boolean;
-  orientation: Orientation;
-  play: (input: MoveInput) => MoveInfo | null;
-  goTo: (index: number) => void;
-  stepBack: () => void;
-  stepForward: () => void;
-  toStart: () => void;
-  toEnd: () => void;
-  /** Removes the move before the cursor from the line entirely. */
-  takeBack: () => void;
-  /** Replaces the whole line, e.g. to study a line just played in training. */
-  loadLine: (sans: string[]) => void;
-  reset: () => void;
-  flip: () => void;
-  setOrientation: (o: Orientation) => void;
-}
-
-function replay(sans: string[], upTo: number): { game: Chess; lastMove: ChessGame['lastMove'] } {
-  const game = new Chess();
-  let lastMove: ChessGame['lastMove'] = null;
-  for (let i = 0; i < upTo; i++) {
-    const info = game.move(sans[i]!);
-    if (!info) break; // corrupt line; stop where it stops rather than throwing
-    lastMove = { from: info.from, to: info.to };
-  }
-  return { game, lastMove };
-}
-
-export function useChessGame(): ChessGame {
-  const [sans, setSans] = useState<string[]>([]);
-  const [cursor, setCursor] = useState(0);
+/** The Explore board retains every played branch and position's drawings. */
+export function useChessGame() {
+  const [tree, setTree] = useState(newExploreTree);
   const [replaying, setReplaying] = useState(false);
   const [orientation, setOrientation] = useState<Orientation>('white');
+  const line = useMemo(() => selectedLine(tree), [tree]);
+  const sans = useMemo(() => line.map((id) => tree.nodes[id]!.san), [tree, line]);
+  const cursor = nodePath(tree).length;
+  const game = useMemo(() => positionAt(tree), [tree]);
+  const selected = tree.nodes[tree.selected]!;
+  const last = selected.parent === null ? null : positionAt(tree, selected.parent).move(selected.san);
+  const lastMove = last ? { from: last.from, to: last.to } : null;
 
-  const { game, lastMove } = useMemo(() => replay(sans, cursor), [sans, cursor]);
-
-  const play = useCallback(
-    (input: MoveInput): MoveInfo | null => {
-      const { game: at } = replay(sans, cursor);
-      const info = at.move(input);
-      if (!info) return null;
-      setSans((prev) => [...prev.slice(0, cursor), info.san]);
-      setCursor((prev) => prev + 1);
-      setReplaying(false);
-      return info;
-    },
-    [sans, cursor],
-  );
-
-  const goTo = useCallback(
-    (index: number) => {
-      setCursor(Math.max(0, Math.min(index, sans.length)));
-      setReplaying(true);
-    },
-    [sans.length],
-  );
-
-  const takeBack = useCallback(() => {
-    if (cursor === 0) return;
-    setSans((prev) => prev.slice(0, cursor - 1));
-    setCursor((prev) => prev - 1);
-    setReplaying(true);
-  }, [cursor]);
-
-  const loadLine = useCallback((line: string[]) => {
-    setSans(line);
-    setCursor(line.length);
+  const play = useCallback((input: MoveInput) => {
+    const info = positionAt(tree).move(input);
+    if (!info) return null;
+    setTree((previous) => playTreeMove(previous, input));
+    setReplaying(false);
+    return info;
+  }, [tree]);
+  const selectNode = useCallback((id: number) => {
+    setTree((previous) => selectTreeNode(previous, id));
     setReplaying(true);
   }, []);
-
-  const reset = useCallback(() => {
-    setSans([]);
-    setCursor(0);
+  const goTo = (index: number) => selectNode(line[Math.max(0, Math.min(index, line.length)) - 1] ?? 0);
+  const deleteLine = () => { setTree(deleteTreeLine); setReplaying(true); };
+  const loadLine = useCallback((moves: string[]) => {
+    setTree(moves.reduce((state, san) => playTreeMove(state, san), newExploreTree()));
     setReplaying(true);
   }, []);
+  const reset = () => { setTree(newExploreTree()); setReplaying(true); };
+  const setShapes = useCallback((shapes: MoveShapes) => setTree((previous) => setTreeShapes(previous, shapes)), []);
 
   return {
-    game,
-    sans,
-    cursor,
-    atStart: cursor === 0,
-    atEnd: cursor === sans.length,
-    lastMove,
-    replaying,
-    orientation,
-    play,
-    goTo,
-    stepBack: () => goTo(cursor - 1),
-    stepForward: () => goTo(cursor + 1),
-    toStart: () => goTo(0),
-    toEnd: () => goTo(sans.length),
-    takeBack,
-    loadLine,
-    reset,
-    flip: () => setOrientation((o) => (o === 'white' ? 'black' : 'white')),
-    setOrientation,
+    game, sans, cursor, tree, lastMove, replaying, orientation,
+    pgn: useMemo(() => exportExplorePgn(tree), [tree]),
+    shapes: tree.nodes[tree.selected]!.shapes, setShapes,
+    atStart: cursor === 0, atEnd: cursor === line.length,
+    canPromote: nodePath(tree).some((id) => tree.nodes[tree.nodes[id]!.parent!]!.children[0] !== id),
+    play, goTo, selectNode,
+    stepBack: () => goTo(cursor - 1), stepForward: () => goTo(cursor + 1),
+    toStart: () => goTo(0), toEnd: () => goTo(sans.length),
+    takeBack: deleteLine, deleteLine, promoteLine: () => setTree(promoteTreeLine),
+    loadLine, reset, flip: () => setOrientation((o) => o === 'white' ? 'black' : 'white'), setOrientation,
   };
 }
+export type ChessGame = ReturnType<typeof useChessGame>;

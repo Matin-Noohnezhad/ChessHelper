@@ -1,7 +1,6 @@
 import { MoveStepButton } from './components/MoveStepButton.js';
 import { PieceSetContext } from './components/Piece.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { formatMoveText } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
 import { identifyOpening } from '@coh/opening-book';
 import { Board, BoardCoordinatesContext } from './components/Board.js';
@@ -14,7 +13,7 @@ import { CoursesView } from './components/CoursesView.js';
 import { EnginePanel } from './components/EnginePanel.js';
 import { EvalBar } from './components/EvalBar.js';
 import { ImbalancesPanel } from './components/ImbalancesPanel.js';
-import { MoveList } from './components/MoveList.js';
+import { ExploreMoveTree } from './components/ExploreMoveTree.js';
 import { OpeningPanel } from './components/OpeningPanel.js';
 import { ReviewView } from './components/ReviewView.js';
 import { SettingsPanel } from './components/SettingsPanel.js';
@@ -39,7 +38,8 @@ export default function App() {
   const review = useGameReview();
   const [mode, setMode] = useState<Mode>('explore');
   const [marks, setMarks] = useState<SquareMark[]>([]);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'FEN' | 'PGN' | null>(null);
+  const [copyError, setCopyError] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
 
@@ -62,12 +62,8 @@ export default function App() {
   const played = useMemo(() => game.sans.slice(0, game.cursor), [game.sans, game.cursor]);
   const match = useMemo(() => identifyOpening(played), [played]);
 
-  // The whole line, not the cursor's prefix: reviewing "the game on the board"
-  // should cover everything played, wherever the user happens to be looking.
-  const currentGamePgn = useMemo(
-    () => (game.sans.length ? formatMoveText(game.sans, false, '*') : null),
-    [game.sans],
-  );
+  // Review follows the main line; promoting a variation chooses it for review.
+  const currentGamePgn = game.sans.length ? game.pgn : null;
 
   // The second way in: no clipboard, no paste box. Whatever is on the board is
   // a game, and one click reviews it.
@@ -112,6 +108,8 @@ export default function App() {
       else if (event.key === 'ArrowUp') game.toStart();
       else if (event.key === 'ArrowDown') game.toEnd();
       else if (event.key === 'f') game.flip();
+      else if (event.key.toLowerCase() === 'p') game.promoteLine();
+      else if (event.key === 'Delete') game.deleteLine();
       else return;
       event.preventDefault();
     };
@@ -129,10 +127,15 @@ export default function App() {
           ? 'Check'
           : `${game.game.turn() === 'w' ? 'White' : 'Black'} to move`;
 
-  const copyFen = async () => {
-    await navigator.clipboard?.writeText(game.game.fen());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  const copyPosition = async (kind: 'FEN' | 'PGN') => {
+    try {
+      await navigator.clipboard.writeText(kind === 'FEN' ? game.game.fen() : game.pgn);
+      setCopyError('');
+      setCopied(kind);
+      setTimeout(() => setCopied(null), 1500);
+    } catch {
+      setCopyError(`Could not copy ${kind}. Check clipboard permissions and try again.`);
+    }
   };
 
   return (
@@ -194,7 +197,7 @@ export default function App() {
                 type="button"
                 onClick={reviewBoardGame}
                 disabled={!currentGamePgn}
-                title="Run the game review on the moves currently on the board"
+                title="Review the main line. Promote a variation to review it instead."
               >
                 Review game
               </button>
@@ -295,6 +298,8 @@ export default function App() {
               onMove={handleMove}
               moveEntryMode={settings.moveEntryMode}
               marks={marks}
+              shapes={game.shapes}
+              onShapesChange={game.setShapes}
               annotationThickness={settings.annotationThickness}
               animateMoves
             />
@@ -315,13 +320,18 @@ export default function App() {
                 ⏭
               </button>
             </div>
-            <button type="button" className="fen" onClick={copyFen} title={game.game.fen()}>
-              {copied ? 'FEN copied' : 'Copy FEN'}
+            <button type="button" className="fen" onClick={() => void copyPosition('FEN')} title={game.game.fen()}>
+              {copied === 'FEN' ? 'FEN copied' : 'Copy FEN'}
+            </button>
+            <button type="button" className="fen" onClick={() => void copyPosition('PGN')} title="Copy all moves, variations and colored drawings">
+              {copied === 'PGN' ? 'PGN copied' : 'Copy PGN'}
             </button>
           </div>
+          {copyError && <p role="alert">{copyError}</p>}
         </div>
 
         <aside className="app__side">
+          <ExploreMoveTree game={game} />
           <EnginePanel engine={engine} />
           <ImbalancesPanel game={game.game} />
           <OpeningPanel
@@ -331,10 +341,6 @@ export default function App() {
             onPlayMove={playSan}
             onMarks={setMarks}
           />
-          <section className="moves">
-            <h3>Moves</h3>
-            <MoveList sans={game.sans} cursor={game.cursor} onSelect={game.goTo} />
-          </section>
         </aside>
       </main>
       )}

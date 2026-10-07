@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
+import type { Chess, MoveShapes, PieceSymbol, SquareContents } from '@coh/chess-core';
 import { reverseCapture, smartCandidates, SmartMoveEngine } from '../smartMoves.js';
 import { Piece } from './Piece.js';
 import { AnnotationArrow, AnnotationSquare, AnnotationStyleContext, LastMoveArrowContext } from './BoardAnnotations.js';
@@ -94,6 +94,9 @@ export interface SquareBadge {
 const useVisualEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 interface BoardProps {
+  /** Saved drawings for the selected Explore node. */
+  shapes?: MoveShapes;
+  onShapesChange?: (shapes: MoveShapes) => void;
   game: Chess;
   orientation: Orientation;
   lastMove: { from: string; to: string } | null;
@@ -143,6 +146,8 @@ interface Drag {
 }
 
 export function Board({
+  shapes,
+  onShapesChange,
   game,
   orientation,
   lastMove,
@@ -192,8 +197,10 @@ export function Board({
   const [selected, setSelected] = useState<string | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
-  const [arrows, setArrows] = useState<DrawArrow[]>([]);
-  const [circles, setCircles] = useState<DrawCircle[]>([]);
+  const [localArrows, setArrows] = useState<DrawArrow[]>([]);
+  const [localCircles, setCircles] = useState<DrawCircle[]>([]);
+  const arrows = shapes?.arrows ?? localArrows;
+  const circles = shapes?.circles ?? localCircles;
   const [drawStart, setDrawStart] = useState<{ square: string; color: DrawColor } | null>(null);
   const [drawCurrent, setDrawCurrent] = useState<string | null>(null);
   const animationPosition = useRef<(AnimationPosition & { orientation: Orientation }) | null>(null);
@@ -400,21 +407,25 @@ export function Board({
   const toggleDrawing = useCallback((from: string, to: string, color: DrawColor) => {
     setLastMoveArrowDismissed(true);
     if (from === to) {
-      setCircles((prev) => {
+      const update = (prev: DrawCircle[]) => {
         const existing = prev.find((c) => c.square === from);
         if (existing?.color === color) return prev.filter((c) => c.square !== from);
         if (existing) return prev.map((c) => (c.square === from ? { square: from, color } : c));
         return [...prev, { square: from, color }];
-      });
+      };
+      if (shapes && onShapesChange) onShapesChange({ ...shapes, circles: update(shapes.circles) });
+      else setCircles(update);
       return;
     }
-    setArrows((prev) => {
+    const update = (prev: DrawArrow[]) => {
       const existing = prev.find((a) => a.from === from && a.to === to);
       if (existing?.color === color) return prev.filter((a) => !(a.from === from && a.to === to));
       if (existing) return prev.map((a) => (a.from === from && a.to === to ? { from, to, color } : a));
       return [...prev, { from, to, color }];
-    });
-  }, []);
+    };
+    if (shapes && onShapesChange) onShapesChange({ ...shapes, arrows: update(shapes.arrows) });
+    else setArrows(update);
+  }, [shapes, onShapesChange]);
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent, square: string) => {
@@ -427,7 +438,8 @@ export function Board({
         return;
       }
       if (event.button !== 0) return;
-      // Any left-button interaction starts a fresh selection, so clear old annotations first.
+      // Transient drawings clear on left-click. Saved Explore drawings are
+      // controlled by the caller and remain until toggled or explicitly cleared.
       if (arrows.length || circles.length) {
         setArrows([]);
         setCircles([]);
