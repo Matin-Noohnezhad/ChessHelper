@@ -17,6 +17,8 @@ import { CourseSession } from '../components/CourseSession.js';
 import { CourseReader } from '../components/CourseReader.js';
 import { ReviewSetup } from '../components/ReviewSetup.js';
 import { ReviewReport, StructureNote, moveBadge } from '../components/ReviewView.js';
+import { ReviewSummary } from '../components/ReviewSummary.js';
+import { ReviewMoveList } from '../components/ReviewMoveList.js';
 import { SettingsPanel } from '../components/SettingsPanel.js';
 import { TrainerView } from '../components/TrainerView.js';
 import { entryFrom } from '../hooks/useCourseLibrary.js';
@@ -314,7 +316,7 @@ describe('game review UI', () => {
     expect(html).toContain('Black plans');
   });
 
-  it('renders a full report: accuracies, phases, categories and the move list', async () => {
+  it('opens on the overview and preserves phases and the move list in their review sections', async () => {
     const review = await reviewPgn(
       '[White "Ann"]\n[Black "Ben"]\n[Result "*"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *',
       { evaluator: flatEvaluator },
@@ -325,11 +327,24 @@ describe('game review UI', () => {
     expect(html).toContain('Ben');
     expect(html).toContain('accuracy');
     expect(html).toContain('Opening');
-    expect(html).toContain('Middlegame');
-    expect(html).toContain('Endgame');
-    // Every move is in the list, and the board still draws all 64 squares.
-    expect(html).toContain('Bb5');
+    expect(html).toContain('Move classification');
+    expect(html).toContain('Game momentum');
+    expect(html).not.toContain('review-breakdown');
     expect(html.match(/data-square="/g)).toHaveLength(64);
+
+    const summary = (section: 'details' | 'moves') => renderToStaticMarkup(
+      <ReviewSummary review={review} section={section} onSectionChange={() => {}}
+        analysis={<ReviewMoveList moves={review.moves} selectedPly={5} onSelect={() => {}} showClocks={false} />}
+        moments={null}
+      >{null}</ReviewSummary>,
+    );
+    const details = summary('details');
+    expect(details).toContain('Opening');
+    expect(details).toContain('Middlegame');
+    expect(details).toContain('Endgame');
+    const moves = summary('moves');
+    for (const move of review.moves) expect(moves).toContain(move.san);
+    expect(moves).toContain('aria-current="step"');
   });
 
   it('sticks the move’s category to the square it landed on', () => {

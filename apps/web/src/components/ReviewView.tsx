@@ -20,6 +20,7 @@ import { ReviewGraph } from './ReviewGraph.js';
 import { ReviewMoveList } from './ReviewMoveList.js';
 import { ReviewSetup } from './ReviewSetup.js';
 import { ReviewSummary } from './ReviewSummary.js';
+import type { ReviewSection } from './ReviewSummary.js';
 import { ReviewPlayer, reviewClocks } from './ReviewPlayer.js';
 import { StructureBreaks, StructurePlans } from './StructureAdvice.js';
 import type { ReviewController } from '../hooks/useGameReview.js';
@@ -192,6 +193,7 @@ export function ReviewReport({
   onReviewBoardGame?: (() => void) | undefined;
 }) {
   const [selectedPly, setSelectedPly] = useState(0);
+  const [section, setSection] = useState<ReviewSection>('overview');
   const [showBest, setShowBest] = useState(false);
   const [orientation, setOrientation] = useState<Orientation>('white');
 
@@ -199,6 +201,7 @@ export function ReviewReport({
   useEffect(() => {
     const worst = keyMoments(review, 1)[0];
     setSelectedPly(worst?.ply ?? 0);
+    setSection('overview');
     setShowBest(false);
   }, [review]);
 
@@ -228,11 +231,13 @@ export function ReviewReport({
   const bottomColor = orientation === 'white' ? 'w' : 'b';
 
   const step = (delta: number) => {
+    setSection('moves');
     setShowBest(false);
     setSelectedPly((ply) => Math.max(0, Math.min(review.moves.length, ply + delta)));
   };
 
   const selectPly = (ply: number) => {
+    setSection('moves');
     setShowBest(false);
     setSelectedPly(ply);
   };
@@ -323,66 +328,64 @@ export function ReviewReport({
             Flip
           </button>
         </div>
-
-        <ReviewGraph review={review} selectedPly={selectedPly} onSelect={selectPly} />
-
-        {move && (
-          <MoveDetail
-            move={move}
-            fen={fen}
-            showBest={showBest}
-            onToggleBest={() => setShowBest((v) => !v)}
-          />
-        )}
-        {!move && <div className="panel review-detail review-detail--empty"><h3>Every move has a story</h3><p className="muted">Select a move or a point on the graph to explore it. Use ← and → to step through the game.</p></div>}
       </div>
-
       <aside className="app__side">
-        <ReviewSummary review={review} />
-
-        {moments.length > 0 && (
-          <section className="panel review-moments">
-            <div className="panel__head">
-              <div className="panel__title">
-                <h2>Turning points</h2>
-                <span className="review-chip">{moments.length} to revisit</span>
-              </div>
-            </div>
-            <ul>
-              {moments.map((moment) => (
-                <li key={moment.ply}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowBest(false);
-                      setSelectedPly(moment.ply);
-                    }}
-                  >
-                    <QualityBadge quality={moment.quality} />
-                    <span className="review-moments__san">
-                      {moment.moveNumber}
-                      {moment.color === 'w' ? '.' : '…'} {moment.san}
-                    </span>
-                    <span className="muted">{moment.explanation}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        <section className="moves">
-          <div className="review-section-heading"><h3>Moves</h3><span className="muted">{selectedPly} / {review.moves.length} plies</span></div>
-          <ReviewMoveList
-            moves={review.moves}
-            selectedPly={selectedPly}
-            onSelect={(ply) => {
-              setShowBest(false);
-              setSelectedPly(ply);
-            }}
-            showClocks={showClocks}
-          />
-        </section>
+        <ReviewSummary
+          review={review}
+          section={section}
+          onSectionChange={setSection}
+          analysis={<>
+            {move && (
+              <MoveDetail
+                move={move}
+                fen={fen}
+                showBest={showBest}
+                onToggleBest={() => setShowBest((v) => !v)}
+              />
+            )}
+            {!move && <div className="panel review-detail review-detail--empty"><h3>Every move has a story</h3><p className="muted">Select a move or a point on the graph to explore it. Use ← and → to step through the game.</p></div>}
+            <section className="moves">
+              <div className="review-section-heading"><h3>Moves</h3><span className="muted">{selectedPly} / {review.moves.length} plies</span></div>
+              <ReviewMoveList
+                moves={review.moves}
+                selectedPly={selectedPly}
+                onSelect={selectPly}
+                showClocks={showClocks}
+              />
+            </section>
+          </>}
+          moments={<>
+            {moments.length > 0 && (
+              <section className="panel review-moments">
+                <div className="panel__head">
+                  <div className="panel__title">
+                    <h2>Turning points</h2>
+                    <span className="review-chip">{moments.length} to revisit</span>
+                  </div>
+                </div>
+                <ul>
+                  {moments.map((moment) => (
+                    <li key={moment.ply}>
+                      <button
+                        type="button"
+                        onClick={() => selectPly(moment.ply)}
+                      >
+                        <QualityBadge quality={moment.quality} />
+                        <span className="review-moments__san">
+                          {moment.moveNumber}
+                          {moment.color === 'w' ? '.' : '…'} {moment.san}
+                        </span>
+                        <span className="muted">{moment.explanation}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </>}
+        >
+          <ReviewGraph review={review} selectedPly={selectedPly} onSelect={selectPly} />
+        </ReviewSummary>
       </aside>
     </main>
   );

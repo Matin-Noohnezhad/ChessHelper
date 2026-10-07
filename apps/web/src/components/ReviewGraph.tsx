@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import { winPercent } from '@coh/review';
+import { formatScore, winPercent } from '@coh/review';
 import type { GameReview, MoveQuality } from '@coh/review';
 import { qualityClass } from './QualityBadge.js';
 
-const HEIGHT = 34;
+const WIDTH = 600;
+const HEIGHT = 120;
 /** Only the categories worth interrupting the curve for. */
 const MARKED: MoveQuality[] = ['sacrifice', 'great', 'miss', 'mistake', 'blunder'];
 
@@ -21,14 +22,14 @@ interface ReviewGraphProps {
 export function ReviewGraph({ review, selectedPly, onSelect }: ReviewGraphProps) {
   const { series, area, line, markers } = useMemo(() => {
     const values = [50, ...review.moves.map((move) => winPercent(move.scoreAfter))];
-    const x = (index: number) => (values.length > 1 ? (index / (values.length - 1)) * 100 : 0);
+    const x = (index: number) => (values.length > 1 ? (index / (values.length - 1)) * WIDTH : 0);
     const y = (value: number) => HEIGHT - (value / 100) * HEIGHT;
     const path = values.map((value, i) => `${x(i)},${y(value)}`).join(' ');
 
     return {
       series: values,
       line: path,
-      area: `M0,${HEIGHT} L${path.split(' ').join(' L')} L100,${HEIGHT} Z`,
+      area: `M0,${HEIGHT} L${path.split(' ').join(' L')} L${WIDTH},${HEIGHT} Z`,
       markers: review.moves
         .filter((move) => MARKED.includes(move.quality))
         .map((move) => ({
@@ -58,13 +59,15 @@ export function ReviewGraph({ review, selectedPly, onSelect }: ReviewGraphProps)
 
   const plyAt = (fraction: number) =>
     Math.max(0, Math.min(review.moves.length, Math.round(fraction * (series.length - 1))));
+  const selectedMove = review.moves[selectedPly - 1];
 
   return (
     <div className="review-graph">
-      <div className="review-section-heading"><h3>Game momentum</h3><span className="muted">White’s win expectancy</span></div>
-      {/* Scaled uniformly, so the blunder dots stay round however wide the panel is. */}
+      <div className="review-section-heading"><h3 title="White’s win expectancy. Click the graph or use the slider to explore a move.">Game momentum</h3><span className="review-graph__reading">{selectedMove ? `${selectedMove.moveNumber}${selectedMove.color === 'w' ? '.' : '…'} ${selectedMove.san}` : 'Start'}<strong>{formatScore(selectedMove?.scoreAfter ?? { cp: 0, mate: null })}</strong></span></div>
+      {/* A fixed-height chart keeps the overview visible on short screens. */}
       <svg
-        viewBox={`0 0 100 ${HEIGHT}`}
+        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+        preserveAspectRatio="none"
         role="img"
         aria-label="White's win expectancy through the game"
         onClick={(event) => {
@@ -72,12 +75,12 @@ export function ReviewGraph({ review, selectedPly, onSelect }: ReviewGraphProps)
           onSelect(plyAt((event.clientX - rect.left) / rect.width));
         }}
       >
-        <rect x="0" y="0" width="100" height={HEIGHT} className="review-graph__bg" />
+        <rect x="0" y="0" width={WIDTH} height={HEIGHT} className="review-graph__bg" />
         <path d={area} className="review-graph__area" />
         <polyline points={line} className="review-graph__line" vectorEffect="non-scaling-stroke" />
         <line
           x1="0"
-          x2="100"
+          x2={WIDTH}
           y1={HEIGHT / 2}
           y2={HEIGHT / 2}
           className="review-graph__mid"
@@ -88,8 +91,8 @@ export function ReviewGraph({ review, selectedPly, onSelect }: ReviewGraphProps)
           .map((ply) => (
             <line
               key={ply}
-              x1={(ply / review.moves.length) * 100}
-              x2={(ply / review.moves.length) * 100}
+              x1={(ply / review.moves.length) * WIDTH}
+              x2={(ply / review.moves.length) * WIDTH}
               y1="0"
               y2={HEIGHT}
               className="review-graph__phase"
@@ -97,19 +100,20 @@ export function ReviewGraph({ review, selectedPly, onSelect }: ReviewGraphProps)
             />
           ))}
         <line
-          x1={(selectedPly / Math.max(1, review.moves.length)) * 100}
-          x2={(selectedPly / Math.max(1, review.moves.length)) * 100}
+          x1={(selectedPly / Math.max(1, review.moves.length)) * WIDTH}
+          x2={(selectedPly / Math.max(1, review.moves.length)) * WIDTH}
           y1="0"
           y2={HEIGHT}
           className="review-graph__cursor"
           vectorEffect="non-scaling-stroke"
         />
         {markers.map((marker) => (
-          <circle
+          <line
             key={marker.ply}
-            cx={marker.cx}
-            cy={marker.cy}
-            r="1.6"
+            x1={marker.cx}
+            x2={marker.cx + 0.001}
+            y1={marker.cy}
+            y2={marker.cy}
             className={`review-graph__dot ${qualityClass(marker.quality)}`}
             vectorEffect="non-scaling-stroke"
           />
