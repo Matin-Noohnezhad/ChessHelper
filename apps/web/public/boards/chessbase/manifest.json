@@ -1,0 +1,116 @@
+{
+  "product": "ChessBase Playchess 9.3",
+  "source": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+  "installerSha256": "fa5956dbfb9ace67e1e00e3b01add554afb2b1a34c0f02aa8024209e96744127",
+  "method": "PNG resources copied unchanged. Preset texture pairs from Textures3.dll board table; solid RGB colors from PlayChessV9.exe built-in schemes.",
+  "files": [
+    {
+      "file": "babinga.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/101",
+      "bytes": 518618,
+      "sha256": "5cb52afb9199b31bb3548d86634ede2143dac73c8be37f5fd9ff95e809bbda26"
+    },
+    {
+      "file": "big-butter.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/102",
+      "bytes": 170067,
+      "sha256": "a5c4dc7f216ed5cc1ef6444b973720f09921bf19b81e1f1d41f83046a36fb2bd"
+    },
+    {
+      "file": "carmine.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/104",
+      "bytes": 102595,
+      "sha256": "fddf82335a6871268c7f9042929aa8953d13477ae8da60fe9eeaf0b2d17aaae5"
+    },
+    {
+      "file": "cherry.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/105",
+      "bytes": 74307,
+      "sha256": "802b367ad3f43d2bfa71283b2b245407f038587d84eb3efdd4678d5a6df9cffe"
+    },
+    {
+      "file": "figured.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/107",
+      "bytes": 236700,
+      "sha256": "30553afd2a441187b84942e63c11fc9e67e69eacec34851b4845bf0cdb4bfad7"
+    },
+    {
+      "file": "maple.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/109",
+      "bytes": 99980,
+      "sha256": "c1048791d454bfeb83bca19886c56a2642d9ba7d71f1a8a0427cfc6eed2504e9"
+    },
+    {
+      "file": "teak.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/110",
+      "bytes": 2453277,
+      "sha256": "3421bf222f12b919adb1ded82ab8c1b9a0004a2604f82cf5f9249591af7f6301"
+    },
+    {
+      "file": "pine.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/112",
+      "bytes": 417881,
+      "sha256": "3f3a8aba007257a09cd093245fae55c6f00e141f054a8993703194eab585c62b"
+    },
+    {
+      "file": "worn.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/113",
+      "bytes": 121908,
+      "sha256": "c866c9ab719edbc0fee9eb3f85f97fc7823de9e4db87ed0ef2f7c0dc03c8126a"
+    },
+    {
+      "file": "white-marble.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/201",
+      "bytes": 31346,
+      "sha256": "7cba2d1c78627f7ef016fc191096e63bfb6e9bf450b7fdef38c9b9479bdb1a97"
+    },
+    {
+      "file": "gray-marble.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/202",
+      "bytes": 77990,
+      "sha256": "a841d5f585468eb2c982ff09897e91fecb5ba6f5db192f2f8594d961056d4408"
+    },
+    {
+      "file": "beige-marble.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/205",
+      "bytes": 49832,
+      "sha256": "70dcabc4d33cddc637470c86695d5155a453c937397b12f9de470448edc79e55"
+    },
+    {
+      "file": "pink-marble.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/206",
+      "bytes": 73205,
+      "sha256": "0934ff4a2b67adfdbea8279760b08329a2a5af38af999988e049498a691dc1ea"
+    },
+    {
+      "file": "turk-marble.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/207",
+      "bytes": 58466,
+      "sha256": "ba5d987913935121124c25d54238d2f6cd7b04b0a92726ce0dd97d8b118db7f5"
+    },
+    {
+      "file": "metal-windows.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/301",
+      "bytes": 82576,
+      "sha256": "7eebeb1989dfa56f1b8707b8d06e081085fdfbfeac5f8fc3a90a09b3227fde90"
+    },
+    {
+      "file": "medium-metal.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/305",
+      "bytes": 15902,
+      "sha256": "41bcb6cba66297df200b63f1554148fa2156ff979b9d9cd6dfdadb0e31885f66"
+    },
+    {
+      "file": "black-metal.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/306",
+      "bytes": 84166,
+      "sha256": "7e47844ac718ff5f41c6d721353c30c17a4ecdbeb71ef0317d369cb16c5a9d9e"
+    },
+    {
+      "file": "grass.png",
+      "resource": "Textures3.dll/.rsrc/1031/PNG/516",
+      "bytes": 110347,
+      "sha256": "303b0272162685ee4e4f61ab97568128ba5e43a73fedaf13be9b76c1fcde7202"
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import { ANNOTATION_THICKNESS_OPTIONS, ANNOTATION_STYLES, AnnotationPreview, Ann
 import type { AnnotationStyle, AnnotationThickness, DrawColor } from './BoardAnnotations.js';
 import { DEFAULT_SOUND_STYLE, SOUND_STYLES, playBoardSound } from '../sound.js';
 import type { SoundStyle } from '../sound.js';
+import { BOARD_THEME_GROUPS, boardThemeStyle } from '../boardThemes.js';
 import type { CourseLearningSettings, BoardTheme } from '../hooks/useSettings.js';
 import {
   BOARD_THEMES,
@@ -90,16 +91,28 @@ export function SettingsPanel({
 
         <div className="settings-row">
           <span className="settings-row__label">Board appearance</span>
-          <div className="board-themes" role="group" aria-label="Board color theme">
-            {BOARD_THEMES.map((theme) => (
-              <button key={theme.key} type="button" className="board-theme"
-                data-board-theme={theme.key} aria-pressed={boardTheme === theme.key}
-                onClick={() => onBoardThemeChange?.(theme.key)}>
-                <span className="board-theme__swatch" aria-hidden="true" />
-                {theme.label}
-              </button>
+          <div className="board-theme-groups" role="group" aria-label="Board color theme">
+            {BOARD_THEME_GROUPS.map((group) => (
+              <div key={group}>
+                <span className="board-themes__label">{group}</span>
+                <div className="board-themes">
+                  {BOARD_THEMES.filter((theme) => theme.group === group).map((theme) => (
+                    <button key={theme.key} type="button" className="board-theme"
+                      data-board-theme={theme.key} style={boardThemeStyle(theme.key)}
+                      aria-pressed={boardTheme === theme.key}
+                      onClick={() => onBoardThemeChange?.(theme.key)}>
+                      <span className="board-theme__swatch" aria-hidden="true">
+                        <span className="is-light" /><span className="is-dark" />
+                        <span className="is-dark" /><span className="is-light" />
+                      </span>
+                      {theme.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
+          <span className="settings-row__hint"><a href="/boards/chessbase/README.md" target="_blank" rel="noreferrer">Board artwork credits</a></span>
         </div>
 
         <div className="settings-row">

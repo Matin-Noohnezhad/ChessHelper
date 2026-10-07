@@ -23,6 +23,7 @@ import { useChessGame } from './hooks/useChessGame.js';
 import { useEngine } from './hooks/useEngine.js';
 import { useGameReview } from './hooks/useGameReview.js';
 import { useSettings } from './hooks/useSettings.js';
+import { boardThemeStyle } from './boardThemes.js';
 
 type Mode = 'explore' | 'train' | 'courses' | 'review';
 
@@ -135,7 +136,7 @@ export default function App() {
   };
 
   return (
-    <div className={`app${focusMode ? ' app--focus' : ''}`} data-board-theme={settings.boardTheme}>
+    <div className={`app${focusMode ? ' app--focus' : ''}`} data-board-theme={settings.boardTheme} style={boardThemeStyle(settings.boardTheme)}>
       <header className="app__head">
         <h1>
           Chess Opening Helper

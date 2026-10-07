@@ -9,15 +9,12 @@ import { DEFAULT_BOARD_ANIMATION, MOVEMENT_SPEEDS, MOVEMENT_STYLES } from '../bo
 import type { BoardAnimationSettings, MovementStyle, MovementSpeed } from '../boardAnimation.js';
 
 import { DEFAULT_CHUNK, DEFAULT_FULL_PASSES } from '@coh/course';
+import { BOARD_THEMES } from '../boardThemes.js';
+import type { BoardTheme } from '../boardThemes.js';
+export { BOARD_THEMES } from '../boardThemes.js';
+export type { BoardTheme } from '../boardThemes.js';
 
 const STORAGE_KEY = 'coh.settings.v1';
-
-export const BOARD_THEMES = [
-  { key: 'walnut', label: 'Walnut' },
-  { key: 'tournament', label: 'Tournament' },
-  { key: 'slate', label: 'Slate' },
-] as const;
-export type BoardTheme = typeof BOARD_THEMES[number]['key'];
 
 /**
  * The course line demonstration, as a dial rather than a few presets.
