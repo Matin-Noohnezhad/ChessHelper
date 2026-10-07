@@ -211,8 +211,8 @@ export function CourseSession({
   ]);
 
   // Arrow keys walk the trail, the way they do on the explore board — but while
-  // the line is being demonstrated, → and Space step the demonstration instead,
-  // which is the whole of how Manual pace is driven.
+  // the line is being demonstrated, → steps it and Space skips to practicing
+  // the current part.
   useEffect(() => {
     if (analyzing || reading) return;
     const onKey = (event: KeyboardEvent) => {
@@ -222,7 +222,8 @@ export function CourseSession({
       else if (key === 'a' && plan.tasks.length) setAnalyzing(true);
       else if (key === ' ' && !looking && trainer.status === 'task-complete') session.next();
       else if (key === ' ' && !looking && trainer.status === 'complete') continueAfterSession();
-      else if ((key === 'arrowright' || key === ' ') && watching && !looking) advanceWatch();
+      else if (key === ' ' && watching && !looking) session.skipWatch();
+      else if (key === 'arrowright' && watching && !looking) advanceWatch();
       else if (key === 'arrowleft') stepTo((lookback ?? livePly) - 1);
       else if (key === 'arrowright' || (key === ' ' && looking)) stepTo((lookback ?? livePly) + 1);
       else if (key === 'arrowup' || key === 'home') stepTo(0);
@@ -409,15 +410,16 @@ export function CourseSession({
                   type="button"
                   className={manualWatch ? 'primary' : undefined}
                   onClick={session.advanceWatch}
-                  title="Next move (→ or Space)"
+                  title="Next move (→)"
+                  aria-keyshortcuts="ArrowRight"
                 >
                   Next ⏭
                 </button>
                 {!manualWatch && <button type="button" title="Pause or resume (P)" onClick={() => setWatchPaused((paused) => !paused)}>
                   {watchPaused ? 'Resume' : 'Pause'}
                 </button>}
-                <button type="button" onClick={session.skipWatch} title="Let me try (T)">
-                  Let me try
+                <button type="button" onClick={session.skipWatch} title="Skip demonstration and practice this part (Space or T)" aria-keyshortcuts="Space t">
+                  Let me try <kbd>Space</kbd>
                 </button>
               </>
             ) : (
@@ -451,7 +453,7 @@ export function CourseSession({
       <aside className="trainer__side">
         <section className="panel">
           <details className="course-shortcuts"><summary>Keyboard shortcuts</summary>
-            <p>A: analyze position · B: reading · Space: next move / part / line · ← →: browse moves · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
+            <p>A: analyze position · B: reading · Space: skip demonstration / next part / next line · ← →: browse moves · →: next demonstration move · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
           </details>
           <div className="course-head">
             <h2>{MODE_LABELS[mode]}</h2>
