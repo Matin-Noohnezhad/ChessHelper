@@ -52,6 +52,7 @@ function clampInteger(value: number, min: number, max: number, fallback: number)
 }
 
 export interface AppSettings extends CourseLearningSettings, BoardAnimationSettings, LastMoveArrowSettings {
+  showCoordinates: boolean;
   boardTheme: BoardTheme;
   pieceSet: PieceSet;
   moveEntryMode: 'smart' | 'select';
@@ -67,6 +68,7 @@ export interface AppSettings extends CourseLearningSettings, BoardAnimationSetti
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
+  showCoordinates: true,
   ...DEFAULT_COURSE_LEARNING,
   ...DEFAULT_BOARD_ANIMATION,
   ...DEFAULT_LAST_MOVE_ARROW,
@@ -88,6 +90,7 @@ function loadSettings(): AppSettings {
     const stored = { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<AppSettings>) };
     return {
       ...stored,
+      showCoordinates: typeof stored.showCoordinates === 'boolean' ? stored.showCoordinates : true,
       movementStyle: MOVEMENT_STYLES.some((style) => style.key === stored.movementStyle)
         ? stored.movementStyle : DEFAULT_BOARD_ANIMATION.movementStyle,
       movementSpeed: MOVEMENT_SPEEDS.some((speed) => speed.key === stored.movementSpeed)
@@ -127,6 +130,7 @@ function saveSettings(settings: AppSettings): void {
 }
 
 export interface SettingsController extends AppSettings {
+  setShowCoordinates: (value: boolean) => void;
   setMovementStyle: (value: MovementStyle) => void;
   setMovementSpeed: (value: MovementSpeed) => void;
   setCourseLearning: (value: CourseLearningSettings) => void;
@@ -155,6 +159,7 @@ export function useSettings(): SettingsController {
   }, []);
 
   const setPieceSet = useCallback((value: PieceSet) => update({ pieceSet: value }), [update]);
+  const setShowCoordinates = useCallback((value: boolean) => update({ showCoordinates: value }), [update]);
   const setMovementStyle = useCallback((value: MovementStyle) => update({ movementStyle: value }), [update]);
   const setAnnotationStyle = useCallback((value: AnnotationStyle) => update({ annotationStyle: value }), [update]);
   const setShowLastMoveArrow = useCallback((value: boolean) => update({ showLastMoveArrow: value }), [update]);
@@ -189,5 +194,5 @@ export function useSettings(): SettingsController {
     courseFullPasses: clampInteger(value.courseFullPasses, 1, 5, DEFAULT_FULL_PASSES),
   }), [update]);
 
-  return { ...settings, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setShowCoordinates, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setWatchAutoplay, setWatchMoveSeconds };
 }

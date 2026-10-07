@@ -1,4 +1,4 @@
-import { useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
 import { reverseCapture, smartCandidates, SmartMoveEngine } from '../smartMoves.js';
 import { Piece } from './Piece.js';
@@ -16,6 +16,7 @@ export { ANNOTATION_THICKNESS_OPTIONS } from './BoardAnnotations.js';
 export type { AnnotationThickness } from './BoardAnnotations.js';
 
 const FILES = 'abcdefgh';
+export const BoardCoordinatesContext = createContext(true);
 const PROMOTION_CHOICES: PieceSymbol[] = ['q', 'r', 'b', 'n'];
 
 /** Board squares in reading order for the given orientation. */
@@ -147,6 +148,7 @@ export function Board({
   animateMoves = false,
   moveEntryMode = 'select',
 }: BoardProps) {
+  const showCoordinates = useContext(BoardCoordinatesContext);
   const annotationStyle = useContext(AnnotationStyleContext);
   const { showLastMoveArrow, lastMoveArrowColor } = useContext(LastMoveArrowContext);
   const [lastMoveArrowDismissed, setLastMoveArrowDismissed] = useState(false);
@@ -568,8 +570,8 @@ export function Board({
                 </span>
               )}
               {mark?.label && <span className="square-label">{mark.label}</span>}
-              {file === 0 && <span className="coord coord--rank">{square[1]}</span>}
-              {rank === 7 && <span className="coord coord--file">{square[0]}</span>}
+              {showCoordinates && file === 0 && <span className="coord coord--rank" aria-hidden="true">{square[1]}</span>}
+              {showCoordinates && rank === 7 && <span className="coord coord--file" aria-hidden="true">{square[0]}</span>}
             </div>
           );
         })}

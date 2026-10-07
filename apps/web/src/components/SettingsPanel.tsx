@@ -17,6 +17,8 @@ import {
 } from '../hooks/useSettings.js';
 
 interface SettingsPanelProps {
+  showCoordinates?: boolean;
+  onShowCoordinatesChange?: (value: boolean) => void;
   movementStyle?: MovementStyle;
   onMovementStyleChange?: (value: MovementStyle) => void;
   movementSpeed?: MovementSpeed;
@@ -49,6 +51,7 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({
+  showCoordinates = true, onShowCoordinatesChange,
   movementStyle = 'lichess', onMovementStyleChange,
   movementSpeed = 'medium', onMovementSpeedChange,
   pieceSet, onPieceSetChange, moveEntryMode, onMoveEntryModeChange,
@@ -93,6 +96,15 @@ export function SettingsPanel({
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="settings-row">
+          <label>
+            <input type="checkbox" checked={showCoordinates}
+              onChange={(event) => onShowCoordinatesChange?.(event.target.checked)} />
+            {' '}Show board coordinates
+          </label>
+          <span className="settings-row__hint">File letters (a–h) and rank numbers (1–8) follow the board orientation.</span>
         </div>
 
         <div className="settings-row">

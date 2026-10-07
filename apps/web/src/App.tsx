@@ -3,7 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatMoveText } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
 import { identifyOpening } from '@coh/opening-book';
-import { Board } from './components/Board.js';
+import { Board, BoardCoordinatesContext } from './components/Board.js';
+import { courseShortcutBlocked } from './courseShortcuts.js';
 import { BoardSoundProvider } from './components/BoardSoundContext.js';
 import { BoardAnimationContext } from './components/BoardAnimationContext.js';
 import { AnnotationStyleContext, LastMoveArrowContext } from './components/BoardAnnotations.js';
@@ -38,6 +39,21 @@ export default function App() {
   const [marks, setMarks] = useState<SquareMark[]>([]);
   const [copied, setCopied] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (courseShortcutBlocked(event)) return;
+      if (event.key.toLowerCase() === 'z') setFocusMode((value) => !value);
+      else if (event.key === 'Escape' && focusMode) setFocusMode(false);
+      else return;
+      // Handle Escape before course listeners so leaving focus keeps the lesson open.
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [focusMode]);
 
   // Identification follows the cursor, not the end of the line, so stepping
   // back through a game replays how the opening was classified move by move.
@@ -88,7 +104,7 @@ export default function App() {
     // the arrows would let you step out of the position you are being asked about.
     if (mode !== 'explore') return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLInputElement) return;
+      if (courseShortcutBlocked(event)) return;
       if (event.key === 'ArrowLeft') game.stepBack();
       else if (event.key === 'ArrowRight') game.stepForward();
       else if (event.key === 'ArrowUp') game.toStart();
@@ -118,13 +134,18 @@ export default function App() {
   };
 
   return (
-    <div className="app" data-board-theme={settings.boardTheme}>
+    <div className={`app${focusMode ? ' app--focus' : ''}`} data-board-theme={settings.boardTheme}>
       <header className="app__head">
         <h1>
           Chess Opening Helper
           <span>plans, structures and breaks — not just move orders</span>
         </h1>
         <div className="app__actions">
+          <button type="button" className="focus-button" aria-pressed={focusMode}
+            aria-keyshortcuts="z" title={focusMode ? 'Exit focus mode (Z or Esc)' : 'Focus mode (Z)'}
+            onClick={() => setFocusMode((value) => !value)}>
+            {focusMode ? 'Exit focus' : 'Focus mode'} <kbd>Z</kbd>
+          </button>
           <div className="segmented segmented--mode">
             <button
               type="button"
@@ -200,6 +221,8 @@ export default function App() {
 
       {settingsOpen && (
         <SettingsPanel
+          showCoordinates={settings.showCoordinates}
+          onShowCoordinatesChange={settings.setShowCoordinates}
           pieceSet={settings.pieceSet}
           onPieceSetChange={settings.setPieceSet}
           moveEntryMode={settings.moveEntryMode}
@@ -233,6 +256,7 @@ export default function App() {
       )}
 
       <PieceSetContext.Provider value={settings.pieceSet}>
+      <BoardCoordinatesContext.Provider value={settings.showCoordinates}>
       <BoardAnimationContext.Provider value={settings}>
       <AnnotationStyleContext.Provider value={settings.annotationStyle}>
       <LastMoveArrowContext.Provider value={settings}>
@@ -313,6 +337,7 @@ export default function App() {
       </LastMoveArrowContext.Provider>
       </AnnotationStyleContext.Provider>
       </BoardAnimationContext.Provider>
+      </BoardCoordinatesContext.Provider>
       </PieceSetContext.Provider>
     </div>
   );

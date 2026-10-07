@@ -307,7 +307,7 @@ button:disabled {
 
 .coord {
   position: absolute;
-  font-size: clamp(9px, calc(var(--board-size) / 49), 13px);
+  font-size: clamp(10px, calc(var(--board-size) / 42), 18px);
   font-weight: 700;
   line-height: 1;
   color: #624830;
@@ -2616,4 +2616,66 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); 
   .review-summary .accuracy-card { padding: 0.7rem; }
   .review-report .review-graph { padding: 0.65rem; }
   .review-graph .review-section-heading > .muted { font-size: 0.62rem; }
+}
+
+/* Focus keeps the live board mounted, with the rest of the workspace beside it. */
+.focus-button { white-space: nowrap; }
+.focus-button kbd { margin-left: 0.35rem; font-size: 0.7rem; color: var(--muted); }
+.focus-button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
+.app--focus { --focus-eval-space: 0px; }
+.app--focus:has(.eval-bar) { --focus-eval-space: 34px; }
+.app--focus .app__head h1 { display: none; }
+.app--focus .app__actions { justify-content: flex-start; }
+
+@media (min-width: 760px) {
+  .app--focus:has(.board) {
+    --focus-board-size: min(calc(100dvh - 24px), calc(100vw - 386px - var(--focus-eval-space)));
+    --board-size: var(--focus-board-size);
+    max-width: none;
+    min-height: 100dvh;
+    padding: 12px 24px 24px calc(var(--board-size) + var(--focus-eval-space) + 36px);
+  }
+  .app--focus:has(.board) .app__head {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 0.5rem 0 0.75rem;
+    background: var(--bg);
+  }
+  .app--focus :is(.app__body, .trainer):has(.board) {
+    --board-size: var(--focus-board-size);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 0.75rem;
+  }
+  .app--focus :is(.app__board, .trainer__board, .app__side, .trainer__side, .board-wrap) {
+    width: 100%;
+    min-width: 0;
+  }
+  .app--focus .board-row { display: block; }
+  .app--focus .board {
+    position: fixed;
+    top: 12px;
+    left: calc(12px + var(--focus-eval-space));
+  }
+  .app--focus .eval-bar { position: fixed; top: 12px; left: 12px; width: 26px; }
+  .app--focus .board-hint { max-width: none; margin-top: 0; }
+  .app--focus .course-session__rail {
+    order: 3;
+    position: static;
+    width: 100%;
+    max-height: none;
+  }
+}
+
+/* On a narrow phone, preserve a readable board and stack the panels below. */
+@media (max-width: 759px) {
+  .app--focus {
+    --focus-board-size: min(calc(100dvh - 24px), calc(100vw - 32px - var(--focus-eval-space)));
+    --board-size: var(--focus-board-size);
+    padding: 12px 16px 24px;
+  }
+  .app--focus :is(.trainer, .app__body):has(.board) { --board-size: var(--focus-board-size); }
+  .app--focus .course-session__rail { order: 3; }
 }
