@@ -2414,6 +2414,7 @@ button.primary:hover:not(:disabled) {
 [data-board-theme] .square--dark .coord { color: #fff9ea; }
 [data-board-theme] .board-wrap::after {
   content: '';
+  box-sizing: border-box;
   position: absolute;
   inset: -4px;
   bottom: auto;
@@ -2672,6 +2673,12 @@ button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); 
     position: fixed;
     top: 12px;
     left: calc(12px + var(--focus-eval-space));
+  }
+  /* The theme frame follows the fixed board, not the sidebar wrapper. */
+  .app--focus .board-wrap::after {
+    position: fixed;
+    inset: 8px auto auto calc(8px + var(--focus-eval-space));
+    width: calc(var(--board-size) + 8px);
   }
   .app--focus .eval-bar { position: fixed; top: 12px; left: 12px; width: 26px; }
   .app--focus .board-hint { max-width: none; margin-top: 0; }
