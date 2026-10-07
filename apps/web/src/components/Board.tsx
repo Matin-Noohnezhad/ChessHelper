@@ -39,11 +39,11 @@ interface DrawCircle {
   color: DrawColor;
 }
 
-/** Which annotation color a right-click draws, keyed like lichess: plain/shift/ctrl/alt. */
+/** Which annotation color a right-click draws: plain green, Ctrl red, Shift blue, Alt yellow. */
 function colorForModifiers(event: { shiftKey: boolean; ctrlKey: boolean; altKey: boolean; metaKey: boolean }): DrawColor {
   if (event.altKey) return 'yellow';
-  if (event.ctrlKey || event.metaKey) return 'blue';
-  if (event.shiftKey) return 'red';
+  if (event.ctrlKey || event.metaKey) return 'red';
+  if (event.shiftKey) return 'blue';
   return 'green';
 }
 
@@ -646,7 +646,7 @@ export function Board({
           ? 'Click a piece to play its best capture, or its best move if no capture is available. Click an empty square to move the best eligible piece there. Click an opponent’s piece to capture it. Drag to choose a specific move.'
           : 'Click a piece and its destination, or drag to move.'}
           {' '}Drag an opponent’s piece onto your piece to capture it in reverse. Right-click drag to draw an arrow;
-          right-click a square to mark it. Hold <kbd>Shift</kbd> for red, <kbd>Ctrl</kbd> for blue,
+          right-click a square to mark it. Hold <kbd>Ctrl</kbd> for red, <kbd>Shift</kbd> for blue,
           or <kbd>Alt</kbd> for yellow.</p>
       </details>
     </div>

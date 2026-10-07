@@ -244,7 +244,7 @@ export function SettingsPanel({
             ))}
           </div>
           <span className="settings-row__hint">Applies to your drawings and study hints. Right-click a square to mark it, or right-drag for an arrow.
-            Hold Shift for red, Ctrl for blue, or Alt for yellow. Draw the same mark again to remove it.</span>
+            Hold Ctrl for red, Shift for blue, or Alt for yellow. Draw the same mark again to remove it.</span>
         </div>
 
         <div className="settings-row">
