@@ -34,7 +34,7 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Keep the preview and the saved PGN based on the same text and side.
-  const preview = useMemo(() => {
+  const previewResult = useMemo<{ course: Course; variations: number; moves: number } | { error: string } | null>(() => {
     if (!text.trim()) return null;
     try {
       const course = buildCourse(text, { fileName, sectionHeader, ...(side ? { side } : {}) });
@@ -44,10 +44,12 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
         variations: allVariations(course).length,
         moves: trainableMoves(course.chapters, course.side).size,
       };
-    } catch {
-      return null;
+    } catch (cause) {
+      return { error: `The course importer could not process this PGN: ${cause instanceof Error ? cause.message : 'Unexpected import error'}` };
     }
   }, [text, side, fileName, sectionHeader]);
+  const preview = previewResult && 'course' in previewResult ? previewResult : null;
+  const previewError = previewResult && 'error' in previewResult ? previewResult.error : null;
 
   const readFile = (file: File | undefined) => {
     if (!file || locked) return;
@@ -132,7 +134,7 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
       </div>
 
       {error && <p className="review-error" role="alert">{error}</p>}
-      {text.trim() && !preview && <p className="review-error" role="alert">No readable games found. Paste a PGN or open a .pgn file with legal moves.</p>}
+      {text.trim() && !preview && <p className="review-error" role="alert">{previewError ?? 'No readable games found. Paste a PGN or open a .pgn file with legal moves.'}</p>}
       {preview && (
         <CoursePreview
           course={preview.course}
