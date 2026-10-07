@@ -1,3 +1,4 @@
+import { MoveStepButton } from './MoveStepButton.js';
 import { useEffect, useMemo, useState } from 'react';
 import { Chess } from '@coh/chess-core';
 import {
@@ -289,17 +290,17 @@ export function ReviewReport({
             <button type="button" aria-label="Starting position" onClick={() => selectPly(0)} disabled={selectedPly === 0}>
               ⏮
             </button>
-            <button type="button" aria-label="Previous move" onClick={() => step(-1)} disabled={selectedPly === 0}>
+            <MoveStepButton type="button" aria-label="Previous move" onStep={() => step(-1)} disabled={selectedPly === 0}>
               ◀
-            </button>
-            <button
+            </MoveStepButton>
+            <MoveStepButton
               type="button"
               aria-label="Next move"
-              onClick={() => step(1)}
+              onStep={() => step(1)}
               disabled={selectedPly === review.moves.length}
             >
               ▶
-            </button>
+            </MoveStepButton>
             <button
               type="button"
               aria-label="Final position"

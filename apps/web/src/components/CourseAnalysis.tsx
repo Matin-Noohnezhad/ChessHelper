@@ -1,3 +1,4 @@
+import { MoveStepButton } from './MoveStepButton.js';
 import { useEffect, useMemo, useState } from 'react';
 import { Chess } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
@@ -88,10 +89,10 @@ export function CourseAnalysis({
         <div className="board-bar">
           <span className="status">Analysis · {status}</span>
           <div className="nav">
-            <button type="button" onClick={() => setCursor(cursor - 1)} disabled={atStart}
-              title="Back (←)" aria-label="Previous analysis move">◀</button>
-            <button type="button" onClick={() => setCursor(cursor + 1)} disabled={atEnd}
-              title="Forward (→)" aria-label="Next analysis move">▶</button>
+            <MoveStepButton type="button" onStep={() => setCursor(cursor - 1)} disabled={atStart}
+              title="Back (←)" aria-label="Previous analysis move">◀</MoveStepButton>
+            <MoveStepButton type="button" onStep={() => setCursor(cursor + 1)} disabled={atEnd}
+              title="Forward (→)" aria-label="Next analysis move">▶</MoveStepButton>
             <button type="button" onClick={() => setCursor(0)} disabled={atStart} title="Reset position (Home)" aria-keyshortcuts="Home">
               Reset position <kbd>Home</kbd>
             </button>

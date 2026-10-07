@@ -1,3 +1,4 @@
+import { MoveStepButton } from './MoveStepButton.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { courseOutline } from '@coh/course';
 import type { CourseNode, CourseOutcome, CourseProgress, SessionMode } from '@coh/course';
@@ -373,22 +374,22 @@ export function CourseSession({
               title="Pause the lesson and try moves with Stockfish (A)" aria-keyshortcuts="a">
               Analyze position <kbd>A</kbd>
             </button>
-            <button
+            <MoveStepButton
               type="button"
-              onClick={() => stepTo((lookback ?? livePly) - 1)}
+              onStep={() => stepTo((lookback ?? livePly) - 1)}
               disabled={(lookback ?? livePly) === 0}
               title="Back through the moves (←)"
             >
               ◀
-            </button>
-            <button
+            </MoveStepButton>
+            <MoveStepButton
               type="button"
-              onClick={() => stepTo((lookback ?? livePly) + 1)}
+              onStep={() => stepTo((lookback ?? livePly) + 1)}
               disabled={!looking}
               title="Forward (→)"
             >
               ▶
-            </button>
+            </MoveStepButton>
             {looking ? (
               <button type="button" className="primary" onClick={() => setLookback(null)} title="Back to the game (End or Esc)" aria-keyshortcuts="End Escape">
                 Back to the game

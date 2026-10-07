@@ -1,3 +1,4 @@
+import { MoveStepButton } from './components/MoveStepButton.js';
 import { PieceSetContext } from './components/Piece.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatMoveText } from '@coh/chess-core';
@@ -300,12 +301,12 @@ export default function App() {
               <button type="button" onClick={game.toStart} disabled={game.atStart} title="Start (↑)">
                 ⏮
               </button>
-              <button type="button" onClick={game.stepBack} disabled={game.atStart} title="Back (←)">
+              <MoveStepButton type="button" onStep={game.stepBack} disabled={game.atStart} title="Back (←)">
                 ◀
-              </button>
-              <button type="button" onClick={game.stepForward} disabled={game.atEnd} title="Forward (→)">
+              </MoveStepButton>
+              <MoveStepButton type="button" onStep={game.stepForward} disabled={game.atEnd} title="Forward (→)">
                 ▶
-              </button>
+              </MoveStepButton>
               <button type="button" onClick={game.toEnd} disabled={game.atEnd} title="End (↓)">
                 ⏭
               </button>

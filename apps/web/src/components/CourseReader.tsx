@@ -1,3 +1,4 @@
+import { MoveStepButton } from './MoveStepButton.js';
 import { useEffect, useMemo, useState } from 'react';
 import { Chess, START_FEN } from '@coh/chess-core';
 import { variationsOf } from '@coh/course';
@@ -122,7 +123,7 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
               Analyze position <kbd>A</kbd>
             </button>
             <button type="button" onClick={() => setPly(0)} disabled={!ply} title="Start (Home)">⏮</button>
-            <button type="button" onClick={() => setPly(ply - 1)} disabled={!ply} title="Previous move (←)">◀</button>
+            <MoveStepButton type="button" onStep={() => setPly(ply - 1)} disabled={!ply} title="Previous move (←)">◀</MoveStepButton>
             <button type="button" className="primary" onClick={forward} title="Continue (Space)" aria-keyshortcuts="Space">
               {atEnd ? index === lines.length - 1 ? 'Finish reading' : 'Next line' : 'Next move'} <kbd>Space</kbd>
             </button>
