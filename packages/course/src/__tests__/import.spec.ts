@@ -3,6 +3,36 @@ import { buildCourse } from '../import.js';
 import { BLACK_COURSE_PGN, COURSE_PGN } from './fixture.js';
 
 describe('course import', () => {
+  it('uses the uploaded filename and keeps an explicit title override', () => {
+    const pgn = '[Event "?"]\n[White "?"]\n[Black "?"]\n\n1. e4 e5 *';
+    expect(buildCourse(pgn, { fileName: 'Scotch Gambit.PGN' }).name).toBe('Scotch Gambit');
+    expect(buildCourse(pgn, { fileName: 'Scotch Gambit.pgn', name: 'My course' }).name).toBe('My course');
+    expect(buildCourse(COURSE_PGN, { fileName: 'My repertoire.pgn' }).name).toBe('My repertoire');
+    expect(buildCourse(pgn).name).toBe('Imported course');
+    expect(buildCourse(pgn).chapters[0]!.name).toBe('Chapter 1');
+    expect(buildCourse(pgn, { name: ' ? ' }).name).toBe('Imported course');
+  });
+
+  it.each(['White', 'Black'] as const)('groups by %s without merging subsection names across sections', (sectionHeader) => {
+    const pgn = [
+      [' Introduction ', 'Overview', '1. e4 e5 *'],
+      ['Main lines', 'Overview', '1. d4 d5 *'],
+      ['Introduction', 'Move orders', '1. Nf3 d5 *'],
+      ['Introduction', 'Overview', '1. e4 c5 *'],
+      ['Main lines', '?', '1. c4 e5 *'],
+    ].map(([section, subsection, moves]) => `[Event "Scotch Gambit"]\n[${sectionHeader} "${section}"]\n[${sectionHeader === 'White' ? 'Black' : 'White'} "${subsection}"]\n\n${moves}`).join('\n\n');
+    const course = buildCourse(pgn, sectionHeader === 'White' ? {} : { sectionHeader });
+    expect(course.chapters.map(({ section, name }) => [section, name])).toEqual([
+      ['Introduction', 'Overview'],
+      ['Main lines', 'Overview'],
+      ['Introduction', 'Move orders'],
+      ['Main lines', 'Chapter 5'],
+    ]);
+    expect(course.chapters[0]!.roots[0]!.children.map((node) => node.san)).toEqual(['e5', 'c5']);
+    expect(course.chapters[1]!.roots[0]!.san).toBe('d4');
+    expect(new Set(course.chapters.map(({ id }) => id)).size).toBe(4);
+  });
+
   it('takes the course and chapter names from the Event header', () => {
     const course = buildCourse(COURSE_PGN);
     expect(course.name).toBe('Test Course');

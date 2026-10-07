@@ -114,6 +114,7 @@ export interface VariationStats {
 
 /** A chapter and every line in it, for a Chessable-style course browser. */
 export interface OutlineChapter {
+  section?: string;
   chapterId: string;
   name: string;
   /** Distinct trainable moves across the whole chapter. */
@@ -188,6 +189,7 @@ export function courseOutline(
     return {
       chapterId: chapter.id,
       name: chapter.name,
+      ...(chapter.section ? { section: chapter.section } : {}),
       moves: counts.total,
       seen: counts.seen,
       learned: counts.learned,

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { buildCourse, courseStats, progressKeys } from '@coh/course';
-import type { Course, CourseProgress, CourseSide, CourseStats } from '@coh/course';
+import type { Course, CourseProgress, CourseSide, CourseStats, SectionHeader } from '@coh/course';
 import {
   clearProgress,
   getCourseStorageWarning,
@@ -24,8 +24,8 @@ const built = new Map<string, { stored: StoredCourse; course: Course }>();
 function courseFor(stored: StoredCourse): Course {
   const cached = built.get(stored.id);
   if (cached && cached.stored.name === stored.name && cached.stored.side === stored.side &&
-      cached.stored.pgn === stored.pgn) return cached.course;
-  const course = buildCourse(stored.pgn, { id: stored.id, name: stored.name, side: stored.side });
+      cached.stored.pgn === stored.pgn && cached.stored.sectionHeader === stored.sectionHeader) return cached.course;
+  const course = buildCourse(stored.pgn, { id: stored.id, name: stored.name, side: stored.side, sectionHeader: stored.sectionHeader ?? 'White' });
   built.set(stored.id, { stored, course });
   return course;
 }
@@ -49,7 +49,7 @@ export interface CourseLibrary {
   error: string | null;
   storageWarning: string | null;
   refresh: () => Promise<void>;
-  importPgn: (pgn: string, options?: { name?: string; side?: CourseSide }) => Promise<string | null>;
+  importPgn: (pgn: string, options?: { name?: string; side?: CourseSide; sectionHeader?: SectionHeader }) => Promise<string | null>;
   remove: (id: string) => Promise<void>;
   resetProgress: (id: string) => Promise<void>;
   /** Wipe progress for just some chapters or lines, leaving the rest of the course. */
@@ -58,6 +58,7 @@ export interface CourseLibrary {
     scope: { chapterIds?: string[]; lineIds?: string[] },
   ) => Promise<void>;
   setSide: (id: string, side: CourseSide) => Promise<void>;
+  setSectionHeader: (id: string, sectionHeader: SectionHeader) => Promise<void>;
   /** Writes a session's progress back and refreshes the stats built on it. */
   commitProgress: (id: string, progress: CourseProgress) => void;
 }
@@ -100,9 +101,10 @@ export function useCourseLibrary(): CourseLibrary {
   }, []);
 
   const importPgn = useCallback(
-    async (pgn: string, options: { name?: string; side?: CourseSide } = {}) => {
+    async (pgn: string, options: { name?: string; side?: CourseSide; sectionHeader?: SectionHeader } = {}) => {
       const name = options.name?.trim();
       const course = buildCourse(pgn, {
+        sectionHeader: options.sectionHeader ?? 'White',
         ...(name ? { name } : {}),
         ...(options.side ? { side: options.side } : {}),
       });
@@ -117,6 +119,7 @@ export function useCourseLibrary(): CourseLibrary {
         name: course.name,
         pgn,
         side: course.side,
+        sectionHeader: options.sectionHeader ?? 'White',
         importedAt: Date.now(),
       };
       await saveCourse(stored);
@@ -170,6 +173,16 @@ export function useCourseLibrary(): CourseLibrary {
     [entries, refresh],
   );
 
+  const setSectionHeader = useCallback(
+    async (id: string, sectionHeader: SectionHeader) => {
+      const stored = entries.find((entry) => entry.stored.id === id)?.stored;
+      if (!stored) return;
+      await saveCourse({ ...stored, sectionHeader });
+      await refresh();
+    },
+    [entries, refresh],
+  );
+
   // Cheap and synchronous: a session that has just graded a move should be
   // reflected in the counts the moment you step back out to the library, and
   // waiting on a round trip to IndexedDB to redraw a number is silly.
@@ -192,6 +205,7 @@ export function useCourseLibrary(): CourseLibrary {
     resetProgress,
     resetScope,
     setSide,
+    setSectionHeader,
     commitProgress,
   };
 }

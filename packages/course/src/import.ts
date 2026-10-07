@@ -25,7 +25,7 @@ import {
   resolveSan,
 } from '@coh/chess-core';
 import type { AnnotatedPgnGame, PgnMove } from '@coh/chess-core';
-import type { Chapter, Course, CourseNode, CourseSide, ImportProblem } from './types.js';
+import type { Chapter, Course, CourseNode, CourseSide, ImportProblem, SectionHeader } from './types.js';
 
 /** NAGs that mean "this move is a mistake": ?, ??, ?!. */
 const DUBIOUS_NAGS = new Set([2, 4, 6]);
@@ -91,8 +91,15 @@ function mergeSiblings(into: RawNode[], from: readonly RawNode[]): void {
 
 /* ------------------------------------------------------------- naming --- */
 
+/** PGN uses question marks for unknown metadata, not actual titles. */
+function title(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed && !/^[?\s]+$/.test(trimmed) ? trimmed : undefined;
+}
+
 /** Lichess and most publishers write `[Event "Course name: Chapter name"]`. */
 function splitEvent(event: string | undefined): { course?: string; chapter?: string } {
+  event = title(event);
   if (!event) return {};
   const at = event.lastIndexOf(': ');
   if (at <= 0) return { course: event };
@@ -112,12 +119,12 @@ function splitEvent(event: string | undefined): { course?: string; chapter?: str
 function chapterNames(games: readonly AnnotatedPgnGame[]): string[] {
   const schemes: { names: (string | undefined)[]; explicit: boolean }[] = [
     { names: games.map((game) => splitEvent(game.headers.Event).chapter), explicit: true },
-    { names: games.map((game) => game.headers.Event), explicit: false },
-    { names: games.map((game) => game.headers.White), explicit: false },
+    { names: games.map((game) => title(game.headers.Event)), explicit: false },
+    { names: games.map((game) => title(game.headers.White)), explicit: false },
   ];
 
   for (const { names, explicit } of schemes) {
-    if (names.some((name) => !name?.trim())) continue;
+    if (names.some((name) => !title(name))) continue;
     if (!explicit && games.length > 1 && new Set(names).size === 1) continue;
     return names.map((name) => name!.trim());
   }
@@ -127,9 +134,9 @@ function chapterNames(games: readonly AnnotatedPgnGame[]): string[] {
 function courseName(games: readonly AnnotatedPgnGame[]): string {
   for (const game of games) {
     const { course } = splitEvent(game.headers.Event);
-    if (course) return course;
+    if (title(course)) return title(course)!;
   }
-  return games[0]?.headers.White?.trim() || 'Imported course';
+  return title(games[0]?.headers.White) || 'Imported course';
 }
 
 const slug = (text: string): string =>
@@ -245,6 +252,10 @@ export function inferSide(chapters: readonly Chapter[]): CourseSide {
 export interface BuildCourseOptions {
   id?: string;
   name?: string;
+  /** Uploaded filename, used as the default course title without its extension. */
+  fileName?: string;
+  /** White names sections by default; the other player header names subsections. */
+  sectionHeader?: SectionHeader;
   /** Overrides {@link inferSide}. */
   side?: CourseSide;
 }
@@ -254,12 +265,15 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
   const games = parseAnnotatedPgnAll(pgnText);
   const names = chapterNames(games);
   const problems: ImportProblem[] = [];
+  const sectionHeader = options.sectionHeader ?? 'White';
+  const subsectionHeader = sectionHeader === 'White' ? 'Black' : 'White';
 
   // Games are folded into chapters before anything is replayed: two games of the
   // same chapter can share a position, and merging their notation is cheaper and
   // safer than merging two half-built trees of course nodes.
   interface Draft {
     name: string;
+    section?: string;
     startFen?: string;
     roots: RawNode[];
     headers: Record<string, string>;
@@ -267,13 +281,15 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
   const drafts: Draft[] = [];
 
   games.forEach((game, index) => {
-    const name = names[index]!;
+    const section = title(game.headers[sectionHeader]);
+    const name = section ? title(game.headers[subsectionHeader]) ?? `Chapter ${index + 1}` : names[index]!;
     const startFen = game.startFen && game.startFen !== START_FEN ? game.startFen : undefined;
     // A chapter is one starting position: two games under one name that begin
     // from different positions are two chapters, whatever the header says.
-    let draft = drafts.find((entry) => entry.name === name && entry.startFen === startFen);
+    let draft = drafts.find((entry) => entry.name === name && entry.section === section && entry.startFen === startFen);
     if (!draft) {
       draft = { name, roots: [], headers: game.headers };
+      if (section) draft.section = section;
       if (startFen) draft.startFen = startFen;
       drafts.push(draft);
     }
@@ -291,10 +307,12 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
       headers: draft.headers,
     };
     if (draft.startFen) chapter.startFen = draft.startFen;
+    if (draft.section) chapter.section = draft.section;
     return chapter;
   });
 
-  const name = options.name ?? courseName(games);
+  const fileTitle = title(options.fileName?.split(/[\\/]/).pop()?.replace(/\.pgn$/i, ''));
+  const name = title(options.name) ?? fileTitle ?? courseName(games);
   const declared = games[0]?.headers.Orientation?.toLowerCase();
   const side: CourseSide =
     options.side ??

@@ -144,6 +144,7 @@ export function CoursesView({
               void library.resetScope(view.id, { lineIds: [lineId] });
           }}
           onSetSide={(side: CourseSide) => void library.setSide(view.id, side)}
+          onSetSectionHeader={(header) => void library.setSectionHeader(view.id, header)}
         />
       </div>
     );

@@ -18,7 +18,7 @@
  * better failure than a blank page.
  */
 
-import type { CourseProgress, CourseSide } from '@coh/course';
+import type { CourseProgress, CourseSide, SectionHeader } from '@coh/course';
 
 const DB_NAME = 'coh-courses';
 const DB_VERSION = 1;
@@ -30,6 +30,7 @@ export interface StoredCourse {
   name: string;
   pgn: string;
   side: CourseSide;
+  sectionHeader?: SectionHeader;
   importedAt: number;
 }
 

@@ -4,10 +4,12 @@ import { Chess, START_FEN } from '@coh/chess-core';
 import { variationsOf } from '@coh/course';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
 import { courseShortcutBlocked } from '../courseShortcuts.js';
+import { groupCourseSections } from '../courseSections.js';
 import { Board } from './Board.js';
 import type { AnnotationThickness } from './Board.js';
 import { MoveTrail } from './CourseSession.js';
 import { CourseAnalysis } from './CourseAnalysis.js';
+import './CourseReader.css';
 
 interface CourseReaderProps {
   entry: LibraryEntry;
@@ -36,6 +38,10 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
   const [analyzing, setAnalyzing] = useState(false);
   const line = lines[index];
   const chapter = chapters.find((item) => item.id === line?.chapterId);
+  const sections = useMemo(() => groupCourseSections(chapters), [chapters]);
+  const hasSections = sections.some((item) => item.section);
+  const sectionIndex = sections.findIndex((item) => item.section === chapter?.section);
+  const sectionChapters = sections[sectionIndex]?.chapters ?? [];
   const trainingLine = useMemo(() => chapter
     ? variationsOf(chapter, entry.course.side).find((item) => item.id === line?.id ||
       item.line.every((node, index) => node.id === line?.line[index]?.id))
@@ -99,15 +105,45 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
     <div className="trainer course-session course-session--rail course-reader">
       <aside className="panel course-session__rail">
         <h2>Chapters &amp; lines</h2>
-        <label className="settings-row__label" htmlFor="reading-chapter">Chapter</label>
-        <select id="reading-chapter" value={chapter?.id} onChange={(event) => pick(lines.findIndex((item) => item.chapterId === event.target.value))}>
-          {chapters.map((item) => <option key={item.id} value={item.id} disabled={!item.lines.length}>{item.name}</option>)}
-        </select>
+        <div className="course-reader__navigation">
+          {hasSections && <div className="course-reader__field">
+            <div className="course-reader__field-head">
+              <label htmlFor="reading-section"><span className="course-reader__step" aria-hidden="true">1</span>Section</label>
+              <span className="muted">{sectionIndex + 1} / {sections.length}</span>
+            </div>
+            <select id="reading-section" value={sectionIndex} title={chapter?.section ?? 'Other chapters'}
+              onChange={(event) => {
+                const firstLine = sections[Number(event.target.value)]?.chapters.find((item) => item.lines.length)?.lines[0];
+                if (firstLine) pick(lines.indexOf(firstLine));
+              }}>
+              {sections.map((item, i) => <option key={i} value={i} disabled={!item.chapters.some((chapter) => chapter.lines.length)}>
+                {item.section ?? 'Other chapters'}
+              </option>)}
+            </select>
+          </div>}
+          <div className={`course-reader__field${hasSections ? ' course-reader__field--subsection' : ''}`}>
+            <div className="course-reader__field-head">
+              <label htmlFor="reading-chapter">
+                {hasSections && <span className="course-reader__step" aria-hidden="true">2</span>}
+                {hasSections ? 'Subsection' : 'Chapter'}
+              </label>
+              <span className="muted">{sectionChapters.length}</span>
+            </div>
+            <select id="reading-chapter" value={chapter?.id} title={chapter?.name}
+              onChange={(event) => pick(lines.findIndex((item) => item.chapterId === event.target.value))}>
+              {sectionChapters.map((item) => <option key={item.id} value={item.id} disabled={!item.lines.length}>{item.name}</option>)}
+            </select>
+          </div>
+        </div>
+        <div className="course-reader__lines-head">
+          <h3>Lines</h3><span className="muted">{chapter?.lines.length}</span>
+        </div>
         <ul className="course-outline__lines">
           {chapter?.lines.map((item, i) => <li key={item.id}>
             <button type="button" className={`course-outline__line${line.id === item.id ? ' is-active' : ''}`}
               aria-current={line.id === item.id ? 'true' : undefined} onClick={() => pick(lines.indexOf(item))}>
-              <span className="course-outline__san">{i + 1}. {item.line.map((move) => move.san + (move.suffix ?? '')).join(' ')}</span>
+              <span className="course-reader__line-number">{i + 1}</span>
+              <span className="course-outline__san">{item.line.map((move) => move.san + (move.suffix ?? '')).join(' ')}</span>
             </button>
           </li>)}
         </ul>

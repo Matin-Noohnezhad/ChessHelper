@@ -1,9 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { allVariations, buildCourse, trainableMoves } from '@coh/course';
-import type { Course, CourseSide } from '@coh/course';
+import type { Course, CourseSide, SectionHeader } from '@coh/course';
+import { groupCourseSections } from '../courseSections.js';
+import { CourseSectionMapping } from './CourseSectionMapping.js';
 
 interface CourseImportProps {
-  onImport: (pgn: string, options: { name: string; side: CourseSide }) => void | Promise<void>;
+  onImport: (pgn: string, options: { name: string; side: CourseSide; sectionHeader: SectionHeader }) => void | Promise<void>;
   onCancel?: () => void;
   busy?: boolean;
 }
@@ -26,6 +28,8 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
   const locked = busy || saving;
   const [dragging, setDragging] = useState(false);
   const [name, setName] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [sectionHeader, setSectionHeader] = useState<SectionHeader>('White');
   const [side, setSide] = useState<CourseSide | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -33,7 +37,7 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
   const preview = useMemo(() => {
     if (!text.trim()) return null;
     try {
-      const course = buildCourse(text, { ...(side ? { side } : {}) });
+      const course = buildCourse(text, { fileName, sectionHeader, ...(side ? { side } : {}) });
       if (!course.chapters.length) return null;
       return {
         course,
@@ -43,13 +47,16 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
     } catch {
       return null;
     }
-  }, [text, side]);
+  }, [text, side, fileName, sectionHeader]);
 
   const readFile = (file: File | undefined) => {
     if (!file || locked) return;
     setError(null);
     const reader = new FileReader();
-    reader.onload = () => setText(String(reader.result ?? ''));
+    reader.onload = () => {
+      setText(String(reader.result ?? ''));
+      setFileName(file.name);
+    };
     reader.onerror = () => setError('That file could not be read. Please try opening it again.');
     reader.readAsText(file);
   };
@@ -61,7 +68,7 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
     savingRef.current = true;
     setSaving(true);
     setError(null);
-    try { await onImport(text, { name: chosenName, side: chosenSide }); }
+    try { await onImport(text, { name: chosenName, side: chosenSide, sectionHeader }); }
     catch (cause) { setError(cause instanceof Error ? cause.message : 'The course could not be imported.'); }
     finally { savingRef.current = false; setSaving(false); }
   };
@@ -92,7 +99,7 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
           aria-label="Course PGN"
           disabled={locked}
           value={text}
-          onChange={(event) => { setText(event.target.value); setError(null); }}
+          onChange={(event) => { setText(event.target.value); setFileName(''); setError(null); }}
           placeholder={
             '[Event "My repertoire: The Najdorf"]\n\n1. e4 c5 2. Nf3 d6 {The move order matters…}'
           }
@@ -113,7 +120,7 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
           Open a .pgn file
         </button>
         {text && (
-          <button type="button" disabled={locked} onClick={() => setText('')}>
+          <button type="button" disabled={locked} onClick={() => { setText(''); setFileName(''); setName(''); }}>
             Clear
           </button>
         )}
@@ -137,6 +144,8 @@ export function CourseImport({ onImport, onCancel, busy }: CourseImportProps) {
           busy={locked}
           onNameChange={setName}
           onSideChange={setSide}
+          sectionHeader={sectionHeader}
+          onSectionHeaderChange={setSectionHeader}
           onConfirm={() => void confirmImport()}
         />
       )}
@@ -155,6 +164,8 @@ interface CoursePreviewProps {
   busy?: boolean;
   onNameChange: (name: string) => void;
   onSideChange: (side: CourseSide) => void;
+  sectionHeader?: SectionHeader;
+  onSectionHeaderChange?: (header: SectionHeader) => void;
   onConfirm: () => void;
 }
 
@@ -169,6 +180,8 @@ export function CoursePreview({
   busy,
   onNameChange,
   onSideChange,
+  sectionHeader = 'White',
+  onSectionHeaderChange,
   onConfirm,
 }: CoursePreviewProps) {
   return (
@@ -203,6 +216,8 @@ export function CoursePreview({
         </label>
       </div>
 
+      {onSectionHeaderChange && <CourseSectionMapping value={sectionHeader} onChange={onSectionHeaderChange} disabled={busy} />}
+
       <p className="muted course-import__counts">
         {course.chapters.length} chapter{course.chapters.length === 1 ? '' : 's'} · {variations}{' '}
         variation{variations === 1 ? '' : 's'} · {moves} moves to know
@@ -210,9 +225,11 @@ export function CoursePreview({
       </p>
 
       <ul className="course-import__chapters">
-        {course.chapters.slice(0, 12).map((chapter) => (
-          <li key={chapter.id}>{chapter.name}</li>
-        ))}
+        {groupCourseSections(course.chapters.slice(0, 12)).map(({ section, chapters }) => section ? (
+          <li key={section}><strong>{section}</strong><ul>
+            {chapters.map((chapter) => <li key={chapter.id}>{chapter.name}</li>)}
+          </ul></li>
+        ) : chapters.map((chapter) => <li key={chapter.id}>{chapter.name}</li>))}
         {course.chapters.length > 12 && (
           <li className="muted">and {course.chapters.length - 12} more</li>
         )}

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { CourseNode, OutlineChapter } from '@coh/course';
+import { groupCourseSections } from '../courseSections.js';
+import './CourseSections.css';
 
 /**
  * The course as Chessable draws it: chapters down the side, each with a
@@ -54,124 +56,131 @@ export function CourseOutline({
     return open[chapter.chapterId] ?? (variant === 'full' || chapters.length === 1 || chapter.chapterId === activeChapter);
   };
 
-  return (
-    <div className={`course-outline course-outline--${variant}`}>
-      {chapters.map((chapter) => {
-        return (
-          <details
-            key={chapter.chapterId}
-            className="course-outline__chapter"
-            open={isOpen(chapter)}
-            onToggle={(event) =>
-              setOpen((current) => ({
-                ...current,
-                [chapter.chapterId]: (event.target as HTMLDetailsElement).open,
-              }))
-            }
-          >
-            <summary className="course-outline__summary">
-              <span className="course-outline__name">
-                <span>{chapter.name}</span>
-              </span>
-              <span className="course-outline__pct">{Math.round(chapter.completion * 100)}%</span>
-              <span className="bar course-outline__bar">
-                <span className="bar__fill" style={{ width: `${chapter.completion * 100}%` }} />
-              </span>
-            </summary>
+  const renderChapter = (chapter: OutlineChapter) => {
+    return (
+      <details
+        key={chapter.chapterId}
+        className="course-outline__chapter"
+        open={isOpen(chapter)}
+        onToggle={(event) =>
+          setOpen((current) => ({
+            ...current,
+            [chapter.chapterId]: (event.target as HTMLDetailsElement).open,
+          }))
+        }
+      >
+        <summary className="course-outline__summary">
+          <span className="course-outline__name">
+            <span>{chapter.name}</span>
+          </span>
+          <span className="course-outline__pct">{Math.round(chapter.completion * 100)}%</span>
+          <span className="bar course-outline__bar">
+            <span className="bar__fill" style={{ width: `${chapter.completion * 100}%` }} />
+          </span>
+        </summary>
 
-            {(onChapter || onReadChapter || onResetChapter) && (
-              <div className="course-outline__chapter-actions">
-                {onReadChapter && <button type="button" onClick={() => onReadChapter(chapter.chapterId)}>Read</button>}
-                {onChapter && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => onChapter('learn', chapter.chapterId)}
-                      disabled={chapter.seen >= chapter.moves}
-                    >
-                      Learn
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onChapter('review', chapter.chapterId)}
-                      disabled={chapter.due === 0 || chapter.seen === 0}
-                    >
-                      Review
-                    </button>
-                  </>
-                )}
-                <span className="muted">
-                  {chapter.variations.length} line{chapter.variations.length === 1 ? '' : 's'}
-                  {chapter.due > 0 ? ` · ${chapter.due} due` : ''}
-                </span>
-                {onResetChapter && (
+        {(onChapter || onReadChapter || onResetChapter) && (
+          <div className="course-outline__chapter-actions">
+            {onReadChapter && <button type="button" onClick={() => onReadChapter(chapter.chapterId)}>Read</button>}
+            {onChapter && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => onChapter('learn', chapter.chapterId)}
+                  disabled={chapter.seen >= chapter.moves}
+                >
+                  Learn
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onChapter('review', chapter.chapterId)}
+                  disabled={chapter.due === 0 || chapter.seen === 0}
+                >
+                  Review
+                </button>
+              </>
+            )}
+            <span className="muted">
+              {chapter.variations.length} line{chapter.variations.length === 1 ? '' : 's'}
+              {chapter.due > 0 ? ` · ${chapter.due} due` : ''}
+            </span>
+            {onResetChapter && (
+              <button
+                type="button"
+                className="reset course-outline__reset"
+                onClick={() => onResetChapter(chapter.chapterId, chapter.name)}
+                disabled={chapter.seen === 0}
+                title={
+                  chapter.seen === 0
+                    ? 'Nothing learned in this chapter yet'
+                    : "Reset this chapter's progress"
+                }
+              >
+                Reset chapter
+              </button>
+            )}
+          </div>
+        )}
+
+        <ul className="course-outline__lines">
+          {chapter.variations.map((variation, index) => {
+            const label = concealMoves ? `Line ${index + 1}` : sanLine(variation.line);
+            return (
+              <li key={variation.id} className="course-outline__line-row">
+                <button
+                  type="button"
+                  className={[
+                    'course-outline__line',
+                    `is-${variation.state}`,
+                    variation.id === activeLineId ? 'is-active' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={() => onPickLine(variation.id)}
+                  title={label}
+                >
+                  <ProgressRing
+                    value={variation.completion}
+                    done={variation.state === 'learned'}
+                    started={variation.state !== 'new'}
+                  />
+                  <span className="course-outline__san">{label}</span>
+                  {variation.due > 0 && (
+                    <span className="course-outline__due" title={`${variation.due} due now`} />
+                  )}
+                </button>
+                {onResetLine && (
                   <button
                     type="button"
-                    className="reset course-outline__reset"
-                    onClick={() => onResetChapter(chapter.chapterId, chapter.name)}
-                    disabled={chapter.seen === 0}
+                    className="reset course-outline__line-reset"
+                    onClick={() => onResetLine(variation.id, label)}
+                    disabled={variation.state === 'new'}
                     title={
-                      chapter.seen === 0
-                        ? 'Nothing learned in this chapter yet'
-                        : "Reset this chapter's progress"
+                      variation.state === 'new'
+                        ? 'Nothing learned in this line yet'
+                        : "Reset this line's progress"
                     }
+                    aria-label={`Reset progress for ${label}`}
                   >
-                    Reset chapter
+                    ⟲
                   </button>
                 )}
-              </div>
-            )}
+              </li>
+            );
+          })}
+        </ul>
+      </details>
+    );
+  };
 
-            <ul className="course-outline__lines">
-              {chapter.variations.map((variation, index) => {
-                const label = concealMoves ? `Line ${index + 1}` : sanLine(variation.line);
-                return (
-                  <li key={variation.id} className="course-outline__line-row">
-                    <button
-                      type="button"
-                      className={[
-                        'course-outline__line',
-                        `is-${variation.state}`,
-                        variation.id === activeLineId ? 'is-active' : '',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      onClick={() => onPickLine(variation.id)}
-                      title={label}
-                    >
-                      <ProgressRing
-                        value={variation.completion}
-                        done={variation.state === 'learned'}
-                        started={variation.state !== 'new'}
-                      />
-                      <span className="course-outline__san">{label}</span>
-                      {variation.due > 0 && (
-                        <span className="course-outline__due" title={`${variation.due} due now`} />
-                      )}
-                    </button>
-                    {onResetLine && (
-                      <button
-                        type="button"
-                        className="reset course-outline__line-reset"
-                        onClick={() => onResetLine(variation.id, label)}
-                        disabled={variation.state === 'new'}
-                        title={
-                          variation.state === 'new'
-                            ? 'Nothing learned in this line yet'
-                            : "Reset this line's progress"
-                        }
-                        aria-label={`Reset progress for ${label}`}
-                      >
-                        ⟲
-                      </button>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </details>
-        );
-      })}
+  return (
+    <div className={`course-outline course-outline--${variant}`}>
+      {groupCourseSections(chapters).map(({ section, chapters: subsections }) => section ? (
+        <section className="course-outline__section" key={section} aria-label={section}>
+          <h4 className="course-outline__section-title">{section}</h4>
+          <div className="course-outline__subsections">{subsections.map(renderChapter)}</div>
+        </section>
+      ) : subsections.map(renderChapter))}
     </div>
   );
 }

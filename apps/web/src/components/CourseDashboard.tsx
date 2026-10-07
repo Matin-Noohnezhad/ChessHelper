@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { LEVELS, MAX_LEVEL, courseOutline, nextDueAt } from '@coh/course';
-import type { CourseSide, SessionMode } from '@coh/course';
+import type { CourseSide, SessionMode, SectionHeader } from '@coh/course';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
 import { CourseOutline } from './CourseOutline.js';
+import { CourseSectionMapping } from './CourseSectionMapping.js';
 import { untilLabel } from './CourseLibrary.js';
 
 /** How long a move at each rung waits: the ladder, in words. */
@@ -27,6 +28,7 @@ interface CourseDashboardProps {
   /** Wipe progress for one line. `label` is its notation, for the confirm prompt. */
   onResetLine?: (lineId: string, label: string) => void;
   onSetSide: (side: CourseSide) => void;
+  onSetSectionHeader?: (header: SectionHeader) => void;
 }
 
 /**
@@ -47,6 +49,7 @@ export function CourseDashboard({
   onResetChapter,
   onResetLine,
   onSetSide,
+  onSetSectionHeader,
 }: CourseDashboardProps) {
   const [section, setSection] = useState<'learning' | 'reading'>(initialSection);
   const { course, stats, progress } = entry;
@@ -137,6 +140,7 @@ export function CourseDashboard({
 
       <section className="panel">
         <h3>Chapters &amp; lines</h3>
+        {onSetSectionHeader && <CourseSectionMapping value={entry.stored.sectionHeader ?? 'White'} onChange={onSetSectionHeader} />}
         <p className="muted course-outline__legend">
           The ring fills as you work through a line and turns solid with a tick once every move in
           it has come back after a night. Click any line to {section === 'reading' ? 'read' : 'study'} it now — a dot means something in

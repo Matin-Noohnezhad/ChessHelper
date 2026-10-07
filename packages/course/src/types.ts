@@ -15,6 +15,9 @@ export type { MoveShapes, ShapeArrow, ShapeCircle, ShapeColor } from '@coh/chess
 
 export type CourseSide = 'white' | 'black';
 
+/** PGN player header used for section titles; the other names subsections. */
+export type SectionHeader = 'White' | 'Black';
+
 /** One move, as the course file wrote it. */
 export interface CourseNode {
   /** Index path from the chapter's root — `"0.2.1"`. Stable across imports. */
@@ -63,6 +66,8 @@ export type MoveRole =
 export interface Chapter {
   id: string;
   name: string;
+  /** Parent section from the selected PGN player header. */
+  section?: string;
   /** Starting position, when the chapter does not begin from the initial one. */
   startFen?: string;
   /** First moves of the chapter. More than one when the author branched at move 1. */
