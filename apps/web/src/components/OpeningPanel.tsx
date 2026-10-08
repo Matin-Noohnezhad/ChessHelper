@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import type { OpeningMatch, PawnBreak, PawnStructure } from '@coh/opening-book';
-import { breaksFor, classifyStructure, mirrorFen, structuresFor } from '@coh/opening-book';
-import { MiniBoard } from './MiniBoard.js';
+import type { OpeningMatch, PawnBreak, StructureMatch } from '@coh/opening-book';
+import { classifyStructure, structuresFor } from '@coh/opening-book';
+import { StructureCard } from './StructureAdvice.js';
+import { PositionPlans } from './PositionPlans.js';
 import type { SquareMark } from './Board.js';
 
 type Tab = 'plans' | 'breaks' | 'structures' | 'notes';
@@ -21,21 +22,14 @@ interface OpeningPanelProps {
  * describe the position in front of you; the ones the opening was tagged with
  * describe where it is heading, and are worth keeping for exactly that reason.
  */
-interface ShownStructure {
-  structure: PawnStructure;
-  fen: string;
-  breaks: PawnBreak[];
+interface ShownStructure extends StructureMatch {
   onBoard: boolean;
-  mirrored: boolean;
 }
 
 function structuresToShow(match: OpeningMatch, fen: string): ShownStructure[] {
   const onBoard = classifyStructure(fen).map((found) => ({
-    structure: found.structure,
-    fen: found.mirrored ? mirrorFen(found.structure.fen) : found.structure.fen,
-    breaks: breaksFor(found),
+    ...found,
     onBoard: true,
-    mirrored: found.mirrored,
   }));
 
   const seen = new Set(onBoard.map((entry) => entry.structure.id));
@@ -43,8 +37,6 @@ function structuresToShow(match: OpeningMatch, fen: string): ShownStructure[] {
     .filter((structure) => !seen.has(structure.id))
     .map((structure) => ({
       structure,
-      fen: structure.fen,
-      breaks: structure.breaks,
       onBoard: false,
       mirrored: false,
     }));
@@ -69,6 +61,7 @@ export function OpeningPanel({ match, fen, plies, onPlayMove, onMarks }: Opening
           Make a move and this panel fills in with the opening’s name, the ideas behind it, the
           pawn structures it produces and the breaks each side is aiming for.
         </p>
+        {plies > 0 && <PositionPlans fen={fen} />}
       </section>
     );
   }
@@ -99,8 +92,11 @@ export function OpeningPanel({ match, fen, plies, onPlayMove, onMarks }: Opening
         </div>
       </header>
 
+      {(!exact || !theory) && <PositionPlans fen={fen} />}
+
       {theory ? (
         <>
+          {!exact && <p className="panel__note">Opening reference: the plans below describe the earlier opening and may need adapting to this position.</p>}
           <p className="panel__idea">{theory.idea}</p>
           {inherited && (
             <p className="panel__note">
@@ -176,38 +172,12 @@ export function OpeningPanel({ match, fen, plies, onPlayMove, onMarks }: Opening
           {tab === 'structures' && (
             <div className="structures">
               {structures.map((entry) => (
-                <article key={entry.structure.id} className="structure">
-                  <MiniBoard fen={entry.fen} />
-                  <div className="structure__body">
-                    <h3>
-                      {entry.structure.name}
-                      <span className={`tag ${entry.onBoard ? 'tag--book' : 'tag--out'}`}>
-                        {entry.onBoard ? 'on the board' : 'typical of this line'}
-                      </span>
-                    </h3>
-                    {entry.mirrored && (
-                      <p className="muted">
-                        Black holds it here, so the plans and breaks below are the reverse of the
-                        usual diagram.
-                      </p>
-                    )}
-                    <p>{entry.structure.description}</p>
-                    <h4>Breaks</h4>
-                    <ul className="structure__breaks" onMouseLeave={() => onMarks([])}>
-                      {entry.breaks.map((brk) => (
-                        <li key={`${brk.side}-${brk.move}`} onMouseEnter={() => highlightBreak(brk)}>
-                          <span className={`break-move break-move--${brk.side}`}>{brk.move}</span>
-                          {brk.note}
-                        </li>
-                      ))}
-                    </ul>
-                    {entry.structure.endgameNote && (
-                      <p className="structure__endgame">
-                        <strong>Endgame:</strong> {entry.structure.endgameNote}
-                      </p>
-                    )}
-                  </div>
-                </article>
+                <StructureCard
+                  key={entry.structure.id}
+                  match={entry}
+                  positionFen={entry.onBoard ? fen : undefined}
+                  onMarks={onMarks}
+                />
               ))}
               {!structures.length && (
                 <p className="muted">
@@ -271,7 +241,14 @@ export function OpeningPanel({ match, fen, plies, onPlayMove, onMarks }: Opening
           )}
         </>
       ) : (
-        <p className="muted">No written theory for this line yet.</p>
+        <>
+          <p className="muted">No written theory for this line yet.</p>
+          <div className="structures">
+            {structures.map((entry) => (
+              <StructureCard key={entry.structure.id} match={entry} positionFen={fen} onMarks={onMarks} />
+            ))}
+          </div>
+        </>
       )}
 
       {continuations.length > 0 && (

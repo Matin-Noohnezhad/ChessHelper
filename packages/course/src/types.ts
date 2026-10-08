@@ -15,6 +15,9 @@ export type { MoveShapes, ShapeArrow, ShapeCircle, ShapeColor } from '@coh/chess
 
 export type CourseSide = 'white' | 'black';
 
+/** PGN player header used for section titles; the other names subsections. */
+export type SectionHeader = 'White' | 'Black';
+
 /** One move, as the course file wrote it. */
 export interface CourseNode {
   /** Index path from the chapter's root — `"0.2.1"`. Stable across imports. */
@@ -22,6 +25,8 @@ export interface CourseNode {
   san: string;
   /** 1-based ply from the chapter's start position. */
   ply: number;
+  /** Full move number from the PGN starting position, including FEN chapters. */
+  moveNumber?: number;
   /** Who played it. */
   side: 'w' | 'b';
   /**
@@ -61,11 +66,22 @@ export type MoveRole =
 export interface Chapter {
   id: string;
   name: string;
+  /** Parent section from the selected PGN player header. */
+  section?: string;
   /** Starting position, when the chapter does not begin from the initial one. */
   startFen?: string;
   /** First moves of the chapter. More than one when the author branched at move 1. */
   roots: CourseNode[];
+  /** Original PGN games, kept intact for reading within merged chapters. */
+  games?: CourseGame[];
   headers: Record<string, string>;
+}
+
+export interface CourseGame {
+  id: string;
+  roots: CourseNode[];
+  headers: Record<string, string>;
+  initialShapes?: MoveShapes;
 }
 
 /** A move the file wrote that could not be replayed, kept so an import can say so. */
@@ -247,7 +263,7 @@ export interface MoveCounts {
   seen: number;
   /** Past the first day of the ladder, so they have survived a night's sleep. */
   learned: number;
-  /** Due now, including never-seen ones. */
+  /** Previously studied moves due for review now; excludes unseen moves. */
   due: number;
   /** How many moves sit at each level, index 0 being "never learned". */
   levels: number[];

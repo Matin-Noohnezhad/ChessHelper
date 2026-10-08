@@ -149,6 +149,8 @@ export interface AnnotatedPgnGame {
   result: string;
   /** Starting position, from a `[FEN]` header, or the standard one. */
   startFen?: string;
+  /** Drawings before the first move belong to the starting position. */
+  initialShapes?: MoveShapes;
 }
 
 /** Passed turns, as the tools that emit them write them. */
@@ -254,7 +256,7 @@ interface LineFrame {
  * suffixes — is applied to whichever frame is on top, so nesting costs nothing
  * extra.
  */
-function scanMovetext(text: string): PgnMove[] {
+function scanMovetext(text: string, initial: PgnMove): PgnMove[] {
   const root: PgnMove[] = [];
   const stack: LineFrame[] = [{ line: root }];
   let i = 0;
@@ -270,8 +272,16 @@ function scanMovetext(text: string): PgnMove[] {
 
     if (ch === '{') {
       const end = text.indexOf('}', i + 1);
-      const body = text.slice(i + 1, end < 0 ? text.length : end);
+      let body = text.slice(i + 1, end < 0 ? text.length : end);
       const target = last();
+      if (!target && stack.length === 1) {
+        // Keep introductory prose's existing treatment, but drawings describe
+        // the board before any move, including an otherwise empty game.
+        body = body.replace(/\[%(cal|csl)\s+([^\]]*)\]/gi, (command: string) => {
+          applyComment(initial, command);
+          return '';
+        });
+      }
       if (target) applyComment(target, body);
       else {
         // Nothing to annotate yet: hold it for this line's first move.
@@ -289,15 +299,23 @@ function scanMovetext(text: string): PgnMove[] {
     if (ch === '(') {
       const owner = last();
       const line: PgnMove[] = [];
-      // A sideline with no move before it cannot be attached to anything, but
-      // it still gets a frame so the parentheses stay balanced.
+      // Some course exports wrap the entire example in parentheses. Keep its
+      // introductory comment and promote it when the otherwise empty frame closes.
       if (owner) (owner.variations ??= []).push(line);
-      stack.push({ line });
+      const pending = owner ? undefined : top().pending;
+      if (!owner) top().pending = undefined;
+      stack.push({ line, pending });
       i++;
       continue;
     }
     if (ch === ')') {
-      if (stack.length > 1) stack.pop();
+      if (stack.length > 1) {
+        const frame = stack.pop()!;
+        if (!top().line.length) {
+          top().line.push(...frame.line);
+          if (frame.pending) top().pending = frame.pending;
+        }
+      }
       i++;
       continue;
     }
@@ -354,12 +372,14 @@ export function parseAnnotatedPgn(pgn: string): AnnotatedPgnGame {
 
   const text = body.join('\n');
   const resultMatch = /(1-0|0-1|1\/2-1\/2|\*)\s*$/.exec(text.trim());
+  const initial: PgnMove = { san: '', nags: [] };
   const game: AnnotatedPgnGame = {
     headers,
-    moves: scanMovetext(text),
+    moves: scanMovetext(text, initial),
     result: resultMatch?.[1] ?? headers.Result ?? '*',
   };
   if (headers.FEN) game.startFen = headers.FEN;
+  if (initial.shapes) game.initialShapes = initial.shapes;
   return game;
 }
 

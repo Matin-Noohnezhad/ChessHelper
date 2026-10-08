@@ -1,9 +1,8 @@
 /**
  * Generates `src/eco.generated.ts` from the vendored ECO tables.
  *
- * Source: https://github.com/lichess-org/chess-openings (CC0-1.0, public
- * domain). The TSVs are vendored under `data/` so the build is reproducible
- * without network access; pass `--fetch` to refresh them from upstream.
+ * Sources and pinned revisions are documented in data/README.md. TSVs are
+ * vendored so builds work offline; --fetch restores the pinned snapshots.
  *
  * Every line is replayed through our own move generator before it is written
  * out. That does two jobs: it rejects anything illegal, and it re-emits the
@@ -18,7 +17,8 @@ import { fileURLToPath } from 'node:url';
 import { Chess, parseMoveText } from '@coh/chess-core';
 
 const FILES = ['a', 'b', 'c', 'd', 'e'] as const;
-const UPSTREAM = 'https://raw.githubusercontent.com/lichess-org/chess-openings/master';
+const UPSTREAM = 'https://raw.githubusercontent.com/lichess-org/chess-openings/5a13018164f6bd88f48b3dc31a8e2a39f31a060a';
+const EXTENDED = 'https://raw.githubusercontent.com/JeffML/eco.json/36cfd9227f553dec1d39ee20fa0775eea8f8e165';
 
 const dataPath = (name: string) => fileURLToPath(new URL(`../data/${name}`, import.meta.url));
 const outPath = fileURLToPath(new URL('../src/eco.generated.ts', import.meta.url));
@@ -36,6 +36,16 @@ async function refresh(): Promise<void> {
     await writeFile(dataPath(`${file}.tsv`), await response.text());
     console.log(`fetched ${file}.tsv`);
   }
+  const rows: string[] = [];
+  for (const file of FILES) {
+    const response = await fetch(`${EXTENDED}/eco${file.toUpperCase()}.json`);
+    if (!response.ok) throw new Error(`eco${file}.json: HTTP ${response.status}`);
+    const openings = await response.json() as Record<string, { eco: string; name: string; moves: string }>;
+    for (const row of Object.values(openings)) {
+      rows.push([row.eco, row.name, row.moves].map((value) => value.replace(/\t/g, ' ')).join('\t'));
+    }
+  }
+  await writeFile(dataPath('extended.tsv'), `eco\tname\tpgn\n${rows.join('\n')}\n`);
 }
 
 /**
@@ -52,7 +62,7 @@ async function readRows(): Promise<{ rows: Row[]; skipped: string[] }> {
   const rows: Row[] = [];
   const skipped: string[] = [];
 
-  for (const file of FILES) {
+  for (const file of [...FILES, 'extended']) {
     const text = await readFile(dataPath(`${file}.tsv`), 'utf8');
     for (const raw of text.split('\n').slice(1)) {
       const lineText = raw.trim();
@@ -108,7 +118,8 @@ function render(rows: Row[]): string {
  * Regenerate with:
  *   npx vite-node packages/opening-book/scripts/ingest-eco.ts
  *
- * Source: lichess-org/chess-openings (CC0-1.0, public domain), replayed and
+ * Sources: lichess-org/chess-openings (CC0) and JeffML/eco.json (MIT).
+ * See data/README.md and data/ECO-JSON-LICENSE.txt. Replayed and
  * re-emitted in this project's SAN. ${rows.length} lines.
  *
  * Held as one tab-separated string rather than ${rows.length} array literals.
@@ -130,6 +141,7 @@ async function main(): Promise<void> {
   if (process.argv.includes('--fetch')) await refresh();
 
   const { rows, skipped } = await readRows();
+  if (skipped.length) throw new Error(`Invalid opening data:\n${skipped.join('\n')}`);
   const unique = dedupe(rows);
   await writeFile(outPath, render(unique));
 

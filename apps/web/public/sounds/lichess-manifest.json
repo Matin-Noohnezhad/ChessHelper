@@ -1,0 +1,2291 @@
+{
+  "commit": "5ae58154b2be1033dcb0252173b4fff4bb02e73a",
+  "files": [
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Berserk.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Berserk.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Berserk.mp3",
+      "bytes": 48272,
+      "sha256": "d77a92b3d0f9527b7d3a0d300fc68eda36f9a42ab789c0d06b6df2891d96e9c5"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Capture.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Capture.mp3",
+      "bytes": 12520,
+      "sha256": "d043743b359844536b991600253453de9d3f95d6ca4688f25ec3eebcf0316874"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Check.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Check.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Check.mp3",
+      "bytes": 15649,
+      "sha256": "dcc348cfb2f84bfa12daab3ea40b2970c41e9b33df8818a7788774bf485c312d"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Checkmate.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Checkmate.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Check.mp3",
+      "bytes": 15649,
+      "sha256": "dcc348cfb2f84bfa12daab3ea40b2970c41e9b33df8818a7788774bf485c312d"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Confirmation.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Confirmation.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/GenericNotify.mp3",
+      "bytes": 34241,
+      "sha256": "128c00ae75c7b152e513cbd274a10e9acb28d3375388c2366936ed08d353ebdd"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown0.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown0.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown0.mp3",
+      "bytes": 35232,
+      "sha256": "dec1edfc0fdc63f7861c57356f1f5158440d08e3af8a336dea133ca2a82f2210"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown1.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown1.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown1.mp3",
+      "bytes": 34134,
+      "sha256": "5801a01bbbbb1fdf0804b735eb592ca1f6b3d4b267aba90b391e2239123cfdff"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown10.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown10.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown10.mp3",
+      "bytes": 35497,
+      "sha256": "5ad935982ee45d5a4f9e736a86683e3a779bc713d3bdab46d91b40e3c6bd3a2f"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown2.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown2.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown2.mp3",
+      "bytes": 32727,
+      "sha256": "6602acd76837622f0bcc10f7b4b0e5bb2a089583947e56e1c4ac9b52897354f5"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown3.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown3.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown3.mp3",
+      "bytes": 34450,
+      "sha256": "6e987f8f1e201b03bbe88b5d08a193292576263aad853840eda1adae9cb5f3b1"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown4.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown4.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown4.mp3",
+      "bytes": 34971,
+      "sha256": "cf17ee174d923b7e262fc3f85df7ea47166977f97e7b20dcaa49f4f84f8e6da7"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown5.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown5.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown5.mp3",
+      "bytes": 36328,
+      "sha256": "9fde8051bdcefd0bc8c437bb4d6b000acd27a95ef340f83f6531e923fef6e363"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown6.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown6.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown6.mp3",
+      "bytes": 35286,
+      "sha256": "8c98740f7709ac659dd4dc0196c37685eb10f24aaa2373a1ae509122e0196466"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown7.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown7.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown7.mp3",
+      "bytes": 34034,
+      "sha256": "305c0548d9ec2dd0060ba83fc3580fa055a7a3bfd213667020b4c438a49669df"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown8.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown8.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown8.mp3",
+      "bytes": 34139,
+      "sha256": "c74e107b0e1584ef12d2ba64423e44d17a65db8fa6b7b3403c78b379b2f84fc5"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/CountDown9.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown9.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/CountDown9.mp3",
+      "bytes": 34869,
+      "sha256": "86c728bce978c80924936f43664ac0611a48bd8c096dd8f248b16403cce086fd"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Defeat.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Defeat.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Defeat.mp3",
+      "bytes": 129224,
+      "sha256": "0f2c4d91b61942755bbbe1d40b75ca2b677313069fa79b4c9c5ed5dd81ef9631"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Draw.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Draw.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Draw.mp3",
+      "bytes": 83500,
+      "sha256": "e935da7d2bd2b096f42ed25ed7113fe307e930b4093bb2dd85b039a7e99906b3"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Error.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Error.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Error.mp3",
+      "bytes": 1689,
+      "sha256": "d12284042b43e135f0efe73dbf65759b8c600cc3e79db497198656766dd315df"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Explosion.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Explosion.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Explosion.mp3",
+      "bytes": 96663,
+      "sha256": "3f08a54de18dda0cd75486ed2ce2ebfc22d8d8cffd57ef868a812c421e9b845c"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/GenericNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/GenericNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/GenericNotify.mp3",
+      "bytes": 31532,
+      "sha256": "088b8c3b986dffe36b52c15e67dd36589a709c5457c8c7e2a626cf150fcd45d5"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/LowTime.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/LowTime.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/LowTime.mp3",
+      "bytes": 24529,
+      "sha256": "d169faab5f0457de1207bf8e341d5db4e0d0f560651531d335b17596c6cd13df"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Move.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Move.mp3",
+      "bytes": 9202,
+      "sha256": "e68edeb6dfc9d0510b553c7d94adbb249c07e52c8e1c6ae1a207dea56c08195a"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/NewChallenge.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/NewChallenge.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/NewChallenge.mp3",
+      "bytes": 64519,
+      "sha256": "60e768861a9c1643061372d2954792304ed690b083bb779158b41381f34a2bbd"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/NewChatMessage.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/NewChatMessage.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/NewChatMessage.mp3",
+      "bytes": 7422,
+      "sha256": "9aae0df6663d9066e72f55731b7bf028a8767a6a09dac799c2234a0bfb2bf74e"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/NewPM.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/NewPM.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/NewPM.mp3",
+      "bytes": 22593,
+      "sha256": "03b978c7e7e413e0b82535fbd4bd24c5447188dab8a085dc2f41ce74db64eb66"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/OutOfBound.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/OutOfBound.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/OutOfBound.mp3",
+      "bytes": 9030,
+      "sha256": "9919a1c366faa8b59c4b573d2643ca4ee14c6fd2ff5bd53a1a73f2e297cf779b"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Tournament1st.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Tournament1st.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Tournament1st.mp3",
+      "bytes": 65254,
+      "sha256": "f23f1c3d46680a988caf3ff1bae5f6b945c0c8cd87793308c1e174d213bacbf6"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Tournament2nd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Tournament2nd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Tournament2nd.mp3",
+      "bytes": 64415,
+      "sha256": "e083c46a578c486c2d73253a293e9dff0fadffe0f97e79e5e7e2154aeaf7c685"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Tournament3rd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Tournament3rd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Tournament3rd.mp3",
+      "bytes": 59513,
+      "sha256": "bfd5d3cb1780ce563106755b3828e0f7c3e29744cae565ec89e0de0beb1b08a3"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/TournamentOther.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/TournamentOther.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/TournamentOther.mp3",
+      "bytes": 71625,
+      "sha256": "0f4e8807dc398f3213448b5a9decdc5f0b4c052412fe80d46a79bf949815b656"
+    },
+    {
+      "site": "Lichess",
+      "set": "futuristic",
+      "file": "lichess/futuristic/Victory.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Victory.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/futuristic/Victory.mp3",
+      "bytes": 97594,
+      "sha256": "43abe23ee2bce78b99ba1977429c7ddfe36b4f7f0dd41b37b5e2f341ca86607c"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Berserk.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Berserk.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Berserk.mp3",
+      "bytes": 21732,
+      "sha256": "2e2c952841116131fd6995bc4dd3644b4373b3772cf6741e65a5c8ca2557240f"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Capture.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Capture.mp3",
+      "bytes": 6686,
+      "sha256": "b933f1a39a97e45e35450d8b757cab34c66ef7f3e1548e289f1bf182bebd7030"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Castles.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Castles.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Castles.mp3",
+      "bytes": 5432,
+      "sha256": "b97e591dffdce1d59415afb046fee86780147511b1625775df6a7c97effd82c9"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Check.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Check.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Check.mp3",
+      "bytes": 5432,
+      "sha256": "3b85d980931cd531ae5980b1770325da8fd74c2930d30f93a50fc0215d7c4bc3"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Checkmate.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Checkmate.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Check.mp3",
+      "bytes": 5432,
+      "sha256": "3b85d980931cd531ae5980b1770325da8fd74c2930d30f93a50fc0215d7c4bc3"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Confirmation.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Confirmation.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Confirmation.mp3",
+      "bytes": 3342,
+      "sha256": "552cf3acc7412839fcac8a3d30105a3cc397c1a231497a630ba073f40f866f29"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown0.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown0.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown0.mp3",
+      "bytes": 3600,
+      "sha256": "fc5d1f12620b13c566765bb058c6977e34815506a6a28656646a7ef11475e0b5"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown1.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown1.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown1.mp3",
+      "bytes": 3024,
+      "sha256": "6b308ddc08f60e8c2e7e029506845a9f45664253b221c04d030a917c966adbb0"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown10.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown10.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown10.mp3",
+      "bytes": 2880,
+      "sha256": "d412b89106da6e917c25a144e86c7a30f3deacf13b4a6a9fd3f5aa5f02ca2abf"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown2.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown2.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown2.mp3",
+      "bytes": 3024,
+      "sha256": "2af977e02f451f89534f03b579f38a9b468242bd3e0475c89fc350e39821a3b4"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown3.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown3.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown3.mp3",
+      "bytes": 2592,
+      "sha256": "37561d8721aa421a80c3b62bead58d768f8b550ad9c46e2cf571aeffdce150a4"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown4.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown4.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown4.mp3",
+      "bytes": 2880,
+      "sha256": "b840e5676ef21454b1204b14e183b640d61374b1bb8f9a34af25dc7bda7719d2"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown5.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown5.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown5.mp3",
+      "bytes": 3024,
+      "sha256": "71fa43002d1547b33d32cb6850bef745452df370a301677190eb3d72f4f5dfb9"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown6.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown6.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown6.mp3",
+      "bytes": 3600,
+      "sha256": "4df685dd62ddbb54f9c05e1e42b795233ac66eb70bec1f5ec57ba2f3d680bb91"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown7.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown7.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown7.mp3",
+      "bytes": 3456,
+      "sha256": "60fb8b1a13441520b3556e4c41cb0a2ff0c815a687f4fbde3d502011f242680e"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown8.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown8.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown8.mp3",
+      "bytes": 2448,
+      "sha256": "9ed18175474c5761a47ceb377d1bcf1b5f33decad53c537724dc5f32f3aa7d38"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/CountDown9.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/CountDown9.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown9.mp3",
+      "bytes": 3312,
+      "sha256": "ec330ec44ea3eb2c90caedd539424b49d0cf5ff25b7a6bf1426faa9561460b6a"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Defeat.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Defeat.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Defeat.mp3",
+      "bytes": 25494,
+      "sha256": "bc7880f9f23967a6f5d837770dcec1f1f9223511d46a3b2e5ce8d0a9c7fd77e1"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Draw.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Draw.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Draw.mp3",
+      "bytes": 25494,
+      "sha256": "247b34d773d02aa6fc4041e9ddadb09a065aa3e2007d2cdf79a7074c4bac9b07"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Error.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Error.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Error.mp3",
+      "bytes": 6686,
+      "sha256": "11bd33406e247f68c140b283a796fd913130eb957b8e4cb0068108d876687ecd"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Explosion.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Explosion.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Explosion.mp3",
+      "bytes": 21732,
+      "sha256": "54e43166267697119e5f8211547fc72cd99fe67b5a4aaae640b9e85db248c11b"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/GenericNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/GenericNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/GenericNotify.mp3",
+      "bytes": 19225,
+      "sha256": "72ce7e39f52fb55f33bcb6048b6707949c55c4bf89189abd5ea58e6df71dcf78"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/LowTime.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/LowTime.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/LowTime.mp3",
+      "bytes": 20061,
+      "sha256": "738416e611b61a311878f3f930e21a68e04c784b9bf7da6d3ca337156ddc5767"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Move.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Move.mp3",
+      "bytes": 5432,
+      "sha256": "2b161d54b1cbdb683175b09c29cc65a5575c635e9d946e52ae471dcbf69f727d"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/NewChallenge.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/NewChallenge.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/NewChallenge.mp3",
+      "bytes": 15045,
+      "sha256": "7af1ce18df204ccbdcbb139264c5a68b74944587d3971f935676fc3dd92e87e1"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/NewPM.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/NewPM.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/NewPM.mp3",
+      "bytes": 11283,
+      "sha256": "18f3af948dcbcab135bf52010d6963e6201cec65eab3f1009c987870ede66c27"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/OutOfBound.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/OutOfBound.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/OutOfBound.mp3",
+      "bytes": 9030,
+      "sha256": "9919a1c366faa8b59c4b573d2643ca4ee14c6fd2ff5bd53a1a73f2e297cf779b"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/PracticeComplete.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/PracticeComplete.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/PracticeComplete.mp3",
+      "bytes": 31346,
+      "sha256": "5b8c15ed94e58fda278657cbc6ed73474dac71c7862aff577ddbc8c9eaf37933"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/PuzzleStormEnd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/PuzzleStormEnd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/PuzzleStormEnd.mp3",
+      "bytes": 65200,
+      "sha256": "d8ac17835a1b2541454fd75db4c4ea6774db8a3c6f11b541db9f5b81ab714f2a"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/PuzzleStormGood.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/PuzzleStormGood.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/PuzzleStormGood.mp3",
+      "bytes": 19225,
+      "sha256": "3ddd5aee9dd094c175e6dbcf47b408f8f4600d61ef0e01411790e91038dcc5d1"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Tournament1st.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Tournament1st.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Tournament1st.mp3",
+      "bytes": 81919,
+      "sha256": "234f927d48b215b55a2598c47ebdd413157ded8982f32da46b8074ac688ee332"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Tournament2nd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Tournament2nd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Tournament2nd.mp3",
+      "bytes": 81919,
+      "sha256": "cf9a55850a9c06c25fde9b604b023183dfc15908a57550680b51fbe00bfb5d6b"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Tournament3rd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Tournament3rd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Tournament3rd.mp3",
+      "bytes": 81919,
+      "sha256": "9230cdb394150501fe270eb92966cf5cd22cad76319d88944fea90d9d0c3ea62"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/TournamentOther.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/TournamentOther.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/TournamentOther.mp3",
+      "bytes": 81919,
+      "sha256": "be99c2be0bfb467749ee3aa8dec712a7d36619a8930c95f1f973853c0bdc70be"
+    },
+    {
+      "site": "Lichess",
+      "set": "lisp",
+      "file": "lichess/lisp/Victory.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Victory.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/lisp/Victory.mp3",
+      "bytes": 28420,
+      "sha256": "41cfe64e7b0f6c1c151b72a6c24a4a1c3dbee30efa4ad6f0e6fe30031048c15a"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Berserk.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Berserk.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Berserk.mp3",
+      "bytes": 7613,
+      "sha256": "ef7fc2cb53c561b7e23769fd27674d22acfd541b314cdccc6e3452265b9b42b1"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Capture.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Capture.mp3",
+      "bytes": 6257,
+      "sha256": "db0fee5a96c0638548e2f2522dce6541ca0e6a3cf75b50e0092817d9e00ecbb9"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Check.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Check.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Check.mp3",
+      "bytes": 6670,
+      "sha256": "0d7f8760ffafa45baf1a7e9deafa398bf3aedbe76ab5bd0dbf03055c2697d6ef"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Checkmate.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Checkmate.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Check.mp3",
+      "bytes": 6670,
+      "sha256": "0d7f8760ffafa45baf1a7e9deafa398bf3aedbe76ab5bd0dbf03055c2697d6ef"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Confirmation.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Confirmation.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/GenericNotify.mp3",
+      "bytes": 34241,
+      "sha256": "128c00ae75c7b152e513cbd274a10e9acb28d3375388c2366936ed08d353ebdd"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown0.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown0.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown0.mp3",
+      "bytes": 10541,
+      "sha256": "c7c11404d7fc88593c4e9831f9643c61139e49ab3f61b9144e9ae4106d334a6a"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown1.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown1.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownFast.mp3",
+      "bytes": 29657,
+      "sha256": "0cb6e27ffc55c211e25056c70caca0fd244db97fc583ac064a846eca881a5181"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown10.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown10.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownSlow.mp3",
+      "bytes": 58321,
+      "sha256": "2aec0427133a8426386bcc7dd3dd4d1b3794e4d8f31563bd698e7a42a22646c8"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown2.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown2.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownFast.mp3",
+      "bytes": 29657,
+      "sha256": "0cb6e27ffc55c211e25056c70caca0fd244db97fc583ac064a846eca881a5181"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown3.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown3.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownFast.mp3",
+      "bytes": 29657,
+      "sha256": "0cb6e27ffc55c211e25056c70caca0fd244db97fc583ac064a846eca881a5181"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown4.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown4.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownFast.mp3",
+      "bytes": 29657,
+      "sha256": "0cb6e27ffc55c211e25056c70caca0fd244db97fc583ac064a846eca881a5181"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown5.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown5.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownFast.mp3",
+      "bytes": 29657,
+      "sha256": "0cb6e27ffc55c211e25056c70caca0fd244db97fc583ac064a846eca881a5181"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown6.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown6.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownSlow.mp3",
+      "bytes": 58321,
+      "sha256": "2aec0427133a8426386bcc7dd3dd4d1b3794e4d8f31563bd698e7a42a22646c8"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown7.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown7.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownSlow.mp3",
+      "bytes": 58321,
+      "sha256": "2aec0427133a8426386bcc7dd3dd4d1b3794e4d8f31563bd698e7a42a22646c8"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown8.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown8.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownSlow.mp3",
+      "bytes": 58321,
+      "sha256": "2aec0427133a8426386bcc7dd3dd4d1b3794e4d8f31563bd698e7a42a22646c8"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/CountDown9.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/CountDown9.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/stock/CountDownSlow.mp3",
+      "bytes": 58321,
+      "sha256": "2aec0427133a8426386bcc7dd3dd4d1b3794e4d8f31563bd698e7a42a22646c8"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Defeat.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Defeat.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Defeat.mp3",
+      "bytes": 28487,
+      "sha256": "05f45e3e7d7c5f3180347544fcd4ee1950bc0db92673880c2040cacb3bf46d6e"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Draw.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Draw.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Draw.mp3",
+      "bytes": 28063,
+      "sha256": "779829a228c50d920345017b3e0bfecc519772be3d1ea5b61bc3e0d74f38b1f6"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Error.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Error.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Error.mp3",
+      "bytes": 1689,
+      "sha256": "d12284042b43e135f0efe73dbf65759b8c600cc3e79db497198656766dd315df"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Explosion.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Explosion.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Explosion.mp3",
+      "bytes": 8029,
+      "sha256": "efba77e07a958f0005eaf8a40aec6be5665a2d875cad01023315ce1676e330f1"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/GenericNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/GenericNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/GenericNotify.mp3",
+      "bytes": 8461,
+      "sha256": "b3eee508d3d69176cb6d336a12e9def5992621ddec135d349d4085be9252500e"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/LowTime.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/LowTime.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/LowTime.mp3",
+      "bytes": 14292,
+      "sha256": "76ef2b9667c11486e2bd52d8df313b996b2c17d6294aeb9fd18a880d66737e51"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Move.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Move.mp3",
+      "bytes": 4222,
+      "sha256": "dd2537a1fe4e769cf81f2243a886869cecc747c03fc74302c26e82d1d30444f0"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/NewChallenge.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/NewChallenge.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/NewChallenge.mp3",
+      "bytes": 16918,
+      "sha256": "50c91a54745ccdca1eb12e835cd7e9708014fca6726fe7e68d677bfcd326c370"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/NewPM.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/NewPM.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/NewPM.mp3",
+      "bytes": 11892,
+      "sha256": "7730f2c9353b19fa613ae1a6245205015f225b590ddcad4656c6bc2ea8402e06"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/OutOfBound.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/OutOfBound.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/OutOfBound.mp3",
+      "bytes": 9030,
+      "sha256": "9919a1c366faa8b59c4b573d2643ca4ee14c6fd2ff5bd53a1a73f2e297cf779b"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Tournament1st.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Tournament1st.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Tournament1st.mp3",
+      "bytes": 65123,
+      "sha256": "a9f425294fafe78e978eb5af97de25229f888365e6f0982c59a18adc08c25787"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Tournament2nd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Tournament2nd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Tournament2nd.mp3",
+      "bytes": 26930,
+      "sha256": "53d245933d41118e724cbf207587352029bb6ada498bb7a57b27a9bd0eae00c6"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Tournament3rd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Tournament3rd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Tournament3rd.mp3",
+      "bytes": 22545,
+      "sha256": "3bdf0a17e4336a424c0da8a3c183561ba5fab1b81cffa16bf297f4914fd5c257"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/TournamentOther.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/TournamentOther.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/TournamentOther.mp3",
+      "bytes": 27352,
+      "sha256": "4acee20dfd00a98b298543e8b42904d1e5a1d3d811c53e831f95942ab0dbfbb3"
+    },
+    {
+      "site": "Lichess",
+      "set": "nes",
+      "file": "lichess/nes/Victory.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Victory.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/nes/Victory.mp3",
+      "bytes": 18784,
+      "sha256": "902489d7f8fc96cd557040124e9b67c5095242f4af339c267e8ae3bb1851fc67"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Berserk.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Berserk.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Berserk.mp3",
+      "bytes": 38933,
+      "sha256": "d3d3b980a9f7c759c9f3b68b36106a0a110902fa293c3286390630a80fa603a6"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Capture.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Capture.mp3",
+      "bytes": 8032,
+      "sha256": "3fe6ce347463fe2e1f31bdbcd936945b3e550c97569ac8d5e6b7ac3487a5f244"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Check.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Check.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Check.mp3",
+      "bytes": 17321,
+      "sha256": "5f92c1c4b0e0d2af07de5d4b00702b16a4e77f83d4577cfce0d655b5acc1ccd0"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Checkmate.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Checkmate.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Check.mp3",
+      "bytes": 17321,
+      "sha256": "5f92c1c4b0e0d2af07de5d4b00702b16a4e77f83d4577cfce0d655b5acc1ccd0"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Confirmation.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Confirmation.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/GenericNotify.mp3",
+      "bytes": 34241,
+      "sha256": "128c00ae75c7b152e513cbd274a10e9acb28d3375388c2366936ed08d353ebdd"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown0.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown0.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown0.mp3",
+      "bytes": 26695,
+      "sha256": "abe2b5f416c0b6512024f1a2d4c3cdcd74420f0d5dda21dd4a8f987fcbf07003"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown1.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown1.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown1.mp3",
+      "bytes": 34648,
+      "sha256": "e9771c36a38bc15d1550336e1ea8e68229ee91950f41348ec1b8252d5ba28807"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown10.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown10.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown10.mp3",
+      "bytes": 25097,
+      "sha256": "3812c85bedc1d8a7d5c870efafe681a489dcedb50f5a79d1896cb7d5674b357b"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown2.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown2.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown2.mp3",
+      "bytes": 36659,
+      "sha256": "5199a15ae886ee11e0c31740c6ce8f8b775ff74a8bda3eeb92eff9b4b4137081"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown3.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown3.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown3.mp3",
+      "bytes": 34858,
+      "sha256": "23ec8748f935dde09040a1bad1563c8b69ef4cb151de19582c696421f8814119"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown4.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown4.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown4.mp3",
+      "bytes": 32879,
+      "sha256": "8477bfe7f67e328421567f4daba955594252267aad7e770ab1f32d5ea6760b19"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown5.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown5.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown5.mp3",
+      "bytes": 31418,
+      "sha256": "8c3f983b7923d1fa60075eab717c995e6041fbef43d1f21640522d5f924434d8"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown6.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown6.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown6.mp3",
+      "bytes": 30059,
+      "sha256": "c52711dcf3d7ad48890853e91f384796af840fc269aa3fd0a2aac146814a81bc"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown7.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown7.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown7.mp3",
+      "bytes": 29542,
+      "sha256": "3343bdb40513976e2da9a88b2e6e5cb6859b561256ef2464eaff46b1658288a4"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown8.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown8.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown8.mp3",
+      "bytes": 31420,
+      "sha256": "842347b52f9c561249f2ba44c225ba11fcfd125ca1a8d8745104ab8b2caf4183"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/CountDown9.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown9.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/CountDown9.mp3",
+      "bytes": 24835,
+      "sha256": "4e586e1425ce3f5a8b5ae55e524356f5feff28310c0af697eec30ee8b7b764dd"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Defeat.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Defeat.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Defeat.mp3",
+      "bytes": 24911,
+      "sha256": "a2d0f1ec35c888267581f370689a4dfa5dbe9a778b85104a7905c23f2bc63fad"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Draw.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Draw.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Draw.mp3",
+      "bytes": 37362,
+      "sha256": "ba37adde8771a249d2389bc2d69c3673b5724c6450fa2b153db4d08dec47ccec"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Error.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Error.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Error.mp3",
+      "bytes": 1689,
+      "sha256": "d12284042b43e135f0efe73dbf65759b8c600cc3e79db497198656766dd315df"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Explosion.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Explosion.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Explosion.mp3",
+      "bytes": 39506,
+      "sha256": "f26b636055e4bd5554bdb4710f1847c3e8e3b28f939eab9a9b283e6b412c00a9"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/GenericNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/GenericNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/GenericNotify.mp3",
+      "bytes": 19163,
+      "sha256": "9ba65764ef6855e0af95ea1f313f6d04bc4b55ea59363d55fbc4def9e8cc21eb"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/LowTime.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/LowTime.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/LowTime.mp3",
+      "bytes": 33399,
+      "sha256": "8ce4751b30524a24b1508666d1b902fc191351faba080c90018df4183d81e808"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Move.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Move.mp3",
+      "bytes": 4223,
+      "sha256": "2c681c2638ddaf4e18deebc36e5a2ee481c69ef6c6435597e672b73c5c078715"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/NewChallenge.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/NewChallenge.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/NewChallenge.mp3",
+      "bytes": 24745,
+      "sha256": "9752449cac392b6c09823ba06b5894d1fff61eb7269a5efba14772f28402a991"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/NewPM.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/NewPM.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/NewPM.mp3",
+      "bytes": 23374,
+      "sha256": "d4f09e8717bbd8649cf5b7545977ab5aa999396c51d75ef6afa747d0014fa26f"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/OutOfBound.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/OutOfBound.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/OutOfBound.mp3",
+      "bytes": 9030,
+      "sha256": "9919a1c366faa8b59c4b573d2643ca4ee14c6fd2ff5bd53a1a73f2e297cf779b"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Tournament1st.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament1st.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament1st.mp3",
+      "bytes": 110396,
+      "sha256": "faaf984ef7659d152df94cbe6c91adb9667232e667a3d437b92a5b23b7931e61"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Tournament2nd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament2nd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament2nd.mp3",
+      "bytes": 77040,
+      "sha256": "41188ad92576ab947a342f5236f1a1d931907f5338937699c1565cdeba80c661"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Tournament3rd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament3rd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament3rd.mp3",
+      "bytes": 75584,
+      "sha256": "a876b6daf7a9cc199861b3c61ad952a4c9f1f04d6bcff1327bda63b353df6b1d"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/TournamentOther.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/TournamentOther.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/TournamentOther.mp3",
+      "bytes": 65983,
+      "sha256": "026f7889b89c26b80c29a671dc23a0b6046d2d2e715bb0fcbaab6a627b361f9f"
+    },
+    {
+      "site": "Lichess",
+      "set": "piano",
+      "file": "lichess/piano/Victory.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Victory.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Victory.mp3",
+      "bytes": 37673,
+      "sha256": "71e06cd46e18fa9472b0fbd058ac88f4b1a07ecdff6bb45d413694fd23afa729"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Berserk.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Berserk.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Berserk.mp3",
+      "bytes": 4608,
+      "sha256": "b50338051d504bd9492a1816d58087b9a2d83d8bfc7c2aa1614a77c98feefff0"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Capture.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Capture.mp3",
+      "bytes": 5987,
+      "sha256": "a1fb0b354091f7a78032c23135e42aa915c41120226027c20ea839d79f132f2b"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Check.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Check.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Check.mp3",
+      "bytes": 6544,
+      "sha256": "441b99b60cab4bba9a15de414c9ccc26d36b085c199c9a52c982d6250a785195"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Checkmate.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Checkmate.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Checkmate.mp3",
+      "bytes": 5556,
+      "sha256": "f25845a2cd8ddd87d4097349ea3ada5a88c935bf26f13203dfb803d7b4a2db61"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Confirmation.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Confirmation.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/GenericNotify.mp3",
+      "bytes": 34241,
+      "sha256": "128c00ae75c7b152e513cbd274a10e9acb28d3375388c2366936ed08d353ebdd"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown0.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown0.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown0.mp3",
+      "bytes": 3600,
+      "sha256": "fc5d1f12620b13c566765bb058c6977e34815506a6a28656646a7ef11475e0b5"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown1.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown1.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown1.mp3",
+      "bytes": 3024,
+      "sha256": "6b308ddc08f60e8c2e7e029506845a9f45664253b221c04d030a917c966adbb0"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown10.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown10.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown10.mp3",
+      "bytes": 2880,
+      "sha256": "d412b89106da6e917c25a144e86c7a30f3deacf13b4a6a9fd3f5aa5f02ca2abf"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown2.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown2.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown2.mp3",
+      "bytes": 3024,
+      "sha256": "2af977e02f451f89534f03b579f38a9b468242bd3e0475c89fc350e39821a3b4"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown3.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown3.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown3.mp3",
+      "bytes": 2592,
+      "sha256": "37561d8721aa421a80c3b62bead58d768f8b550ad9c46e2cf571aeffdce150a4"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown4.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown4.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown4.mp3",
+      "bytes": 2880,
+      "sha256": "b840e5676ef21454b1204b14e183b640d61374b1bb8f9a34af25dc7bda7719d2"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown5.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown5.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown5.mp3",
+      "bytes": 3024,
+      "sha256": "71fa43002d1547b33d32cb6850bef745452df370a301677190eb3d72f4f5dfb9"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown6.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown6.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown6.mp3",
+      "bytes": 3600,
+      "sha256": "4df685dd62ddbb54f9c05e1e42b795233ac66eb70bec1f5ec57ba2f3d680bb91"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown7.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown7.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown7.mp3",
+      "bytes": 3456,
+      "sha256": "60fb8b1a13441520b3556e4c41cb0a2ff0c815a687f4fbde3d502011f242680e"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown8.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown8.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown8.mp3",
+      "bytes": 2448,
+      "sha256": "9ed18175474c5761a47ceb377d1bcf1b5f33decad53c537724dc5f32f3aa7d38"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/CountDown9.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown9.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/CountDown9.mp3",
+      "bytes": 3312,
+      "sha256": "ec330ec44ea3eb2c90caedd539424b49d0cf5ff25b7a6bf1426faa9561460b6a"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Defeat.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Defeat.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Defeat.mp3",
+      "bytes": 4176,
+      "sha256": "4c5807b8431fa4c5137f5790230a07d5ae110a3ed254afd7aa0b7d427e271b39"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Draw.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Draw.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Draw.mp3",
+      "bytes": 4032,
+      "sha256": "f1d82f3b49e6ef9a6bf5b5788bab183cfdf271ae780f44fc19a93a9ea91ee61d"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Error.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Error.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Error.mp3",
+      "bytes": 1689,
+      "sha256": "d12284042b43e135f0efe73dbf65759b8c600cc3e79db497198656766dd315df"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Explosion.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Explosion.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Explosion.mp3",
+      "bytes": 16192,
+      "sha256": "ce57fe910990e2c44f2d6d12feadb9f9e2da5ff1fde94889247926ea35b804fa"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/GenericNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/GenericNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/GenericNotify.mp3",
+      "bytes": 2880,
+      "sha256": "df2a72d0018e0b89833f3801912f582ce0b790acc433b563fb163bca81734cca"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/LowTime.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/LowTime.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/LowTime.mp3",
+      "bytes": 6336,
+      "sha256": "2e9fa10c0b14ff104ed6d3fb0bc68bb8b805aa8a7594935be39e8ec28e22fb19"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Move.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Move.mp3",
+      "bytes": 2547,
+      "sha256": "3dd52fa3657d876cf40194d2005eddef3364e3b65bc0c508288529ae7bde8485"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/NewChallenge.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/NewChallenge.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/NewChallenge.mp3",
+      "bytes": 4896,
+      "sha256": "474cecd55e351f7eea6e6d18dda0302fd6b5b706cd1bb69174a0df4815cda49c"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/NewPM.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/NewPM.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/NewPM.mp3",
+      "bytes": 6480,
+      "sha256": "127903d58f3120dd68a45eebff9c9f729a0318d51815a977315f0f1fbe03b737"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/OutOfBound.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/OutOfBound.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/OutOfBound.mp3",
+      "bytes": 9030,
+      "sha256": "9919a1c366faa8b59c4b573d2643ca4ee14c6fd2ff5bd53a1a73f2e297cf779b"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Tournament1st.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Tournament1st.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Tournament1st.mp3",
+      "bytes": 10368,
+      "sha256": "9400e12375dc29822d4cdb53f983cd947ae442fe9fefee686eab0b09473d6bce"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Tournament2nd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Tournament2nd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Tournament2nd.mp3",
+      "bytes": 10944,
+      "sha256": "10f4c474534d7e74c4e496eecea6c15d186fe96a4b79a253b35da6df624a21c6"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Tournament3rd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Tournament3rd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Tournament3rd.mp3",
+      "bytes": 10944,
+      "sha256": "aa0a01738b812ee3612e5f38fd7d1b5a2ed2fb68247004f5d7c680ac71fbf12c"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/TournamentOther.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/TournamentOther.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/TournamentOther.mp3",
+      "bytes": 65983,
+      "sha256": "026f7889b89c26b80c29a671dc23a0b6046d2d2e715bb0fcbaab6a627b361f9f"
+    },
+    {
+      "site": "Lichess",
+      "set": "robot",
+      "file": "lichess/robot/Victory.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Victory.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/robot/Victory.mp3",
+      "bytes": 3888,
+      "sha256": "df1670b6129b7aa6715bc9c0e66c265301ef790e3fc9d257ac74b344b9c5fb8b"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Berserk.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Berserk.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Berserk.mp3",
+      "bytes": 11791,
+      "sha256": "c12794b6163fab3e476ff1a4ebf7b54a21feaa9784581d511437bdb448514b47"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Capture.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Capture.mp3",
+      "bytes": 11581,
+      "sha256": "59b9de82710ea30968312902bf7ac8334a1da620ee364e231ef9454f8648f2d2"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Check.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Check.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Check.mp3",
+      "bytes": 17425,
+      "sha256": "efaa7ae9a88025b6678de680441d806ce55e1a49f9009305235c5cd63a226093"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Checkmate.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Checkmate.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Check.mp3",
+      "bytes": 17425,
+      "sha256": "efaa7ae9a88025b6678de680441d806ce55e1a49f9009305235c5cd63a226093"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Confirmation.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Confirmation.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/GenericNotify.mp3",
+      "bytes": 34241,
+      "sha256": "128c00ae75c7b152e513cbd274a10e9acb28d3375388c2366936ed08d353ebdd"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown0.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown0.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown0.mp3",
+      "bytes": 21503,
+      "sha256": "41910ddb33d8198e81b52f3a1b5b8c47eee2913f25e76fb8e2439a7c70a3a702"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown1.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown1.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown1.mp3",
+      "bytes": 23794,
+      "sha256": "793de5611140f3cfa6f49281fb91b3e0bbe6d6dbdd1707b033a6328c700cad2f"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown10.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown10.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown10.mp3",
+      "bytes": 13670,
+      "sha256": "d394fa52b31568ae1476d917dcd7fc268186f6856671a9eb175bd769bc07a455"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown2.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown2.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown2.mp3",
+      "bytes": 23379,
+      "sha256": "e09d1bc97e6c727f92fa47bf962019e243194416de96994ee022b2aa7af80a0b"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown3.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown3.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown3.mp3",
+      "bytes": 28127,
+      "sha256": "1e8315f342b9bb7b2e6a5a98626a90b1b1ceb5c121f93587f6b8e91b2783b595"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown4.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown4.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown4.mp3",
+      "bytes": 26875,
+      "sha256": "383938798be15740266bdec225ce73a81c79c38bf9f7cfc6c3a1b9cd60784a78"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown5.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown5.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown5.mp3",
+      "bytes": 24632,
+      "sha256": "5e941fb8c6dc64a2b5e4ce3bdacba51f00eed3003cdd7d42ccc0b0f6e1e2dcdc"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown6.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown6.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown6.mp3",
+      "bytes": 23745,
+      "sha256": "a77d22cf7eaa8bd7f0dcee4e233e7e355f3a45f7e2726ac6fa86e2138eb061e5"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown7.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown7.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown7.mp3",
+      "bytes": 21657,
+      "sha256": "7e9c502bbb840cd8ad61038ec7c046ba97f2553bdc131ceab632eefb2c3a0ef1"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown8.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown8.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown8.mp3",
+      "bytes": 25467,
+      "sha256": "398920f82471d3b54baf0ebf18d455bcff1f055dcc4ef2253f898764e5839e9d"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/CountDown9.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown9.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/CountDown9.mp3",
+      "bytes": 25258,
+      "sha256": "ad0eaba3dedec926c67b8f26cec0fbbff4781f17546c2baed64f6df4df3450f2"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Defeat.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Defeat.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Defeat.mp3",
+      "bytes": 25148,
+      "sha256": "a1509a6e00c5a71c4d192a6d3c84c78a6e840096c5a9d08b7d545cf330b63cf2"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Draw.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Draw.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Draw.mp3",
+      "bytes": 23893,
+      "sha256": "cd8f8a02a63a94ab221cb01ebe1679771c83329cb4ce0549b78fc119aa1c2883"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Error.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Error.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Error.mp3",
+      "bytes": 1689,
+      "sha256": "d12284042b43e135f0efe73dbf65759b8c600cc3e79db497198656766dd315df"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Explosion.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Explosion.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Explosion.mp3",
+      "bytes": 17224,
+      "sha256": "7b0c808c8693045c8ea988212840ef6eaa10ee1f41b1156ba7dc74892e4a895a"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/GenericNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/GenericNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/GenericNotify.mp3",
+      "bytes": 34241,
+      "sha256": "128c00ae75c7b152e513cbd274a10e9acb28d3375388c2366936ed08d353ebdd"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/LowTime.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/LowTime.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/LowTime.mp3",
+      "bytes": 17217,
+      "sha256": "3e89eaf068c9d1d5c3f1b12753889664f2dc4ab8ee614941c4279924821adc47"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Move.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Move.mp3",
+      "bytes": 8028,
+      "sha256": "0b4bbf4b0bc0cd937f9661820da4f6e9c5b821913a32502d3b571e6730f7c984"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/NewChallenge.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/NewChallenge.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/NewChallenge.mp3",
+      "bytes": 62644,
+      "sha256": "5aff55c7b995011948c1fd46266c54f0f286b0b33689e166c9e4c1408ec496d9"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/NewPM.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/NewPM.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/NewPM.mp3",
+      "bytes": 17113,
+      "sha256": "00824960a98a6425ddc3f784c00f0708d2978ab388bee05ef1734105f6d3336f"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/OutOfBound.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/OutOfBound.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/OutOfBound.mp3",
+      "bytes": 9030,
+      "sha256": "9919a1c366faa8b59c4b573d2643ca4ee14c6fd2ff5bd53a1a73f2e297cf779b"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Tournament1st.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Tournament1st.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Tournament1st.mp3",
+      "bytes": 211564,
+      "sha256": "6ea24c090cee2fd5651a512468102e7a9585933fd845cdedea218ec97ac86f90"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Tournament2nd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Tournament2nd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Tournament2nd.mp3",
+      "bytes": 84122,
+      "sha256": "95daa2ae101cd10e06b9ddff57ad8a93f63fd47e4c49a6f048982d38d2c4eda2"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Tournament3rd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Tournament3rd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Tournament3rd.mp3",
+      "bytes": 62324,
+      "sha256": "bc33060d6e8b02da1502db3c7f5fad93c3a95d7d9f0b84e58134943e7b13b24f"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/TournamentOther.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/TournamentOther.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/TournamentOther.mp3",
+      "bytes": 70250,
+      "sha256": "09e448e7277e72e98b0d6c985d88b46f023e678920f3e1cbaf2f73ab77552e9e"
+    },
+    {
+      "site": "Lichess",
+      "set": "sfx",
+      "file": "lichess/sfx/Victory.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Victory.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/sfx/Victory.mp3",
+      "bytes": 53124,
+      "sha256": "1821e541f533e3e6214d9b05a80b2edc3600ce1fbf8700d014315c9570b93d72"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Berserk.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Berserk.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Berserk.mp3",
+      "bytes": 17253,
+      "sha256": "7128c66578eceaf71c6291f4d350afeb4de5f999a7dfd8c0e32fad9f96f8c088"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Capture.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Capture.mp3",
+      "bytes": 3432,
+      "sha256": "60c4c6066989a85089c68d8ea43a084044e2a2fa9b20ab786690b8e1f9e9205b"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Check.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Check.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/Silence.mp3",
+      "bytes": 1670,
+      "sha256": "d2ce7d50df5bfcc7b4be3d49b2809687315b709d5f4d6b001ad7f93e6505a663"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Checkmate.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Checkmate.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/Silence.mp3",
+      "bytes": 1670,
+      "sha256": "d2ce7d50df5bfcc7b4be3d49b2809687315b709d5f4d6b001ad7f93e6505a663"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Confirmation.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Confirmation.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Confirmation.mp3",
+      "bytes": 3493,
+      "sha256": "6abceaf4a099f6ba72979149db60ebca439ee1ab255e7c89839f5c028889696b"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown0.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown0.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown0.mp3",
+      "bytes": 3600,
+      "sha256": "fc5d1f12620b13c566765bb058c6977e34815506a6a28656646a7ef11475e0b5"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown1.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown1.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown1.mp3",
+      "bytes": 3024,
+      "sha256": "6b308ddc08f60e8c2e7e029506845a9f45664253b221c04d030a917c966adbb0"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown10.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown10.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown10.mp3",
+      "bytes": 2880,
+      "sha256": "d412b89106da6e917c25a144e86c7a30f3deacf13b4a6a9fd3f5aa5f02ca2abf"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown2.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown2.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown2.mp3",
+      "bytes": 3024,
+      "sha256": "2af977e02f451f89534f03b579f38a9b468242bd3e0475c89fc350e39821a3b4"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown3.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown3.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown3.mp3",
+      "bytes": 2592,
+      "sha256": "37561d8721aa421a80c3b62bead58d768f8b550ad9c46e2cf571aeffdce150a4"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown4.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown4.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown4.mp3",
+      "bytes": 2880,
+      "sha256": "b840e5676ef21454b1204b14e183b640d61374b1bb8f9a34af25dc7bda7719d2"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown5.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown5.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown5.mp3",
+      "bytes": 3024,
+      "sha256": "71fa43002d1547b33d32cb6850bef745452df370a301677190eb3d72f4f5dfb9"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown6.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown6.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown6.mp3",
+      "bytes": 3600,
+      "sha256": "4df685dd62ddbb54f9c05e1e42b795233ac66eb70bec1f5ec57ba2f3d680bb91"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown7.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown7.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown7.mp3",
+      "bytes": 3456,
+      "sha256": "60fb8b1a13441520b3556e4c41cb0a2ff0c815a687f4fbde3d502011f242680e"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown8.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown8.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown8.mp3",
+      "bytes": 2448,
+      "sha256": "9ed18175474c5761a47ceb377d1bcf1b5f33decad53c537724dc5f32f3aa7d38"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/CountDown9.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown9.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/CountDown9.mp3",
+      "bytes": 3312,
+      "sha256": "ec330ec44ea3eb2c90caedd539424b49d0cf5ff25b7a6bf1426faa9561460b6a"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Defeat.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Defeat.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/GenericNotify.mp3",
+      "bytes": 8011,
+      "sha256": "8d6336f47c2aacd0ac5878b55366959c857e693aeb6113f967ca36e5368b9b73"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Draw.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Draw.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/GenericNotify.mp3",
+      "bytes": 8011,
+      "sha256": "8d6336f47c2aacd0ac5878b55366959c857e693aeb6113f967ca36e5368b9b73"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Error.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Error.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Error.mp3",
+      "bytes": 1689,
+      "sha256": "d12284042b43e135f0efe73dbf65759b8c600cc3e79db497198656766dd315df"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Explosion.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Explosion.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Explosion.mp3",
+      "bytes": 26688,
+      "sha256": "50b8a96faacc9535ec6ad3b935a2a4f8ae4a434c7cef518c28fa2a60481a7565"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/GenericNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/GenericNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/GenericNotify.mp3",
+      "bytes": 8011,
+      "sha256": "8d6336f47c2aacd0ac5878b55366959c857e693aeb6113f967ca36e5368b9b73"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/LowTime.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/LowTime.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/LowTime.mp3",
+      "bytes": 3122,
+      "sha256": "9e9e81ae478f7c8a5e4fae073228df3ae98617604bfb58645c123bfe44395f70"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Move.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Move.mp3",
+      "bytes": 2547,
+      "sha256": "3dd52fa3657d876cf40194d2005eddef3364e3b65bc0c508288529ae7bde8485"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/NewChallenge.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/NewChallenge.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/SocialNotify.mp3",
+      "bytes": 10448,
+      "sha256": "2606c1b94eca77f98e01efb7d66e296d0feb23bae173b82313e56ed0178d2462"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/NewPM.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/NewPM.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/SocialNotify.mp3",
+      "bytes": 10448,
+      "sha256": "2606c1b94eca77f98e01efb7d66e296d0feb23bae173b82313e56ed0178d2462"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/OutOfBound.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/OutOfBound.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/OutOfBound.mp3",
+      "bytes": 9030,
+      "sha256": "9919a1c366faa8b59c4b573d2643ca4ee14c6fd2ff5bd53a1a73f2e297cf779b"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Select.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Select.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Select.mp3",
+      "bytes": 4850,
+      "sha256": "b75cc507860bd09251676fd9c2822191c636badf3750d2337cd92c3bda287832"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/SocialNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/SocialNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/SocialNotify.mp3",
+      "bytes": 10448,
+      "sha256": "2606c1b94eca77f98e01efb7d66e296d0feb23bae173b82313e56ed0178d2462"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Tournament1st.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Tournament1st.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament1st.mp3",
+      "bytes": 110396,
+      "sha256": "faaf984ef7659d152df94cbe6c91adb9667232e667a3d437b92a5b23b7931e61"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Tournament2nd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Tournament2nd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament2nd.mp3",
+      "bytes": 77040,
+      "sha256": "41188ad92576ab947a342f5236f1a1d931907f5338937699c1565cdeba80c661"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Tournament3rd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Tournament3rd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/Tournament3rd.mp3",
+      "bytes": 75584,
+      "sha256": "a876b6daf7a9cc199861b3c61ad952a4c9f1f04d6bcff1327bda63b353df6b1d"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/TournamentOther.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/TournamentOther.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/piano/TournamentOther.mp3",
+      "bytes": 65983,
+      "sha256": "026f7889b89c26b80c29a671dc23a0b6046d2d2e715bb0fcbaab6a627b361f9f"
+    },
+    {
+      "site": "Lichess",
+      "set": "standard",
+      "file": "lichess/standard/Victory.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Victory.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/GenericNotify.mp3",
+      "bytes": 8011,
+      "sha256": "8d6336f47c2aacd0ac5878b55366959c857e693aeb6113f967ca36e5368b9b73"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Berserk.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Berserk.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Berserk.mp3",
+      "bytes": 20639,
+      "sha256": "887a0b90ea03085dbe55a98a4708c85689314506a6e19388f48196965a53a563"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Capture.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Capture.mp3",
+      "bytes": 12914,
+      "sha256": "7f1a078eea0a1162178f33326388c93a2865ca8eaa23604f6e8d5313408ba726"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Check.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Check.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Check.mp3",
+      "bytes": 15420,
+      "sha256": "75ad314e129b7f4942f353594b6b1df7232f57808dc1335490f796cb8d2a778b"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Checkmate.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Checkmate.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Check.mp3",
+      "bytes": 15420,
+      "sha256": "75ad314e129b7f4942f353594b6b1df7232f57808dc1335490f796cb8d2a778b"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Confirmation.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Confirmation.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Confirmation.mp3",
+      "bytes": 16256,
+      "sha256": "9a0a7e161e8e3cef6244bb50fb77ac6619d1e0d91ae6069acaaaf4b89743977e"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown0.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown0.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown0.mp3",
+      "bytes": 18833,
+      "sha256": "40c018e2e90393ba4182ceecce583689ab59e7fc7035477fb54435f306df7e97"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown1.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown1.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown1.mp3",
+      "bytes": 18833,
+      "sha256": "2bdfa35374eae4e8ee1e3f3d73b14562d64b422adfbcb14ba1b3d5bf1c64de2e"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown10.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown10.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown10.mp3",
+      "bytes": 18971,
+      "sha256": "ff2f56a859f9e09831eccd9db5bbe1bd43f46215df6d99c86aa1aecbc183903b"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown2.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown2.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown2.mp3",
+      "bytes": 18970,
+      "sha256": "7b9114a77b2621c8c4ac8ff3655fc0065076a5a433945009471b379c27406225"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown3.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown3.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown3.mp3",
+      "bytes": 18833,
+      "sha256": "6706251b193f6a4da51bf2abeea328a02202b1a7925f22e0ed7b58a808f11345"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown4.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown4.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown4.mp3",
+      "bytes": 18833,
+      "sha256": "b772dd521c476ebffcfc0a2ea234a16443dcaa131e15887ef9045f9be3f5671f"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown5.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown5.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown5.mp3",
+      "bytes": 18970,
+      "sha256": "96bb0fd66a9bb2f3d6432799b0f8601837827d3570091a53535ee164d3b2121a"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown6.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown6.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown6.mp3",
+      "bytes": 18970,
+      "sha256": "e9d1a75ef4f2b846ee0a83bebe3c31731fd8bb515d6a55bd0ea0f9b2d3cfe644"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown7.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown7.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown7.mp3",
+      "bytes": 18833,
+      "sha256": "f48c7a8fdecfa7bebf99038084538a8f3c4229774aaf30074231519fcf037073"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown8.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown8.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown8.mp3",
+      "bytes": 18970,
+      "sha256": "5c29de750d7a0a42be52433141d6f71dc8bbe7613f890a0a7299dee82f398d63"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/CountDown9.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown9.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/CountDown9.mp3",
+      "bytes": 18970,
+      "sha256": "e366f90e47817b60e3a41a81eaa701a1c40513300898475070cff69c4fc2c30b"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Defeat.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Defeat.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Defeat.mp3",
+      "bytes": 39864,
+      "sha256": "5a993e5cbffb0e6bfeaa320ebab190d523acd135c5c0187886a1cd22fd35a9c3"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Draw.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Draw.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Draw.mp3",
+      "bytes": 39725,
+      "sha256": "50113c9c10f598a06241c04e6ccc58cd171ea69e605cb4f59c120d1f351e54f1"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Error.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Error.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/standard/Error.mp3",
+      "bytes": 1689,
+      "sha256": "d12284042b43e135f0efe73dbf65759b8c600cc3e79db497198656766dd315df"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Explosion.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Explosion.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Explosion.mp3",
+      "bytes": 35269,
+      "sha256": "85ab7c26becef65eeb3f6c5f67a2cb1a2c6e29c6eac40e400afe4474c1996c1d"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/GenericNotify.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/GenericNotify.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/GenericNotify.mp3",
+      "bytes": 20228,
+      "sha256": "f81caf116a82769fe484762344b536aa0b310e86d6ed8bd3fe446a5a8c9b4bd4"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/LowTime.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/LowTime.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/LowTime.mp3",
+      "bytes": 18967,
+      "sha256": "4f0675ec6cb48eadaea0c9c9d79de3a8a546565d93400714816c50822ca528a8"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Move.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Move.mp3",
+      "bytes": 18827,
+      "sha256": "623dc8c475eca168aee6c5f82652dc66bc6d89ceca2ae68b94ec47224d79551b"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/NewChallenge.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/NewChallenge.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/NewChallenge.mp3",
+      "bytes": 32146,
+      "sha256": "60a37ee1b5e41c58cbf730dc41806b7c7454e047cf2ae8bf436ba780fbdf615b"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/NewPM.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/NewPM.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/NewPM.mp3",
+      "bytes": 18966,
+      "sha256": "e91e48a30f1ebc6561826186c13cad9af3f4c10ce5a11d238745af64226e4568"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Tournament1st.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Tournament1st.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Tournament1st.mp3",
+      "bytes": 124095,
+      "sha256": "cd85fc0ac9dd2bf271edec70eab2b3f1550846acc2f0257c7ff46ef61f7f9d4f"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Tournament2nd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Tournament2nd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Tournament2nd.mp3",
+      "bytes": 114128,
+      "sha256": "75ad4e7c2743b40c518be31ff83b46ed610a227181decb2328e15ce6ed51ff9a"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Tournament3rd.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Tournament3rd.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Tournament3rd.mp3",
+      "bytes": 62655,
+      "sha256": "908ff8e3717bc45b75abed8edf98fabe8e9e6e06645865a2d6effcfc19c919a4"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/TournamentOther.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/TournamentOther.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/TournamentOther.mp3",
+      "bytes": 71017,
+      "sha256": "cc4bacb81de1311293c87f1293bccbf91d1e124ea6cff984d064eb28281e5176"
+    },
+    {
+      "site": "Lichess",
+      "set": "woodland",
+      "file": "lichess/woodland/Victory.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Victory.mp3",
+      "resolvedUrl": "https://raw.githubusercontent.com/lichess-org/lila/5ae58154b2be1033dcb0252173b4fff4bb02e73a/public/sound/woodland/Victory.mp3",
+      "bytes": 60763,
+      "sha256": "17e967ddddbf6ad157f067cf2d8a5bc85923970c44ccfc0441c377d5d6074352"
+    }
+  ]
+}

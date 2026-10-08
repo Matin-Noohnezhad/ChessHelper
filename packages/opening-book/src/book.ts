@@ -1,18 +1,21 @@
 /**
  * Lookup over the opening tree.
  *
- * The book has two layers. The ECO tables give near-complete *coverage* — 3,810
- * named lines, so almost any legal opening sequence has a name. The hand-written
+ * The book has two layers. The ECO tables give broad coverage of named
+ * variations. The hand-written
  * entries give *understanding* — plans, structures, breaks. They are merged into
  * one tree here: curated entries win wherever both name the same position, and
  * theory is inherited downwards, so a deep ECO line still teaches the ideas of
  * the opening it belongs to.
  *
- * Openings are addressed by their SAN move sequence, so identification is a
- * longest-prefix match.
+ * Move sequences address entries, but recognition uses legal positions so
+ * transpositions inherit the same names, plans and continuations.
  */
 
+import { Chess } from '@coh/chess-core';
 import { CURATED_OPENINGS } from './openings.js';
+import { theoryPositionKey } from './theory-position.js';
+import { BOOK_POSITION_TSV } from './book-positions.generated.js';
 import { ECO_TSV } from './eco.generated.js';
 import { getStructures } from './structures.js';
 import type { Opening, OpeningMatch, OpeningTheory, PawnStructure, Side } from './types.js';
@@ -50,6 +53,114 @@ const BY_MOVES = new Map<string, Opening>(OPENINGS.map((o) => [key(o.moves), o])
 /** Shallowest-first, so tree walks and "closest named line" stay stable. */
 const SORTED = [...OPENINGS].sort((a, b) => a.moves.length - b.moves.length);
 
+interface ContinuationRoute {
+  opening: Opening;
+  /** Where the current position occurs in the stored move order. */
+  offset: number;
+}
+
+interface BookPosition {
+  openings: Opening[];
+  continuations: Map<string, ContinuationRoute>;
+}
+
+interface PositionIndex {
+  byPosition: Map<string, BookPosition>;
+  byPrefix: Map<string, string>;
+}
+
+let positionIndex: PositionIndex | undefined;
+
+/** Built once on demand from precomputed positions, without replaying the book. */
+function positions(): PositionIndex {
+  if (positionIndex) return positionIndex;
+  const index = new Map<string, BookPosition>();
+  const prefixes = new Map(BOOK_POSITION_TSV.split('\n').map((row) => {
+    const tab = row.indexOf('\t');
+    return [row.slice(0, tab), row.slice(tab + 1)] as const;
+  }));
+
+  for (const opening of SORTED) {
+    let prefix = '';
+    for (let offset = 0; offset <= opening.moves.length; offset++) {
+      const position = prefixes.get(prefix);
+      if (!position) throw new Error(`Missing book position: ${prefix}. Run npm run ingest:positions.`);
+      let node = index.get(position);
+      if (!node) {
+        node = { openings: [], continuations: new Map() };
+        index.set(position, node);
+      }
+      if (offset === opening.moves.length) {
+        node.openings.push(opening);
+        break;
+      }
+      const next = opening.moves[offset]!;
+      const existing = node.continuations.get(next);
+      if (!existing || opening.moves.length - offset < existing.opening.moves.length - existing.offset) {
+        node.continuations.set(next, { opening, offset });
+      }
+      prefix = prefix ? `${prefix} ${next}` : next;
+    }
+  }
+  positionIndex = { byPosition: index, byPrefix: prefixes };
+  return positionIndex;
+}
+
+function openingAt(node: BookPosition | undefined, prefix: string): Opening | undefined {
+  const exactLine = BY_MOVES.get(prefix);
+  // Prefer teaching content when several entries name the same position.
+  return (exactLine?.theory ? exactLine : node?.openings.find((opening) => opening.theory))
+    ?? exactLine ?? node?.openings[0];
+}
+
+function resolvePosition(moves: readonly string[]): {
+  opening?: Opening;
+  depth: number;
+  position?: BookPosition;
+} {
+  const { byPosition, byPrefix } = positions();
+  let fen = byPrefix.get('')!;
+  let prefix = '';
+  let board: Chess | undefined;
+  let opening: Opening | undefined;
+  let depth = 0;
+  let position = byPosition.get(fen);
+  for (let ply = 0; ply < moves.length; ply++) {
+    const san = moves[ply]!;
+    prefix = prefix ? `${prefix} ${san}` : san;
+    const known = byPrefix.get(prefix);
+    if (!board && known) {
+      fen = known;
+    } else {
+      // Stored prefixes need no replay. Start a board only when the played
+      // order diverges, then keep checking positions after every legal move.
+      board ??= new Chess(`${fen} 0 1`);
+      if (!board.move(san)) return { opening, depth };
+      fen = theoryPositionKey(board.fen());
+    }
+    position = byPosition.get(fen);
+    const found = openingAt(position, prefix);
+    if (found) {
+      opening = found;
+      depth = ply + 1;
+    }
+  }
+  return { opening, depth, position };
+}
+
+function positionContinuations(position: BookPosition | undefined, moves: readonly string[], limit: number): Opening[] {
+  if (!position || limit <= 0) return [];
+  return [...position.continuations.values()]
+    .sort((a, b) => (a.opening.moves.length - a.offset) - (b.opening.moves.length - b.offset))
+    .slice(0, limit)
+    .map(({ opening, offset }) => ({
+      ...opening,
+      // Keep the next move at moves.length for callers, even after a detour
+      // added extra plies before returning to this position.
+      moves: [...moves, ...opening.moves.slice(offset)],
+    }));
+}
+
 const LONGEST_LINE = OPENINGS.reduce((max, o) => Math.max(max, o.moves.length), 0);
 
 /**
@@ -78,6 +189,7 @@ export {
   mirrorFen,
   pawnSkeleton,
   plansFor,
+  structureFor,
 } from './classify.js';
 export type { PawnSkeleton, StructureMatch } from './classify.js';
 
@@ -95,11 +207,7 @@ export function isLeafLine(moves: readonly string[]): boolean {
  * {@link identifyOpening} because it skips the continuation list.
  */
 export function deepestOpening(moves: readonly string[]): Opening | undefined {
-  for (let depth = Math.min(moves.length, LONGEST_LINE); depth > 0; depth--) {
-    const found = BY_MOVES.get(key(moves.slice(0, depth)));
-    if (found) return found;
-  }
-  return undefined;
+  return moves.length ? resolvePosition(moves).opening : undefined;
 }
 
 /**
@@ -108,15 +216,16 @@ export function deepestOpening(moves: readonly string[]): Opening | undefined {
  * applies. Returns `null` before the first move.
  */
 export function identifyOpening(moves: readonly string[]): OpeningMatch | null {
-  const best = deepestOpening(moves);
+  if (!moves.length) return null;
+  const { opening: best, depth, position } = resolvePosition(moves);
   if (!best) return null;
 
   const inherited = inheritTheory(best);
   return {
     opening: best,
-    depth: best.moves.length,
-    exact: best.moves.length === moves.length,
-    continuations: continuationsFrom(moves),
+    depth,
+    exact: depth === moves.length,
+    continuations: positionContinuations(position, moves, 12),
     theory: inherited?.theory,
     theorySource: inherited,
   };
@@ -136,27 +245,7 @@ export function inheritTheory(opening: Opening): Opening | undefined {
  * this go" list the UI offers after every move.
  */
 export function continuationsFrom(moves: readonly string[], limit = 12): Opening[] {
-  const played = moves.length;
-  const byNextMove = new Map<string, Opening>();
-
-  for (const opening of SORTED) {
-    if (opening.moves.length <= played) continue;
-    // Compare element-wise: with thousands of lines this runs on every move,
-    // and joining strings here would allocate once per candidate.
-    let matches = true;
-    for (let i = 0; i < played; i++) {
-      if (opening.moves[i] !== moves[i]) {
-        matches = false;
-        break;
-      }
-    }
-    if (!matches) continue;
-    const next = opening.moves[played]!;
-    // SORTED is shallowest-first, so the first hit is the closest named line.
-    if (!byNextMove.has(next)) byNextMove.set(next, opening);
-    if (byNextMove.size >= limit) break;
-  }
-  return [...byNextMove.values()];
+  return positionContinuations(resolvePosition(moves).position, moves, limit);
 }
 
 const isOpening = (value: Opening | OpeningTheory): value is Opening => 'moves' in value;

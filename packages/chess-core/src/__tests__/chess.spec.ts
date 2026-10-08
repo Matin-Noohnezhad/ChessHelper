@@ -172,6 +172,15 @@ describe('PGN', () => {
 });
 
 describe('annotated PGN', () => {
+  it('reads a course introduction whose whole example is parenthesized', () => {
+    const game = parseAnnotatedPgn('{Introduction} (1. e4 {First move} e5 2. Nf3 (2. Bc4) Nc6) 1-0');
+    expect(game.moves.map((move) => move.san)).toEqual(['e4', 'e5', 'Nf3', 'Nc6']);
+    expect(game.moves[0]!.comment).toContain('Introduction');
+    expect(game.moves[0]!.comment).toContain('First move');
+    expect(game.moves[2]!.variations![0]!.map((move) => move.san)).toEqual(['Bc4']);
+    expect(parseAnnotatedPgn('{Intro} () 1. d4 *').moves[0]!.comment).toBe('Intro');
+  });
+
   it('keeps clocks, evals, NAGs and prose per move', () => {
     const pgn = [
       '[Event "Rated blitz"]',

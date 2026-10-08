@@ -4,6 +4,8 @@ import { CURATED_OPENINGS } from '../openings.js';
 import { PAWN_STRUCTURES, getStructure } from '../structures.js';
 import { pawnSkeleton } from '../classify.js';
 import { OPENINGS, bookStats, continuationsFrom, deepestOpening, identifyOpening, searchOpenings } from '../book.js';
+import { BOOK_POSITION_TSV } from '../book-positions.generated.js';
+import { theoryPositionKey } from '../theory-position.js';
 
 /**
  * The book is hand-written data, so these tests are its compiler: an illegal
@@ -156,6 +158,77 @@ describe('opening data integrity', () => {
 });
 
 describe('identification', () => {
+  it.each([
+    ['e4 e6 d4 d5', 'd4 e6 e4 d5'],
+    ['d4 d5 c4 e6', 'c4 e6 d4 d5'],
+    ['e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6', 'Nf3 c5 e4 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6'],
+    ['d4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5', 'Nf3 Nf6 c4 g6 Nc3 Bg7 e4 d6 d4 O-O Be2 e5'],
+  ])('recognizes %s through the alternate move order %s', (canonical, alternate) => {
+    const expected = identifyOpening(canonical.split(' '))!;
+    const moves = alternate.split(' ');
+    const match = identifyOpening(moves)!;
+    expect(match.opening.name).toBe(expected.opening.name);
+    expect(match.opening.eco).toBe(expected.opening.eco);
+    expect(match.theory).toEqual(expected.theory);
+    expect(match.theory?.whitePlans.length).toBeGreaterThan(0);
+    expect(match.theory?.blackPlans.length).toBeGreaterThan(0);
+    expect(match.depth).toBe(moves.length);
+    expect(match.exact).toBe(true);
+    expect(deepestOpening(moves)).toBe(match.opening);
+  });
+
+  it('recognizes a return to book even beyond the longest stored move sequence', () => {
+    const detour = 'Nf3 Nf6 Ng1 Ng8 '.repeat(Math.ceil(bookStats().maxPlies / 4));
+    const moves = `${detour}d4 e6 e4 d5`.split(' ');
+    const match = identifyOpening(moves)!;
+    const canonical = identifyOpening('e4 e6 d4 d5'.split(' '))!;
+    expect(match.opening).toBe(canonical.opening);
+    expect(match.theory).toBe(canonical.theory);
+    expect(match.exact).toBe(true);
+    expect(match.depth).toBe(moves.length);
+    expect(match.opening.moves.length).toBeLessThan(match.depth);
+
+    const continuations = continuationsFrom(moves);
+    expect(continuations.length).toBeGreaterThan(0);
+    expect(continuations).toEqual(match.continuations);
+    expect(new Set(continuations.map((line) => line.moves[moves.length])).size).toBe(continuations.length);
+    for (const line of continuations) {
+      expect(line.moves.slice(0, moves.length)).toEqual(moves);
+      const game = new Chess();
+      for (const san of line.moves) expect(game.move(san), `${line.name}: ${san}`).not.toBeNull();
+    }
+  });
+
+  it('retains the transposed opening and plans after leaving book', () => {
+    const moves = 'Nf3 c5 e4 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6'.split(' ');
+    const known = identifyOpening(moves)!;
+    const match = identifyOpening([...moves, 'Nb1'])!;
+    expect(match.exact).toBe(false);
+    expect(match.depth).toBe(moves.length);
+    expect(match.opening).toBe(known.opening);
+    expect(match.theory).toBe(known.theory);
+    expect(match.continuations).toEqual([]);
+  });
+
+  it('inherits the destination opening’s theory after transposing into a deep imported line', () => {
+    const canonical = 'd4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7 Ne1';
+    const alternate = 'Nf3 Nf6 c4 g6 Nc3 Bg7 e4 d6 d4 O-O Be2 e5 O-O Nc6 d5 Ne7 Ne1';
+    const expected = identifyOpening(canonical.split(' '))!;
+    const match = identifyOpening(alternate.split(' '))!;
+    expect(match.exact).toBe(true);
+    expect(match.opening).toBe(expected.opening);
+    expect(match.opening.theory).toBeUndefined();
+    expect(match.theorySource?.name).toBe('King’s Indian Defence: Mar del Plata');
+    expect(match.theory).toBe(expected.theory);
+  });
+
+  it('does not equate identical piece placement with lost castling rights', () => {
+    const match = identifyOpening('e4 e5 Ke2 Ke7 Ke1 Ke8'.split(' '))!;
+    expect(match.exact).toBe(false);
+    expect(match.depth).toBeLessThan(6);
+    expect(match.continuations).toEqual([]);
+  });
+
   it('names the deepest matching line', () => {
     const najdorf = 'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6'.split(' ');
     const match = identifyOpening(najdorf)!;
@@ -239,13 +312,25 @@ describe('the imported ECO tables', () => {
   it('every imported line is legal and in our own SAN', () => {
     // The generated file is machine-written, so this is the guard that it was
     // generated from good data and has not been hand-edited into nonsense.
+    const positions = new Map(BOOK_POSITION_TSV.split('\n').map((row) => {
+      const tab = row.indexOf('\t');
+      return [row.slice(0, tab), row.slice(tab + 1)] as const;
+    }));
+    const verified = new Set<string>();
+    expect(positions.get('')).toBe(theoryPositionKey(new Chess().fen()));
     for (const opening of OPENINGS) {
       const game = new Chess();
+      let prefix = '';
       for (const san of opening.moves) {
         const played = game.move(san);
         expect(played, `${opening.eco} ${opening.name}: illegal ${san}`).not.toBeNull();
         // Round-tripping proves the stored SAN is exactly what we would emit.
         expect(played!.san, `${opening.name}: SAN mismatch`).toBe(san);
+        prefix = prefix ? `${prefix} ${san}` : san;
+        if (!verified.has(prefix)) {
+          expect(positions.get(prefix), `Regenerate book positions: ${prefix}`).toBe(theoryPositionKey(game.fen()));
+          verified.add(prefix);
+        }
       }
     }
   });

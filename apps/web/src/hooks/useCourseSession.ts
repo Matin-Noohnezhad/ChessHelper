@@ -3,10 +3,13 @@ import { CourseTrainer, buildSession } from '@coh/course';
 import type { CourseOutcome, CourseProgress, SessionMode, SessionPlan } from '@coh/course';
 import type { MoveInput } from '@coh/chess-core';
 import { saveProgress } from '../storage/courseStore.js';
+import { DEFAULT_COURSE_LEARNING } from './useSettings.js';
+import type { CourseLearningSettings } from './useSettings.js';
 import type { LibraryEntry } from './useCourseLibrary.js';
 
 export interface CourseSessionOptions {
   mode: SessionMode;
+  learning?: CourseLearningSettings;
   /** Restricts the session to one chapter. Whole course when absent. */
   chapterIds?: readonly string[];
   /** Restricts the session to specific variations, picked off the line list. */
@@ -49,6 +52,8 @@ export function useCourseSession(
   const [generation, restart] = useReducer((n: number) => n + 1, 0);
   const [, bump] = useReducer((n: number) => n + 1, 0);
 
+  // Keep the session stable if settings are changed while it is running.
+  const [learning] = useState(options.learning ?? DEFAULT_COURSE_LEARNING);
   const chapterKey = options.chapterIds?.join(',') ?? '';
   const lineKey = options.lineIds?.join(',') ?? '';
   const commit = useRef(onProgress);
@@ -58,6 +63,8 @@ export function useCourseSession(
     () =>
       buildSession(entry.course, entry.progress, {
         mode: options.mode,
+        chunk: learning.courseChunk,
+        fullPasses: learning.courseFullPasses,
         ...(chapterKey ? { chapterIds: chapterKey.split(',') } : {}),
         ...(lineKey ? { lineIds: lineKey.split(',') } : {}),
       }),
@@ -100,8 +107,9 @@ export function useCourseSession(
 
   const reveal = useCallback(() => {
     setHinted(trainer.reveal());
+    persist();
     bump();
-  }, [trainer]);
+  }, [trainer, persist]);
 
   const advanceWatch = useCallback(() => {
     trainer.advanceWatch();
@@ -117,10 +125,17 @@ export function useCourseSession(
 
   const rewatch = useCallback(() => {
     if (!trainer.rewatch()) return;
+    persist();
     setFeedback(null);
     setHinted(null);
     bump();
-  }, [trainer]);
+  }, [trainer, persist]);
+
+  const restartSession = useCallback(() => {
+    setFeedback(null);
+    setHinted(null);
+    restart();
+  }, []);
 
   return {
     trainer,
@@ -132,7 +147,7 @@ export function useCourseSession(
     submit,
     next,
     reveal,
-    restart,
+    restart: restartSession,
     advanceWatch,
     skipWatch,
     rewatch,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { identifyOpening } from '@coh/opening-book';
+import { classifyStructureBest, getStructure, identifyOpening } from '@coh/opening-book';
 import { Chess } from '@coh/chess-core';
 import { QUALITY_LABELS, QUALITY_ORDER, reviewPgn } from '@coh/review';
 import type { PositionEvaluator } from '@coh/review';
@@ -8,12 +8,17 @@ import { MAX_LEVEL, allVariations, buildCourse, trainableMoves } from '@coh/cour
 import App from '../App.js';
 import { Board } from '../components/Board.js';
 import { OpeningPanel } from '../components/OpeningPanel.js';
+import { PositionPlans } from '../components/PositionPlans.js';
+import { StructureCard } from '../components/StructureAdvice.js';
 import { CourseDashboard } from '../components/CourseDashboard.js';
 import { CourseImport, CoursePreview } from '../components/CourseImport.js';
 import { CourseLibrary } from '../components/CourseLibrary.js';
 import { CourseSession } from '../components/CourseSession.js';
+import { CourseReader } from '../components/CourseReader.js';
 import { ReviewSetup } from '../components/ReviewSetup.js';
 import { ReviewReport, StructureNote, moveBadge } from '../components/ReviewView.js';
+import { ReviewSummary } from '../components/ReviewSummary.js';
+import { ReviewMoveList } from '../components/ReviewMoveList.js';
 import { SettingsPanel } from '../components/SettingsPanel.js';
 import { TrainerView } from '../components/TrainerView.js';
 import { entryFrom } from '../hooks/useCourseLibrary.js';
@@ -69,6 +74,53 @@ describe('web app renders', () => {
     expect(html).toContain('half-open c-file');
     // Continuation chips offer the next named move from here.
     expect(html).toContain('Nf3');
+    expect(html).not.toContain('Plans for this position');
+  });
+
+  it('shows current-position plans above opening references after leaving theory', () => {
+    const moves = ['e4', 'c5'];
+    const match = identifyOpening(moves)!;
+    const html = renderToStaticMarkup(
+      <OpeningPanel match={{ ...match, exact: false }} fen={fenAfter(moves)} plies={2}
+        onPlayMove={() => {}} onMarks={() => {}} />,
+    );
+    expect(html).toContain('past known theory');
+    expect(html).toContain('Plans for this position');
+    expect(html).toContain('7Q planning guide');
+    expect(html).toContain('Which exchanges would help me?');
+    expect(html).toContain('What might my opponent try next?');
+    expect(html).toContain('GM Avetik Grigoryan');
+    expect(html).toContain('White plans');
+    expect(html).toContain('Black plans');
+    expect(html).toContain('Bring your minor pieces into play');
+    expect(html.indexOf('Plans for this position')).toBeLessThan(html.indexOf('Opening reference:'));
+  });
+
+  it('provides plans even without written theory or a recognized opening', () => {
+    const moves = ['e4', 'c5'];
+    const match = identifyOpening(moves)!;
+    for (const opening of [{ ...match, theory: undefined }, null]) {
+      const html = renderToStaticMarkup(
+        <OpeningPanel match={opening} fen={fenAfter(moves)} plies={2}
+          onPlayMove={() => {}} onMarks={() => {}} />,
+      );
+      expect(html).toContain('Plans for this position');
+      expect(html).toContain('Bring your minor pieces into play');
+    }
+  });
+
+  it('shows the 7Q plan for the side to move and suppresses it during check or game over', () => {
+    const game = new Chess();
+    game.move('e4');
+    const html = renderToStaticMarkup(<PositionPlans fen={game.fen()} />);
+    expect(html).toContain('Black: a possible plan');
+    expect(html.match(/class="seven-q__number"/g)).toHaveLength(7);
+    const check = renderToStaticMarkup(<PositionPlans fen="4k3/8/8/8/8/8/4r3/4K3 w - - 0 1" />);
+    expect(check).toContain('Get out of check first');
+    expect(check).not.toContain('7Q planning guide');
+    const mate = renderToStaticMarkup(<PositionPlans fen="7k/6Q1/5K2/8/8/8/8/8 b - - 0 1" />);
+    expect(mate).toContain('game is over');
+    expect(mate).not.toContain('7Q planning guide');
   });
 
   it('renders the trainer with a board, an opening picker and its variations', () => {
@@ -80,6 +132,30 @@ describe('web app renders', () => {
     expect(html).toContain('Najdorf Variation');
     expect(html).toContain('variations learned');
     expect(html).toContain('You play');
+  });
+
+  it('shows the opening, plans and next moves after a transposition with extra plies', () => {
+    const moves = 'Nf3 Nf6 Ng1 Ng8 d4 e6 e4 d5'.split(' ');
+    const match = identifyOpening(moves)!;
+    const html = renderToStaticMarkup(
+      <OpeningPanel
+        match={match}
+        fen={fenAfter(moves)}
+        plies={moves.length}
+        onPlayMove={() => {}}
+        onMarks={() => {}}
+      />,
+    );
+    expect(html).toContain('French Defence');
+    expect(html).toContain('in book');
+    expect(html).not.toContain('past known theory');
+    expect(html).not.toContain('No written theory');
+    expect(html).toContain('<h3>White</h3>');
+    expect(html).toContain('<h3>Black</h3>');
+    expect(html).toContain(renderToStaticMarkup(<li>{match.theory!.whitePlans[0]}</li>));
+    expect(html).toContain(renderToStaticMarkup(<li>{match.theory!.blackPlans[0]}</li>));
+    expect(html).toContain('<strong>Nc3</strong>');
+    expect(html).toContain('<strong>Nd2</strong>');
   });
 
   it('renders a deep line by inheriting the parent opening’s theory', () => {
@@ -175,18 +251,72 @@ describe('game review UI', () => {
 
     const black = renderToStaticMarkup(<StructureNote fen={fen} toMove="black" />);
     expect(black).toContain('French Pawn Chain');
-    expect(black).toContain('Black breaks here');
+    expect(black).toContain('Black breaks to prepare');
     expect(black).toContain('f6'); // ...f6, the break at the head of White's chain
+    expect(black).toContain('Black pawn break f6');
+    expect(black).not.toContain('Black pawn break c5'); // already played
+    expect(black).toContain('Prepare first');
+    expect(black).toContain('e6 defensible after the exchange on f6');
+    expect(black).toContain('Win the d4 pawn'); // third plan, previously hidden
+    expect(black).toContain('White plans');
+    expect(black).toContain('Endgame:');
 
     const white = renderToStaticMarkup(<StructureNote fen={fen} toMove="white" />);
-    expect(white).toContain('White breaks here');
-    expect(white).not.toContain('Black breaks here');
+    expect(white).toContain('White breaks to prepare');
+    expect(white).not.toContain('Black breaks to prepare');
 
     // Nothing to say about a position with no structure yet.
     expect(renderToStaticMarkup(<StructureNote fen={fenAfter(['e4'])} toMove="black" />)).toBe('');
   });
 
-  it('renders a full report: accuracies, phases, categories and the move list', async () => {
+  it('renders both sides’ structure plans, preparation and a representative diagram', () => {
+    const structure = getStructure('french-chain')!;
+    const typical = renderToStaticMarkup(
+      <StructureCard match={{ structure, mirrored: false }} onMarks={() => {}} />,
+    );
+    expect(typical).toContain('White plans');
+    expect(typical).toContain('Black plans');
+    expect(typical).toContain('Keep the e5 wedge');
+    expect(typical).toContain('Win the d4 pawn');
+    expect(typical).toContain('Typical pawn placement');
+    expect(typical).toContain('typical of this line');
+    expect(typical).toContain('Black pawn break c5');
+    expect(typical).toContain('Ready to answer dxc5');
+
+    const fen = fenAfter('e4 e6 d4 d5 e5 c5'.split(' '));
+    const current = renderToStaticMarkup(
+      <StructureCard match={classifyStructureBest(fen)!} positionFen={fen} onMarks={() => {}} />,
+    );
+    expect(current).toContain('on the board');
+    expect(current).not.toContain('Black pawn break c5');
+    expect(current).toContain('Black pawn break f6');
+  });
+
+  it('renders corrected advice for a black isolated pawn in review', () => {
+    const fen = fenAfter('d4 d5 c4 e6 Nc3 c5 cxd5 exd5 Nf3 Nc6 g3 Nf6 Bg2 Be7 O-O O-O dxc5 Bxc5'.split(' '));
+    const html = renderToStaticMarkup(<StructureNote fen={fen} toMove="black" />);
+    expect(html).toContain('Time d5-d4');
+    expect(html).toContain('Blockade d4');
+    expect(html).toContain('Black pawn break d4');
+    expect(html).toContain('Rook on d8, ideally opposite the white queen');
+    expect(html).not.toContain('Time d4-d5');
+  });
+
+  it('shows detected structure advice even without written opening theory', () => {
+    const fen = fenAfter('e4 e6 d4 d5 e5 c5'.split(' '));
+    const html = renderToStaticMarkup(
+      <OpeningPanel
+        match={{ opening: { name: 'Unnamed line', eco: 'C00', moves: [] }, depth: 0, exact: false, continuations: [] }}
+        fen={fen} plies={6} onPlayMove={() => {}} onMarks={() => {}}
+      />,
+    );
+    expect(html).toContain('No written theory');
+    expect(html).toContain('French Pawn Chain');
+    expect(html).toContain('White plans');
+    expect(html).toContain('Black plans');
+  });
+
+  it('opens on the overview and preserves phases and the move list in their review sections', async () => {
     const review = await reviewPgn(
       '[White "Ann"]\n[Black "Ben"]\n[Result "*"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *',
       { evaluator: flatEvaluator },
@@ -197,11 +327,24 @@ describe('game review UI', () => {
     expect(html).toContain('Ben');
     expect(html).toContain('accuracy');
     expect(html).toContain('Opening');
-    expect(html).toContain('Middlegame');
-    expect(html).toContain('Endgame');
-    // Every move is in the list, and the board still draws all 64 squares.
-    expect(html).toContain('Bb5');
+    expect(html).toContain('Move classification');
+    expect(html).toContain('Game momentum');
+    expect(html).not.toContain('review-breakdown');
     expect(html.match(/data-square="/g)).toHaveLength(64);
+
+    const summary = (section: 'details' | 'moves') => renderToStaticMarkup(
+      <ReviewSummary review={review} section={section} onSectionChange={() => {}}
+        analysis={<ReviewMoveList moves={review.moves} selectedPly={5} onSelect={() => {}} showClocks={false} />}
+        moments={null}
+      >{null}</ReviewSummary>,
+    );
+    const details = summary('details');
+    expect(details).toContain('Opening');
+    expect(details).toContain('Middlegame');
+    expect(details).toContain('Endgame');
+    const moves = summary('moves');
+    for (const move of review.moves) expect(moves).toContain(move.san);
+    expect(moves).toContain('aria-current="step"');
   });
 
   it('sticks the move’s category to the square it landed on', () => {
@@ -290,7 +433,7 @@ describe('course trainer UI', () => {
       />,
     );
     expect(html).toContain('Open Sicilian');
-    expect(html).toContain('2 variations');
+    expect(html).toContain('1 variation');
     expect(html).toContain('side inferred from where the course branches');
   });
 
@@ -340,16 +483,62 @@ describe('course trainer UI', () => {
         onSetSide={() => {}}
       />,
     );
-    // Both variations of the fixture, written out move by move, each with a ring.
+    // The source main line gets one ring; annotated branches stay out of the list.
     expect(html).toContain('course-outline__line');
-    expect(html.match(/class="ring"/g)?.length).toBe(2);
+    expect(html.match(/class="ring"/g)?.length).toBe(1);
     expect(html).toContain('1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3');
-    expect(html).toContain('1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4');
+    expect(html).not.toContain('1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4');
+  });
+
+  it('opens the reader without training controls', () => {
+    const html = renderToStaticMarkup(<CourseReader entry={entry} onExit={() => {}} />);
+    expect(html).toContain('Reading');
+    expect(html).toContain('Next move');
+    expect(html).toContain('Space');
+    expect(html).not.toContain('Let me try');
+    expect(html).not.toContain('moves answered');
+    expect(html.match(/data-square="/g)).toHaveLength(64);
+  });
+
+  it('opens the paused training line even when reading includes a rejected continuation', () => {
+    const annotated = entryFrom({ ...stored, pgn: `[Event "First chapter"]
+1. d4 d5 *
+
+[Event "Second chapter"]
+1. e4 e5 {The paused position} 2. Nf3? {An illustrative mistake} *` }, {});
+    const line = allVariations(annotated.course).find((item) => item.chapterName === 'Second chapter')!;
+    expect(line.line.map((node) => node.san)).toEqual(['e4', 'e5', 'Nf3']);
+    const html = renderToStaticMarkup(<CourseReader entry={annotated} lineId={line.id}
+      initialPly={2} onExit={() => {}} onTrain={() => {}} />);
+    expect(html).toContain('The paused position');
+    expect(html).toContain('2 / 3');
+    expect(html).toContain('Train this line');
+    expect(html).toContain('aria-keyshortcuts="t"');
+  });
+
+  it('offers chapter training for an annotation-only sideline', () => {
+    const annotated = entryFrom({ ...stored, pgn: '1. e4 (1. d4) e5 *' }, {});
+    const chapter = annotated.course.chapters[0]!;
+    const sideline = chapter.roots.find((node) => node.san === 'd4')!;
+    const html = renderToStaticMarkup(<CourseReader entry={annotated}
+      lineId={`${chapter.id}/${sideline.id}`} initialPly={10} onExit={() => {}} onTrain={() => {}} />);
+    expect(html).toContain('Train this chapter');
+    expect(html).toContain('1 / 1');
+    expect(html).not.toContain('Train this line');
+  });
+
+  it('uses configured lesson size and full-line repetitions', () => {
+    const html = renderToStaticMarkup(<CourseSession entry={entry} mode="learn"
+      courseLearning={{ courseChunk: 0, courseFullPasses: 3 }}
+      onExit={() => {}} onPickLine={() => {}} />);
+    expect(html).toContain('try 1 of 4');
+    expect(html).not.toContain('Part 1 of');
   });
 
   it('puts a line rail beside the board in a session', () => {
     const html = renderToStaticMarkup(
-      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
+      <CourseSession entry={entryFrom({ ...stored, pgn: PGN + '\n[Event "Second chapter"]\n1. d4 d5 *' }, {})}
+        mode="learn" onExit={() => {}} onPickLine={() => {}} />,
     );
     expect(html).toContain('course-session--rail');
     expect(html).toContain('course-session__rail');
@@ -373,10 +562,8 @@ describe('course trainer UI', () => {
     const html = renderToStaticMarkup(
       <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
     );
-    // Two variations, each taught in two parts and then asked from the top:
-    // two lines, three tries at this one — not "1 of 6 tasks", which is a
-    // number about the machine rather than about the chapter.
-    expect(html).toContain('Line 1 of 2');
+    // One main line, taught in two parts and then asked from the top.
+    expect(html).toContain('Line 1 of 1');
     expect(html).toContain('try 1 of 3');
     expect(html).not.toContain('of 6');
   });
@@ -407,6 +594,8 @@ describe('course trainer UI', () => {
     // The move being asked for appears nowhere on the page.
     expect(html).not.toContain('The move was');
     expect(html).not.toContain('The course plays');
+    expect(html).not.toContain('title="1.e4');
+    expect(html).toContain('Line 1');
   });
 
   it('has nothing to review until something has been learned', () => {
@@ -468,8 +657,14 @@ describe('settings', () => {
   it('offers the annotation thickness and a dial for the demonstration pace', () => {
     const html = renderToStaticMarkup(
       <SettingsPanel
+        pieceSet="original"
+        onPieceSetChange={() => {}}
+        moveEntryMode="smart"
+        onMoveEntryModeChange={() => {}}
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
+        soundVolume={0.55}
+        onSoundVolumeChange={() => {}}
         watchAutoplay
         onWatchAutoplayChange={() => {}}
         watchMoveSeconds={1.1}
@@ -478,6 +673,20 @@ describe('settings', () => {
       />,
     );
     expect(html).toContain('Course line demonstration');
+    expect(html).toContain('Board sounds');
+    expect(html).toContain('Board sound volume');
+    expect(html).toContain('Sound style');
+    expect(html).toContain('Wooden (original)');
+    expect(html).toContain('ChessBase inspired');
+    expect(html).toContain('ChessBase — Web board');
+    expect(html).toContain('ChessBase — Desktop (classic)');
+    expect(html).toContain('ChessBase — Desktop (varied)');
+    expect(html).toContain('Chess.com — Default');
+    expect(html).toContain('Lichess — Standard');
+    expect(html).toContain('Lichess — Lisp');
+    expect(html).toContain('>promotion</button>');
+    expect(html).toContain('>mate</button>');
+    expect(html).toMatch(/<input type="checkbox"\/> Sound replayed moves/);
     expect(html).toContain('Step through each move myself');
     expect(html).toContain('type="range"');
     expect(html).toContain('1.1s / move');
@@ -486,8 +695,14 @@ describe('settings', () => {
   it('reads Manual on the dial when autoplay is off', () => {
     const html = renderToStaticMarkup(
       <SettingsPanel
+        pieceSet="original"
+        onPieceSetChange={() => {}}
+        moveEntryMode="smart"
+        onMoveEntryModeChange={() => {}}
         annotationThickness="medium"
         onAnnotationThicknessChange={() => {}}
+        soundVolume={0}
+        onSoundVolumeChange={() => {}}
         watchAutoplay={false}
         onWatchAutoplayChange={() => {}}
         watchMoveSeconds={1.1}
@@ -496,6 +711,18 @@ describe('settings', () => {
       />,
     );
     expect(html).toContain('Manual');
+    expect(html).toContain('Muted');
     expect(html).toMatch(/type="range"[^>]*disabled/);
+  });
+});
+
+
+describe('course cache', () => {
+  it('rebuilds a replaced course even when the new PGN has the same length', () => {
+    const stored = { id: 'replaced', name: 'Before', pgn: '1. e4 *', side: 'white' as const, importedAt: 1 };
+    expect(entryFrom(stored, {}).course.chapters[0]!.roots[0]!.san).toBe('e4');
+    const updated = entryFrom({ ...stored, name: 'After', pgn: '1. d4 *' }, {});
+    expect(updated.course.name).toBe('After');
+    expect(updated.course.chapters[0]!.roots[0]!.san).toBe('d4');
   });
 });

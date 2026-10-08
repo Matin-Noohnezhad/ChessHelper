@@ -1,0 +1,799 @@
+{
+  "retrieved": "2026-10-06",
+  "source": "https://en.chessbase.com/pages/download",
+  "method": "Audio extracted without executing installers; original bytes retained.",
+  "installers": [
+    {
+      "product": "ChessBase Reader 2017",
+      "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+      "bytes": 48586752,
+      "sha256": "ac6c0aa5b8119fcfaf27d92815d4cebb42bf0e9c9f81b2760452890631a4800e"
+    },
+    {
+      "product": "Playchess desktop 9.3",
+      "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+      "bytes": 64098104,
+      "sha256": "fa5956dbfb9ace67e1e00e3b01add554afb2b1a34c0f02aa8024209e96744127"
+    }
+  ],
+  "files": [
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/caphit1.mp3",
+      "bytes": 2299,
+      "sha256": "2e4f41729e070f49cf46cc88ae5845230c3e44a68dc82f08ee93f121c12de3b9",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/CAPHIT1.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DCAPHIT1.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/caphit2.mp3",
+      "bytes": 2299,
+      "sha256": "19e869b9880873c4b42935aa1c3f743172988606efcee6e1113be0d7b9e1ada8",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/CAPHIT2.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DCAPHIT2.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/caphit3.mp3",
+      "bytes": 2717,
+      "sha256": "54b9244a3a9e868a17a23b28a3cfc1793ae25a2709879e38e67f44675247a547",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/CAPHIT3.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DCAPHIT3.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture.mp3",
+      "bytes": 1463,
+      "sha256": "c1638b6262bed73f111aa202b277a7ace0e2323904ebd9a3dda53c589812af97",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/CAPTURE.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DCAPTURE.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture1.mp3",
+      "bytes": 4382,
+      "sha256": "7823aad7ad46268f4972ef994cfbb81092a08356f38f3d06675078e1ba40d89c",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/CAPTURE1.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture2.mp3",
+      "bytes": 1358,
+      "sha256": "000d2c3e25ce82c1ee8c1597979073527c1682d662b5d1b4c2cf3d537f680626",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/CAPTURE2.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DCAPTURE2.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture3.mp3",
+      "bytes": 731,
+      "sha256": "15fb09d882e3be2ab1b1917d077c2a7fc34b93c1316bffab53d41cfcd41bef6f",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/CAPTURE3.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DCAPTURE3.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/captstrong.mp3",
+      "bytes": 6886,
+      "sha256": "cbda8b3edec42f8a3656377bbf63d7548a7cdde8233657156114f56399235a48",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/CaptStrong.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture0.mp3",
+      "bytes": 1463,
+      "sha256": "c1638b6262bed73f111aa202b277a7ace0e2323904ebd9a3dda53c589812af97",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/Capture0.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/hit.mp3",
+      "bytes": 836,
+      "sha256": "3faf5448295967395ccdc43f520362e3b4f2959b010a178eceab61e56f284148",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/Hit.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DHit.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move.mp3",
+      "bytes": 940,
+      "sha256": "767cf44741fa78b35f8e581df8c1ffd63e24a0286556cf74b0df88b1eaa5e759",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVE.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DMOVE.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move0.mp3",
+      "bytes": 940,
+      "sha256": "767cf44741fa78b35f8e581df8c1ffd63e24a0286556cf74b0df88b1eaa5e759",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVE0.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move1.mp3",
+      "bytes": 5634,
+      "sha256": "9561f10751ef4f04971e799598f7456d3cff79da4b7170b7793c725b5a67e312",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVE1.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move2.mp3",
+      "bytes": 522,
+      "sha256": "6fbe49b193066e99623c96b88dd6fadc73af0937ce86dd70df7cb37957b5316a",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVE2.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DMOVE2.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move3.mp3",
+      "bytes": 522,
+      "sha256": "6318d581e21ef2f6d82311a30bc46979ceee2d3684e9ca0b33db74e227e8a042",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVE3.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DMOVE3.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move4.mp3",
+      "bytes": 3133,
+      "sha256": "0f20faa071e1a8dce37c97eb143663b0bf6b3f043e18b597e01ddbfa5efb34ac",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVE4.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DMOVE4.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/movehit1.mp3",
+      "bytes": 3030,
+      "sha256": "564b511d8e527d2feaf62d726b7b5c494cb9b4dfe6a4a5d0b316746cbe161980",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVEHIT1.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DMOVEHIT1.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/movehit2.mp3",
+      "bytes": 2717,
+      "sha256": "aba4b12dc400cca75b49c0ad10a2657caf946fa3f5f049523aefa1b20ae3f26f",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVEHIT2.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DMOVEHIT2.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/movehit3.mp3",
+      "bytes": 2508,
+      "sha256": "2e045a3865e86cf7087e50dd0933e66083ad682a99653794799031a4e6bfdaf1",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MOVEHIT3.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DMOVEHIT3.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/movestrong1.mp3",
+      "bytes": 3756,
+      "sha256": "0b5b066ea363570259b61afe8c0c9404192f28a15c82fa36273b59e204cd1704",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MoveStrong1.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/movestrong2.mp3",
+      "bytes": 6260,
+      "sha256": "2fe6991accb11b0cfb3d7c1df1325eaad128259ab2ddcbcbf3c6880f5443dd3b",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/MoveStrong2.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/newgame.mp3",
+      "bytes": 22361,
+      "sha256": "e5f3d1778bfc6f345256bfda0e49d2e656b5af27885432e0b7288cf1a812e79e",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/NEWGAME.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DNEWGAME.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/tick.mp3",
+      "bytes": 13584,
+      "sha256": "ac008804de4c93274f609a19dd77ffc2ef39facaf9f9c72fa3a7e99b00ad119b",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/Tick.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2DTick.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/wehewennihrdasloescht.mp3",
+      "bytes": 5432,
+      "sha256": "5c90b76b480bed4a25e27b2c9be3e9dab24a340cb2ce11f6e3fcd686c047cccf",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/Wehewennihrdasloescht.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture10.mp3",
+      "bytes": 6260,
+      "sha256": "09cf68641b4b2a4323201195f2c09ae8b1aad91b80b4daec17af8f025724d2cf",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture10.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture11.mp3",
+      "bytes": 4382,
+      "sha256": "ea37bbe6f04f18cd69985cdb748f8cffb0eec541dd7f0f5d7c1b72a1d503bb42",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture11.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture12.mp3",
+      "bytes": 3130,
+      "sha256": "5b3c74beacde48b782607e048393199da01b37dbb5c4ba4b55f3bd47dc25345f",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture12.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture13.mp3",
+      "bytes": 5634,
+      "sha256": "c1feeea162d5890aaaa0a7323fb560bc461d54c3a70987aadeed4113e9a814d9",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture13.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture14.mp3",
+      "bytes": 5008,
+      "sha256": "7ed87c2dd0d809b99b73751649b14c3a6c637b98b137db5f7c27622c190468dc",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture14.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture15.mp3",
+      "bytes": 3756,
+      "sha256": "e9bca58d8d953d83716fbd511aa61405bdaab7a466de43b5fdd53f9bbc66b34f",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture15.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture4.mp3",
+      "bytes": 4596,
+      "sha256": "445ec9e08d1c3b2075f2c3afecd55bd30484437d3a6f46cd092c0a913eb7b917",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture4.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2Dcapture4.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture5.mp3",
+      "bytes": 2924,
+      "sha256": "c7241603325c4c270f541a77deae411421a1f02d2cf44b90e1332648d29a6a59",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture5.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2Dcapture5.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture6.mp3",
+      "bytes": 5634,
+      "sha256": "29e82bdc249ab29d0092df564676d363a6d4adb49062f104fb0ee02cc2edd166",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture6.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture7.mp3",
+      "bytes": 5634,
+      "sha256": "2cd736055fc03f63874df0b448265f802a7f4f503ce770d0383f121bff7c30da",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture7.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture8.mp3",
+      "bytes": 4382,
+      "sha256": "b0e8b1c2cd385b1175af795b330bf2927818f36c5cfc5400b697ad7c49a6057d",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture8.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/capture9.mp3",
+      "bytes": 5634,
+      "sha256": "0e3c579bc0324648641fcd4b70676efb87f5b2194ba82710c64c640487485b5d",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/capture9.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/castle.mp3",
+      "bytes": 5223,
+      "sha256": "c6dec253268715fd22046dc1acb7986e6fe98e145b4fe8f62fcf7259c3de7a37",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/castle.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2Dcastle.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/coach.mp3",
+      "bytes": 12537,
+      "sha256": "f11ad56c26f2ad56d415af20631164b555739658bcbd9b8b08ae63f6654b4236",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/coach.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2Dcoach.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/failhigh.mp3",
+      "bytes": 4596,
+      "sha256": "6693d164e0f9f6c33479cce95ad4b2485ccebc563e6dea3454b9f635bf5e2929",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/failhigh.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2Dfailhigh.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/illegal.mp3",
+      "bytes": 3342,
+      "sha256": "483a770e6ec68066e48db1aa4562eca254ba8e602cc597733a54052b08499c25",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/illegal.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2Dillegal.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move10.mp3",
+      "bytes": 5008,
+      "sha256": "b105cef93ea8d1378e5e2d226ffc7e17396c93f8fe5e78bc288e574da7763123",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/move10.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move11.mp3",
+      "bytes": 6260,
+      "sha256": "ea8a0c304cf4ab572a4d4673fb965e561ebbccf564394d559105e8762802fdaf",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/move11.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move5.mp3",
+      "bytes": 2715,
+      "sha256": "206f180303e240d53cd4659e80a918d43067f864a3b6b70a45791cc7d273b9f3",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/move5.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2Dmove5.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move6.mp3",
+      "bytes": 3133,
+      "sha256": "dbc50e10d9d3cbfad983bc8ef1388d1c7ea171cb31e79b3548af11adbe84e2d3",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/move6.mp3"
+        },
+        {
+          "product": "ChessBase Reader 2017",
+          "url": "https://download.chessbase.com/download/chessbasereader/Reader2017Setup_x86.msi",
+          "archivePath": "CB14.cab/Board2Dmove6.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move7.mp3",
+      "bytes": 6886,
+      "sha256": "55da61a09f2d254352854f31c3f205353c7cf778a376dc5b7cba4686a0ff3f7b",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/move7.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move8.mp3",
+      "bytes": 5634,
+      "sha256": "3b99deb5007ba7c42c151907d0c8d7e9a835e7470d5c30f0e854f818e72465e4",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/move8.mp3"
+        }
+      ]
+    },
+    {
+      "site": "ChessBase",
+      "set": "Desktop",
+      "file": "chessbase/desktop/move9.mp3",
+      "bytes": 5634,
+      "sha256": "1fde7aae272c600677dda4d4dbec9e4ac20df0adaf06efe591869fc2d1c3d203",
+      "sources": [
+        {
+          "product": "Playchess desktop 9.3",
+          "url": "https://download.chessbase.com/download/playchess/PlayChessV9Setup.exe",
+          "archivePath": "../Sounds/Board/move9.mp3"
+        }
+      ]
+    }
+  ]
+}

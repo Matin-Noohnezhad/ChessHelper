@@ -1,14 +1,19 @@
+import { MoveStepButton } from './components/MoveStepButton.js';
+import { PieceSetContext } from './components/Piece.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { formatMoveText } from '@coh/chess-core';
 import type { PieceSymbol } from '@coh/chess-core';
 import { identifyOpening } from '@coh/opening-book';
-import { Board } from './components/Board.js';
+import { Board, BoardCoordinatesContext } from './components/Board.js';
+import { courseShortcutBlocked } from './courseShortcuts.js';
+import { BoardSoundProvider } from './components/BoardSoundContext.js';
+import { BoardAnimationContext } from './components/BoardAnimationContext.js';
+import { AnnotationStyleContext, LastMoveArrowContext } from './components/BoardAnnotations.js';
 import type { SquareMark } from './components/Board.js';
 import { CoursesView } from './components/CoursesView.js';
 import { EnginePanel } from './components/EnginePanel.js';
 import { EvalBar } from './components/EvalBar.js';
 import { ImbalancesPanel } from './components/ImbalancesPanel.js';
-import { MoveList } from './components/MoveList.js';
+import { ExploreMoveTree } from './components/ExploreMoveTree.js';
 import { OpeningPanel } from './components/OpeningPanel.js';
 import { ReviewView } from './components/ReviewView.js';
 import { SettingsPanel } from './components/SettingsPanel.js';
@@ -17,6 +22,7 @@ import { useChessGame } from './hooks/useChessGame.js';
 import { useEngine } from './hooks/useEngine.js';
 import { useGameReview } from './hooks/useGameReview.js';
 import { useSettings } from './hooks/useSettings.js';
+import { boardThemeStyle } from './boardThemes.js';
 
 type Mode = 'explore' | 'train' | 'courses' | 'review';
 
@@ -32,20 +38,32 @@ export default function App() {
   const review = useGameReview();
   const [mode, setMode] = useState<Mode>('explore');
   const [marks, setMarks] = useState<SquareMark[]>([]);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'FEN' | 'PGN' | null>(null);
+  const [copyError, setCopyError] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (courseShortcutBlocked(event)) return;
+      if (event.key.toLowerCase() === 'z') setFocusMode((value) => !value);
+      else if (event.key === 'Escape' && focusMode) setFocusMode(false);
+      else return;
+      // Handle Escape before course listeners so leaving focus keeps the lesson open.
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [focusMode]);
 
   // Identification follows the cursor, not the end of the line, so stepping
   // back through a game replays how the opening was classified move by move.
   const played = useMemo(() => game.sans.slice(0, game.cursor), [game.sans, game.cursor]);
   const match = useMemo(() => identifyOpening(played), [played]);
 
-  // The whole line, not the cursor's prefix: reviewing "the game on the board"
-  // should cover everything played, wherever the user happens to be looking.
-  const currentGamePgn = useMemo(
-    () => (game.sans.length ? formatMoveText(game.sans, false, '*') : null),
-    [game.sans],
-  );
+  // Review follows the main line; promoting a variation chooses it for review.
+  const currentGamePgn = game.sans.length ? game.pgn : null;
 
   // The second way in: no clipboard, no paste box. Whatever is on the board is
   // a game, and one click reviews it.
@@ -84,12 +102,14 @@ export default function App() {
     // the arrows would let you step out of the position you are being asked about.
     if (mode !== 'explore') return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLInputElement) return;
+      if (courseShortcutBlocked(event)) return;
       if (event.key === 'ArrowLeft') game.stepBack();
       else if (event.key === 'ArrowRight') game.stepForward();
       else if (event.key === 'ArrowUp') game.toStart();
       else if (event.key === 'ArrowDown') game.toEnd();
       else if (event.key === 'f') game.flip();
+      else if (event.key.toLowerCase() === 'p') game.promoteLine();
+      else if (event.key === 'Delete') game.deleteLine();
       else return;
       event.preventDefault();
     };
@@ -107,20 +127,30 @@ export default function App() {
           ? 'Check'
           : `${game.game.turn() === 'w' ? 'White' : 'Black'} to move`;
 
-  const copyFen = async () => {
-    await navigator.clipboard?.writeText(game.game.fen());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  const copyPosition = async (kind: 'FEN' | 'PGN') => {
+    try {
+      await navigator.clipboard.writeText(kind === 'FEN' ? game.game.fen() : game.pgn);
+      setCopyError('');
+      setCopied(kind);
+      setTimeout(() => setCopied(null), 1500);
+    } catch {
+      setCopyError(`Could not copy ${kind}. Check clipboard permissions and try again.`);
+    }
   };
 
   return (
-    <div className="app">
+    <div className={`app${focusMode ? ' app--focus' : ''}`} data-board-theme={settings.boardTheme} style={boardThemeStyle(settings.boardTheme)}>
       <header className="app__head">
         <h1>
           Chess Opening Helper
           <span>plans, structures and breaks — not just move orders</span>
         </h1>
         <div className="app__actions">
+          <button type="button" className="focus-button" aria-pressed={focusMode}
+            aria-keyshortcuts="z" title={focusMode ? 'Exit focus mode (Z or Esc)' : 'Focus mode (Z)'}
+            onClick={() => setFocusMode((value) => !value)}>
+            {focusMode ? 'Exit focus' : 'Focus mode'} <kbd>Z</kbd>
+          </button>
           <div className="segmented segmented--mode">
             <button
               type="button"
@@ -167,12 +197,22 @@ export default function App() {
                 type="button"
                 onClick={reviewBoardGame}
                 disabled={!currentGamePgn}
-                title="Run the game review on the moves currently on the board"
+                title="Review the main line. Promote a variation to review it instead."
               >
                 Review game
               </button>
             </>
           )}
+          <button
+            type="button"
+            className="sound-button"
+            onClick={() => settings.setSoundVolume(settings.soundVolume === 0 ? 0.55 : 0)}
+            title={settings.soundVolume === 0 ? 'Unmute board sounds' : 'Mute board sounds'}
+            aria-label={settings.soundVolume === 0 ? 'Unmute board sounds' : 'Mute board sounds'}
+            aria-pressed={settings.soundVolume === 0}
+          >
+            {settings.soundVolume === 0 ? 'Sound off' : 'Sound on'}
+          </button>
           <button
             type="button"
             onClick={() => setSettingsOpen(true)}
@@ -186,20 +226,54 @@ export default function App() {
 
       {settingsOpen && (
         <SettingsPanel
+          showCoordinates={settings.showCoordinates}
+          onShowCoordinatesChange={settings.setShowCoordinates}
+          pieceSet={settings.pieceSet}
+          onPieceSetChange={settings.setPieceSet}
+          moveEntryMode={settings.moveEntryMode}
+          onMoveEntryModeChange={settings.setMoveEntryMode}
+          movementStyle={settings.movementStyle}
+          onMovementStyleChange={settings.setMovementStyle}
+          movementSpeed={settings.movementSpeed}
+          onMovementSpeedChange={settings.setMovementSpeed}
+          boardTheme={settings.boardTheme}
+          onBoardThemeChange={settings.setBoardTheme}
           annotationThickness={settings.annotationThickness}
+          annotationStyle={settings.annotationStyle}
+          onAnnotationStyleChange={settings.setAnnotationStyle}
+          showLastMoveArrow={settings.showLastMoveArrow}
+          onShowLastMoveArrowChange={settings.setShowLastMoveArrow}
+          lastMoveArrowColor={settings.lastMoveArrowColor}
+          onLastMoveArrowColorChange={settings.setLastMoveArrowColor}
           onAnnotationThicknessChange={settings.setAnnotationThickness}
+          soundVolume={settings.soundVolume}
+          onSoundVolumeChange={settings.setSoundVolume}
+          soundStyle={settings.soundStyle}
+          onSoundStyleChange={settings.setSoundStyle}
+          replaySounds={settings.replaySounds}
+          onReplaySoundsChange={settings.setReplaySounds}
           watchAutoplay={settings.watchAutoplay}
           onWatchAutoplayChange={settings.setWatchAutoplay}
           watchMoveSeconds={settings.watchMoveSeconds}
           onWatchMoveSecondsChange={settings.setWatchMoveSeconds}
+          courseLearning={settings}
+          onCourseLearningChange={settings.setCourseLearning}
           onClose={() => setSettingsOpen(false)}
         />
       )}
 
+      <PieceSetContext.Provider value={settings.pieceSet}>
+      <BoardCoordinatesContext.Provider value={settings.showCoordinates}>
+      <BoardAnimationContext.Provider value={settings}>
+      <AnnotationStyleContext.Provider value={settings.annotationStyle}>
+      <LastMoveArrowContext.Provider value={settings}>
+      <BoardSoundProvider volume={settings.soundVolume} style={settings.soundStyle} replay={settings.replaySounds}>
       {mode === 'train' ? (
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : mode === 'courses' ? (
         <CoursesView
+          moveEntryMode={settings.moveEntryMode}
+          courseLearning={settings}
           annotationThickness={settings.annotationThickness}
           watchAutoplay={settings.watchAutoplay}
           watchMoveSeconds={settings.watchMoveSeconds}
@@ -220,9 +294,14 @@ export default function App() {
               game={game.game}
               orientation={game.orientation}
               lastMove={game.lastMove}
+              replay={game.replaying}
               onMove={handleMove}
+              moveEntryMode={settings.moveEntryMode}
               marks={marks}
+              shapes={game.shapes}
+              onShapesChange={game.setShapes}
               annotationThickness={settings.annotationThickness}
+              animateMoves
             />
           </div>
           <div className="board-bar">
@@ -231,23 +310,28 @@ export default function App() {
               <button type="button" onClick={game.toStart} disabled={game.atStart} title="Start (↑)">
                 ⏮
               </button>
-              <button type="button" onClick={game.stepBack} disabled={game.atStart} title="Back (←)">
+              <MoveStepButton type="button" onStep={game.stepBack} disabled={game.atStart} title="Back (←)">
                 ◀
-              </button>
-              <button type="button" onClick={game.stepForward} disabled={game.atEnd} title="Forward (→)">
+              </MoveStepButton>
+              <MoveStepButton type="button" onStep={game.stepForward} disabled={game.atEnd} title="Forward (→)">
                 ▶
-              </button>
+              </MoveStepButton>
               <button type="button" onClick={game.toEnd} disabled={game.atEnd} title="End (↓)">
                 ⏭
               </button>
             </div>
-            <button type="button" className="fen" onClick={copyFen} title={game.game.fen()}>
-              {copied ? 'FEN copied' : 'Copy FEN'}
+            <button type="button" className="fen" onClick={() => void copyPosition('FEN')} title={game.game.fen()}>
+              {copied === 'FEN' ? 'FEN copied' : 'Copy FEN'}
+            </button>
+            <button type="button" className="fen" onClick={() => void copyPosition('PGN')} title="Copy all moves, variations and colored drawings">
+              {copied === 'PGN' ? 'PGN copied' : 'Copy PGN'}
             </button>
           </div>
+          {copyError && <p role="alert">{copyError}</p>}
         </div>
 
         <aside className="app__side">
+          <ExploreMoveTree game={game} />
           <EnginePanel engine={engine} />
           <ImbalancesPanel game={game.game} />
           <OpeningPanel
@@ -257,13 +341,15 @@ export default function App() {
             onPlayMove={playSan}
             onMarks={setMarks}
           />
-          <section className="moves">
-            <h3>Moves</h3>
-            <MoveList sans={game.sans} cursor={game.cursor} onSelect={game.goTo} />
-          </section>
         </aside>
       </main>
       )}
+      </BoardSoundProvider>
+      </LastMoveArrowContext.Provider>
+      </AnnotationStyleContext.Provider>
+      </BoardAnimationContext.Provider>
+      </BoardCoordinatesContext.Provider>
+      </PieceSetContext.Provider>
     </div>
   );
 }

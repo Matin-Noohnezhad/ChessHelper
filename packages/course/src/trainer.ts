@@ -17,7 +17,7 @@
 
 import { Chess, START_FEN } from '@coh/chess-core';
 import type { MoveInput } from '@coh/chess-core';
-import { progressFor, recordAnswer } from './scheduler.js';
+import { isDue, progressFor, recordAnswer } from './scheduler.js';
 import { colorOf, moveKey, roleOf } from './tree.js';
 import type {
   Chapter,
@@ -242,7 +242,8 @@ export class CourseTrainer {
       graded: this.answers.size,
       right: this.score.right,
       wrong: this.score.wrong,
-      tasksDone: Math.max(0, Math.min(this.taskIndex, this.plan.tasks.length)),
+      tasksDone: Math.max(0, Math.min(this.taskIndex +
+        (this.sessionStatus === 'task-complete' || this.sessionStatus === 'complete' ? 1 : 0), this.plan.tasks.length)),
       tasksTotal: this.plan.tasks.length,
     };
   }
@@ -284,8 +285,8 @@ export class CourseTrainer {
 
   /**
    * Plays the next move of the demonstration and returns it. When the last one
-   * has been played the board goes back to where the part began and the same
-   * moves are asked for — which is the only reason to have watched them.
+   * has been played the board goes back to the practice start. The first part
+   * asks for the trained opening too, although its animation skips that prefix.
    */
   advanceWatch(): CourseNode | null {
     const task = this.task;
@@ -321,6 +322,7 @@ export class CourseTrainer {
    */
   rewatch(): boolean {
     if (!this.replayable) return false;
+    if (this.current) this.reveal();
     const watch = this.task!.watch!;
     this.setUpAt(watch.from);
     this.watchCursor = watch.from;
@@ -340,6 +342,7 @@ export class CourseTrainer {
     if (!node) return null;
     this.failed = true;
     this.revealedNow = true;
+    this.grade(node);
     return node.san;
   }
 
@@ -437,6 +440,7 @@ export class CourseTrainer {
   private miss(outcome: CourseOutcome): CourseOutcome {
     this.failed = true;
     this.revealedNow = true;
+    if (this.current) this.grade(this.current);
     return outcome;
   }
 
@@ -485,7 +489,9 @@ export class CourseTrainer {
 
     // A part stops where the part stops. Running on to the end of the line
     // would spoil the instalments that have not been taught yet.
-    const limit = task.watch?.to ?? task.line.length;
+    const limit = task.mode === 'random'
+      ? task.startIndex + 1
+      : task.watch?.to ?? task.line.length;
     while (this.cursor < limit && !task.quiz.includes(this.cursor)) {
       const node = task.line[this.cursor]!;
       this.play(node);
@@ -537,7 +543,11 @@ export class CourseTrainer {
     }
 
     const now = this.now();
-    this.progressMap[key] = recordAnswer(progressFor(this.progressMap, key, now), { correct, now });
+    const previous = progressFor(this.progressMap, key, now);
+    // Extra practice is useful, but a fresh session is not evidence of spaced
+    // recall. Keep the due date and level until the scheduled review arrives.
+    if (correct && previous.level > 0 && !isDue(previous, now)) return;
+    this.progressMap[key] = recordAnswer(previous, { correct, now });
   }
 }
 

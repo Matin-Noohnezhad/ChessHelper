@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { CourseNode, OutlineChapter } from '@coh/course';
+import { groupCourseSections } from '../courseSections.js';
+import './CourseSections.css';
 
 /**
  * The course as Chessable draws it: chapters down the side, each with a
@@ -18,12 +20,14 @@ interface CourseOutlineProps {
   activeLineId?: string | null;
   onPickLine: (lineId: string) => void;
   /** Chapter-level Learn / Review. Absent in the rail. */
+  onReadChapter?: (chapterId: string) => void;
   onChapter?: (mode: 'learn' | 'review', chapterId: string) => void;
   /** Wipe progress for one chapter — `label` is its name, for a confirm prompt. */
   onResetChapter?: (chapterId: string, label: string) => void;
   /** Wipe progress for one line — `label` is its notation, for a confirm prompt. */
   onResetLine?: (lineId: string, label: string) => void;
   variant?: 'full' | 'rail';
+  concealMoves?: boolean;
 }
 
 export function CourseOutline({
@@ -31,9 +35,11 @@ export function CourseOutline({
   activeLineId,
   onPickLine,
   onChapter,
+  onReadChapter,
   onResetChapter,
   onResetLine,
   variant = 'full',
+  concealMoves = false,
 }: CourseOutlineProps) {
   const activeChapter = chapters.find((chapter) =>
     chapter.variations.some((v) => v.id === activeLineId),
@@ -47,127 +53,134 @@ export function CourseOutline({
   }, [activeChapter]);
 
   const isOpen = (chapter: OutlineChapter): boolean => {
-    if (variant === 'full' || chapters.length === 1) return true;
-    return open[chapter.chapterId] ?? chapter.chapterId === activeChapter;
+    return open[chapter.chapterId] ?? (variant === 'full' || chapters.length === 1 || chapter.chapterId === activeChapter);
+  };
+
+  const renderChapter = (chapter: OutlineChapter) => {
+    return (
+      <details
+        key={chapter.chapterId}
+        className="course-outline__chapter"
+        open={isOpen(chapter)}
+        onToggle={(event) =>
+          setOpen((current) => ({
+            ...current,
+            [chapter.chapterId]: (event.target as HTMLDetailsElement).open,
+          }))
+        }
+      >
+        <summary className="course-outline__summary">
+          <span className="course-outline__name">
+            <span>{chapter.name}</span>
+          </span>
+          <span className="course-outline__pct">{Math.round(chapter.completion * 100)}%</span>
+          <span className="bar course-outline__bar">
+            <span className="bar__fill" style={{ width: `${chapter.completion * 100}%` }} />
+          </span>
+        </summary>
+
+        {(onChapter || onReadChapter || onResetChapter) && (
+          <div className="course-outline__chapter-actions">
+            {onReadChapter && <button type="button" onClick={() => onReadChapter(chapter.chapterId)}>Read</button>}
+            {onChapter && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => onChapter('learn', chapter.chapterId)}
+                  disabled={chapter.seen >= chapter.moves}
+                >
+                  Learn
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onChapter('review', chapter.chapterId)}
+                  disabled={chapter.due === 0 || chapter.seen === 0}
+                >
+                  Review
+                </button>
+              </>
+            )}
+            <span className="muted">
+              {chapter.variations.length} line{chapter.variations.length === 1 ? '' : 's'}
+              {chapter.due > 0 ? ` · ${chapter.due} due` : ''}
+            </span>
+            {onResetChapter && (
+              <button
+                type="button"
+                className="reset course-outline__reset"
+                onClick={() => onResetChapter(chapter.chapterId, chapter.name)}
+                disabled={chapter.seen === 0}
+                title={
+                  chapter.seen === 0
+                    ? 'Nothing learned in this chapter yet'
+                    : "Reset this chapter's progress"
+                }
+              >
+                Reset chapter
+              </button>
+            )}
+          </div>
+        )}
+
+        <ul className="course-outline__lines">
+          {chapter.variations.map((variation, index) => {
+            const label = concealMoves ? `Line ${index + 1}` : sanLine(variation.line);
+            return (
+              <li key={variation.id} className="course-outline__line-row">
+                <button
+                  type="button"
+                  className={[
+                    'course-outline__line',
+                    `is-${variation.state}`,
+                    variation.id === activeLineId ? 'is-active' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={() => onPickLine(variation.id)}
+                  title={label}
+                >
+                  <ProgressRing
+                    value={variation.completion}
+                    done={variation.state === 'learned'}
+                    started={variation.state !== 'new'}
+                  />
+                  <span className="course-outline__san">{label}</span>
+                  {variation.due > 0 && (
+                    <span className="course-outline__due" title={`${variation.due} due now`} />
+                  )}
+                </button>
+                {onResetLine && (
+                  <button
+                    type="button"
+                    className="reset course-outline__line-reset"
+                    onClick={() => onResetLine(variation.id, label)}
+                    disabled={variation.state === 'new'}
+                    title={
+                      variation.state === 'new'
+                        ? 'Nothing learned in this line yet'
+                        : "Reset this line's progress"
+                    }
+                    aria-label={`Reset progress for ${label}`}
+                  >
+                    ⟲
+                  </button>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </details>
+    );
   };
 
   return (
     <div className={`course-outline course-outline--${variant}`}>
-      {chapters.map((chapter) => {
-        return (
-          <details
-            key={chapter.chapterId}
-            className="course-outline__chapter"
-            open={isOpen(chapter)}
-            onToggle={(event) =>
-              setOpen((current) => ({
-                ...current,
-                [chapter.chapterId]: (event.target as HTMLDetailsElement).open,
-              }))
-            }
-          >
-            <summary className="course-outline__summary">
-              <span className="course-outline__name">
-                <span>{chapter.name}</span>
-              </span>
-              <span className="course-outline__pct">{Math.round(chapter.completion * 100)}%</span>
-              <span className="bar course-outline__bar">
-                <span className="bar__fill" style={{ width: `${chapter.completion * 100}%` }} />
-              </span>
-            </summary>
-
-            {(onChapter || onResetChapter) && (
-              <div className="course-outline__chapter-actions">
-                {onChapter && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => onChapter('learn', chapter.chapterId)}
-                      disabled={chapter.seen >= chapter.moves}
-                    >
-                      Learn
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onChapter('review', chapter.chapterId)}
-                      disabled={chapter.due === 0 || chapter.seen === 0}
-                    >
-                      Review
-                    </button>
-                  </>
-                )}
-                <span className="muted">
-                  {chapter.variations.length} line{chapter.variations.length === 1 ? '' : 's'}
-                  {chapter.due > 0 ? ` · ${chapter.due} due` : ''}
-                </span>
-                {onResetChapter && (
-                  <button
-                    type="button"
-                    className="reset course-outline__reset"
-                    onClick={() => onResetChapter(chapter.chapterId, chapter.name)}
-                    disabled={chapter.seen === 0}
-                    title={
-                      chapter.seen === 0
-                        ? 'Nothing learned in this chapter yet'
-                        : "Reset this chapter's progress"
-                    }
-                  >
-                    Reset chapter
-                  </button>
-                )}
-              </div>
-            )}
-
-            <ul className="course-outline__lines">
-              {chapter.variations.map((variation) => {
-                const label = sanLine(variation.line);
-                return (
-                  <li key={variation.id} className="course-outline__line-row">
-                    <button
-                      type="button"
-                      className={[
-                        'course-outline__line',
-                        `is-${variation.state}`,
-                        variation.id === activeLineId ? 'is-active' : '',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      onClick={() => onPickLine(variation.id)}
-                      title={label}
-                    >
-                      <ProgressRing
-                        value={variation.completion}
-                        done={variation.state === 'learned'}
-                        started={variation.state !== 'new'}
-                      />
-                      <span className="course-outline__san">{label}</span>
-                      {variation.due > 0 && (
-                        <span className="course-outline__due" title={`${variation.due} due now`} />
-                      )}
-                    </button>
-                    {onResetLine && (
-                      <button
-                        type="button"
-                        className="reset course-outline__line-reset"
-                        onClick={() => onResetLine(variation.id, label)}
-                        disabled={variation.state === 'new'}
-                        title={
-                          variation.state === 'new'
-                            ? 'Nothing learned in this line yet'
-                            : "Reset this line's progress"
-                        }
-                        aria-label={`Reset progress for ${label}`}
-                      >
-                        ⟲
-                      </button>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </details>
-        );
-      })}
+      {groupCourseSections(chapters).map(({ section, chapters: subsections }) => section ? (
+        <section className="course-outline__section" key={section} aria-label={section}>
+          <h4 className="course-outline__section-title">{section}</h4>
+          <div className="course-outline__subsections">{subsections.map(renderChapter)}</div>
+        </section>
+      ) : subsections.map(renderChapter))}
     </div>
   );
 }
@@ -176,7 +189,7 @@ export function CourseOutline({
 function sanLine(line: readonly CourseNode[]): string {
   const out: string[] = [];
   line.forEach((node, index) => {
-    const number = Math.ceil(node.ply / 2);
+    const number = node.moveNumber ?? Math.ceil(node.ply / 2);
     if (node.side === 'w') out.push(`${number}.${node.san}`);
     else if (index === 0) out.push(`${number}...${node.san}`);
     else out.push(node.san);

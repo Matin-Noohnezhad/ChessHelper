@@ -4,6 +4,7 @@ import {
   allVariations,
   moveKey,
   progressKeys,
+  readingLinesOf,
   quizIndices,
   roleOf,
   trainableMoves,
@@ -100,10 +101,9 @@ describe('trainable moves', () => {
     const moves = trainableMoves(course.chapters, 'white');
     const chapterOne = trainableMoves([course.chapters[0]!], 'white');
     const chapterTwo = trainableMoves([course.chapters[1]!], 'white');
-    // Both chapters open 1.e4 2.Nf3 3.d4 4.Nxd4 against 2...Nc6, so the second
-    // chapter adds nothing new at all.
+    // The main lines share e4 and Nf3; their later moves differ by position.
     expect(chapterOne.size + chapterTwo.size).toBeGreaterThan(moves.size);
-    expect(moves.size).toBe(chapterOne.size);
+    expect(moves.size).toBe(7);
   });
 
   it('keys a move by the position it is played from', () => {
@@ -113,7 +113,7 @@ describe('trainable moves', () => {
   });
 
   it('covers every chapter of the course', () => {
-    expect(allVariations(course)).toHaveLength(5);
+    expect(allVariations(course)).toHaveLength(2);
   });
 });
 
@@ -127,21 +127,31 @@ describe('progress keys for a scope', () => {
     const chapterTwo = progressKeys(course, { chapterIds: [course.chapters[1]!.id] });
     const expected = new Set(trainableMoves([course.chapters[1]!], 'white').keys());
     expect(chapterTwo).toEqual(expected);
-    // Chapter two is all move-order into chapter one, so its keys are a subset.
+    // Every chapter's main-line keys belong to the course-wide scope.
     for (const key of chapterTwo) expect(progressKeys(course)).toContain(key);
   });
 
   it('narrows to one line, and only its moves', () => {
-    const najdorf = variationsOf(course.chapters[0]!, 'white')[0]!;
+    const najdorf = readingLinesOf(course.chapters[0]!)[0]!;
     const keys = progressKeys(course, { lineIds: [najdorf.id] });
     const expected = new Set(
       quizIndices(najdorf.line, 'white').map((i) => moveKey(najdorf.line[i]!)),
     );
     expect(keys).toEqual(expected);
-    // 5.Bb5 lives only in another line — resetting the Najdorf leaves it alone.
-    const bb5 = [...trainableMoves(course.chapters, 'white').entries()].find(
-      ([, node]) => node.san === 'Bb5',
-    )![0];
+    // Bb5 lives in an annotated branch — resetting the main line leaves it alone.
+    const bb5 = moveKey(variationsOf(course.chapters[0]!, 'white')[3]!.line.at(-1)!);
     expect(keys.has(bb5)).toBe(false);
+  });
+});
+
+
+describe('reading variations', () => {
+  it('includes rejected and illustrative moves while training still excludes them', () => {
+    const course = buildCourse('1.e4 (1.d4? d5) (1.Nf3) e5 2.Nf3 *', { side: 'white' });
+    const chapter = course.chapters[0]!;
+    expect(variationsOf(chapter, 'white').map((v) => v.line.map((n) => n.san).join(' ')))
+      .toEqual(['e4 e5 Nf3']);
+    expect(variationsOf(chapter, 'white', true).map((v) => v.line.map((n) => n.san).join(' ')))
+      .toEqual(['e4 e5 Nf3', 'd4 d5', 'Nf3']);
   });
 });

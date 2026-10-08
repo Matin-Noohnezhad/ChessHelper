@@ -1,12 +1,15 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { courseApi } from './server/courseApi.js';
 
 const pkg = (name: string) =>
   fileURLToPath(new URL(`../../packages/${name}/src/index.ts`, import.meta.url));
 
 export default defineConfig({
-  plugins: [react()],
+  // Courses are kept on disk at the repo root, not in the browser, so Chrome,
+  // Firefox and anything else pointed at this server all see the same shelf.
+  plugins: [react(), courseApi(fileURLToPath(new URL('../../user-data', import.meta.url)))],
   resolve: {
     // The workspace packages ship TypeScript source rather than a build step,
     // so point Vite straight at it. Nothing here is web-specific — the same

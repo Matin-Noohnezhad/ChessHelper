@@ -25,7 +25,7 @@ import {
   resolveSan,
 } from '@coh/chess-core';
 import type { AnnotatedPgnGame, PgnMove } from '@coh/chess-core';
-import type { Chapter, Course, CourseNode, CourseSide, ImportProblem } from './types.js';
+import type { Chapter, Course, CourseNode, CourseSide, ImportProblem, SectionHeader } from './types.js';
 
 /** NAGs that mean "this move is a mistake": ?, ??, ?!. */
 const DUBIOUS_NAGS = new Set([2, 4, 6]);
@@ -67,11 +67,15 @@ function convert(line: PgnMove[]): RawNode[] {
 
   const siblings = [node];
   for (const variation of first.variations ?? []) siblings.push(...convert(variation));
-  return siblings;
+  // Exporters sometimes repeat a move to attach another note or continuation.
+  // Coalesce those occurrences at every depth before assigning tree IDs.
+  const combined: RawNode[] = [];
+  mergeSiblings(combined, siblings, true);
+  return combined;
 }
 
 /** Folds one sibling list into another, matching on the move itself. */
-function mergeSiblings(into: RawNode[], from: readonly RawNode[]): void {
+function mergeSiblings(into: RawNode[], from: readonly RawNode[], combineNotes = false): void {
   for (const incoming of from) {
     const existing = into.find((node) => normalizeSan(node.san) === normalizeSan(incoming.san));
     if (!existing) {
@@ -82,17 +86,37 @@ function mergeSiblings(into: RawNode[], from: readonly RawNode[]): void {
     // chapter repeating the position should not overwrite the prose that taught
     // it, but it may fill a gap the first left.
     if (!existing.comment && incoming.comment) existing.comment = incoming.comment;
+    else if (combineNotes && incoming.comment && existing.comment !== incoming.comment)
+      existing.comment += `\n\n${incoming.comment}`;
+    if (combineNotes) {
+      existing.nags = [...new Set([...existing.nags, ...incoming.nags])];
+      if (existing.shapes && incoming.shapes) {
+        existing.shapes = {
+          arrows: [...existing.shapes.arrows, ...incoming.shapes.arrows].filter((shape, index, all) =>
+            all.findIndex((item) => item.from === shape.from && item.to === shape.to && item.color === shape.color) === index),
+          circles: [...existing.shapes.circles, ...incoming.shapes.circles].filter((shape, index, all) =>
+            all.findIndex((item) => item.square === shape.square && item.color === shape.color) === index),
+        };
+      }
+    }
     if (!existing.shapes && incoming.shapes) existing.shapes = incoming.shapes;
     if (!existing.suffix && incoming.suffix) existing.suffix = incoming.suffix;
     existing.dubious = existing.dubious || incoming.dubious;
-    mergeSiblings(existing.children, incoming.children);
+    mergeSiblings(existing.children, incoming.children, combineNotes);
   }
 }
 
 /* ------------------------------------------------------------- naming --- */
 
+/** PGN uses question marks for unknown metadata, not actual titles. */
+function title(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed && !/^[?\s]+$/.test(trimmed) ? trimmed : undefined;
+}
+
 /** Lichess and most publishers write `[Event "Course name: Chapter name"]`. */
 function splitEvent(event: string | undefined): { course?: string; chapter?: string } {
+  event = title(event);
   if (!event) return {};
   const at = event.lastIndexOf(': ');
   if (at <= 0) return { course: event };
@@ -112,12 +136,12 @@ function splitEvent(event: string | undefined): { course?: string; chapter?: str
 function chapterNames(games: readonly AnnotatedPgnGame[]): string[] {
   const schemes: { names: (string | undefined)[]; explicit: boolean }[] = [
     { names: games.map((game) => splitEvent(game.headers.Event).chapter), explicit: true },
-    { names: games.map((game) => game.headers.Event), explicit: false },
-    { names: games.map((game) => game.headers.White), explicit: false },
+    { names: games.map((game) => title(game.headers.Event)), explicit: false },
+    { names: games.map((game) => title(game.headers.White)), explicit: false },
   ];
 
   for (const { names, explicit } of schemes) {
-    if (names.some((name) => !name?.trim())) continue;
+    if (names.some((name) => !title(name))) continue;
     if (!explicit && games.length > 1 && new Set(names).size === 1) continue;
     return names.map((name) => name!.trim());
   }
@@ -127,9 +151,9 @@ function chapterNames(games: readonly AnnotatedPgnGame[]): string[] {
 function courseName(games: readonly AnnotatedPgnGame[]): string {
   for (const game of games) {
     const { course } = splitEvent(game.headers.Event);
-    if (course) return course;
+    if (title(course)) return title(course)!;
   }
-  return games[0]?.headers.White?.trim() || 'Imported course';
+  return title(games[0]?.headers.White) || 'Imported course';
 }
 
 const slug = (text: string): string =>
@@ -175,6 +199,7 @@ function place(context: PlaceContext, raw: readonly RawNode[], idPrefix: string)
       id: idPrefix ? `${idPrefix}.${out.length}` : String(out.length),
       san,
       ply: path.length + 1,
+      moveNumber: pos.fullmoves,
       side: pos.turn === WHITE ? 'w' : 'b',
       fromKey: pos.key(),
       nags: entry.nags,
@@ -244,6 +269,10 @@ export function inferSide(chapters: readonly Chapter[]): CourseSide {
 export interface BuildCourseOptions {
   id?: string;
   name?: string;
+  /** Uploaded filename, used as the default course title without its extension. */
+  fileName?: string;
+  /** White names sections by default; the other player header names subsections. */
+  sectionHeader?: SectionHeader;
   /** Overrides {@link inferSide}. */
   side?: CourseSide;
 }
@@ -253,30 +282,37 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
   const games = parseAnnotatedPgnAll(pgnText);
   const names = chapterNames(games);
   const problems: ImportProblem[] = [];
+  const sectionHeader = options.sectionHeader ?? 'White';
+  const subsectionHeader = sectionHeader === 'White' ? 'Black' : 'White';
 
   // Games are folded into chapters before anything is replayed: two games of the
   // same chapter can share a position, and merging their notation is cheaper and
   // safer than merging two half-built trees of course nodes.
   interface Draft {
     name: string;
+    section?: string;
     startFen?: string;
     roots: RawNode[];
+    games: AnnotatedPgnGame[];
     headers: Record<string, string>;
   }
   const drafts: Draft[] = [];
 
   games.forEach((game, index) => {
-    const name = names[index]!;
+    const section = title(game.headers[sectionHeader]);
+    const name = section ? title(game.headers[subsectionHeader]) ?? `Chapter ${index + 1}` : names[index]!;
     const startFen = game.startFen && game.startFen !== START_FEN ? game.startFen : undefined;
     // A chapter is one starting position: two games under one name that begin
     // from different positions are two chapters, whatever the header says.
-    let draft = drafts.find((entry) => entry.name === name && entry.startFen === startFen);
+    let draft = drafts.find((entry) => entry.name === name && entry.section === section && entry.startFen === startFen);
     if (!draft) {
-      draft = { name, roots: [], headers: game.headers };
+      draft = { name, roots: [], games: [], headers: game.headers };
+      if (section) draft.section = section;
       if (startFen) draft.startFen = startFen;
       drafts.push(draft);
     }
     mergeSiblings(draft.roots, convert(game.moves));
+    draft.games.push(game);
   });
 
   const chapters: Chapter[] = drafts.map((draft, index) => {
@@ -290,10 +326,27 @@ export function buildCourse(pgnText: string, options: BuildCourseOptions = {}): 
       headers: draft.headers,
     };
     if (draft.startFen) chapter.startFen = draft.startFen;
+    if (draft.section) chapter.section = draft.section;
+    // Keep each source game's order and annotations, but share node IDs with
+    // the merged training tree so paused lessons can open the same position.
+    const alignIds = (nodes: CourseNode[], merged: CourseNode[]): void => {
+      for (const node of nodes) {
+        const match = merged.find((item) => item.san === node.san)!;
+        node.id = match.id;
+        alignIds(node.children, match.children);
+      }
+    };
+    chapter.games = draft.games.map((game, gameIndex) => {
+      const roots = place({ ...context, problems: [] }, convert(game.moves), '');
+      alignIds(roots, chapter.roots);
+      return { id: `${chapter.id}/game-${gameIndex + 1}`, roots, headers: game.headers,
+        ...(game.initialShapes ? { initialShapes: game.initialShapes } : {}) };
+    });
     return chapter;
   });
 
-  const name = options.name ?? courseName(games);
+  const fileTitle = title(options.fileName?.split(/[\\/]/).pop()?.replace(/\.pgn$/i, ''));
+  const name = title(options.name) ?? fileTitle ?? courseName(games);
   const declared = games[0]?.headers.Orientation?.toLowerCase();
   const side: CourseSide =
     options.side ??

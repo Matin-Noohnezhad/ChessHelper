@@ -9,3 +9,18 @@ pgn/
 
 # Derived annotation index over those PGNs. Rebuild with `npm run index:corpus`.
 .corpus/
+
+# Imported courses and their progress, kept by the dev server. Yours, not the repo's.
+user-data/
+
+# Knowledge graph for coding agents, rebuilt by scripts/graphify-refresh.sh after each turn.
+graphify-out/
+
+# Personal Claude Code settings; the shared ones live in .claude/settings.json.
+.claude/settings.local.json
+
+# Test coverage, logs and local environment files.
+coverage/
+*.log
+.env
+.env.*

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildCourse } from '../import.js';
 import { recordAnswer, blankProgress } from '../scheduler.js';
 import { chapterStats, courseOutline, courseStats, nextDueAt } from '../stats.js';
-import { moveKey, trainableMoves, variationsOf } from '../tree.js';
+import { moveKey, trainableMoves, readingLinesOf } from '../tree.js';
 import type { CourseProgress } from '../types.js';
 import { COURSE_PGN } from './fixture.js';
 
@@ -16,14 +16,14 @@ describe('course statistics', () => {
     expect(stats.total).toBe(trainableMoves(course.chapters, course.side).size);
     expect(stats.seen).toBe(0);
     expect(stats.learned).toBe(0);
-    // Nothing learned means everything is due; that is the learn queue.
-    expect(stats.due).toBe(stats.total);
+    // Unseen moves belong to Learn, not the review queue.
+    expect(stats.due).toBe(0);
     expect(stats.levels[0]).toBe(stats.total);
   });
 
   it('counts in moves rather than variations', () => {
     const stats = courseStats(course, {}, NOW);
-    expect(stats.variations).toBe(5);
+    expect(stats.variations).toBe(2);
     expect(stats.total).toBeGreaterThan(stats.variations);
   });
 
@@ -38,7 +38,8 @@ describe('course statistics', () => {
     expect(stats.seen).toBe(1);
     expect(stats.learned).toBe(1);
     expect(stats.levels[3]).toBe(1);
-    expect(stats.due).toBe(stats.total - 1);
+    expect(stats.due).toBe(0);
+    expect(courseStats(course, progress, entry.dueAt).due).toBe(1);
   });
 
   it('reports each chapter on its own terms', () => {
@@ -47,10 +48,9 @@ describe('course statistics', () => {
       'Open Sicilian',
       'Move Orders',
     ]);
-    expect(stats.chapters[0]!.variations).toBe(4);
+    expect(stats.chapters[0]!.variations).toBe(1);
     expect(stats.chapters[1]!.variations).toBe(1);
-    // The second chapter is entirely move orders into the first, so its moves
-    // are counted twice across the chapters and once for the course.
+    // Shared opening moves count in both chapters and once for the course.
     const summed = stats.chapters.reduce((sum, chapter) => sum + chapter.total, 0);
     expect(summed).toBeGreaterThan(stats.total);
   });
@@ -86,10 +86,10 @@ describe('the course outline', () => {
   it('lists every chapter with its lines, ids matching the tree', () => {
     const outline = courseOutline(course, {}, NOW);
     expect(outline.map((chapter) => chapter.name)).toEqual(['Open Sicilian', 'Move Orders']);
-    expect(outline[0]!.variations).toHaveLength(4);
+    expect(outline[0]!.variations).toHaveLength(1);
     expect(outline[1]!.variations).toHaveLength(1);
 
-    const treeIds = variationsOf(course.chapters[0]!, 'white').map((v) => v.id);
+    const treeIds = readingLinesOf(course.chapters[0]!).map((v) => v.id);
     expect(outline[0]!.variations.map((v) => v.id)).toEqual(treeIds);
   });
 
@@ -108,7 +108,7 @@ describe('the course outline', () => {
   });
 
   it('counts a line as due only once a move it taught has come round again', () => {
-    const najdorf = variationsOf(course.chapters[0]!, 'white')[0]!;
+    const najdorf = readingLinesOf(course.chapters[0]!)[0]!;
     const first = moveKey(najdorf.line.find((node) => node.side === 'w')!);
     const overdue: CourseProgress = {
       [first]: { key: first, level: 2, dueAt: NOW - HOUR, lastSeenAt: NOW - 100 * HOUR, correct: 2, wrong: 0 },
@@ -119,7 +119,7 @@ describe('the course outline', () => {
   });
 
   it('fills a line as its moves climb, and calls it learned once every one has', () => {
-    const najdorf = variationsOf(course.chapters[0]!, 'white')[0]!;
+    const najdorf = readingLinesOf(course.chapters[0]!)[0]!;
     const keys = najdorf.line
       .filter((node) => node.side === 'w')
       .map((node) => moveKey(node));

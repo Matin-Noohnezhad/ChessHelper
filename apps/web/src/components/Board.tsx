@@ -1,9 +1,22 @@
-import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { Chess, PieceSymbol, SquareContents } from '@coh/chess-core';
+import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { Chess, MoveShapes, PieceSymbol, SquareContents } from '@coh/chess-core';
+import { reverseCapture, smartCandidates, SmartMoveEngine } from '../smartMoves.js';
 import { Piece } from './Piece.js';
+import { AnnotationArrow, AnnotationSquare, AnnotationStyleContext, LastMoveArrowContext } from './BoardAnnotations.js';
+import type { AnnotationThickness, DrawColor } from './BoardAnnotations.js';
+import { movementDuration, movementFrames, movementPlan } from '../boardAnimation.js';
+import type { AnimationPosition } from '../boardAnimation.js';
+import { useBoardAnimationSettings, useReducedMotion } from './BoardAnimationContext.js';
+import { useBoardSoundSettings } from './BoardSoundContext.js';
+import { playBoardSound } from '../sound.js';
+import type { BoardSound } from '../sound.js';
 import type { Orientation } from '../hooks/useChessGame.js';
 
+export { ANNOTATION_THICKNESS_OPTIONS } from './BoardAnnotations.js';
+export type { AnnotationThickness } from './BoardAnnotations.js';
+
 const FILES = 'abcdefgh';
+export const BoardCoordinatesContext = createContext(true);
 const PROMOTION_CHOICES: PieceSymbol[] = ['q', 'r', 'b', 'n'];
 
 /** Board squares in reading order for the given orientation. */
@@ -14,16 +27,6 @@ function squareNames(orientation: Orientation): string[] {
   }
   return orientation === 'white' ? names : [...names].reverse();
 }
-
-/** Right-click annotations, lichess-style: drag for an arrow, click for a rounded-square mark. */
-type DrawColor = 'green' | 'red' | 'blue' | 'yellow';
-
-const DRAW_COLORS: Record<DrawColor, string> = {
-  green: 'rgba(21, 120, 27, 0.82)',
-  red: 'rgba(200, 45, 45, 0.82)',
-  blue: 'rgba(30, 100, 220, 0.82)',
-  yellow: 'rgba(230, 158, 0, 0.85)',
-};
 
 interface DrawArrow {
   from: string;
@@ -36,11 +39,11 @@ interface DrawCircle {
   color: DrawColor;
 }
 
-/** Which annotation color a right-click draws, keyed like lichess: plain/shift/ctrl/alt. */
+/** Which annotation color a right-click draws: plain green, Ctrl red, Shift blue, Alt yellow. */
 function colorForModifiers(event: { shiftKey: boolean; ctrlKey: boolean; altKey: boolean; metaKey: boolean }): DrawColor {
   if (event.altKey) return 'yellow';
-  if (event.ctrlKey || event.metaKey) return 'blue';
-  if (event.shiftKey) return 'red';
+  if (event.ctrlKey || event.metaKey) return 'red';
+  if (event.shiftKey) return 'blue';
   return 'green';
 }
 
@@ -56,36 +59,6 @@ function squareCenter(square: string, orientation: Orientation): { x: number; y:
   }
   return { x: (col + 0.5) * 12.5, y: (row + 0.5) * 12.5 };
 }
-
-/** Pulls the arrow's end point back toward its start so the arrowhead clears the target square's center. */
-function shortenTowards(
-  from: { x: number; y: number },
-  to: { x: number; y: number },
-  amount: number,
-): { x: number; y: number } {
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
-  const len = Math.hypot(dx, dy) || 1;
-  const ratio = Math.max(0, (len - amount) / len);
-  return { x: from.x + dx * ratio, y: from.y + dy * ratio };
-}
-
-export type AnnotationThickness = 'thin' | 'medium' | 'thick' | 'extra';
-
-/** Ordered for a settings picker; label is what the user sees. */
-export const ANNOTATION_THICKNESS_OPTIONS: { key: AnnotationThickness; label: string }[] = [
-  { key: 'thin', label: 'Thin' },
-  { key: 'medium', label: 'Medium' },
-  { key: 'thick', label: 'Thick' },
-  { key: 'extra', label: 'Extra thick' },
-];
-
-const ANNOTATION_SCALE: Record<AnnotationThickness, { arrow: number; circle: number; marker: number }> = {
-  thin: { arrow: 1.4, circle: 1.3, marker: 4.4 },
-  medium: { arrow: 2.2, circle: 2, marker: 6 },
-  thick: { arrow: 3.2, circle: 2.8, marker: 7.6 },
-  extra: { arrow: 4.4, circle: 3.6, marker: 9.2 },
-};
 
 /** An arrow the app draws itself, e.g. the engine's move in a review. */
 export interface BoardArrow {
@@ -117,24 +90,13 @@ export interface SquareBadge {
   className?: string;
 }
 
-/**
- * A piece caught mid-move: it is already drawn on the square it arrived at, and
- * `dx`/`dy` are how far back toward its old square to start it before letting
- * it run home. Offsets are in pixels rather than percentages because a piece is
- * a text glyph — its own box is the width of the letter, not of the square.
- */
-interface Slide {
-  to: string;
-  dx: number;
-  dy: number;
-  /** False on the frame that positions it, true on the one that releases it. */
-  running: boolean;
-}
-
 /** Layout effects warn under server rendering, where there is nothing to lay out. */
 const useVisualEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 interface BoardProps {
+  /** Saved drawings for the selected Explore node. */
+  shapes?: MoveShapes;
+  onShapesChange?: (shapes: MoveShapes) => void;
   game: Chess;
   orientation: Orientation;
   lastMove: { from: string; to: string } | null;
@@ -153,11 +115,20 @@ interface BoardProps {
   /**
    * Slide the piece into place when the position changes under the board.
    *
-   * Off by default. On the explore board a move is something you just made and
-   * an animation is in your way; when the board is playing a line *to* you, a
-   * piece that teleports is a move you did not see happen.
+   * Off by default. Clicked moves and single steps forward or back can slide;
+   * dragged pieces are already at their destination and skip the animation.
    */
   animateMoves?: boolean;
+  /** Smart entry is opt-in per board, so training remains a manual exercise. */
+  moveEntryMode?: 'smart' | 'select';
+  /**
+   * The position changed by stepping through moves already played — back,
+   * forward, or a jump in a move list — rather than by a new move.
+   *
+   * Read on the render the position changes. Replayed moves are silent unless
+   * the replay-sound setting is on; new moves always sound.
+   */
+  replay?: boolean;
 }
 
 interface Pending {
@@ -165,7 +136,18 @@ interface Pending {
   to: string;
 }
 
+interface Drag {
+  square: string;
+  x: number;
+  y: number;
+  originX: number;
+  originY: number;
+  active: boolean;
+}
+
 export function Board({
+  shapes,
+  onShapesChange,
   game,
   orientation,
   lastMove,
@@ -177,61 +159,54 @@ export function Board({
   badge = null,
   annotationThickness = 'medium',
   animateMoves = false,
+  moveEntryMode = 'select',
+  replay = false,
 }: BoardProps) {
-  const annotationScale = ANNOTATION_SCALE[annotationThickness];
+  const showCoordinates = useContext(BoardCoordinatesContext);
+  const annotationStyle = useContext(AnnotationStyleContext);
+  const { showLastMoveArrow, lastMoveArrowColor } = useContext(LastMoveArrowContext);
+  const [lastMoveArrowDismissed, setLastMoveArrowDismissed] = useState(false);
+  const animationSettings = useBoardAnimationSettings();
+  const { movementStyle, movementSpeed } = animationSettings;
+  const duration = movementDuration(animationSettings);
+  const reducedMotion = useReducedMotion();
+  const moveFrom = lastMove?.from;
+  const moveTo = lastMove?.to;
+  const { volume: soundVolume, style: soundStyle, replay: replaySounds } = useBoardSoundSettings();
   const boardRef = useRef<HTMLDivElement>(null);
-  const uid = useId();
+  const smartEngine = useRef<SmartMoveEngine | null>(null);
+  const smartRequest = useRef<AbortController | null>(null);
+  const [smartBusy, setSmartBusy] = useState(false);
+  const [smartError, setSmartError] = useState<string | null>(null);
+  const cancelSmartMove = useCallback(() => {
+    smartRequest.current?.abort();
+    smartRequest.current = null;
+    setSmartBusy(false);
+    setSmartError(null);
+  }, []);
+  useEffect(() => {
+    if (!interactive || moveEntryMode !== 'smart') return;
+    const engine = new SmartMoveEngine();
+    smartEngine.current = engine;
+    engine.warmup();
+    return () => {
+      engine.dispose();
+      if (smartEngine.current === engine) smartEngine.current = null;
+    };
+  }, [interactive, moveEntryMode]);
   const [selected, setSelected] = useState<string | null>(null);
-  const [drag, setDrag] = useState<{ square: string; x: number; y: number } | null>(null);
+  const [drag, setDrag] = useState<Drag | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
-  const [arrows, setArrows] = useState<DrawArrow[]>([]);
-  const [circles, setCircles] = useState<DrawCircle[]>([]);
+  const [localArrows, setArrows] = useState<DrawArrow[]>([]);
+  const [localCircles, setCircles] = useState<DrawCircle[]>([]);
+  const arrows = shapes?.arrows ?? localArrows;
+  const circles = shapes?.circles ?? localCircles;
   const [drawStart, setDrawStart] = useState<{ square: string; color: DrawColor } | null>(null);
   const [drawCurrent, setDrawCurrent] = useState<string | null>(null);
-  const [slide, setSlide] = useState<Slide | null>(null);
-  const slidFrom = useRef<string | null>(null);
+  const animationPosition = useRef<(AnimationPosition & { orientation: Orientation }) | null>(null);
+  const draggedMove = useRef<string | null>(null);
 
   const names = useMemo(() => squareNames(orientation), [orientation]);
-
-  /**
-   * Catch the arriving piece and start it where it came from.
-   *
-   * Keyed on the origin square rather than on the pair: a piece being dragged
-   * home by the person holding it has already visibly travelled, and re-running
-   * the trip under it looks like a stutter. What this is for is the moves the
-   * board makes on its own.
-   */
-  useVisualEffect(() => {
-    if (!animateMoves) {
-      slidFrom.current = null;
-      return;
-    }
-    const key = lastMove ? `${lastMove.from}${lastMove.to}` : null;
-    if (key === slidFrom.current) return;
-    slidFrom.current = key;
-    if (!lastMove || !boardRef.current) {
-      setSlide(null);
-      return;
-    }
-    const rect = boardRef.current.getBoundingClientRect();
-    const from = squareCenter(lastMove.from, orientation);
-    const to = squareCenter(lastMove.to, orientation);
-    setSlide({
-      to: lastMove.to,
-      dx: ((from.x - to.x) / 100) * rect.width,
-      dy: ((from.y - to.y) / 100) * rect.height,
-      running: false,
-    });
-  }, [animateMoves, lastMove, orientation]);
-
-  // A frame later, drop the offset and let the transition carry it across.
-  useEffect(() => {
-    if (!slide || slide.running) return;
-    const frame = requestAnimationFrame(() =>
-      setSlide((current) => (current && !current.running ? { ...current, running: true } : current)),
-    );
-    return () => cancelAnimationFrame(frame);
-  }, [slide]);
 
   /**
    * Everything below is derived from the *position*, so that is what it is keyed
@@ -245,6 +220,28 @@ export function Board({
    */
   const fen = game.fen();
 
+  // Manual drawing hides only this position's move arrow. A new move or a
+  // navigation step restores it; clearing marks or flipping the board does not.
+  useVisualEffect(() => {
+    setLastMoveArrowDismissed(false);
+  }, [fen, moveFrom, moveTo]);
+
+  useVisualEffect(() => {
+    cancelSmartMove();
+    return () => { smartRequest.current?.abort(); };
+  }, [fen, orientation, interactive, moveEntryMode, cancelSmartMove]);
+
+  // Position navigation and board flips must not leave a stale drag or promotion.
+  useEffect(() => {
+    setSelected(null);
+    setDrag(null);
+    setPending(null);
+    setArrows([]);
+    setCircles([]);
+    setDrawStart(null);
+    setDrawCurrent(null);
+  }, [fen, orientation, interactive, moveEntryMode]);
+
   const contents = useMemo(() => {
     // game.board() is always a8..h1; index it by square name so the rendering
     // order and the data order can differ without a second source of truth.
@@ -257,12 +254,84 @@ export function Board({
     return map;
   }, [game, fen]);
 
+  // Validate the entire transition so resets and jumps cannot animate unrelated pieces.
+  // Web Animations start before paint and are cancelled when navigation interrupts a move.
+  useVisualEffect(() => {
+    const move = moveFrom && moveTo ? { from: moveFrom, to: moveTo } : null;
+    const previous = animationPosition.current;
+    animationPosition.current = { fen, orientation, lastMove: move };
+    const dragKey = draggedMove.current;
+    draggedMove.current = null;
+    if (!animateMoves || !duration || reducedMotion || !previous || !boardRef.current ||
+        previous.fen === fen || previous.orientation !== orientation) return;
+    const moves = movementPlan(previous, { fen, lastMove: move });
+    const rect = boardRef.current.getBoundingClientRect();
+    const active: { animation: Animation; element: HTMLElement }[] = [];
+    for (const move of moves) {
+      if (dragKey === `${move.from}${move.to}`) continue;
+      const element = boardRef.current.querySelector<HTMLElement>(`[data-square="${move.to}"] .piece-holder`);
+      if (!element?.animate) continue;
+      const from = squareCenter(move.from, orientation);
+      const to = squareCenter(move.to, orientation);
+      const animation = element.animate(movementFrames(
+        ((from.x - to.x) / 100) * rect.width,
+        ((from.y - to.y) / 100) * rect.height,
+        movementStyle,
+      ), { duration, easing: 'linear' });
+      element.classList.add('piece-slide');
+      animation.onfinish = () => element.classList.remove('piece-slide');
+      active.push({ animation, element });
+    }
+    return () => {
+      for (const { animation, element } of active) {
+        animation.cancel();
+        element.classList.remove('piece-slide');
+      }
+    };
+  }, [animateMoves, fen, moveFrom, moveTo, orientation, duration, movementStyle, movementSpeed, reducedMotion]);
+
+  const previousPosition = useRef<{ fen: string; pieces: Map<string, SquareContents> } | null>(null);
+  useEffect(() => {
+    const previous = previousPosition.current;
+    previousPosition.current = { fen, pieces: contents };
+    if (!previous || previous.fen === fen || (replay && !replaySounds)) return;
+
+    const changed = names.filter((square) => {
+      const before = previous.pieces.get(square);
+      const after = contents.get(square);
+      return before?.type !== after?.type || before?.color !== after?.color;
+    }).length;
+    if (changed < 2 || changed > 4) return;
+
+    const before = lastMove ? previous.pieces.get(lastMove.from) : undefined;
+    const after = lastMove ? contents.get(lastMove.to) : undefined;
+    // Stepping backward has no forward mover at lastMove.from. Give it the
+    // plain board click; the richer sounds describe moves that just landed.
+    const forward = !!before && !!after && before.color === after.color;
+    const capture = forward && (previous.pieces.size > contents.size ||
+      !!previous.pieces.get(lastMove!.to));
+    const castle = forward && before.type === 'k' &&
+      Math.abs(FILES.indexOf(lastMove!.from[0]!) - FILES.indexOf(lastMove!.to[0]!)) === 2;
+    const kind: BoardSound = !forward ? 'move'
+      : game.isCheckmate() ? 'mate'
+      : game.isCheck() ? 'check'
+      : forward && before.type === 'p' && after.type !== 'p' ? 'promotion'
+      : castle ? 'castle'
+      : capture ? 'capture'
+      : 'move';
+    playBoardSound(kind, soundVolume, soundStyle, capture, castle);
+  }, [fen, contents, lastMove, game, names, soundVolume, soundStyle, replay, replaySounds]);
+
   const targets = useMemo(() => {
     if (!selected || !interactive) return new Map<string, boolean>();
     const map = new Map<string, boolean>();
-    for (const move of game.movesFrom(selected)) map.set(move.to, move.isCapture);
+    if (contents.get(selected)?.color === game.turn()) {
+      for (const move of game.movesFrom(selected)) map.set(move.to, move.isCapture);
+    } else {
+      for (const move of smartCandidates(game, selected)) map.set(move.from, move.isCapture);
+    }
     return map;
-  }, [game, fen, selected, interactive]);
+  }, [game, fen, selected, interactive, contents]);
 
   const checkSquare = useMemo(() => {
     if (!game.isCheck()) return null;
@@ -306,35 +375,71 @@ export function Board({
     [game, onMove],
   );
 
+  const playSmartMove = useCallback(async (square: string) => {
+    cancelSmartMove();
+    const candidates = smartCandidates(game, square);
+    if (!candidates.length) return;
+    if (candidates.length === 1) {
+      const move = candidates[0]!;
+      setSelected(null);
+      onMove(move.from, move.to, move.promotion);
+      return;
+    }
+    const controller = new AbortController();
+    smartRequest.current = controller;
+    setSmartBusy(true);
+    try {
+      smartEngine.current ??= new SmartMoveEngine();
+      const move = await smartEngine.current.choose(fen, candidates, controller.signal);
+      if (controller.signal.aborted || smartRequest.current !== controller) return;
+      setSelected(null);
+      onMove(move.from, move.to, move.promotion);
+    } catch {
+      if (!controller.signal.aborted) setSmartError('Smart move unavailable. Choose a highlighted destination or drag to move.');
+    } finally {
+      if (smartRequest.current === controller) {
+        smartRequest.current = null;
+        setSmartBusy(false);
+      }
+    }
+  }, [game, fen, onMove, cancelSmartMove]);
+
   const toggleDrawing = useCallback((from: string, to: string, color: DrawColor) => {
+    setLastMoveArrowDismissed(true);
     if (from === to) {
-      setCircles((prev) => {
+      const update = (prev: DrawCircle[]) => {
         const existing = prev.find((c) => c.square === from);
         if (existing?.color === color) return prev.filter((c) => c.square !== from);
         if (existing) return prev.map((c) => (c.square === from ? { square: from, color } : c));
         return [...prev, { square: from, color }];
-      });
+      };
+      if (shapes && onShapesChange) onShapesChange({ ...shapes, circles: update(shapes.circles) });
+      else setCircles(update);
       return;
     }
-    setArrows((prev) => {
+    const update = (prev: DrawArrow[]) => {
       const existing = prev.find((a) => a.from === from && a.to === to);
       if (existing?.color === color) return prev.filter((a) => !(a.from === from && a.to === to));
       if (existing) return prev.map((a) => (a.from === from && a.to === to ? { from, to, color } : a));
       return [...prev, { from, to, color }];
-    });
-  }, []);
+    };
+    if (shapes && onShapesChange) onShapesChange({ ...shapes, arrows: update(shapes.arrows) });
+    else setArrows(update);
+  }, [shapes, onShapesChange]);
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent, square: string) => {
+      cancelSmartMove();
       if (event.button === 2) {
         event.preventDefault();
         setDrawStart({ square, color: colorForModifiers(event) });
         setDrawCurrent(square);
-        (event.target as Element).setPointerCapture?.(event.pointerId);
+        event.currentTarget.setPointerCapture?.(event.pointerId);
         return;
       }
       if (event.button !== 0) return;
-      // Any left-button interaction starts a fresh selection, so clear old annotations first.
+      // Transient drawings clear on left-click. Saved Explore drawings are
+      // controlled by the caller and remain until toggled or explicitly cleared.
       if (arrows.length || circles.length) {
         setArrows([]);
         setCircles([]);
@@ -343,26 +448,30 @@ export function Board({
       const piece = contents.get(square);
       const isOwn = piece?.color === game.turn();
 
-      if (selected && selected !== square && !isOwn) {
-        if (attemptMove(selected, square)) setSelected(null);
-        else setSelected(null);
-        return;
+      if (selected && selected !== square && !isOwn && contents.get(selected)?.color === game.turn()) {
+        if (attemptMove(selected, square)) { setSelected(null); return; }
       }
-      if (!isOwn) {
+      if (selected && isOwn && contents.get(selected)?.color !== game.turn()) {
+        const reverse = reverseCapture(game, selected, square);
+        if (reverse && attemptMove(reverse.from, reverse.to)) { setSelected(null); return; }
+      }
+      if (!piece && moveEntryMode !== 'smart') {
         setSelected(null);
         return;
       }
 
       setSelected(square);
-      setDrag({ square, x: event.clientX, y: event.clientY });
-      (event.target as Element).setPointerCapture?.(event.pointerId);
+      setDrag({ square, x: event.clientX, y: event.clientY,
+        originX: event.clientX, originY: event.clientY, active: false });
+      event.currentTarget.setPointerCapture?.(event.pointerId);
     },
-    [interactive, pending, contents, game, selected, attemptMove, arrows, circles],
+    [interactive, pending, contents, game, selected, attemptMove, arrows, circles, cancelSmartMove, moveEntryMode],
   );
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent) => {
-      if (drag) setDrag({ ...drag, x: event.clientX, y: event.clientY });
+      if (drag) setDrag({ ...drag, x: event.clientX, y: event.clientY,
+        active: drag.active || Math.hypot(event.clientX - drag.originX, event.clientY - drag.originY) > 5 });
       if (drawStart) setDrawCurrent(squareAtPoint(event.clientX, event.clientY));
     },
     [drag, drawStart, squareAtPoint],
@@ -381,12 +490,20 @@ export function Board({
       const target = squareAtPoint(event.clientX, event.clientY);
       const from = drag.square;
       setDrag(null);
-      // Releasing on the origin square means "select", not "move" — that is
-      // what makes click-to-move and drag-to-move coexist.
-      if (!target || target === from) return;
-      if (attemptMove(from, target)) setSelected(null);
+      if (!drag.active && target === from) {
+        if (moveEntryMode === 'smart') void playSmartMove(from);
+        return;
+      }
+      if (!target || target === from || !game.pieceAt(from)) return;
+      const reverse = reverseCapture(game, from, target);
+      const source = reverse?.from ?? from;
+      const destination = reverse?.to ?? target;
+      // Reverse captures animate the actual attacker toward the victim.
+      draggedMove.current = reverse ? null : `${source}${destination}`;
+      if (attemptMove(source, destination)) setSelected(null);
+      else draggedMove.current = null;
     },
-    [drag, drawStart, squareAtPoint, attemptMove, toggleDrawing],
+    [drag, drawStart, squareAtPoint, attemptMove, toggleDrawing, game, moveEntryMode, playSmartMove],
   );
 
   const finishPromotion = useCallback(
@@ -400,6 +517,7 @@ export function Board({
   );
 
   const dragPiece = drag ? contents.get(drag.square) : undefined;
+  const dropSquare = drag?.active ? squareAtPoint(drag.x, drag.y) : null;
 
   const previewArrow: DrawArrow | null =
     drawStart && drawCurrent && drawCurrent !== drawStart.square
@@ -413,7 +531,8 @@ export function Board({
   return (
     <div className="board-wrap">
       <div
-        className="board"
+        className={`board${interactive ? ' board--interactive' : ''}`}
+        aria-label={`Chessboard, ${orientation} at bottom`}
         ref={boardRef}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -434,9 +553,9 @@ export function Board({
             'square',
             dark ? 'square--dark' : 'square--light',
             selected === square ? 'square--selected' : '',
-            lastMove && (lastMove.from === square || lastMove.to === square)
-              ? 'square--last'
-              : '',
+            dropSquare === square && targets.has(square) ? 'square--drop' : '',
+            lastMove?.from === square ? 'square--last-from' : '',
+            lastMove?.to === square ? 'square--last-to' : '',
             checkSquare === square ? 'square--check' : '',
             mark ? `square--mark square--mark-${mark.kind}` : '',
           ]
@@ -451,22 +570,11 @@ export function Board({
               onPointerDown={(e) => handlePointerDown(e, square)}
             >
               {piece && (
-                <span
-                  className={slide?.to === square ? 'piece-slide' : undefined}
-                  style={
-                    slide?.to === square
-                      ? {
-                          transform: slide.running
-                            ? 'none'
-                            : `translate(${slide.dx}px, ${slide.dy}px)`,
-                        }
-                      : undefined
-                  }
-                >
+                <span className="piece-holder">
                   <Piece
                     type={piece.type}
                     color={piece.color}
-                    dragging={drag?.square === square}
+                    dragging={drag?.active && drag.square === square}
                   />
                 </span>
               )}
@@ -483,78 +591,36 @@ export function Board({
                 </span>
               )}
               {mark?.label && <span className="square-label">{mark.label}</span>}
-              {file === 0 && <span className="coord coord--rank">{square[1]}</span>}
-              {rank === 7 && <span className="coord coord--file">{square[0]}</span>}
+              {showCoordinates && file === 0 && <span className="coord coord--rank" aria-hidden="true">{square[1]}</span>}
+              {showCoordinates && rank === 7 && <span className="coord coord--file" aria-hidden="true">{square[0]}</span>}
             </div>
           );
         })}
 
-        <svg className="board-draw" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <defs>
-            {(Object.keys(DRAW_COLORS) as DrawColor[]).map((color) => (
-              <marker
-                key={color}
-                id={`${uid}-arrowhead-${color}`}
-                viewBox="0 0 10 10"
-                refX="8.5"
-                refY="5"
-                markerWidth={annotationScale.marker}
-                markerHeight={annotationScale.marker}
-                markerUnits="userSpaceOnUse"
-                orient="auto"
-              >
-                <path d="M0,0 L10,5 L0,10 z" fill={DRAW_COLORS[color]} />
-              </marker>
-            ))}
-          </defs>
+        <svg className="board-draw" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          {showLastMoveArrow && lastMove && !lastMoveArrowDismissed && !drawStart && (
+            <g data-last-move-arrow={`${lastMove.from}${lastMove.to}`}>
+              <AnnotationArrow from={squareCenter(lastMove.from, orientation)} to={squareCenter(lastMove.to, orientation)}
+                color={lastMoveArrowColor} style={annotationStyle} thickness={annotationThickness} />
+            </g>
+          )}
           {[
             ...hintArrows.map((arrow) => ({ ...arrow, color: arrow.color ?? 'blue' })),
             ...arrows,
             ...(previewArrow ? [previewArrow] : []),
-          ].map((arrow, i) => {
-            const start = squareCenter(arrow.from, orientation);
-            const end = shortenTowards(
-              start,
-              squareCenter(arrow.to, orientation),
-              annotationScale.marker * 0.9,
-            );
-            return (
-              <line
-                key={`arrow-${arrow.from}-${arrow.to}-${i}`}
-                x1={start.x}
-                y1={start.y}
-                x2={end.x}
-                y2={end.y}
-                stroke={DRAW_COLORS[arrow.color]}
-                strokeWidth={annotationScale.arrow}
-                strokeLinecap="round"
-                markerEnd={`url(#${uid}-arrowhead-${arrow.color})`}
-              />
-            );
-          })}
+          ].map((arrow, i) => (
+            <AnnotationArrow key={`arrow-${arrow.from}-${arrow.to}-${i}`}
+              from={squareCenter(arrow.from, orientation)} to={squareCenter(arrow.to, orientation)}
+              color={arrow.color} style={annotationStyle} thickness={annotationThickness} />
+          ))}
           {[
             ...hintCircles.map((circle) => ({ ...circle, color: circle.color ?? 'green' })),
             ...circles,
             ...(previewCircle ? [previewCircle] : []),
-          ].map((circle, i) => {
-            const { x, y } = squareCenter(circle.square, orientation);
-            const side = 9.6; // a rounded square, not a full circle — squarish highlight with soft corners
-            const radius = side * 0.32;
-            return (
-              <rect
-                key={`circle-${circle.square}-${i}`}
-                x={x - side / 2}
-                y={y - side / 2}
-                width={side}
-                height={side}
-                rx={radius}
-                ry={radius}
-                fill="none"
-                stroke={DRAW_COLORS[circle.color]}
-                strokeWidth={annotationScale.circle}
-              />
-            );
-          })}
+          ].map((circle, i) => (
+            <AnnotationSquare key={`circle-${circle.square}-${i}`} center={squareCenter(circle.square, orientation)}
+              color={circle.color} style={annotationStyle} thickness={annotationThickness} />
+          ))}
         </svg>
 
         {pending && (
@@ -563,7 +629,8 @@ export function Board({
               <p>Promote to</p>
               <div className="promotion__choices">
                 {PROMOTION_CHOICES.map((choice) => (
-                  <button key={choice} type="button" onClick={() => finishPromotion(choice)}>
+                  <button key={choice} type="button" onClick={() => finishPromotion(choice)}
+                    aria-label={`Promote to ${{ q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn', k: 'king' }[choice]}`}>
                     <Piece type={choice} color={game.turn()} />
                   </button>
                 ))}
@@ -576,16 +643,24 @@ export function Board({
         )}
       </div>
 
-      {drag && dragPiece && (
+      {drag?.active && dragPiece && (
         <div className="drag-layer" style={{ left: drag.x, top: drag.y }}>
           <Piece type={dragPiece.type} color={dragPiece.color} />
         </div>
       )}
 
-      <p className="board-hint">
-        Right-click drag to draw an arrow, right-click a square to mark it — hold{' '}
-        <kbd>Shift</kbd> for red, <kbd>Ctrl</kbd> for blue, <kbd>Alt</kbd> for yellow.
-      </p>
+      {(smartBusy || smartError) && <p className="board-smart-status" role="status">
+        {smartBusy ? 'Choosing a move…' : smartError}
+      </p>}
+      <details className="board-hint">
+        <summary>Board controls</summary>
+        <p>{moveEntryMode === 'smart'
+          ? 'Click a piece to play its best capture, or its best move if no capture is available. Click an empty square to move the best eligible piece there. Click an opponent’s piece to capture it. Drag to choose a specific move.'
+          : 'Click a piece and its destination, or drag to move.'}
+          {' '}Drag an opponent’s piece onto your piece to capture it in reverse. Right-click drag to draw an arrow;
+          right-click a square to mark it. Hold <kbd>Ctrl</kbd> for red, <kbd>Shift</kbd> for blue,
+          or <kbd>Alt</kbd> for yellow.</p>
+      </details>
     </div>
   );
 }

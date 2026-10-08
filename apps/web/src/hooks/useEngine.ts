@@ -161,10 +161,10 @@ function pvToSan(fen: string, pvUci: string[], maxPly = 8): string[] {
  * Drives Stockfish in a Worker. Off by default and torn down on disable —
  * this is an opt-in study aid, not something that should burn CPU and hold
  * a multi-megabyte WASM binary in memory while someone is just browsing
- * openings.
+ * openings. Explicit analysis views can opt in immediately with initiallyEnabled.
  */
-export function useEngine(fen: string): EngineController {
-  const [enabled, setEnabled] = useState(false);
+export function useEngine(fen: string, initiallyEnabled = false): EngineController {
+  const [enabled, setEnabled] = useState(initiallyEnabled);
   const [thinking, setThinking] = useState(false);
   const [analysis, setAnalysis] = useState<EngineAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);

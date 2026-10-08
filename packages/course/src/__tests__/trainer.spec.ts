@@ -453,7 +453,7 @@ describe('watching the line first', () => {
   });
 });
 
-describe('recapping a shared opening', () => {
+describe('animating new moves and practising the shared opening', () => {
   // Two variations that share 1.e4 e5 2.Nf3 Nc6 3.Bb5 a6, then part ways.
   const shared = buildCourse(
     `[Event "S: Main"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 *\n\n` +
@@ -470,35 +470,41 @@ describe('recapping a shared opening', () => {
     return trainer;
   }
 
-  it('opens the second line by replaying its shared moves, from move one', () => {
+  it('opens the animation after the already-trained prefix', () => {
     const trainer = atSecondLine();
     expect(trainer.status).toBe('watching');
-    expect(trainer.watchAt).toBe(0);
-    expect(trainer.watchRecapUntil).toBe(6);
-    expect(trainer.game.history()).toEqual([]);
+    expect(trainer.watchAt).toBe(6);
+    expect(trainer.watchRecapUntil).toBe(0);
+    expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
   });
 
-  it('is on the branch, teaching the new move, once the recap is played', () => {
+  it('animates only the new section, then asks for every move from the beginning', () => {
     const trainer = atSecondLine();
-    for (let i = 0; i < 6; i++) trainer.advanceWatch();
     expect(trainer.watchAt).toBe(6);
     expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
     expect(trainer.watchNext?.san).toBe('Bxc6');
 
     while (trainer.watching) trainer.advanceWatch();
     expect(trainer.status).toBe('asking');
-    expect(trainer.current?.san).toBe('Bxc6');
-    // Only the new moves are asked; the shared six stay on the board.
-    expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
+    expect(trainer.current?.san).toBe('e4');
+    expect(trainer.game.history()).toEqual([]);
+    for (const san of ['e4', 'Nf3', 'Bb5', 'Bxc6', 'O-O']) {
+      expect(trainer.current?.san).toBe(san);
+      expect(trainer.submit(san).status).toBe('correct');
+    }
+    expect(trainer.status).toBe('task-complete');
   });
 
-  it('replays the recap too when the part is watched again', () => {
+  it('rewatches only the new section and still practices from the beginning', () => {
     const trainer = atSecondLine();
     while (trainer.watching) trainer.advanceWatch();
     expect(trainer.status).toBe('asking');
 
     expect(trainer.rewatch()).toBe(true);
-    expect(trainer.watchAt).toBe(0);
+    expect(trainer.watchAt).toBe(6);
+    expect(trainer.game.history()).toEqual(['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6']);
+    trainer.skipWatch();
+    expect(trainer.current?.san).toBe('e4');
     expect(trainer.game.history()).toEqual([]);
   });
 });
@@ -541,5 +547,66 @@ describe('where the session has got to', () => {
     const plan = buildSession(ending, {}, { mode: 'learn', now: NOW });
     const trainer = new CourseTrainer({ course: ending, plan, now: () => NOW });
     expect(trainer.startFen).toBe(fen);
+  });
+});
+
+
+describe('training regressions', () => {
+  it('records hints and mistakes immediately, even if the task is abandoned', () => {
+    for (const hint of [true, false]) {
+      const trainer = najdorfTrainer();
+      const key = moveKey(trainer.current!);
+      if (hint) trainer.reveal(); else trainer.submit('h3');
+      expect(trainer.exportProgress()[key]).toMatchObject({ level: 1, wrong: 1, correct: 0 });
+      trainer.nextTask();
+      expect(trainer.exportProgress()[key]!.wrong).toBe(1);
+    }
+  });
+
+  it('counts repeated hints and retries as a single missed answer', () => {
+    const trainer = najdorfTrainer();
+    const key = moveKey(trainer.current!);
+    trainer.reveal(); trainer.reveal(); trainer.submit('h3'); trainer.submit('e4');
+    expect(trainer.exportProgress()[key]).toMatchObject({ correct: 0, wrong: 1 });
+    expect(trainer.scoreboard()).toMatchObject({ graded: 1, right: 0, wrong: 1 });
+  });
+
+  it('keeps early practice from climbing the spaced repetition ladder', () => {
+    const known = progressAt(course, 3, NOW + HOUR);
+    const plan = buildSession(course, known, {
+      mode: 'learn', lineIds: [buildSession(course, {}, { mode: 'learn' }).tasks[0]!.lineId], now: NOW,
+    });
+    const trainer = new CourseTrainer({ course, plan, progress: known, now: () => NOW });
+    trainer.skipWatch();
+    const key = moveKey(trainer.current!);
+    trainer.submit(trainer.current!.san);
+    expect(trainer.exportProgress()[key]).toEqual(known[key]);
+    expect(trainer.scoreboard()).toMatchObject({ right: 1 });
+  });
+
+  it('counts watching again during a question as help', () => {
+    const trainer = najdorfTrainer();
+    const key = moveKey(trainer.current!);
+    trainer.rewatch();
+    expect(trainer.exportProgress()[key]).toMatchObject({ wrong: 1 });
+  });
+
+  it('stops quick review on the answered position and fills the completed bar', () => {
+    const progress = progressAt(course, 3, NOW - HOUR);
+    const plan = buildSession(course, progress, { mode: 'random', now: NOW, dueMoves: 1, shuffle: (items) => items });
+    const trainer = new CourseTrainer({ course, plan, progress, now: () => NOW });
+    const before = trainer.ply;
+    trainer.submit(trainer.current!.san);
+    expect(trainer.ply).toBe(before + 1);
+    expect(trainer.scoreboard()).toMatchObject({ tasksDone: 1, tasksTotal: 1 });
+  });
+
+  it('advances due moves normally', () => {
+    const progress = progressAt(course, 3, NOW - HOUR);
+    const plan = buildSession(course, progress, { mode: 'review', now: NOW });
+    const trainer = new CourseTrainer({ course, plan, progress, now: () => NOW });
+    const key = moveKey(trainer.current!);
+    trainer.submit(trainer.current!.san);
+    expect(trainer.exportProgress()[key]).toMatchObject({ level: 4, dueAt: NOW + LEVELS[3]! });
   });
 });

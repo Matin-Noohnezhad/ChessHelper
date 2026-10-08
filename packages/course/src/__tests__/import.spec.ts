@@ -1,8 +1,45 @@
 import { describe, expect, it } from 'vitest';
 import { buildCourse } from '../import.js';
+import { readingLinesOf } from '../tree.js';
 import { BLACK_COURSE_PGN, COURSE_PGN } from './fixture.js';
 
 describe('course import', () => {
+  it('keeps starting-position drawings separate from first-move drawings', () => {
+    const course = buildCourse('{[%cal Ge2e4]} 1. e4 {[%csl Re4]} e5 *');
+    const line = readingLinesOf(course.chapters[0]!)[0]!;
+    expect(line.initialShapes?.arrows).toEqual([{ color: 'green', from: 'e2', to: 'e4' }]);
+    expect(line.roots[0]!.shapes).toEqual({ arrows: [], circles: [{ color: 'red', square: 'e4' }] });
+  });
+  it('uses the uploaded filename and keeps an explicit title override', () => {
+    const pgn = '[Event "?"]\n[White "?"]\n[Black "?"]\n\n1. e4 e5 *';
+    expect(buildCourse(pgn, { fileName: 'Scotch Gambit.PGN' }).name).toBe('Scotch Gambit');
+    expect(buildCourse(pgn, { fileName: 'Scotch Gambit.pgn', name: 'My course' }).name).toBe('My course');
+    expect(buildCourse(COURSE_PGN, { fileName: 'My repertoire.pgn' }).name).toBe('My repertoire');
+    expect(buildCourse(pgn).name).toBe('Imported course');
+    expect(buildCourse(pgn).chapters[0]!.name).toBe('Chapter 1');
+    expect(buildCourse(pgn, { name: ' ? ' }).name).toBe('Imported course');
+  });
+
+  it.each(['White', 'Black'] as const)('groups by %s without merging subsection names across sections', (sectionHeader) => {
+    const pgn = [
+      [' Introduction ', 'Overview', '1. e4 e5 *'],
+      ['Main lines', 'Overview', '1. d4 d5 *'],
+      ['Introduction', 'Move orders', '1. Nf3 d5 *'],
+      ['Introduction', 'Overview', '1. e4 c5 *'],
+      ['Main lines', '?', '1. c4 e5 *'],
+    ].map(([section, subsection, moves]) => `[Event "Scotch Gambit"]\n[${sectionHeader} "${section}"]\n[${sectionHeader === 'White' ? 'Black' : 'White'} "${subsection}"]\n\n${moves}`).join('\n\n');
+    const course = buildCourse(pgn, sectionHeader === 'White' ? {} : { sectionHeader });
+    expect(course.chapters.map(({ section, name }) => [section, name])).toEqual([
+      ['Introduction', 'Overview'],
+      ['Main lines', 'Overview'],
+      ['Introduction', 'Move orders'],
+      ['Main lines', 'Chapter 5'],
+    ]);
+    expect(course.chapters[0]!.roots[0]!.children.map((node) => node.san)).toEqual(['e5', 'c5']);
+    expect(course.chapters[1]!.roots[0]!.san).toBe('d4');
+    expect(new Set(course.chapters.map(({ id }) => id)).size).toBe(4);
+  });
+
   it('takes the course and chapter names from the Event header', () => {
     const course = buildCourse(COURSE_PGN);
     expect(course.name).toBe('Test Course');
@@ -120,5 +157,15 @@ describe('course import', () => {
     // to a position we could reach.
     const e5 = course.chapters[0]!.roots[0]!.children[0]!;
     expect(e5.children).toHaveLength(0);
+  });
+});
+
+
+describe('FEN course move numbers', () => {
+  it('keeps the full move number for a chapter starting with Black', () => {
+    const course = buildCourse('[Event "Endgame"]\n[SetUp "1"]\n[FEN "4k3/8/8/8/8/8/8/4K3 b - - 0 27"]\n\n27... Kd7 28. Kd2 *');
+    const black = course.chapters[0]!.roots[0]!;
+    expect(black).toMatchObject({ san: 'Kd7', side: 'b', ply: 1, moveNumber: 27 });
+    expect(black.children[0]).toMatchObject({ san: 'Kd2', side: 'w', ply: 2, moveNumber: 28 });
   });
 });
