@@ -52,7 +52,7 @@ describe('reading games without splitting their annotations into lines', () => {
     expect(sicilian.children.map((node) => node.san)).toEqual(['Nf3', 'Bc4']);
     const target = sicilian.children[1]!.children[0]!;
     expect(readingPath(game!.roots, target.id).map((node) => node.san)).toEqual(['e4', 'c5', 'Bc4', 'Nc6']);
-    expect(courseOutline(course, {}, 0, true)[0]!.variations).toHaveLength(1);
+    expect(courseOutline(course, {}, 0)[0]!.variations).toHaveLength(1);
   });
 
   it('keeps games with identical chapter headers separate, including their own main line and comments', () => {
@@ -73,7 +73,7 @@ describe('reading games without splitting their annotations into lines', () => {
     const training = variationsOf(chapter, course.side).find((line) => line.line.at(-1)!.san === 'Nc3')!;
     expect(readingPath(games[1]!.roots, training.line.at(-1)!.id).map((node) => node.id))
       .toEqual(training.line.map((node) => node.id));
-    expect(courseOutline(course, {}, 0, true)[0]!.variations).toHaveLength(2);
+    expect(courseOutline(course, {}, 0)[0]!.variations).toHaveLength(2);
   });
 
   it('preserves FEN move numbering and skips illegal moves without duplicating problems', () => {

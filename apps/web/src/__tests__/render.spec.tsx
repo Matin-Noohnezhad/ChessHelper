@@ -433,7 +433,7 @@ describe('course trainer UI', () => {
       />,
     );
     expect(html).toContain('Open Sicilian');
-    expect(html).toContain('2 variations');
+    expect(html).toContain('1 variation');
     expect(html).toContain('side inferred from where the course branches');
   });
 
@@ -483,11 +483,11 @@ describe('course trainer UI', () => {
         onSetSide={() => {}}
       />,
     );
-    // Both variations of the fixture, written out move by move, each with a ring.
+    // The source main line gets one ring; annotated branches stay out of the list.
     expect(html).toContain('course-outline__line');
-    expect(html.match(/class="ring"/g)?.length).toBe(2);
+    expect(html.match(/class="ring"/g)?.length).toBe(1);
     expect(html).toContain('1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3');
-    expect(html).toContain('1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4');
+    expect(html).not.toContain('1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4');
   });
 
   it('opens the reader without training controls', () => {
@@ -507,7 +507,7 @@ describe('course trainer UI', () => {
 [Event "Second chapter"]
 1. e4 e5 {The paused position} 2. Nf3? {An illustrative mistake} *` }, {});
     const line = allVariations(annotated.course).find((item) => item.chapterName === 'Second chapter')!;
-    expect(line.line.map((node) => node.san)).toEqual(['e4', 'e5']);
+    expect(line.line.map((node) => node.san)).toEqual(['e4', 'e5', 'Nf3']);
     const html = renderToStaticMarkup(<CourseReader entry={annotated} lineId={line.id}
       initialPly={2} onExit={() => {}} onTrain={() => {}} />);
     expect(html).toContain('The paused position');
@@ -537,7 +537,8 @@ describe('course trainer UI', () => {
 
   it('puts a line rail beside the board in a session', () => {
     const html = renderToStaticMarkup(
-      <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
+      <CourseSession entry={entryFrom({ ...stored, pgn: PGN + '\n[Event "Second chapter"]\n1. d4 d5 *' }, {})}
+        mode="learn" onExit={() => {}} onPickLine={() => {}} />,
     );
     expect(html).toContain('course-session--rail');
     expect(html).toContain('course-session__rail');
@@ -561,10 +562,8 @@ describe('course trainer UI', () => {
     const html = renderToStaticMarkup(
       <CourseSession entry={entry} mode="learn" onExit={() => {}} onPickLine={() => {}} />,
     );
-    // Two variations, each taught in two parts and then asked from the top:
-    // two lines, three tries at this one — not "1 of 6 tasks", which is a
-    // number about the machine rather than about the chapter.
-    expect(html).toContain('Line 1 of 2');
+    // One main line, taught in two parts and then asked from the top.
+    expect(html).toContain('Line 1 of 1');
     expect(html).toContain('try 1 of 3');
     expect(html).not.toContain('of 6');
   });

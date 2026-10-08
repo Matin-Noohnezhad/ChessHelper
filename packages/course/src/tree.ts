@@ -76,7 +76,7 @@ export interface Variation {
   line: CourseNode[];
 }
 
-/** A source game is one reading line, with all its branches still attached. */
+/** A source game's main line, shared by reading and training; branches stay attached for reading. */
 export interface ReadingLine extends Variation {
   roots: CourseNode[];
   initialShapes?: import('@coh/chess-core').MoveShapes;
@@ -139,13 +139,13 @@ export function variationsOf(chapter: Chapter, side: CourseSide, includeAnnotati
   return out;
 }
 
-/** Every variation in the course. */
+/** Every main line in the course, one per source game, as in the reader. */
 export function allVariations(course: Course): Variation[] {
-  return course.chapters.flatMap((chapter) => variationsOf(chapter, course.side));
+  return course.chapters.flatMap(readingLinesOf);
 }
 
 /**
- * The distinct moves a course asks you to produce, keyed the way progress is.
+ * The distinct main-line moves a course asks you to produce, keyed the way progress is.
  * Deduplicated: the same move reached down two variations is one thing to know.
  */
 export function trainableMoves(
@@ -155,17 +155,16 @@ export function trainableMoves(
   const userColor = colorOf(side);
   const out = new Map<string, CourseNode>();
 
-  const visit = (nodes: readonly CourseNode[]): void => {
-    for (const node of nodes) {
-      if (node.side === userColor) {
-        const key = moveKey(node);
-        if (!out.has(key)) out.set(key, node);
+  for (const chapter of chapters) {
+    for (const { line } of readingLinesOf(chapter)) {
+      for (const node of line) {
+        if (node.side === userColor) {
+          const key = moveKey(node);
+          if (!out.has(key)) out.set(key, node);
+        }
       }
-      visit(playableChildren(node, side));
     }
-  };
-
-  for (const chapter of chapters) visit(playableRoots(chapter, side));
+  }
   return out;
 }
 
@@ -200,7 +199,7 @@ export function progressKeys(
 
   for (const chapter of course.chapters) {
     if (chapterFilter && !chapterFilter.has(chapter.id)) continue;
-    for (const variation of variationsOf(chapter, course.side)) {
+    for (const variation of readingLinesOf(chapter)) {
       if (lineFilter && !lineFilter.has(variation.id)) continue;
       for (const index of quizIndices(variation.line, course.side)) {
         keys.add(moveKey(variation.line[index]!));

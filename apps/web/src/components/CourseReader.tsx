@@ -1,7 +1,7 @@
 import { MoveStepButton } from './MoveStepButton.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Chess, START_FEN } from '@coh/chess-core';
-import { readingLinesOf, readingPath, variationsOf } from '@coh/course';
+import { readingLinesOf, readingPath } from '@coh/course';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
 import { courseShortcutBlocked } from '../courseShortcuts.js';
 import { groupCourseSections } from '../courseSections.js';
@@ -56,9 +56,8 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
   const hasSections = sections.some((item) => item.section);
   const sectionIndex = sections.findIndex((item) => item.section === chapter?.section);
   const sectionChapters = sections[sectionIndex]?.chapters ?? [];
-  const trainingLines = useMemo(() => chapter ? variationsOf(chapter, entry.course.side) : [], [chapter, entry.course.side]);
-  const trainingLine = useMemo(() => trainingLines.find((item) => item.id === line?.id ||
-    item.line.every((node, index) => node.id === line?.line[index]?.id)), [trainingLines, line]);
+  const trainingLine = sourceLine && path.length === sourceLine.line.length &&
+    path.every((node, index) => node.id === sourceLine.line[index]?.id) ? sourceLine : undefined;
   const train = () => { if (chapter) onTrain?.(chapter.id, trainingLine?.id); };
   const trainingLabel = resumeTraining ? 'Back to training' : trainingLine ? 'Train this line' : 'Train this chapter';
   const node = line?.line[ply - 1];

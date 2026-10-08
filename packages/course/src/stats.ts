@@ -11,7 +11,7 @@
  */
 
 import { LEARNED_LEVEL, MAX_LEVEL, isDue, progressFor } from './scheduler.js';
-import { colorOf, moveKey, readingLinesOf, trainableMoves, variationsOf } from './tree.js';
+import { colorOf, moveKey, readingLinesOf, trainableMoves } from './tree.js';
 import type { Variation } from './tree.js';
 import type {
   Chapter,
@@ -53,7 +53,7 @@ export function chapterStats(
   return {
     chapterId: chapter.id,
     name: chapter.name,
-    variations: variationsOf(chapter, side).length,
+    variations: readingLinesOf(chapter).length,
     ...countKeys(moves.keys(), progress, now),
   };
 }
@@ -87,7 +87,7 @@ export type VariationState = 'new' | 'started' | 'learned';
 
 /** One line of a chapter, with how much of it you have actually retained. */
 export interface VariationStats {
-  /** The id {@link variationsOf} gave it — what a session's `lineIds` filters on. */
+  /** The source-game id from {@link readingLinesOf}, also used by sessions. */
   id: string;
   chapterId: string;
   chapterName: string;
@@ -179,10 +179,9 @@ export function courseOutline(
   course: Course,
   progress: CourseProgress,
   now: number = Date.now(),
-  includeAnnotations = false,
 ): OutlineChapter[] {
   return course.chapters.map((chapter) => {
-    const variations = (includeAnnotations ? readingLinesOf(chapter) : variationsOf(chapter, course.side)).map((variation) =>
+    const variations = readingLinesOf(chapter).map((variation) =>
       variationStats(variation, course.side, progress, now),
     );
     const counts = countKeys(trainableMoves([chapter], course.side).keys(), progress, now);

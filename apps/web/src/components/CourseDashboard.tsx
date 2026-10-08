@@ -55,7 +55,7 @@ export function CourseDashboard({
   const { course, stats, progress } = entry;
   const next = nextDueAt(course, progress);
   const now = Date.now();
-  const outline = courseOutline(course, progress, now, section === 'reading');
+  const outline = courseOutline(course, progress, now);
 
   return (
     <div className="course-dashboard">

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildCourse } from '../import.js';
 import { buildSession, evenParts } from '../session.js';
 import { CourseTrainer } from '../trainer.js';
-import { moveKey, trainableMoves, variationsOf } from '../tree.js';
+import { moveKey, trainableMoves, readingLinesOf } from '../tree.js';
 import type { Course, CourseProgress } from '../types.js';
 import { COURSE_PGN } from './fixture.js';
 
@@ -118,7 +118,7 @@ describe('a line that opens like one already taught', () => {
       `[Event "S: Exchange"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Bxc6 dxc6 5. O-O *`,
     { side: 'white' },
   );
-  const idOf = (chapter: number) => variationsOf(shared.chapters[chapter]!, 'white')[0]!.id;
+  const idOf = (chapter: number) => readingLinesOf(shared.chapters[chapter]!)[0]!.id;
 
   it('skips the shared opening in the animation but includes it in practice', () => {
     const plan = buildSession(shared, {}, { mode: 'learn', now: NOW, newMoves: 100 });
@@ -174,7 +174,7 @@ describe('a line that opens like one already taught', () => {
       `[Event "Continuation"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 *`,
       { side: 'white' },
     );
-    const ids = target.chapters.map((chapter) => variationsOf(chapter, 'white')[0]!.id);
+    const ids = target.chapters.map((chapter) => readingLinesOf(chapter)[0]!.id);
     const plan = buildSession(target, {}, { mode: 'learn', now: NOW, lineIds: ids });
     const last = plan.tasks.find((task) => task.lineId === ids[2] && task.watch)!;
     expect(last.startIndex).toBe(0);
@@ -227,22 +227,22 @@ describe('review sessions', () => {
 
   it('puts the most overdue line first', () => {
     const progress = progressAt(course, 2, NOW - HOUR);
-    const moves = trainableMoves(course.chapters, course.side);
-    // 5.Bb5 belongs to the last variation in the file and nowhere else. Left a
-    // week past its date, it should be the first thing the session asks about.
-    const key = [...moves.keys()].find((k) => moves.get(k)!.san === 'Bb5')!;
+    // The second game's d4 has a different position from the first game's.
+    const key = moveKey(readingLinesOf(course.chapters[1]!)[0]!.line[4]!);
     progress[key] = { ...progress[key]!, dueAt: NOW - 7 * 24 * HOUR };
     const plan = buildSession(course, progress, { mode: 'review', now: NOW });
-    expect(sans(plan.tasks[0]!.line)).toBe('e4 e5 Nf3 Nc6 Bb5');
+    expect(sans(plan.tasks[0]!.line)).toBe('e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 g6');
   });
 
   it('does not replay a line whose due moves an earlier line already covered', () => {
-    const plan = buildSession(course, progressAt(course, 2, NOW - HOUR), {
+    const progress = progressAt(course, 2, NOW + HOUR);
+    const sharedKey = moveKey(course.chapters[0]!.roots[0]!);
+    progress[sharedKey]!.dueAt = NOW - HOUR;
+    const plan = buildSession(course, progress, {
       mode: 'review',
       now: NOW,
     });
-    // Chapter two is 1.e4 c5 2.Nf3 Nc6 3.d4 …, every move of which chapter one
-    // already asked for. Replaying it teaches nothing and costs eight moves.
+    // The only due move is e4, already covered by the first main line.
     expect(plan.tasks.map((task) => task.chapterId)).not.toContain(course.chapters[1]!.id);
   });
 });
@@ -309,8 +309,8 @@ describe('counting a session in lines', () => {
 
 describe('a single variation, picked off the list', () => {
   const chapter = course.chapters[0]!;
-  const najdorf = variationsOf(chapter, 'white')[0]!;
-  const moscow = variationsOf(chapter, 'white')[1]!;
+  const najdorf = readingLinesOf(chapter)[0]!;
+  const moveOrder = readingLinesOf(course.chapters[1]!)[0]!;
 
   it('confines a learn session to the line asked for', () => {
     const plan = buildSession(course, {}, { mode: 'learn', now: NOW, lineIds: [najdorf.id] });
@@ -334,8 +334,8 @@ describe('a single variation, picked off the list', () => {
 
   it('narrows a review session to the picked line too', () => {
     const due = progressAt(course, 3, NOW - HOUR);
-    const plan = buildSession(course, due, { mode: 'review', now: NOW, lineIds: [moscow.id] });
-    expect(new Set(plan.tasks.map((task) => task.lineId))).toEqual(new Set([moscow.id]));
+    const plan = buildSession(course, due, { mode: 'review', now: NOW, lineIds: [moveOrder.id] });
+    expect(new Set(plan.tasks.map((task) => task.lineId))).toEqual(new Set([moveOrder.id]));
   });
 });
 
@@ -354,8 +354,8 @@ describe('partially studied courses', () => {
         { side },
       );
       expect(target.problems).toEqual([]);
-      const previous = variationsOf(target.chapters[0]!, side)[0]!;
-      const next = variationsOf(target.chapters[1]!, side)[0]!;
+      const previous = readingLinesOf(target.chapters[0]!)[0]!;
+      const next = readingLinesOf(target.chapters[1]!)[0]!;
       const trainer = new CourseTrainer({
         course: target,
         plan: buildSession(target, {}, { mode: 'learn', lineIds: [previous.id], chunk: 0 }),

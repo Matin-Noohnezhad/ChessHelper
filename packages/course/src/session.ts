@@ -19,7 +19,7 @@
  */
 
 import { isDue, progressFor } from './scheduler.js';
-import { moveKey, quizIndices, variationsOf } from './tree.js';
+import { moveKey, quizIndices, readingLinesOf } from './tree.js';
 import type { Variation } from './tree.js';
 import type {
   Course,
@@ -88,7 +88,7 @@ function scope(
   const lines = lineIds?.length ? new Set(lineIds) : null;
   return course.chapters
     .filter((chapter) => !chapters || chapters.has(chapter.id))
-    .flatMap((chapter) => variationsOf(chapter, course.side))
+    .flatMap(readingLinesOf)
     .filter((variation) => !lines || lines.has(variation.id));
 }
 
