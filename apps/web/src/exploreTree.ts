@@ -9,14 +9,15 @@ export interface ExploreNode {
   shapes: MoveShapes;
 }
 export interface ExploreTree {
+  initialFen?: string;
   nodes: Record<number, ExploreNode>;
   selected: number;
   nextId: number;
   choices: Record<number, number>;
 }
 export const emptyShapes = (): MoveShapes => ({ arrows: [], circles: [] });
-export function newExploreTree(): ExploreTree {
-  return { nodes: { 0: { id: 0, parent: null, san: '', children: [], shapes: emptyShapes() } }, selected: 0, nextId: 1, choices: {} };
+export function newExploreTree(initialFen?: string): ExploreTree {
+  return { ...(initialFen ? { initialFen } : {}), nodes: { 0: { id: 0, parent: null, san: '', children: [], shapes: emptyShapes() } }, selected: 0, nextId: 1, choices: {} };
 }
 export function nodePath(tree: ExploreTree, id = tree.selected): number[] {
   const path: number[] = [];
@@ -45,7 +46,7 @@ export function selectTreeNode(tree: ExploreTree, id: number): ExploreTree {
   return { ...tree, selected: id, choices };
 }
 export function positionAt(tree: ExploreTree, id = tree.selected): Chess {
-  const game = new Chess();
+  const game = new Chess(tree.initialFen);
   for (const nodeId of nodePath(tree, id)) game.move(tree.nodes[nodeId]!.san);
   return game;
 }
@@ -57,6 +58,7 @@ export function playTreeMove(tree: ExploreTree, input: MoveInput): ExploreTree {
   if (existing !== undefined) return selectTreeNode(tree, existing);
   const id = tree.nextId;
   return {
+    ...tree,
     nodes: { ...tree.nodes,
       [parent.id]: { ...parent, children: [...parent.children, id] },
       [id]: { id, parent: parent.id, san: info.san, children: [], shapes: emptyShapes() },
@@ -102,6 +104,8 @@ function shapeComment(shapes: MoveShapes): string {
 }
 /** Export every branch, with sibling variations immediately after the move they replace. */
 export function exportExplorePgn(tree: ExploreTree): string {
+  const fields = new Chess(tree.initialFen).fen().split(' ');
+  const firstPly = (Number(fields[5]) - 1) * 2 + (fields[1] === 'b' ? 1 : 0);
   const moveText = (id: number, ply: number): string => {
     const node = tree.nodes[id]!;
     return [`${Math.floor(ply / 2) + 1}${ply % 2 ? '...' : '.'} ${node.san}`, shapeComment(node.shapes)].filter(Boolean).join(' ');
@@ -111,5 +115,6 @@ export function exportExplorePgn(tree: ExploreTree): string {
     if (main === undefined) return '';
     return [moveText(main, ply), ...alternatives.map((id) => `(${[moveText(id, ply), continuation(id, ply + 1)].filter(Boolean).join(' ')})`), continuation(main, ply + 1)].filter(Boolean).join(' ');
   };
-  return `[Result "*"]\n\n${[shapeComment(tree.nodes[0]!.shapes), continuation(0, 0), '*'].filter(Boolean).join(' ')}`;
+  const setup = tree.initialFen ? `[SetUp "1"]\n[FEN "${tree.initialFen}"]\n` : '';
+  return `${setup}[Result "*"]\n\n${[shapeComment(tree.nodes[0]!.shapes), continuation(0, firstPly), '*'].filter(Boolean).join(' ')}`;
 }

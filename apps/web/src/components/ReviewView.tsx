@@ -1,6 +1,11 @@
 import { MoveStepButton } from './MoveStepButton.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Chess } from '@coh/chess-core';
+import type { PieceSymbol } from '@coh/chess-core';
+import { nodePath, playTreeMove, positionAt, selectedLine, selectTreeNode } from '../exploreTree.js';
+import { newReviewTree, reviewAnchor, selectReviewPly } from '../reviewTree.js';
+import { useEngine } from '../hooks/useEngine.js';
+import { EnginePanel } from './EnginePanel.js';
 import {
   QUALITY_LABELS,
   QUALITY_SYMBOLS,
@@ -192,7 +197,8 @@ export function ReviewReport({
   /** Offered when the explore board holds a line — usually a longer one than this report covers. */
   onReviewBoardGame?: (() => void) | undefined;
 }) {
-  const [selectedPly, setSelectedPly] = useState(0);
+  const [tree, setTree] = useState(() => newReviewTree(review));
+  const [replaying, setReplaying] = useState(true);
   const [section, setSection] = useState<ReviewSection>('overview');
   const [showBest, setShowBest] = useState(false);
   const [orientation, setOrientation] = useState<Orientation>('white');
@@ -200,48 +206,71 @@ export function ReviewReport({
   // A fresh report starts at the first thing worth looking at, not at move one.
   useEffect(() => {
     const worst = keyMoments(review, 1)[0];
-    setSelectedPly(worst?.ply ?? 0);
+    setTree(selectReviewPly(newReviewTree(review), worst?.ply ?? 0, review.moves.length));
+    setReplaying(true);
     setSection('overview');
     setShowBest(false);
   }, [review]);
 
-  const move = selectedPly > 0 ? (review.moves[selectedPly - 1] ?? null) : null;
+  const inBranch = tree.selected > review.moves.length;
+  const selectedPly = reviewAnchor(tree, review.moves.length);
+  const move = !inBranch && selectedPly > 0 ? (review.moves[selectedPly - 1] ?? null) : null;
   const alternative = move?.best && move.best.uci !== move.uci ? move.best : null;
   const showingBefore = showBest && alternative !== null && move !== null;
-
-  const fen = showingBefore
-    ? move!.fenBefore
-    : move
-      ? move.fenAfter
-      : (review.moves[0]?.fenBefore ?? new Chess().fen());
-  const game = useMemo(() => new Chess(fen), [fen]);
-
-  const score = showingBefore ? move!.scoreBefore : (move?.scoreAfter ?? { cp: 0, mate: null });
-  const lastMove =
-    move && !showingBefore ? { from: move.uci.slice(0, 2), to: move.uci.slice(2, 4) } : null;
-  const hintArrows =
-    showingBefore && alternative
-      ? [{ from: alternative.uci.slice(0, 2), to: alternative.uci.slice(2, 4) }]
-      : ((move ? move.shapes : review.initialShapes)?.arrows ?? []);
-
+  const game = useMemo(() => showingBefore ? new Chess(move!.fenBefore) : positionAt(tree), [tree, showingBefore, move]);
+  const fen = game.fen();
+  const controller = useEngine(fen);
+  const engine = { ...controller, analysis: controller.analysis?.fen === fen ? controller.analysis : null };
+  const score = showingBefore ? move!.scoreBefore : (move?.scoreAfter ?? review.moves[0]?.scoreBefore ?? { cp: 0, mate: null });
+  const node = tree.nodes[tree.selected]!;
+  const played = node.parent === null ? null : positionAt(tree, node.parent).move(node.san);
+  const lastMove = !showingBefore && played ? { from: played.from, to: played.to } : null;
+  const hintArrows = showingBefore && alternative
+    ? [{ from: alternative.uci.slice(0, 2), to: alternative.uci.slice(2, 4) }]
+    : node.shapes.arrows;
   const badge = moveBadge(move, showingBefore);
   const clocks = reviewClocks(review, showingBefore ? selectedPly - 1 : selectedPly);
-  const hasClockData = review.moves.some((entry) => entry.clockSeconds !== null);
+  const hasClockData = !inBranch && review.moves.some((entry) => entry.clockSeconds !== null);
   const topColor = orientation === 'white' ? 'b' : 'w';
   const bottomColor = orientation === 'white' ? 'w' : 'b';
+  const line = selectedLine(tree);
+  const cursor = nodePath(tree).length;
+  const atStart = tree.selected === 0;
+  const atEnd = node.children.length === 0;
 
-  const step = (delta: number) => {
+  const selectNode = useCallback((id: number) => {
     setSection('moves');
     setShowBest(false);
-    setSelectedPly((ply) => Math.max(0, Math.min(review.moves.length, ply + delta)));
-  };
-
-  const selectPly = (ply: number) => {
+    setReplaying(true);
+    setTree((current) => selectTreeNode(current, id));
+  }, []);
+  const selectPly = useCallback((ply: number) => {
     setSection('moves');
     setShowBest(false);
-    setSelectedPly(ply);
+    setReplaying(true);
+    setTree((current) => selectReviewPly(current, ply, review.moves.length));
+  }, [review.moves.length]);
+  const step = useCallback((delta: number) => {
+    setSection('moves');
+    setShowBest(false);
+    setReplaying(true);
+    setTree((current) => {
+      const path = selectedLine(current);
+      const index = Math.max(0, Math.min(path.length, nodePath(current).length + delta));
+      return selectTreeNode(current, path[index - 1] ?? 0);
+    });
+  }, []);
+  const play = (from: string, to: string, promotion?: PieceSymbol) => {
+    const input = { from, to, promotion };
+    const origin = showingBefore ? selectReviewPly(tree, selectedPly - 1, review.moves.length) : tree;
+    const next = playTreeMove(origin, input);
+    if (next === origin) return;
+    setTree(next);
+    setShowBest(false);
+    setReplaying(false);
+    setSection('moves');
+    if (next.selected > review.moves.length && !engine.enabled) engine.toggle();
   };
-
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select, button, summary, [contenteditable="true"]')) {
@@ -249,15 +278,16 @@ export function ReviewReport({
       }
       if (event.key === 'ArrowLeft') step(-1);
       else if (event.key === 'ArrowRight') step(1);
-      else if (event.key === 'ArrowUp') selectPly(0);
-      else if (event.key === 'ArrowDown') selectPly(review.moves.length);
+      else if (event.key === 'ArrowUp') selectNode(0);
+      else if (event.key === 'ArrowDown') selectNode(line.at(-1) ?? 0);
+      else if (event.key === 'Escape') selectPly(selectedPly);
       else if (event.key === 'f') setOrientation((o) => (o === 'white' ? 'black' : 'white'));
       else return;
       event.preventDefault();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [review.moves.length]);
+  }, [line, selectedPly, selectPly, selectNode, step]);
 
   const moments = useMemo(() => keyMoments(review), [review]);
   const showClocks = hasClockData || review.moves.some((entry) => entry.secondsSpent !== null);
@@ -275,19 +305,19 @@ export function ReviewReport({
         <ReviewPlayer review={review} color={topColor} seconds={clocks[topColor]} showClock={hasClockData} active={game.turn() === topColor} />
         <div className="board-row">
           <EvalBar
-            reading={{ fraction: winPercent(score) / 100, label: formatScore(score) }}
+            engine={engine}
+            reading={inBranch ? null : { fraction: winPercent(score) / 100, label: formatScore(score) }}
             orientation={orientation}
           />
           <Board
             game={game}
             orientation={orientation}
             lastMove={lastMove}
-            onMove={() => {}}
-            interactive={false}
-            replay
+            onMove={play}
+            replay={replaying}
             animateMoves
             hintArrows={hintArrows}
-            hintCircles={!showingBefore ? (move ? move.shapes : review.initialShapes)?.circles : undefined}
+            hintCircles={!showingBefore ? node.shapes.circles : undefined}
             badge={badge}
             {...(annotationThickness ? { annotationThickness } : {})}
           />
@@ -296,30 +326,32 @@ export function ReviewReport({
 
         <div className="board-bar">
           <span className="status">
-            {move
+            {inBranch
+              ? `Analysis · ${played?.san ?? ''} · ${game.turn() === 'w' ? 'White' : 'Black'} to move`
+              : move
               ? `${move.moveNumber}${move.color === 'w' ? '.' : '…'} ${move.san} — ${QUALITY_LABELS[move.quality]}`
               : 'Starting position'}
           </span>
           <div className="nav">
-            <button type="button" aria-label="Starting position" onClick={() => selectPly(0)} disabled={selectedPly === 0}>
+            <button type="button" aria-label="Starting position" onClick={() => selectNode(0)} disabled={atStart}>
               ⏮
             </button>
-            <MoveStepButton type="button" aria-label="Previous move" onStep={() => step(-1)} disabled={selectedPly === 0}>
+            <MoveStepButton type="button" aria-label="Previous move" onStep={() => step(-1)} disabled={atStart}>
               ◀
             </MoveStepButton>
             <MoveStepButton
               type="button"
               aria-label="Next move"
               onStep={() => step(1)}
-              disabled={selectedPly === review.moves.length}
+              disabled={atEnd}
             >
               ▶
             </MoveStepButton>
             <button
               type="button"
               aria-label="Final position"
-              onClick={() => selectPly(review.moves.length)}
-              disabled={selectedPly === review.moves.length}
+              onClick={() => selectNode(line.at(-1) ?? 0)}
+              disabled={atEnd}
             >
               ⏭
             </button>
@@ -328,6 +360,8 @@ export function ReviewReport({
             Flip
           </button>
         </div>
+        <p className="muted review-analysis-help">Play any move to explore a side branch. The imported game stays the main line.</p>
+        {inBranch && <button type="button" onClick={() => selectPly(selectedPly)}>Back to the game</button>}
       </div>
       <aside className="app__side">
         <ReviewSummary
@@ -335,6 +369,17 @@ export function ReviewReport({
           section={section}
           onSectionChange={setSection}
           analysis={<>
+            <section className="moves">
+              <div className="review-section-heading"><h3>Moves & variations</h3><span className="muted">{inBranch ? `Analysis · ply ${cursor}` : `${selectedPly} / ${review.moves.length} plies`}</span></div>
+              <ReviewMoveList
+                moves={review.moves}
+                selectedPly={inBranch ? -1 : selectedPly}
+                tree={tree}
+                onSelectNode={selectNode}
+                onSelect={selectPly}
+                showClocks={showClocks}
+              />
+            </section>
             {move && (
               <MoveDetail
                 move={move}
@@ -343,16 +388,9 @@ export function ReviewReport({
                 onToggleBest={() => setShowBest((v) => !v)}
               />
             )}
-            {!move && <div className="panel review-detail review-detail--empty"><h3>Every move has a story</h3><p className="muted">Select a move or a point on the graph to explore it. Use ← and → to step through the game.</p></div>}
-            <section className="moves">
-              <div className="review-section-heading"><h3>Moves</h3><span className="muted">{selectedPly} / {review.moves.length} plies</span></div>
-              <ReviewMoveList
-                moves={review.moves}
-                selectedPly={selectedPly}
-                onSelect={selectPly}
-                showClocks={showClocks}
-              />
-            </section>
+            {!move && !inBranch && <div className="panel review-detail review-detail--empty"><h3>Every move has a story</h3><p className="muted">Select a move or a point on the graph to explore it. Use ← and → to step through the game.</p></div>}
+            {inBranch && <StructureNote fen={fen} toMove={game.turn() === 'w' ? 'white' : 'black'} />}
+            <EnginePanel engine={engine} />
           </>}
           moments={<>
             {moments.length > 0 && (

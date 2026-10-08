@@ -1797,6 +1797,12 @@ button.primary:hover:not(:disabled) {
 .review-move--empty {
   display: block;
 }
+.review-variation {
+  grid-column: 1 / -1;
+  min-width: 0;
+  line-height: 2;
+}
+.review-analysis-help { margin: 0.6rem 0; font-size: 0.8rem; }
 
 /* --- selected move --- */
 
