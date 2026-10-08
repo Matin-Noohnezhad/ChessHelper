@@ -129,7 +129,7 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
   if (analyzing) return <CourseAnalysis initialFen={game.fen()} initialLastMove={lastMove}
     orientation={entry.course.side} annotationThickness={annotationThickness} moveEntryMode={moveEntryMode}
     returnLabel="Back to reading" onReturn={() => setAnalyzing(false)} />;
-  const comment = node?.comment ?? '';
+  const comment = node?.comment?.trim() ?? '';
   const brief = comment.length > 240 ? `${comment.slice(0, 240).replace(/\s+\S*$/, '')}…` : comment;
   const atEnd = ply === line.line.length;
   return (
@@ -209,11 +209,11 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
           <button type="button" onClick={onExit} title={`${resumeTraining ? 'Back to training' : 'Back to course'} (Esc)`} aria-keyshortcuts="Escape">Finish</button>
         </div>
         <p className="muted">{chapter?.name} · Line {index + 1} of {lines.length}. Read at your own pace; training progress stays as it is.</p>
-        <div className="card card--info course-reader__note">
+        {(!node || comment) && <div className="card card--info course-reader__note">
           <h3>{node ? `${node.moveNumber ?? Math.ceil(ply / 2)}${node.side === 'w' ? '.' : '…'} ${node.san}${node.suffix ?? ''}` : 'Start reading'}</h3>
-          <p>{comment ? expanded ? comment : brief : node ? 'No explanation for this move in the PGN.' : 'Press Space to read the first move and its explanation.'}</p>
+          <p>{comment ? expanded ? comment : brief : 'Press Space to read the first move and its explanation.'}</p>
           {brief !== comment && <button type="button" onClick={() => setExpanded(!expanded)} title="Expand or shorten explanation (C)">{expanded ? 'Show less' : 'Read full explanation'}</button>}
-        </div>
+        </div>}
         {branch && <section className="course-variations" aria-label="Choose variation">
           <div className="course-variations__head"><h3>Variations</h3><span>{continuations.length} continuations</span></div>
           <div ref={variationList} className="course-variations__list" role="listbox" aria-label="Continuations"
