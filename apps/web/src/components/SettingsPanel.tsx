@@ -18,6 +18,8 @@ import {
 } from '../hooks/useSettings.js';
 
 interface SettingsPanelProps {
+  branchNavigation?: 'board' | 'sidebar';
+  onBranchNavigationChange?: (value: 'board' | 'sidebar') => void;
   showCoordinates?: boolean;
   onShowCoordinatesChange?: (value: boolean) => void;
   movementStyle?: MovementStyle;
@@ -54,6 +56,7 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({
+  branchNavigation = 'board', onBranchNavigationChange,
   showCoordinates = true, onShowCoordinatesChange,
   movementStyle = 'lichess', onMovementStyleChange,
   movementSpeed = 'medium', onMovementSpeedChange,
@@ -267,6 +270,16 @@ export function SettingsPanel({
             <AnnotationArrow from={{ x: 6.25, y: 6.25 }} to={{ x: 31.25, y: 6.25 }}
               color={lastMoveArrowColor} style={annotationStyle} thickness={annotationThickness} />
           </svg>}
+        </div>
+
+        <div className="settings-row">
+          <label className="settings-row__label" htmlFor="branch-navigation">Course branch chooser</label>
+          <select id="branch-navigation" value={branchNavigation}
+            onChange={(event) => onBranchNavigationChange?.(event.target.value as 'board' | 'sidebar')}>
+            <option value="board">Over the board</option>
+            <option value="sidebar">Side panel (original)</option>
+          </select>
+          <span className="settings-row__hint">When reading reaches a PGN branch, ↑ ↓ select a continuation and → plays it. The main line is selected first.</span>
         </div>
 
         <div className="settings-row">

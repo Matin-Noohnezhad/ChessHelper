@@ -226,6 +226,8 @@ export default function App() {
 
       {settingsOpen && (
         <SettingsPanel
+          branchNavigation={settings.branchNavigation}
+          onBranchNavigationChange={settings.setBranchNavigation}
           showCoordinates={settings.showCoordinates}
           onShowCoordinatesChange={settings.setShowCoordinates}
           pieceSet={settings.pieceSet}
@@ -272,6 +274,7 @@ export default function App() {
         <TrainerView onStudyLine={studyLine} annotationThickness={settings.annotationThickness} />
       ) : mode === 'courses' ? (
         <CoursesView
+          branchNavigation={settings.branchNavigation}
           moveEntryMode={settings.moveEntryMode}
           courseLearning={settings}
           annotationThickness={settings.annotationThickness}

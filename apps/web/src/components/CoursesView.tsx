@@ -23,6 +23,7 @@ type View =
     };
 
 interface CoursesViewProps {
+  branchNavigation?: 'board' | 'sidebar';
   moveEntryMode?: 'smart' | 'select';
   courseLearning?: CourseLearningSettings;
   annotationThickness?: AnnotationThickness;
@@ -38,6 +39,7 @@ interface CoursesViewProps {
  * numbers have already moved.
  */
 export function CoursesView({
+  branchNavigation,
   moveEntryMode,
   annotationThickness,
   courseLearning,
@@ -72,7 +74,7 @@ export function CoursesView({
   if (view.kind === 'reading') {
     const entry = entryOf(view.id);
     if (!entry) return <MissingCourse onBack={openLibrary} />;
-    return <>{notices}<CourseReader key={view.id} entry={entry} chapterId={view.chapterId} lineId={view.lineId}
+    return <>{notices}<CourseReader branchNavigation={branchNavigation} key={view.id} entry={entry} chapterId={view.chapterId} lineId={view.lineId}
       moveEntryMode={moveEntryMode}
       onTrain={(chapterId, lineId) => setView({ kind: 'session', id: view.id, mode: 'learn',
         chapterIds: [chapterId], ...(lineId ? { lineIds: [lineId] } : {}) })}
@@ -88,6 +90,7 @@ export function CoursesView({
     return (<>
       {notices}
       <CourseSession
+        branchNavigation={branchNavigation}
         moveEntryMode={moveEntryMode}
         key={`${view.id}:${view.mode}:${(view.chapterIds ?? []).join(',')}:${(view.lineIds ?? []).join(',')}`}
         entry={entry}

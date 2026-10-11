@@ -49,6 +49,7 @@ function clampInteger(value: number, min: number, max: number, fallback: number)
 }
 
 export interface AppSettings extends CourseLearningSettings, BoardAnimationSettings, LastMoveArrowSettings {
+  branchNavigation: 'board' | 'sidebar';
   showCoordinates: boolean;
   boardTheme: BoardTheme;
   pieceSet: PieceSet;
@@ -67,6 +68,7 @@ export interface AppSettings extends CourseLearningSettings, BoardAnimationSetti
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
+  branchNavigation: 'board',
   showCoordinates: true,
   ...DEFAULT_COURSE_LEARNING,
   ...DEFAULT_BOARD_ANIMATION,
@@ -90,6 +92,7 @@ function loadSettings(): AppSettings {
     const stored = { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<AppSettings>) };
     return {
       ...stored,
+      branchNavigation: stored.branchNavigation === 'sidebar' ? 'sidebar' : 'board',
       showCoordinates: typeof stored.showCoordinates === 'boolean' ? stored.showCoordinates : true,
       movementStyle: MOVEMENT_STYLES.some((style) => style.key === stored.movementStyle)
         ? stored.movementStyle : DEFAULT_BOARD_ANIMATION.movementStyle,
@@ -131,6 +134,7 @@ function saveSettings(settings: AppSettings): void {
 }
 
 export interface SettingsController extends AppSettings {
+  setBranchNavigation: (value: AppSettings['branchNavigation']) => void;
   setShowCoordinates: (value: boolean) => void;
   setMovementStyle: (value: MovementStyle) => void;
   setMovementSpeed: (value: MovementSpeed) => void;
@@ -160,6 +164,7 @@ export function useSettings(): SettingsController {
     });
   }, []);
 
+  const setBranchNavigation = useCallback((value: AppSettings['branchNavigation']) => update({ branchNavigation: value }), [update]);
   const setPieceSet = useCallback((value: PieceSet) => update({ pieceSet: value }), [update]);
   const setShowCoordinates = useCallback((value: boolean) => update({ showCoordinates: value }), [update]);
   const setMovementStyle = useCallback((value: MovementStyle) => update({ movementStyle: value }), [update]);
@@ -197,5 +202,5 @@ export function useSettings(): SettingsController {
     courseFullPasses: clampInteger(value.courseFullPasses, 1, 5, DEFAULT_FULL_PASSES),
   }), [update]);
 
-  return { ...settings, setShowCoordinates, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setReplaySounds, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setBranchNavigation, setShowCoordinates, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setReplaySounds, setWatchAutoplay, setWatchMoveSeconds };
 }

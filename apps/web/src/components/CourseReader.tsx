@@ -1,3 +1,4 @@
+import { CourseExplanation, ExplanationContext, ExplanationControls, useExplanationPreview } from './CourseExplanation.js';
 import { MoveStepButton } from './MoveStepButton.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Chess, START_FEN } from '@coh/chess-core';
@@ -12,6 +13,7 @@ import { CourseAnalysis } from './CourseAnalysis.js';
 import './CourseReader.css';
 
 interface CourseReaderProps {
+  branchNavigation?: 'board' | 'sidebar';
   entry: LibraryEntry;
   chapterId?: string;
   lineId?: string;
@@ -24,7 +26,7 @@ interface CourseReaderProps {
 }
 
 /** A read-only walk through every PGN variation, including the author's examples. */
-export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEntryMode = 'smart',
+export function CourseReader({ branchNavigation = 'board', entry, chapterId, lineId, initialPly = 0, moveEntryMode = 'smart',
   annotationThickness, onExit, onTrain, resumeTraining = false }: CourseReaderProps) {
   const chapters = useMemo(() => entry.course.chapters.map((chapter) => ({
     ...chapter, lines: readingLinesOf(chapter),
@@ -39,11 +41,14 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
   const [ply, updatePly] = useState(() => Math.min(initialPly, path.length));
   const [choice, setChoice] = useState(0);
   const setPly = (value: number) => {
+    setPreview(null);
     updatePly(Math.max(0, Math.min(path.length, value)));
     setChoice(0);
   };
   const [expanded, setExpanded] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const exploration = useExplanationPreview(!analyzing);
+  const { preview, setPreview } = exploration;
   const sourceLine = lines[index];
   const line = useMemo(() => sourceLine ? { ...sourceLine, line: path } : undefined, [sourceLine, path]);
   const continuations = ply ? path[ply - 1]?.children ?? [] : sourceLine?.roots ?? [];
@@ -83,12 +88,14 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
 
   const pick = (next: number) => {
     if (next < 0 || next >= lines.length) return;
+    setPreview(null);
     setIndex(next);
     setPath(lines[next]!.line);
     updatePly(0);
     setChoice(0);
   };
   const advance = (selected = choice) => {
+    setPreview(null);
     const next = continuations[selected];
     if (!next) return;
     setPath([...path.slice(0, ply), ...readingPath([next])]);
@@ -101,7 +108,7 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
     else onExit();
   };
   useEffect(() => {
-    if (analyzing) return;
+    if (analyzing || preview) return;
     const onKey = (event: KeyboardEvent) => {
       if (courseShortcutBlocked(event)) return;
       const key = event.key.toLowerCase();
@@ -132,7 +139,30 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
   const comment = node?.comment?.trim() ?? '';
   const brief = comment.length > 240 ? `${comment.slice(0, 240).replace(/\s+\S*$/, '')}…` : comment;
   const atEnd = ply === line.line.length;
+  const branchChooser = branch && !preview ? <section className="course-variations" aria-label="Choose variation">
+    <div className="course-variations__head"><h3>Variations</h3><span>{continuations.length} continuations</span></div>
+    <div ref={variationList} className="course-variations__list" role="listbox" aria-label="Continuations"
+      tabIndex={0} aria-activedescendant={`course-variation-${choice}`}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' && !event.repeat) { event.preventDefault(); advance(); }
+      }}>
+      {continuations.map((move, i) => <div key={move.id} id={`course-variation-${i}`}
+        role="option" aria-selected={i === choice} className={`course-variations__option${i === choice ? ' is-selected' : ''}`}
+        onClick={() => advance(i)}>
+        <span className="course-variations__moves">{readingPath([move]).slice(0, 5).map((node, n) =>
+          `${node.side === 'w' ? `${node.moveNumber ?? Math.ceil(node.ply / 2)}.` : n === 0 ? `${node.moveNumber ?? Math.ceil(node.ply / 2)}…` : ''}${node.san}${node.suffix ?? ''}`).join(' ')}</span>
+        <span className="course-variations__label">{i === 0 ? 'Main line' : move.dubious ? 'Marked dubious' : 'Variation'}</span>
+      </div>)}
+    </div>
+    <div className="course-variations__controls">
+      <button type="button" aria-label="Previous variation" disabled={choice === 0} onClick={() => setChoice(choice - 1)}>↑</button>
+      <button type="button" aria-label="Next variation" disabled={choice === continuations.length - 1} onClick={() => setChoice(choice + 1)}>↓</button>
+      <button type="button" onClick={() => advance()}>Play selected →</button>
+    </div>
+    <p><strong>↑ ↓</strong> choose <span>·</span> <strong>→</strong> play <span>·</span> Main line selected by default</p>
+  </section> : null;
   return (
+    <ExplanationContext.Provider value={{ startFen: chapter?.startFen, path: path.slice(0, ply), preview, explore: (next) => { setExpanded(true); setPreview(next); } }}>
     <div className="trainer course-session course-session--rail course-reader">
       <aside className="panel course-session__rail">
         <h2>Chapters &amp; lines</h2>
@@ -181,11 +211,14 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
         </ul>
       </aside>
       <div className="trainer__board">
-        <Board game={game} orientation={entry.course.side} lastMove={lastMove} onMove={() => {}} interactive={false} replay
-          hintArrows={(node ? node.shapes : sourceLine?.initialShapes)?.arrows ?? []}
-          hintCircles={(node ? node.shapes : sourceLine?.initialShapes)?.circles ?? []}
+        <div className="course-reader__board-stage">
+        <Board game={exploration.game ?? game} orientation={entry.course.side} lastMove={preview ? exploration.move ?? null : lastMove} onMove={() => {}} interactive={false} replay
+          hintArrows={preview ? [] : (node ? node.shapes : sourceLine?.initialShapes)?.arrows ?? []}
+          hintCircles={preview ? [] : (node ? node.shapes : sourceLine?.initialShapes)?.circles ?? []}
           annotationThickness={annotationThickness} animateMoves />
-        <div className="board-bar">
+        {branchNavigation === 'board' && branchChooser && <div className="course-reader__branch-overlay">{branchChooser}</div>}
+        </div>
+        {preview ? <ExplanationControls exploration={exploration} /> : <div className="board-bar">
           <span className="status">{ply === 0 ? 'Starting position' : `${node?.moveNumber ?? Math.ceil(ply / 2)}${node?.side === 'w' ? '.' : '…'} ${node?.san}`} · {ply} / {line.line.length}</span>
           <div className="nav">
             <button type="button" onClick={() => setAnalyzing(true)} title="Analyze position (A)" aria-keyshortcuts="a">
@@ -199,7 +232,7 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
             </button>
             <button type="button" onClick={() => setPly(line.line.length)} disabled={atEnd} title="End (End)">⏭</button>
           </div>
-        </div>
+        </div>}
       </div>
       <aside className="trainer__side"><section className="panel">
         <div className="course-head"><h2>Reading</h2>
@@ -211,34 +244,19 @@ export function CourseReader({ entry, chapterId, lineId, initialPly = 0, moveEnt
         <p className="muted">{chapter?.name} · Line {index + 1} of {lines.length}. Read at your own pace; training progress stays as it is.</p>
         {(!node || comment) && <div className="card card--info course-reader__note">
           <h3>{node ? `${node.moveNumber ?? Math.ceil(ply / 2)}${node.side === 'w' ? '.' : '…'} ${node.san}${node.suffix ?? ''}` : 'Start reading'}</h3>
-          <p>{comment ? expanded ? comment : brief : 'Press Space to read the first move and its explanation.'}</p>
-          {brief !== comment && <button type="button" onClick={() => setExpanded(!expanded)} title="Expand or shorten explanation (C)">{expanded ? 'Show less' : 'Read full explanation'}</button>}
+          <p>{comment ? <CourseExplanation text={comment} limit={expanded ? undefined : 240} selectable /> : 'Press Space to read the first move and its explanation.'}</p>
+          {brief !== comment && !preview && <button type="button" onClick={() => setExpanded(!expanded)} title="Expand or shorten explanation (C)">{expanded ? 'Show less' : 'Read full explanation'}</button>}
         </div>}
-        {branch && <section className="course-variations" aria-label="Choose variation">
-          <div className="course-variations__head"><h3>Variations</h3><span>{continuations.length} continuations</span></div>
-          <div ref={variationList} className="course-variations__list" role="listbox" aria-label="Continuations"
-            tabIndex={0} aria-activedescendant={`course-variation-${choice}`}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && !event.repeat) { event.preventDefault(); advance(); }
-            }}>
-            {continuations.map((move, i) => <div key={move.id} id={`course-variation-${i}`}
-              role="option" aria-selected={i === choice} className={`course-variations__option${i === choice ? ' is-selected' : ''}`}
-              onClick={() => advance(i)}>
-              <span className="course-variations__moves">{readingPath([move]).slice(0, 5).map((node, n) =>
-                `${node.side === 'w' ? `${node.moveNumber ?? Math.ceil(node.ply / 2)}.` : n === 0 ? `${node.moveNumber ?? Math.ceil(node.ply / 2)}…` : ''}${node.san}${node.suffix ?? ''}`).join(' ')}</span>
-              <span className="course-variations__label">{i === 0 ? 'Main line' : move.dubious ? 'Marked dubious' : 'Variation'}</span>
-            </div>)}
-          </div>
-          <p><strong>↑ ↓</strong> choose <span>·</span> <strong>→</strong> play <span>·</span> Main line selected by default</p>
-        </section>}
+        {branchNavigation === 'sidebar' && branchChooser}
         {branchPly >= 0 && <button type="button" className="course-reader__return" onClick={() => setPly(branchPly)}>↩ Back to branch</button>}
         <MoveTrail trail={line.line} cursor={ply} startIndex={0} onSelect={setPly} />
         <div className="course-card__actions">
           <button type="button" disabled={index === 0} onClick={() => pick(index - 1)} title="Previous line ([)">Previous line</button>
           <button type="button" disabled={index === lines.length - 1} onClick={() => pick(index + 1)} title="Next line (])">Next line</button>
         </div>
-        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · ↑ ↓: choose variation · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
+        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · ↑ ↓: choose variation · J / K: previous / next explanation line · Q: course position · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
       </section></aside>
     </div>
+    </ExplanationContext.Provider>
   );
 }

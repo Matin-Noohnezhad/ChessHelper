@@ -105,3 +105,17 @@ describe('saved sound settings', () => {
     }
   });
 });
+
+function BranchSettings() {
+  return <output data-branches={useSettings().branchNavigation} />;
+}
+
+describe('saved course branch chooser', () => {
+  it('defaults to the board and restores the original sidebar mode', () => {
+    for (const [stored, expected] of [[{}, 'board'], [{ branchNavigation: 'sidebar' }, 'sidebar'],
+      [{ branchNavigation: 'board' }, 'board'], [{ branchNavigation: 'invalid' }, 'board']] as const) {
+      vi.stubGlobal('localStorage', { getItem: () => JSON.stringify(stored) });
+      expect(renderToStaticMarkup(<BranchSettings />)).toContain(`data-branches="${expected}"`);
+    }
+  });
+});
