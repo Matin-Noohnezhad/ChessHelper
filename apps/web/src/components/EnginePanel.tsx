@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { formatEval } from '../hooks/useEngine.js';
 import type { ComplexityLabel, EngineController } from '../hooks/useEngine.js';
 
@@ -15,9 +16,21 @@ interface EnginePanelProps {
 export function EnginePanel({ engine }: EnginePanelProps) {
   const { enabled, toggle, thinking, analysis, error } = engine;
   const best = analysis?.lines[0];
+  const panelRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!enabled || !panelRef.current) return;
+    const panel = panelRef.current;
+    const bounds = panel.getBoundingClientRect();
+    // Leave room for the suggestions that arrive after the engine starts.
+    // Only opening analysis moves the viewport; subsequent moves never do.
+    if (bounds.top < 80 || bounds.top + Math.max(bounds.height, 320) > window.innerHeight) {
+      panel.scrollIntoView({ block: 'start', behavior: 'instant' });
+    }
+  }, [enabled]);
 
   return (
-    <section className="panel engine-panel">
+    <section ref={panelRef} className="panel engine-panel">
       <div className="panel__head">
         <div className="panel__title">
           <h2>Engine</h2>
@@ -46,6 +59,15 @@ export function EnginePanel({ engine }: EnginePanelProps) {
             <span className="muted">best: {best?.pvSan[0] ?? '—'}</span>
           </div>
 
+          <ol className="engine-lines" aria-label="Top engine moves">
+            {analysis.lines.map((line) => (
+              <li key={line.multipv} className={line.multipv === 1 ? 'is-best' : ''}>
+                <span className="engine-lines__eval">{formatEval(line)}</span>
+                <span className="engine-lines__pv">{line.pvSan.length ? line.pvSan.join(' ') : '—'}</span>
+              </li>
+            ))}
+          </ol>
+
           <div className="engine-complexity">
             <div className="engine-complexity__head">
               <span>Complexity</span>
@@ -62,15 +84,6 @@ export function EnginePanel({ engine }: EnginePanelProps) {
                 : `${analysis.complexity.mobility} legal moves`}
             </p>
           </div>
-
-          <ol className="engine-lines">
-            {analysis.lines.map((line) => (
-              <li key={line.multipv} className={line.multipv === 1 ? 'is-best' : ''}>
-                <span className="engine-lines__eval">{formatEval(line)}</span>
-                <span className="engine-lines__pv">{line.pvSan.length ? line.pvSan.join(' ') : '—'}</span>
-              </li>
-            ))}
-          </ol>
         </>
       )}
     </section>

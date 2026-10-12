@@ -108,6 +108,7 @@ export function CourseAnalysis({
         </div>
       </div>
       <aside className="trainer__side">
+        <EnginePanel engine={engine} />
         <section className="panel">
           <div className="course-head">
             <h2>Analyze position</h2>
@@ -131,7 +132,6 @@ export function CourseAnalysis({
             </div>
           )}
         </section>
-        <EnginePanel engine={engine} />
       </aside>
     </div>
   );
