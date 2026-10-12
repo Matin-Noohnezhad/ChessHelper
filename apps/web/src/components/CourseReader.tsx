@@ -117,8 +117,14 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
       else if (key === ' ') forward();
       else if (key === 'arrowright') { if (!event.repeat || !branch) advance(); }
       else if (key === 'arrowleft') setPly(ply - 1);
-      else if (key === 'arrowup' && branch) setChoice(Math.max(0, choice - 1));
-      else if (key === 'arrowdown' && branch) setChoice(Math.min(continuations.length - 1, choice + 1));
+      else if (key === 'arrowup') {
+        if (branch) setChoice(Math.max(0, choice - 1));
+        else setPly(0);
+      }
+      else if (key === 'arrowdown') {
+        if (branch) setChoice(Math.min(continuations.length - 1, choice + 1));
+        else setPly(path.length);
+      }
       else if (key === 'home') setPly(0);
       else if (key === 'end') setPly(path.length);
       else if (key === ']') pick(index + 1);
@@ -254,7 +260,7 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
           <button type="button" disabled={index === 0} onClick={() => pick(index - 1)} title="Previous line ([)">Previous line</button>
           <button type="button" disabled={index === lines.length - 1} onClick={() => pick(index + 1)} title="Next line (])">Next line</button>
         </div>
-        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · ↑ ↓: choose variation · W / E: previous / next explanation line · Q: course position · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
+        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · ↑ ↓: first / last position (choose variation when the variation chooser is open) · W / E: previous / next explanation line · Q: course position · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
       </section></aside>
     </div>
     </ExplanationContext.Provider>
