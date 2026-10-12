@@ -16,21 +16,53 @@ const fenAfter = (sans: string[]) => {
 describe('explanation lines', () => {
   it('resolves the Sicilian example, including references to previous prose branches', () => {
     const lines = explanationLines(prose, START_FEN, moves);
-    const critical = lines.find((line) => line.moves.length === 5)!;
-    expect(critical.moves.map((move) => move.san)).toEqual(['c4', 'Ng6', 'Qa4', 'Bd7', 'Qb4']);
+    const critical = lines.find((line) => line.moves.some((move) => move.san === 'Qb4'))!;
+    expect(critical.moves.map((move) => move.san)).toEqual(['Ne7', 'c4', 'Ng6', 'Qa4', 'Bd7', 'Qb4', 'Qb8']);
     const beforeRetreat = moves.slice(0, -1).map((move) => move.san);
-    expect(critical.startFen).toBe(fenAfter([...beforeRetreat, 'Ne7']));
-    for (const san of ['Qb8', 'Bf5']) {
-      const alternative = lines.find((line) => line.moves[0]?.san === san)!;
-      expect(alternative.startFen).toBe(critical.moves[4]!.fen);
-    }
-    const repetition = lines.find((line) => line.moves[0]?.label === '12. Qa4')!;
-    expect(repetition.startFen).toBe(fenAfter([...beforeRetreat, 'Ne7', 'c4', 'Ng6', 'Qa4', 'Bd7', 'Qb4', 'Bf5']));
-    const later = lines.filter((line) => line.moves[0]?.label.startsWith('9.')).slice(1);
-    expect(later.map((line) => line.moves[0]!.san)).toEqual(['c4', 'a4', 'Qf3', 'Qd3']);
-    for (const line of later) expect(line.startFen).toBe(fenAfter(moves.map((move) => move.san)));
+    expect(critical.startFen).toBe(fenAfter(beforeRetreat));
+    const alternative = lines.find((line) => line.moves[0]?.san === 'Bf5')!;
+    expect(alternative.startFen).toBe(critical.moves[5]!.fen);
+    expect(alternative.moves.map((move) => move.san)).toEqual(['Bf5', 'Qa4', 'Bd7']);
+    expect(alternative.moves[0]!.fen).toBe(fenAfter([...beforeRetreat, 'Ne7', 'c4', 'Ng6', 'Qa4', 'Bd7', 'Qb4', 'Bf5']));
+    const later = lines.filter((line) => line.moves.some((move) => move.label.startsWith('9.'))).slice(1);
+    expect(later.map((line) => line.moves.at(-1)!.san)).toEqual(['c4', 'a4', 'Qf3', 'Qd3']);
+    expect(later[0]!.moves.map((move) => move.san)).toEqual(['Nb8', 'c4']);
+    for (const line of later.slice(1)) expect(line.startFen).toBe(fenAfter(moves.map((move) => move.san)));
     for (const line of lines) for (const move of line.moves)
       expect(prose.slice(move.start, move.end)).toMatch(/\S/);
+  });
+
+  it('keeps 16.Na4 in the blunder line across the explanation text', () => {
+    const path = [...moves, ...'c4 Be7 Be2 O-O O-O a6 Nc3 f5 f4 Bf6'.split(' ').map((san) => ({ san }))];
+    const comment = '13...Nd7 is also fine and will lead to the same position. Please note that 13...exf4 14.Bxf4 Qb6+ 15.Kh1 Qxb2 is a huge blunder due to 16.Na4.';
+    const lines = explanationLines(comment, START_FEN, path);
+    expect(lines).toHaveLength(2);
+    expect(lines[0]!.moves.map((move) => move.san)).toEqual(['Nd7']);
+    expect(lines[1]!.moves.map((move) => move.san)).toEqual(['exf4', 'Bxf4', 'Qb6+', 'Kh1', 'Qxb2', 'Na4']);
+    expect(lines[1]!.moves.at(-1)!.fen).toBe(fenAfter([
+      ...path.slice(0, -1).map((move) => move.san), 'exf4', 'Bxf4', 'Qb6+', 'Kh1', 'Qxb2', 'Na4',
+    ]));
+    const penultimate = lines[1]!.moves[4]!;
+    const last = lines[1]!.moves[5]!;
+    expect(comment.slice(penultimate.end, last.start)).toBe(' is a huge blunder due to ');
+    expect(comment.slice(last.start, last.end)).toBe('16.Na4');
+    // The reader's selector lists the complete line once and keeps the prose intact.
+    const pgn = path.map((move) => move.san).join(' ') + ` {${comment}} *`;
+    const entry = entryFrom({ id: 'prose-continuation-test', name: 'Test', pgn, side: 'white', importedAt: 0 }, {});
+    const html = renderToStaticMarkup(<CourseReader entry={entry} initialPly={path.length} onExit={() => {}} />);
+    expect(html).toMatch(/<option value="1">13… exf4 14. Bxf4 14… Qb6\+ 15. Kh1 15… Qxb2 16. Na4<\/option>/);
+    expect(html).not.toContain('<option value="2">');
+    expect(html).toContain(' is a huge blunder due to ');
+  });
+
+  it('requires the next half-move and a matching position before joining prose segments', () => {
+    const path = ['e4', 'e5'].map((san) => ({ san }));
+    const joined = explanationLines('1.e4 can be met by 1...c5, then 2.Nf3.', START_FEN, path);
+    expect(joined.map((line) => line.moves.map((move) => move.san))).toEqual([['e4', 'c5', 'Nf3']]);
+    const skipped = explanationLines('1.e4 is common. Another idea is 2.Nf3.', START_FEN, path);
+    expect(skipped.map((line) => line.moves.map((move) => move.san))).toEqual([['e4'], ['Nf3']]);
+    const alternatives = explanationLines('1.e4 e5 or 1.d4 d5.', START_FEN, path);
+    expect(alternatives.map((line) => line.moves.map((move) => move.san))).toEqual([['e4', 'e5'], ['d4', 'd5']]);
   });
 
   it('leaves illegal, unanchored and speculative prose alone and preserves valid prefixes', () => {

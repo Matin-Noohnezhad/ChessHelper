@@ -23,7 +23,8 @@ const positionPly = (fen: string) => {
 
 /** Resolve numbered prose references against the course path and earlier examples.
  * Prose is never executed: only SAN moves legal in an established position link.
- * Unnumbered plans separated by prose deliberately stay as text.
+ * Numbered continuations can resume the preceding line across prose when they
+ * start from its exact final position. Unnumbered plans stay as text.
  */
 export function explanationLines(text: string, startFen: string, path: readonly { san: string }[]): ExplanationLine[] {
   const game = new Chess(startFen);
@@ -57,7 +58,12 @@ export function explanationLines(text: string, startFen: string, path: readonly 
       if (moves.length && (!best || moves.length > best.moves.length)) best = { startFen: fen, moves };
     }
     if (best) {
-      lines.push(best);
+      const previous = lines.at(-1);
+      // A prose break is not a chess branch: e.g. "15...Qxb2 is a blunder
+      // due to 16.Na4". Matching the full FEN checks both the move number and
+      // side to move, and the moves above have already been validated as legal.
+      if (previous?.moves.at(-1)?.fen === best.startFen) previous.moves.push(...best.moves);
+      else lines.push(best);
       // Keep the starting position too, so a later alternative can branch here.
       positions.push(best.startFen, ...best.moves.map((move) => move.fen));
       i += best.moves.length;
