@@ -468,7 +468,7 @@ export function CourseSession({
       <aside className="trainer__side">
         <section className="panel">
           <details className="course-shortcuts"><summary>Keyboard shortcuts</summary>
-            <p>A: analyze position · B: reading · Space: skip demonstration / next part / next line · ← →: browse moves · →: next demonstration move · J / K: previous / next explanation line · Q: course position · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
+            <p>A: analyze position · B: reading · Space: skip demonstration / next part / next line · ← →: browse moves · →: next demonstration move · W / E: previous / next explanation line · Q: course position · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
           </details>
           <div className="course-head">
             <h2>{MODE_LABELS[mode]}</h2>

@@ -51,15 +51,15 @@ export function CourseExplanation({ text, sourceComment = text, limit, selectabl
   }, [text, sourceComment, context]);
   const active = context?.preview?.sourceId === sourceId ? context.preview : null;
   const explore = (lineIndex: number, ply = 1) => context?.explore({ sourceId, lines, lineIndex, ply });
-  // J/K also start exploration directly from the displayed explanation.
+  // W/E also start exploration directly from the displayed explanation.
   useEffect(() => {
     if (!lines.length || context?.preview) return;
     const onKey = (event: KeyboardEvent) => {
       if (courseShortcutBlocked(event)) return;
       const key = event.key.toLowerCase();
-      if (key !== 'j' && key !== 'k') return;
+      if (key !== 'w' && key !== 'e') return;
       event.preventDefault();
-      explore(key === 'j' ? lines.length - 1 : 0);
+      explore(key === 'w' ? lines.length - 1 : 0);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -82,7 +82,7 @@ export function CourseExplanation({ text, sourceComment = text, limit, selectabl
   }
   parts.push(text.slice(cursor, end), end < text.length ? '…' : '');
   return <><span className="course-explanation" ref={prose}>{parts}</span>
-    {lines.length > 0 && <span className="course-explanation__help">Click moves to view them here · J / K: previous / next line · ← →: step · Q: course position</span>}{selectable && lines.length > 0 &&
+    {lines.length > 0 && <span className="course-explanation__help">Click moves to view them here · W / E: previous / next line · ← →: step · Q: course position</span>}{selectable && lines.length > 0 &&
     <label className="course-explanation__select">Lines in this explanation
       <select value={active?.lineIndex ?? ""} onChange={(event) => {
         const index = Number(event.target.value);
@@ -113,8 +113,8 @@ export function useExplanationPreview(enabled = true) {
       else if (key === 'arrowright' || key === ' ') step(preview.ply + 1);
       else if (key === 'home') step(0);
       else if (key === 'end') step(line.moves.length);
-      else if (key === 'j') jump(-1);
-      else if (key === 'k') jump(1);
+      else if (key === 'w') jump(-1);
+      else if (key === 'e') jump(1);
       else if (key === 'q') setPreview(null);
       else return;
       event.preventDefault();
@@ -134,9 +134,9 @@ export function ExplanationControls({ exploration }: { exploration: ReturnType<t
       <MoveStepButton onStep={() => step(preview.ply - 1)} disabled={!preview.ply} title="Previous explanation move (←)">◀</MoveStepButton>
       <MoveStepButton onStep={() => step(preview.ply + 1)} disabled={preview.ply === line.moves.length} title="Next explanation move (→)">▶</MoveStepButton>
       <button type="button" onClick={() => jump(-1)} disabled={preview.lines.length < 2}
-        title="Previous explanation line (J)" aria-keyshortcuts="j">Previous line <kbd>J</kbd></button>
+        title="Previous explanation line (W)" aria-keyshortcuts="w">Previous line <kbd>W</kbd></button>
       <button type="button" onClick={() => jump(1)} disabled={preview.lines.length < 2}
-        title="Next explanation line (K)" aria-keyshortcuts="k">Next line <kbd>K</kbd></button>
+        title="Next explanation line (E)" aria-keyshortcuts="e">Next line <kbd>E</kbd></button>
       <button type="button" onClick={() => setPreview(null)} title="Back to course position (Q)" aria-keyshortcuts="q">
         Back to course position <kbd>Q</kbd>
       </button>

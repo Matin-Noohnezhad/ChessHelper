@@ -254,7 +254,7 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
           <button type="button" disabled={index === 0} onClick={() => pick(index - 1)} title="Previous line ([)">Previous line</button>
           <button type="button" disabled={index === lines.length - 1} onClick={() => pick(index + 1)} title="Next line (])">Next line</button>
         </div>
-        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · ↑ ↓: choose variation · J / K: previous / next explanation line · Q: course position · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
+        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · ↑ ↓: choose variation · W / E: previous / next explanation line · Q: course position · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
       </section></aside>
     </div>
     </ExplanationContext.Provider>
