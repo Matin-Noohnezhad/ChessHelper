@@ -29,15 +29,48 @@ describe('saved movement settings', () => {
     }
   });
 
-  it('keeps the original defaults for old or invalid settings', () => {
+  it('uses the configured defaults for missing or invalid settings', () => {
     for (const stored of [{}, { movementStyle: 'missing', movementSpeed: null }]) {
       vi.stubGlobal('localStorage', { getItem: () => JSON.stringify(stored) });
-      expect(renderToStaticMarkup(<MovementSettings />)).toContain('data-style="lichess" data-speed="medium"');
+      expect(renderToStaticMarkup(<MovementSettings />)).toContain('data-style="chessbase" data-speed="medium"');
     }
   });
 });
 
 afterEach(() => vi.unstubAllGlobals());
+
+function BoardSettings() {
+  const settings = useSettings();
+  return <output data-theme={settings.boardTheme} data-pieces={settings.pieceSet}
+    data-movement={settings.movementStyle} data-speed={settings.movementSpeed}
+    data-drawing={settings.annotationStyle} data-arrow={settings.showLastMoveArrow}
+    data-color={settings.lastMoveArrowColor} data-sound={settings.soundStyle}
+    data-volume={settings.soundVolume} />;
+}
+
+describe('installation board defaults', () => {
+  it('uses the Chrome board preferences for fresh or corrupt storage', () => {
+    for (const raw of [null, '{}', 'invalid json']) {
+      vi.stubGlobal('localStorage', { getItem: () => raw });
+      expect(renderToStaticMarkup(<BoardSettings />)).toContain(
+        'data-theme="chessbase-maple" data-pieces="merida" data-movement="chessbase" data-speed="medium" ' +
+        'data-drawing="chessbase" data-arrow="true" data-color="blue" data-sound="chessbase-desktop" data-volume="0.55"',
+      );
+    }
+  });
+
+  it('preserves previously saved board choices, including disabled arrows and muted audio', () => {
+    vi.stubGlobal('localStorage', { getItem: () => JSON.stringify({
+      boardTheme: 'walnut', pieceSet: 'original', movementStyle: 'lichess', movementSpeed: 'off',
+      annotationStyle: 'original', showLastMoveArrow: false, lastMoveArrowColor: 'yellow',
+      soundStyle: 'wooden', soundVolume: 0,
+    }) });
+    expect(renderToStaticMarkup(<BoardSettings />)).toContain(
+      'data-theme="walnut" data-pieces="original" data-movement="lichess" data-speed="off" ' +
+      'data-drawing="original" data-arrow="false" data-color="yellow" data-sound="wooden" data-volume="0"',
+    );
+  });
+});
 
 function AnnotationSettings() {
   const settings = useSettings();
@@ -50,10 +83,10 @@ describe('saved drawing settings', () => {
     expect(renderToStaticMarkup(<AnnotationSettings />)).toContain('data-style="chessbase" data-thickness="thick"');
   });
 
-  it('keeps original marks for old or invalid preferences', () => {
+  it('uses ChessBase marks for missing or invalid preferences', () => {
     for (const annotationStyle of [undefined, 'missing', null, 42]) {
       vi.stubGlobal('localStorage', { getItem: () => JSON.stringify({ annotationStyle, annotationThickness: 'thin' }) });
-      expect(renderToStaticMarkup(<AnnotationSettings />)).toContain('data-style="original" data-thickness="thin"');
+      expect(renderToStaticMarkup(<AnnotationSettings />)).toContain('data-style="chessbase" data-thickness="thin"');
     }
   });
 });
@@ -71,17 +104,17 @@ describe('saved last-move arrow settings', () => {
     }
   });
 
-  it('defaults to off and blue for old or invalid settings', () => {
+  it('defaults to on and blue for missing or invalid settings', () => {
     for (const stored of [{}, { showLastMoveArrow: 'true', lastMoveArrowColor: 'purple' }, { showLastMoveArrow: null, lastMoveArrowColor: 42 }]) {
       vi.stubGlobal('localStorage', { getItem: () => JSON.stringify(stored) });
-      expect(renderToStaticMarkup(<LastMoveSettings />)).toContain('data-enabled="false" data-color="blue"');
+      expect(renderToStaticMarkup(<LastMoveSettings />)).toContain('data-enabled="true" data-color="blue"');
     }
   });
 });
 
 describe('saved sound settings', () => {
-  it('keeps the original sound and mute setting for existing users', () => {
-    expect(load({ soundVolume: 0 })).toContain('data-style="wooden" data-volume="0"');
+  it('keeps saved sounds and mute settings for existing users', () => {
+    expect(load({ soundStyle: 'wooden', soundVolume: 0 })).toContain('data-style="wooden" data-volume="0"');
   });
 
   it('restores every saved preset', () => {
@@ -99,9 +132,9 @@ describe('saved sound settings', () => {
     }
   });
 
-  it('falls back to wooden for invalid saved presets', () => {
+  it('falls back to ChessBase desktop for invalid saved presets', () => {
     for (const soundStyle of ['missing', null, 42]) {
-      expect(load({ soundStyle })).toContain('data-style="wooden"');
+      expect(load({ soundStyle })).toContain('data-style="chessbase-desktop"');
     }
   });
 });

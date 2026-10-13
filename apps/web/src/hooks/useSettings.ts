@@ -3,7 +3,7 @@ import { PIECE_SETS } from '../components/Piece.js';
 import type { PieceSet } from '../components/Piece.js';
 import { ANNOTATION_STYLES, DEFAULT_LAST_MOVE_ARROW, DRAW_COLOR_OPTIONS } from '../components/BoardAnnotations.js';
 import type { AnnotationStyle, AnnotationThickness, DrawColor, LastMoveArrowSettings } from '../components/BoardAnnotations.js';
-import { DEFAULT_SOUND_STYLE, SOUND_STYLES } from '../sound.js';
+import { SOUND_STYLES } from '../sound.js';
 import type { SoundStyle } from '../sound.js';
 import { DEFAULT_BOARD_ANIMATION, MOVEMENT_SPEEDS, MOVEMENT_STYLES } from '../boardAnimation.js';
 import type { BoardAnimationSettings, MovementStyle, MovementSpeed } from '../boardAnimation.js';
@@ -73,13 +73,16 @@ const DEFAULT_SETTINGS: AppSettings = {
   ...DEFAULT_COURSE_LEARNING,
   ...DEFAULT_BOARD_ANIMATION,
   ...DEFAULT_LAST_MOVE_ARROW,
-  boardTheme: 'walnut',
-  pieceSet: 'original',
+  // Board preferences captured from the configured Chrome installation.
+  boardTheme: 'chessbase-maple',
+  pieceSet: 'merida',
+  movementStyle: 'chessbase',
+  showLastMoveArrow: true,
   moveEntryMode: 'smart',
   annotationThickness: 'medium',
-  annotationStyle: 'original',
+  annotationStyle: 'chessbase',
   soundVolume: 0.55,
-  soundStyle: DEFAULT_SOUND_STYLE,
+  soundStyle: 'chessbase-desktop',
   replaySounds: false,
   watchAutoplay: true,
   watchMoveSeconds: WATCH_SECONDS_DEFAULT,
@@ -95,9 +98,9 @@ function loadSettings(): AppSettings {
       branchNavigation: stored.branchNavigation === 'sidebar' ? 'sidebar' : 'board',
       showCoordinates: typeof stored.showCoordinates === 'boolean' ? stored.showCoordinates : true,
       movementStyle: MOVEMENT_STYLES.some((style) => style.key === stored.movementStyle)
-        ? stored.movementStyle : DEFAULT_BOARD_ANIMATION.movementStyle,
+        ? stored.movementStyle : DEFAULT_SETTINGS.movementStyle,
       movementSpeed: MOVEMENT_SPEEDS.some((speed) => speed.key === stored.movementSpeed)
-        ? stored.movementSpeed : DEFAULT_BOARD_ANIMATION.movementSpeed,
+        ? stored.movementSpeed : DEFAULT_SETTINGS.movementSpeed,
       pieceSet: PIECE_SETS.some((set) => set.key === stored.pieceSet) ? stored.pieceSet : DEFAULT_SETTINGS.pieceSet,
       moveEntryMode: stored.moveEntryMode === 'select' ? 'select' : 'smart',
       annotationThickness: ['thin', 'medium', 'thick', 'extra'].includes(stored.annotationThickness)
@@ -105,15 +108,15 @@ function loadSettings(): AppSettings {
       annotationStyle: ANNOTATION_STYLES.some((style) => style.key === stored.annotationStyle)
         ? stored.annotationStyle : DEFAULT_SETTINGS.annotationStyle,
       showLastMoveArrow: typeof stored.showLastMoveArrow === 'boolean'
-        ? stored.showLastMoveArrow : DEFAULT_LAST_MOVE_ARROW.showLastMoveArrow,
+        ? stored.showLastMoveArrow : DEFAULT_SETTINGS.showLastMoveArrow,
       lastMoveArrowColor: DRAW_COLOR_OPTIONS.some((color) => color.key === stored.lastMoveArrowColor)
-        ? stored.lastMoveArrowColor : DEFAULT_LAST_MOVE_ARROW.lastMoveArrowColor,
+        ? stored.lastMoveArrowColor : DEFAULT_SETTINGS.lastMoveArrowColor,
       boardTheme: BOARD_THEMES.some((theme) => theme.key === stored.boardTheme)
         ? stored.boardTheme : DEFAULT_SETTINGS.boardTheme,
       soundVolume: Number.isFinite(stored.soundVolume)
         ? Math.min(1, Math.max(0, stored.soundVolume)) : DEFAULT_SETTINGS.soundVolume,
       soundStyle: SOUND_STYLES.some((style) => style.key === stored.soundStyle)
-        ? stored.soundStyle : DEFAULT_SOUND_STYLE,
+        ? stored.soundStyle : DEFAULT_SETTINGS.soundStyle,
       replaySounds: stored.replaySounds === true,
       watchMoveSeconds: clampSeconds(stored.watchMoveSeconds),
       watchAutoplay: typeof stored.watchAutoplay === 'boolean' ? stored.watchAutoplay : true,
