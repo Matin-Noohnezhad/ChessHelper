@@ -335,7 +335,7 @@ export default function App() {
 
         <aside className="app__side">
           <ExploreMoveTree game={game} />
-          <EnginePanel engine={engine} />
+          <EnginePanel engine={engine} fen={game.game.fen()} onMove={handleMove} />
           <ImbalancesPanel game={game.game} />
           <OpeningPanel
             match={match}

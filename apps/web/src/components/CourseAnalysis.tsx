@@ -108,7 +108,7 @@ export function CourseAnalysis({
         </div>
       </div>
       <aside className="trainer__side">
-        <EnginePanel engine={engine} />
+        <EnginePanel engine={engine} fen={position.fen} onMove={play} />
         <section className="panel">
           <div className="course-head">
             <h2>Analyze position</h2>
