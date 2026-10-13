@@ -40,8 +40,10 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
     lineId?.slice((lines[index]?.chapterId.length ?? 0) + 1)));
   const [ply, updatePly] = useState(() => Math.min(initialPly, path.length));
   const [choice, setChoice] = useState(0);
+  const [choosingBranch, setChoosingBranch] = useState(false);
   const setPly = (value: number) => {
     setPreview(null);
+    setChoosingBranch(false);
     updatePly(Math.max(0, Math.min(path.length, value)));
     setChoice(0);
   };
@@ -89,6 +91,7 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
   const pick = (next: number) => {
     if (next < 0 || next >= lines.length) return;
     setPreview(null);
+    setChoosingBranch(false);
     setIndex(next);
     setPath(lines[next]!.line);
     updatePly(0);
@@ -98,12 +101,19 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
     setPreview(null);
     const next = continuations[selected];
     if (!next) return;
+    setChoosingBranch(false);
     setPath([...path.slice(0, ply), ...readingPath([next])]);
     updatePly(ply + 1);
     setChoice(0);
   };
+  const nextMove = () => {
+    if (branch && !choosingBranch) {
+      setChoice(0);
+      setChoosingBranch(true);
+    } else advance();
+  };
   const forward = () => {
-    if (continuations.length) advance();
+    if (continuations.length) nextMove();
     else if (index < lines.length - 1) pick(index + 1);
     else onExit();
   };
@@ -113,16 +123,16 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
       if (courseShortcutBlocked(event)) return;
       const key = event.key.toLowerCase();
       if (key === 't' && onTrain && chapter) train();
-      else if (key === 'a' && line) setAnalyzing(true);
-      else if (key === ' ') forward();
-      else if (key === 'arrowright') { if (!event.repeat || !branch) advance(); }
+      else if (key === 'a' && line) { setChoosingBranch(false); setAnalyzing(true); }
+      else if (key === ' ') { if (!event.repeat || !branch) forward(); }
+      else if (key === 'arrowright') { if (!event.repeat || !branch) nextMove(); }
       else if (key === 'arrowleft') setPly(ply - 1);
       else if (key === 'arrowup') {
-        if (branch) setChoice(Math.max(0, choice - 1));
+        if (choosingBranch) setChoice(Math.max(0, choice - 1));
         else setPly(0);
       }
       else if (key === 'arrowdown') {
-        if (branch) setChoice(Math.min(continuations.length - 1, choice + 1));
+        if (choosingBranch) setChoice(Math.min(continuations.length - 1, choice + 1));
         else setPly(path.length);
       }
       else if (key === 'home') setPly(0);
@@ -130,7 +140,7 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
       else if (key === ']') pick(index + 1);
       else if (key === '[') pick(index - 1);
       else if (key === 'c') setExpanded((value) => !value);
-      else if (key === 'escape') onExit();
+      else if (key === 'escape') { if (choosingBranch) setChoosingBranch(false); else onExit(); }
       else return;
       event.preventDefault();
     };
@@ -145,7 +155,7 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
   const comment = node?.comment?.trim() ?? '';
   const brief = comment.length > 240 ? `${comment.slice(0, 240).replace(/\s+\S*$/, '')}…` : comment;
   const atEnd = ply === line.line.length;
-  const branchChooser = branch && !preview ? <section className="course-variations" aria-label="Choose variation">
+  const branchChooser = branch && choosingBranch && !preview ? <section className="course-variations" aria-label="Choose variation">
     <div className="course-variations__head"><h3>Variations</h3><span>{continuations.length} continuations</span></div>
     <div ref={variationList} className="course-variations__list" role="listbox" aria-label="Continuations"
       tabIndex={0} aria-activedescendant={`course-variation-${choice}`}
@@ -168,7 +178,7 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
     <p><strong>↑ ↓</strong> choose <span>·</span> <strong>→</strong> play <span>·</span> Main line selected by default</p>
   </section> : null;
   return (
-    <ExplanationContext.Provider value={{ startFen: chapter?.startFen, path: path.slice(0, ply), preview, explore: (next) => { setExpanded(true); setPreview(next); } }}>
+    <ExplanationContext.Provider value={{ startFen: chapter?.startFen, path: path.slice(0, ply), preview, explore: (next) => { setChoosingBranch(false); setExpanded(true); setPreview(next); } }}>
     <div className="trainer course-session course-session--rail course-reader">
       <aside className="panel course-session__rail">
         <h2>Chapters &amp; lines</h2>
@@ -205,7 +215,7 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
         <div className="course-reader__lines-head">
           <h3>Lines</h3><span className="muted">{chapter?.lines.length}</span>
         </div>
-        <p className="muted course-reader__line-help">One line per game. Variations appear at the move where they branch.</p>
+        <p className="muted course-reader__line-help">One line per game. Press next at a branch to choose a variation.</p>
         <ul className="course-outline__lines">
           {chapter?.lines.map((item, i) => <li key={item.id}>
             <button type="button" className={`course-outline__line${line.id === item.id ? ' is-active' : ''}`}
@@ -227,12 +237,12 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
         {preview ? <ExplanationControls exploration={exploration} /> : <div className="board-bar">
           <span className="status">{ply === 0 ? 'Starting position' : `${node?.moveNumber ?? Math.ceil(ply / 2)}${node?.side === 'w' ? '.' : '…'} ${node?.san}`} · {ply} / {line.line.length}</span>
           <div className="nav">
-            <button type="button" onClick={() => setAnalyzing(true)} title="Analyze position (A)" aria-keyshortcuts="a">
+            <button type="button" onClick={() => { setChoosingBranch(false); setAnalyzing(true); }} title="Analyze position (A)" aria-keyshortcuts="a">
               Analyze position <kbd>A</kbd>
             </button>
             <button type="button" onClick={() => setPly(0)} disabled={!ply} title="Start (Home)">⏮</button>
             <MoveStepButton type="button" onStep={() => setPly(ply - 1)} disabled={!ply} title="Previous move (←)">◀</MoveStepButton>
-            <MoveStepButton type="button" onStep={() => advance()} disabled={atEnd} title="Next move (→)" repeat={!branch}>▶</MoveStepButton>
+            <MoveStepButton type="button" onStep={nextMove} disabled={atEnd} title="Next move (→)" repeat={!branch}>▶</MoveStepButton>
             <button type="button" className="primary" onClick={forward} title="Continue (Space)" aria-keyshortcuts="Space">
               {atEnd ? index === lines.length - 1 ? 'Finish reading' : 'Next line' : 'Next move'} <kbd>Space</kbd>
             </button>

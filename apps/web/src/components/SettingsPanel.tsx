@@ -279,7 +279,7 @@ export function SettingsPanel({
             <option value="board">Over the board</option>
             <option value="sidebar">Side panel (original)</option>
           </select>
-          <span className="settings-row__hint">When reading reaches a PGN branch, ↑ ↓ select a continuation and → plays it. The main line is selected first.</span>
+          <span className="settings-row__hint">At a PGN branch, press → to show continuations. Then ↑ ↓ select and → plays. The main line is selected first.</span>
         </div>
 
         <div className="settings-row">

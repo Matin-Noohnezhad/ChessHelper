@@ -87,16 +87,14 @@ describe('explanation lines', () => {
 describe('reading branches and explanation controls', () => {
   const entry = entryFrom({ id: 'explanation-test', name: 'Test', side: 'white', importedAt: 0,
     pgn: '1.e4 {Try 1.d4 d5 2.c4 instead.} e5 (1...c5 2.Nf3) 2.Nf3 *' }, {});
-  it('shows the chooser over the board by default, and keeps the original sidebar option', () => {
+  it('keeps branch choices hidden until next is pressed in both placements', () => {
     const html = renderToStaticMarkup(<CourseReader entry={entry} initialPly={1} onExit={() => {}} />);
-    expect(html).toContain('course-reader__branch-overlay');
-    expect(html).toContain('aria-selected="true"');
-    expect(html).toContain('Main line');
-    expect(html).toContain('Play selected →');
+    expect(html).not.toContain('course-reader__branch-overlay');
+    expect(html).not.toContain('Choose variation');
     expect(html).toContain('Lines in this explanation');
     expect(html).toContain('Explore 1. d4 on the board');
     const original = renderToStaticMarkup(<CourseReader entry={entry} initialPly={1} branchNavigation="sidebar" onExit={() => {}} />);
     expect(original).not.toContain('course-reader__branch-overlay');
-    expect(original.indexOf('Choose variation')).toBeGreaterThan(original.indexOf('trainer__side'));
+    expect(original).not.toContain('Choose variation');
   });
 });
