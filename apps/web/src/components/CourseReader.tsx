@@ -124,6 +124,7 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
       const key = event.key.toLowerCase();
       if (key === 't' && onTrain && chapter) train();
       else if (key === 'a' && line) { setChoosingBranch(false); setAnalyzing(true); }
+      else if (key === 'b' && branchPly >= 0) setPly(branchPly);
       else if (key === ' ') { if (!event.repeat || !branch) forward(); }
       else if (key === 'arrowright') { if (!event.repeat || !branch) nextMove(); }
       else if (key === 'arrowleft') setPly(ply - 1);
@@ -264,13 +265,14 @@ export function CourseReader({ branchNavigation = 'board', entry, chapterId, lin
           {brief !== comment && !preview && <button type="button" onClick={() => setExpanded(!expanded)} title="Expand or shorten explanation (C)">{expanded ? 'Show less' : 'Read full explanation'}</button>}
         </div>}
         {branchNavigation === 'sidebar' && branchChooser}
-        {branchPly >= 0 && <button type="button" className="course-reader__return" onClick={() => setPly(branchPly)}>↩ Back to branch</button>}
+        {branchPly >= 0 && <button type="button" className="course-reader__return" onClick={() => setPly(branchPly)}
+          title="Back to branch (B)" aria-keyshortcuts="b">↩ Back to branch <kbd>B</kbd></button>}
         <MoveTrail trail={line.line} cursor={ply} startIndex={0} onSelect={setPly} />
         <div className="course-card__actions">
           <button type="button" disabled={index === 0} onClick={() => pick(index - 1)} title="Previous line ([)">Previous line</button>
           <button type="button" disabled={index === lines.length - 1} onClick={() => pick(index + 1)} title="Next line (])">Next line</button>
         </div>
-        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · ← →: previous / next move · ↑ ↓: first / last position (choose variation when the variation chooser is open) · W / E: previous / next explanation line · Q: course position · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
+        <details className="course-shortcuts"><summary>Keyboard shortcuts</summary><p>A: analyze position · {onTrain && `T: ${trainingLabel.toLowerCase()} · `}Space: continue · B: back to branch · ← →: previous / next move · ↑ ↓: first / last position (choose variation when the variation chooser is open) · W / E: previous / next explanation line · Q: course position · Home / End: first / last position · [ / ]: previous / next game · C: expand explanation · Esc: finish. Tab and Enter activate any button.</p></details>
       </section></aside>
     </div>
     </ExplanationContext.Provider>
