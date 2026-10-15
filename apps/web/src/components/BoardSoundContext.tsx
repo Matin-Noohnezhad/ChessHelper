@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect } from 'react';
 import type { ReactNode } from 'react';
 import { DEFAULT_SOUND_STYLE, prepareBoardSounds, stopBoardSounds, unlockBoardAudio } from '../sound.js';
 import type { SoundStyle } from '../sound.js';
@@ -12,10 +12,13 @@ interface BoardSoundSettings {
 
 export const BoardSoundContext = createContext<BoardSoundSettings>({ volume: 0.55, style: DEFAULT_SOUND_STYLE, replay: false });
 
+const useAudioSetupEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 export function BoardSoundProvider({ volume, style = DEFAULT_SOUND_STYLE, replay = false, children }: {
   volume: number; style?: SoundStyle; replay?: boolean; children: ReactNode;
 }) {
-  useEffect(() => {
+  // Clear the previous style before the board's move effect plays a new sound.
+  useAudioSetupEffect(() => {
     stopBoardSounds();
     if (volume <= 0) return;
     void prepareBoardSounds(style);

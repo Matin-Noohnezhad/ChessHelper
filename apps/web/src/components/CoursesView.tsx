@@ -4,7 +4,7 @@ import { CourseDashboard } from './CourseDashboard.js';
 import { CourseImport } from './CourseImport.js';
 import { CourseLibrary } from './CourseLibrary.js';
 import { CourseReader } from './CourseReader.js';
-import type { CourseLearningSettings } from '../hooks/useSettings.js';
+import type { CourseSoundSettings, CourseLearningSettings } from '../hooks/useSettings.js';
 import { CourseSession } from './CourseSession.js';
 import type { AnnotationThickness } from './Board.js';
 import { useCourseLibrary } from '../hooks/useCourseLibrary.js';
@@ -26,6 +26,7 @@ interface CoursesViewProps {
   branchNavigation?: 'board' | 'sidebar';
   moveEntryMode?: 'smart' | 'select';
   courseLearning?: CourseLearningSettings;
+  courseSounds?: CourseSoundSettings;
   annotationThickness?: AnnotationThickness;
   watchAutoplay?: boolean;
   watchMoveSeconds?: number;
@@ -43,6 +44,7 @@ export function CoursesView({
   moveEntryMode,
   annotationThickness,
   courseLearning,
+  courseSounds,
   watchAutoplay,
   watchMoveSeconds,
 }: CoursesViewProps) {
@@ -101,6 +103,7 @@ export function CoursesView({
         entry={entry}
         mode={view.mode}
         courseLearning={courseLearning}
+        courseSounds={courseSounds}
         {...(view.chapterIds ? { chapterIds: view.chapterIds } : {})}
         {...(view.lineIds ? { lineIds: view.lineIds } : {})}
         onExit={() => setView({ kind: 'course', id: view.id })}

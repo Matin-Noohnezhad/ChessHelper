@@ -34,6 +34,20 @@ const clampSeconds = (n: number): number => {
   return Math.min(WATCH_SECONDS_MAX, Math.max(WATCH_SECONDS_MIN, Math.round(n * 10) / 10));
 };
 
+export interface CourseSoundSettings {
+  courseReplaySounds: boolean;
+  courseReplaySoundStyle: SoundStyle;
+  coursePracticeSounds: boolean;
+  coursePracticeSoundStyle: SoundStyle;
+}
+
+export const DEFAULT_COURSE_SOUNDS: CourseSoundSettings = {
+  courseReplaySounds: true,
+  courseReplaySoundStyle: 'chesscom',
+  coursePracticeSounds: true,
+  coursePracticeSoundStyle: 'chesscom',
+};
+
 export interface CourseLearningSettings {
   courseChunk: number;
   courseFullPasses: number;
@@ -48,7 +62,7 @@ function clampInteger(value: number, min: number, max: number, fallback: number)
   return Number.isFinite(value) ? Math.min(max, Math.max(min, Math.round(value))) : fallback;
 }
 
-export interface AppSettings extends CourseLearningSettings, BoardAnimationSettings, LastMoveArrowSettings {
+export interface AppSettings extends CourseLearningSettings, CourseSoundSettings, BoardAnimationSettings, LastMoveArrowSettings {
   branchNavigation: 'board' | 'sidebar';
   showCoordinates: boolean;
   boardTheme: BoardTheme;
@@ -71,6 +85,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   branchNavigation: 'board',
   showCoordinates: true,
   ...DEFAULT_COURSE_LEARNING,
+  ...DEFAULT_COURSE_SOUNDS,
   ...DEFAULT_BOARD_ANIMATION,
   ...DEFAULT_LAST_MOVE_ARROW,
   // Board preferences captured from the configured Chrome installation.
@@ -118,6 +133,14 @@ function loadSettings(): AppSettings {
       soundStyle: SOUND_STYLES.some((style) => style.key === stored.soundStyle)
         ? stored.soundStyle : DEFAULT_SETTINGS.soundStyle,
       replaySounds: stored.replaySounds === true,
+      courseReplaySounds: typeof stored.courseReplaySounds === 'boolean'
+        ? stored.courseReplaySounds : DEFAULT_COURSE_SOUNDS.courseReplaySounds,
+      coursePracticeSounds: typeof stored.coursePracticeSounds === 'boolean'
+        ? stored.coursePracticeSounds : DEFAULT_COURSE_SOUNDS.coursePracticeSounds,
+      courseReplaySoundStyle: SOUND_STYLES.some((style) => style.key === stored.courseReplaySoundStyle)
+        ? stored.courseReplaySoundStyle : DEFAULT_COURSE_SOUNDS.courseReplaySoundStyle,
+      coursePracticeSoundStyle: SOUND_STYLES.some((style) => style.key === stored.coursePracticeSoundStyle)
+        ? stored.coursePracticeSoundStyle : DEFAULT_COURSE_SOUNDS.coursePracticeSoundStyle,
       watchMoveSeconds: clampSeconds(stored.watchMoveSeconds),
       watchAutoplay: typeof stored.watchAutoplay === 'boolean' ? stored.watchAutoplay : true,
       courseChunk: clampInteger(stored.courseChunk, 0, 30, DEFAULT_CHUNK),
@@ -152,6 +175,7 @@ export interface SettingsController extends AppSettings {
   setSoundVolume: (value: number) => void;
   setSoundStyle: (value: SoundStyle) => void;
   setReplaySounds: (value: boolean) => void;
+  setCourseSounds: (value: CourseSoundSettings) => void;
   setWatchAutoplay: (value: boolean) => void;
   setWatchMoveSeconds: (value: number) => void;
 }
@@ -191,6 +215,12 @@ export function useSettings(): SettingsController {
   );
   const setSoundStyle = useCallback((value: SoundStyle) => update({ soundStyle: value }), [update]);
   const setReplaySounds = useCallback((value: boolean) => update({ replaySounds: value }), [update]);
+  const setCourseSounds = useCallback((value: CourseSoundSettings) => update({
+    courseReplaySounds: value.courseReplaySounds,
+    courseReplaySoundStyle: value.courseReplaySoundStyle,
+    coursePracticeSounds: value.coursePracticeSounds,
+    coursePracticeSoundStyle: value.coursePracticeSoundStyle,
+  }), [update]);
   const setWatchAutoplay = useCallback(
     (value: boolean) => update({ watchAutoplay: value }),
     [update],
@@ -205,5 +235,5 @@ export function useSettings(): SettingsController {
     courseFullPasses: clampInteger(value.courseFullPasses, 1, 5, DEFAULT_FULL_PASSES),
   }), [update]);
 
-  return { ...settings, setBranchNavigation, setShowCoordinates, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setReplaySounds, setWatchAutoplay, setWatchMoveSeconds };
+  return { ...settings, setBranchNavigation, setShowCoordinates, setShowLastMoveArrow, setLastMoveArrowColor, setAnnotationStyle, setMovementStyle, setMovementSpeed, setCourseLearning, setPieceSet, setMoveEntryMode, setBoardTheme, setAnnotationThickness, setSoundVolume, setSoundStyle, setReplaySounds, setCourseSounds, setWatchAutoplay, setWatchMoveSeconds };
 }

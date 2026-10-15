@@ -8,10 +8,11 @@ import type { AnnotationStyle, AnnotationThickness, DrawColor } from './BoardAnn
 import { DEFAULT_SOUND_STYLE, SOUND_STYLES, playBoardSound } from '../sound.js';
 import type { SoundStyle } from '../sound.js';
 import { BOARD_THEME_GROUPS, boardThemeStyle } from '../boardThemes.js';
-import type { CourseLearningSettings, BoardTheme } from '../hooks/useSettings.js';
+import type { CourseSoundSettings, CourseLearningSettings, BoardTheme } from '../hooks/useSettings.js';
 import {
   BOARD_THEMES,
   DEFAULT_COURSE_LEARNING,
+  DEFAULT_COURSE_SOUNDS,
   WATCH_SECONDS_MAX,
   WATCH_SECONDS_MIN,
   WATCH_SECONDS_STEP,
@@ -51,6 +52,8 @@ interface SettingsPanelProps {
   watchMoveSeconds: number;
   onWatchMoveSecondsChange: (value: number) => void;
   courseLearning?: CourseLearningSettings;
+  courseSounds?: CourseSoundSettings;
+  onCourseSoundsChange?: (value: CourseSoundSettings) => void;
   onCourseLearningChange?: (value: CourseLearningSettings) => void;
   onClose: () => void;
 }
@@ -80,6 +83,8 @@ export function SettingsPanel({
   onWatchMoveSecondsChange,
   onClose,
   courseLearning = DEFAULT_COURSE_LEARNING,
+  courseSounds = DEFAULT_COURSE_SOUNDS,
+  onCourseSoundsChange,
   onCourseLearningChange,
 }: SettingsPanelProps) {
   return (
@@ -220,7 +225,37 @@ export function SettingsPanel({
             {' '}Sound replayed moves
           </label>
           <span className="settings-row__hint">Only new moves make a sound by default. Turn this on to also hear moves
-            when you step back and forward through a game, line or review.</span>
+            when you step back and forward through a game, line or review. Learning has separate controls below.</span>
+        </div>
+
+        <div className="settings-row">
+          <span className="settings-row__label">Course learning sounds</span>
+          <span className="settings-row__hint">Choose sounds separately for watching the line and practicing it.
+            Board volume and mute apply to both.</span>
+          {([
+            { label: 'Replay / demonstration', enabled: 'courseReplaySounds', style: 'courseReplaySoundStyle' },
+            { label: 'Practice / repetition', enabled: 'coursePracticeSounds', style: 'coursePracticeSoundStyle' },
+          ] as const).map(({ label, enabled, style }) => (
+            <div key={enabled} className="settings-row" role="group" aria-label={`${label} sounds`}>
+              <label>
+                <input type="checkbox" checked={courseSounds[enabled]}
+                  onChange={(event) => onCourseSoundsChange?.({ ...courseSounds, [enabled]: event.target.checked })} />
+                {' '}{label} sounds
+              </label>
+              <label htmlFor={style}>{label} sound style</label>
+              <select id={style} value={courseSounds[style]}
+                onChange={(event) => onCourseSoundsChange?.({ ...courseSounds, [style]: event.target.value as SoundStyle })}>
+                {SOUND_STYLES.map((preset) => <option key={preset.key} value={preset.key}>{preset.label}</option>)}
+              </select>
+              <div className="sound-preview" role="group" aria-label={`Preview ${label.toLowerCase()} sounds`}>
+                <span>Preview</span>
+                {(['move', 'capture', 'castle', 'check', 'promotion', 'mate'] as const).map((kind) => (
+                  <button key={kind} type="button" disabled={!courseSounds[enabled] || soundVolume === 0}
+                    onClick={() => playBoardSound(kind, soundVolume, courseSounds[style])}>{kind}</button>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="settings-row">

@@ -21,6 +21,40 @@ function MovementSettings() {
   return <output data-style={settings.movementStyle} data-speed={settings.movementSpeed} />;
 }
 
+function CourseSounds() {
+  const settings = useSettings();
+  return <output data-replay={settings.courseReplaySounds} data-replay-style={settings.courseReplaySoundStyle}
+    data-practice={settings.coursePracticeSounds} data-practice-style={settings.coursePracticeSoundStyle}
+    data-board-style={settings.soundStyle} data-volume={settings.soundVolume} />;
+}
+
+describe('saved course learning sounds', () => {
+  it('restores independent switches and styles without changing the board preferences', () => {
+    vi.stubGlobal('localStorage', { getItem: () => JSON.stringify({
+      courseReplaySounds: false, courseReplaySoundStyle: 'lichess',
+      coursePracticeSounds: true, coursePracticeSoundStyle: 'chesscom',
+      soundStyle: 'chessbase-desktop', soundVolume: 0.4,
+    }) });
+    expect(renderToStaticMarkup(<CourseSounds />)).toContain(
+      'data-replay="false" data-replay-style="lichess" data-practice="true" data-practice-style="chesscom" ' +
+      'data-board-style="chessbase-desktop" data-volume="0.4"',
+    );
+  });
+
+  it('defaults missing or invalid learning preferences without unmuting the board', () => {
+    for (const stored of [{}, {
+      courseReplaySounds: 'false', courseReplaySoundStyle: 'missing',
+      coursePracticeSounds: null, coursePracticeSoundStyle: 42,
+    }]) {
+      vi.stubGlobal('localStorage', { getItem: () => JSON.stringify({ ...stored, soundVolume: 0 }) });
+      expect(renderToStaticMarkup(<CourseSounds />)).toContain(
+        'data-replay="true" data-replay-style="chesscom" data-practice="true" data-practice-style="chesscom" ' +
+        'data-board-style="chessbase-desktop" data-volume="0"',
+      );
+    }
+  });
+});
+
 describe('saved movement settings', () => {
   it('restores each style, including ChessBase, with its saved speed', () => {
     for (const style of MOVEMENT_STYLES) {

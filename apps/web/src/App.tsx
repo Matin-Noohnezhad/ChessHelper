@@ -260,6 +260,8 @@ export default function App() {
           onWatchMoveSecondsChange={settings.setWatchMoveSeconds}
           courseLearning={settings}
           onCourseLearningChange={settings.setCourseLearning}
+          courseSounds={settings}
+          onCourseSoundsChange={settings.setCourseSounds}
           onClose={() => setSettingsOpen(false)}
         />
       )}
@@ -277,6 +279,7 @@ export default function App() {
           branchNavigation={settings.branchNavigation}
           moveEntryMode={settings.moveEntryMode}
           courseLearning={settings}
+          courseSounds={settings}
           annotationThickness={settings.annotationThickness}
           watchAutoplay={settings.watchAutoplay}
           watchMoveSeconds={settings.watchMoveSeconds}

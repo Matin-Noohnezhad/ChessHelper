@@ -12,9 +12,11 @@ import { CourseAnalysis } from './CourseAnalysis.js';
 import { CourseReader } from './CourseReader.js';
 import { useCourseSession } from '../hooks/useCourseSession.js';
 import type { LibraryEntry } from '../hooks/useCourseLibrary.js';
-import type { CourseLearningSettings } from '../hooks/useSettings.js';
+import type { CourseSoundSettings, CourseLearningSettings } from '../hooks/useSettings.js';
 import { courseShortcutBlocked } from '../courseShortcuts.js';
-import { WATCH_SECONDS_DEFAULT } from '../hooks/useSettings.js';
+import { BoardSoundProvider, useBoardSoundSettings } from './BoardSoundContext.js';
+import { prepareBoardSounds } from '../sound.js';
+import { DEFAULT_COURSE_SOUNDS, WATCH_SECONDS_DEFAULT } from '../hooks/useSettings.js';
 
 const MODE_LABELS: Record<SessionMode, string> = {
   learn: 'Learning',
@@ -49,6 +51,7 @@ interface CourseSessionProps {
   entry: LibraryEntry;
   mode: SessionMode;
   courseLearning?: CourseLearningSettings;
+  courseSounds?: CourseSoundSettings;
   chapterIds?: string[];
   lineIds?: string[];
   onExit: () => void;
@@ -83,6 +86,7 @@ export function CourseSession({
   onProgress,
   annotationThickness,
   courseLearning,
+  courseSounds = DEFAULT_COURSE_SOUNDS,
   watchAutoplay = true,
   watchMoveSeconds = WATCH_SECONDS_DEFAULT,
 }: CourseSessionProps) {
@@ -97,6 +101,15 @@ export function CourseSession({
   const task = trainer.task;
   const node = trainer.current;
   const watching = trainer.watching;
+  const boardSounds = useBoardSoundSettings();
+  const learningSounds = watching ? courseSounds.courseReplaySounds : courseSounds.coursePracticeSounds;
+  const learningSoundStyle = watching ? courseSounds.courseReplaySoundStyle : courseSounds.coursePracticeSoundStyle;
+  useEffect(() => {
+    if (mode !== 'learn' || boardSounds.volume <= 0) return;
+    if (courseSounds.courseReplaySounds) void prepareBoardSounds(courseSounds.courseReplaySoundStyle);
+    if (courseSounds.coursePracticeSounds) void prepareBoardSounds(courseSounds.coursePracticeSoundStyle);
+  }, [mode, boardSounds.volume, courseSounds.courseReplaySounds, courseSounds.courseReplaySoundStyle,
+    courseSounds.coursePracticeSounds, courseSounds.coursePracticeSoundStyle]);
   const watched = trainer.watched;
   const part = trainer.part;
   // How far through the run you are, in moves rather than plies — the number a
@@ -347,19 +360,25 @@ export function CourseSession({
         </aside>
       )}
       <div className="trainer__board">
-        <Board
-          moveEntryMode={moveEntryMode}
-          game={exploration.game ?? lookbackGame ?? trainer.game}
-          orientation={orientation}
-          lastMove={preview ? exploration.move ?? null : looking ? lookbackLast : trainer.lastMove}
-          onMove={handleMove}
-          interactive={!preview && !looking && trainer.isUsersTurn}
-          replay={Boolean(preview) || replaying}
-          hintArrows={preview ? [] : [...(looking ? [] : arrows), ...shapeArrows]}
-          hintCircles={preview ? [] : shapeCircles}
-          annotationThickness={annotationThickness}
-          animateMoves={Boolean(preview) || !looking}
-        />
+        <BoardSoundProvider
+          volume={mode === 'learn' && !learningSounds ? 0 : boardSounds.volume}
+          style={mode === 'learn' ? learningSoundStyle : boardSounds.style}
+          replay={mode === 'learn' ? learningSounds : boardSounds.replay}
+        >
+          <Board
+            moveEntryMode={moveEntryMode}
+            game={exploration.game ?? lookbackGame ?? trainer.game}
+            orientation={orientation}
+            lastMove={preview ? exploration.move ?? null : looking ? lookbackLast : trainer.lastMove}
+            onMove={handleMove}
+            interactive={!preview && !looking && trainer.isUsersTurn}
+            replay={Boolean(preview) || replaying}
+            hintArrows={preview ? [] : [...(looking ? [] : arrows), ...shapeArrows]}
+            hintCircles={preview ? [] : shapeCircles}
+            annotationThickness={annotationThickness}
+            animateMoves={Boolean(preview) || !looking}
+          />
+        </BoardSoundProvider>
         {preview ? <ExplanationControls exploration={exploration} /> : <div className="board-bar">
           <span className={`status${looking ? ' status--looking' : ''}`}>
             {looking
