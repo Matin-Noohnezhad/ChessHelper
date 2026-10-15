@@ -137,3 +137,49 @@
     overscroll-behavior-y: contain;
   }
 }
+
+.course-reader__board-stage { position: relative; }
+.course-reader__branch-overlay {
+  position: absolute;
+  z-index: 10;
+  top: calc(var(--board-size) * 0.5);
+  left: calc(var(--board-size) * 0.05);
+  width: calc(var(--board-size) * 0.9);
+  transform: translateY(-50%);
+  max-height: calc(var(--board-size) * 0.85);
+  overflow: auto;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px #0008;
+}
+.course-reader__branch-overlay .course-variations { margin: 0; border: 2px solid var(--accent); }
+.course-reader__branch-overlay .course-variations__list { max-height: min(13rem, 25vh); }
+.course-variations__controls { display: flex; gap: 0.5rem; padding: 0.5rem 0.75rem; border-top: 1px solid var(--border); }
+.course-explanation__move {
+  display: inline;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.course-explanation__move:hover:not(:disabled) { background: var(--accent-dim); }
+.course-explanation__select { display: grid; gap: 0.4rem; margin-top: 1rem; font-size: 0.8rem; }
+.course-explanation__select select { width: 100%; min-width: 0; padding: 0.5rem; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 4px; }
+.course-explanation__move.is-active-line { background: var(--accent-dim); color: var(--text); }
+.course-explanation__move[aria-current="step"],
+.course-explanation__move[aria-current="step"]:hover:not(:disabled) { background: var(--accent); color: var(--bg); outline: 2px solid var(--accent); text-decoration: none; }
+.course-explanation__help { display: block; margin-top: 0.6rem; color: var(--muted); font-size: 0.72rem; line-height: 1.6; }
+.course-explanation__controls .nav { flex-wrap: wrap; }
+
+@media (min-width: 760px) {
+  .app--focus .course-reader__branch-overlay {
+    position: fixed;
+    top: calc(12px + var(--board-size) * 0.5);
+    left: calc(12px + var(--focus-eval-space) + var(--board-size) * 0.05);
+  }
+}

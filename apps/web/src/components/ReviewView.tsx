@@ -364,6 +364,7 @@ export function ReviewReport({
         {inBranch && <button type="button" onClick={() => selectPly(selectedPly)}>Back to the game</button>}
       </div>
       <aside className="app__side">
+        <EnginePanel engine={engine} fen={fen} onMove={play} />
         <ReviewSummary
           review={review}
           section={section}
@@ -390,7 +391,6 @@ export function ReviewReport({
             )}
             {!move && !inBranch && <div className="panel review-detail review-detail--empty"><h3>Every move has a story</h3><p className="muted">Select a move or a point on the graph to explore it. Use ← and → to step through the game.</p></div>}
             {inBranch && <StructureNote fen={fen} toMove={game.turn() === 'w' ? 'white' : 'black'} />}
-            <EnginePanel engine={engine} />
           </>}
           moments={<>
             {moments.length > 0 && (

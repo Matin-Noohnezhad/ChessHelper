@@ -1,3 +1,4 @@
+import { CourseExplanation, ExplanationContext, ExplanationControls, useExplanationPreview } from './CourseExplanation.js';
 import { MoveStepButton } from './MoveStepButton.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { courseOutline } from '@coh/course';
@@ -43,6 +44,7 @@ const RUN_NOUN: Record<SessionMode, string> = {
 };
 
 interface CourseSessionProps {
+  branchNavigation?: 'board' | 'sidebar';
   moveEntryMode?: 'smart' | 'select';
   entry: LibraryEntry;
   mode: SessionMode;
@@ -70,6 +72,7 @@ interface CourseSessionProps {
  * you are being asked for until you have either produced it or given up on it.
  */
 export function CourseSession({
+  branchNavigation = 'board',
   moveEntryMode = 'smart',
   entry,
   mode,
@@ -136,6 +139,8 @@ export function CourseSession({
   // The trainer stays mounted and untouched while a separate board is explored.
   const [analyzing, setAnalyzing] = useState(false);
   const [reading, setReading] = useState(false);
+  const exploration = useExplanationPreview(!analyzing && !reading);
+  const { preview, setPreview } = exploration;
   const livePly = trainer.ply;
   const trail = trainer.played;
   const looking = lookback !== null;
@@ -145,10 +150,16 @@ export function CourseSession({
   useEffect(() => {
     setLookback(null);
   }, [livePly, trainer.task?.id]);
+  useEffect(() => {
+    setPreview(null);
+  }, [livePly, task, watching, lookback, reading, analyzing, setPreview]);
 
   const stepTo = useCallback(
-    (ply: number) => setLookback(ply >= livePly ? null : Math.max(0, ply)),
-    [livePly],
+    (ply: number) => {
+      setPreview(null);
+      setLookback(ply >= livePly ? null : Math.max(0, ply));
+    },
+    [livePly, setPreview],
   );
 
   // Leaving a lookback steps back onto the live board through a move already
@@ -190,7 +201,7 @@ export function CourseSession({
   const [watchPaused, setWatchPaused] = useState(false);
   const manualWatch = !watchAutoplay;
   useEffect(() => {
-    if (!watching || looking || watchPaused || analyzing || reading) return;
+    if (!watching || looking || watchPaused || analyzing || reading || preview) return;
     if (manualWatch) return; // your move to make: step it yourself
     const moveMs = watchMoveSeconds * 1000;
     const pause = inRecap ? WATCH_PAUSE_RECAP : moveMs;
@@ -206,6 +217,7 @@ export function CourseSession({
     watchPaused,
     analyzing,
     reading,
+    preview,
     watchMoveSeconds,
     advanceWatch,
   ]);
@@ -214,7 +226,7 @@ export function CourseSession({
   // the line is being demonstrated, → steps it and Space skips to practicing
   // the current part.
   useEffect(() => {
-    if (analyzing || reading) return;
+    if (analyzing || reading || preview) return;
     const onKey = (event: KeyboardEvent) => {
       if (courseShortcutBlocked(event)) return;
       const key = event.key.toLowerCase();
@@ -240,7 +252,7 @@ export function CourseSession({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [analyzing, reading, plan.tasks.length, lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit, continueAfterSession]);
+  }, [analyzing, reading, preview, plan.tasks.length, lookback, livePly, stepTo, watching, looking, advanceWatch, trainer, session, answer, manualWatch, onExit, continueAfterSession]);
 
   const handleMove = (from: string, to: string, promotion?: PieceSymbol) => {
     session.submit({ from, to, promotion });
@@ -271,7 +283,7 @@ export function CourseSession({
   }));
 
   if (reading) {
-    return <CourseReader entry={entry} lineId={activeLineId ?? completedLineId ?? lineIds?.[0]}
+    return <CourseReader branchNavigation={branchNavigation} entry={entry} lineId={activeLineId ?? completedLineId ?? lineIds?.[0]}
       chapterId={chapterIds?.[0]} initialPly={lookback ?? livePly}
       annotationThickness={annotationThickness} moveEntryMode={moveEntryMode}
       onExit={() => setReading(false)} onTrain={() => setReading(false)} resumeTraining />;
@@ -315,7 +327,10 @@ export function CourseSession({
     );
   }
 
+  const explanationChapter = entry.course.chapters.find((chapter) => chapter.id === task?.chapterId);
   return (
+    <ExplanationContext.Provider value={{ startFen: trainer.startFen, path: task?.line ?? [],
+      roots: explanationChapter?.roots, preview, explore: setPreview }}>
     <div className={`trainer course-session${showRail ? ' course-session--rail' : ''}`}>
       {showRail && (
         <aside className="panel course-session__rail">
@@ -334,18 +349,18 @@ export function CourseSession({
       <div className="trainer__board">
         <Board
           moveEntryMode={moveEntryMode}
-          game={lookbackGame ?? trainer.game}
+          game={exploration.game ?? lookbackGame ?? trainer.game}
           orientation={orientation}
-          lastMove={looking ? lookbackLast : trainer.lastMove}
+          lastMove={preview ? exploration.move ?? null : looking ? lookbackLast : trainer.lastMove}
           onMove={handleMove}
-          interactive={!looking && trainer.isUsersTurn}
-          replay={replaying}
-          hintArrows={[...(looking ? [] : arrows), ...shapeArrows]}
-          hintCircles={shapeCircles}
+          interactive={!preview && !looking && trainer.isUsersTurn}
+          replay={Boolean(preview) || replaying}
+          hintArrows={preview ? [] : [...(looking ? [] : arrows), ...shapeArrows]}
+          hintCircles={preview ? [] : shapeCircles}
           annotationThickness={annotationThickness}
-          animateMoves={!looking}
+          animateMoves={Boolean(preview) || !looking}
         />
-        <div className="board-bar">
+        {preview ? <ExplanationControls exploration={exploration} /> : <div className="board-bar">
           <span className={`status${looking ? ' status--looking' : ''}`}>
             {looking
               ? `Looking back — move ${lookback} of ${livePly}`
@@ -447,13 +462,13 @@ export function CourseSession({
               </>
             )}
           </div>
-        </div>
+        </div>}
       </div>
 
       <aside className="trainer__side">
         <section className="panel">
           <details className="course-shortcuts"><summary>Keyboard shortcuts</summary>
-            <p>A: analyze position · B: reading · Space: skip demonstration / next part / next line · ← →: browse moves · →: next demonstration move · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
+            <p>A: analyze position · B: reading · Space: skip demonstration / next part / next line · ← →: browse moves · →: next demonstration move · W / E: previous / next explanation line · Q: course position · Home: start · End: live board · H: hint · R: watch again / restart · P: pause / resume · T: let me try · S: skip · Esc: return to live board / finish. Tab and Enter activate any button.</p>
           </details>
           <div className="course-head">
             <h2>{MODE_LABELS[mode]}</h2>
@@ -506,7 +521,7 @@ export function CourseSession({
                 <strong>{lookbackNode?.san}</strong>{' '}
                 <span className="muted">{lookbackNode?.side === 'w' ? 'White' : 'Black'}</span>
               </h3>
-              {lookbackNode?.comment && <p>{lookbackNode.comment}</p>}
+              {lookbackNode?.comment && <p><CourseExplanation text={lookbackNode.comment} /></p>}
               <div className="card__actions">
                 <button type="button" className="primary" onClick={() => setLookback(null)} title="Back to the game (End or Esc)" aria-keyshortcuts="End Escape">
                   Back to the game
@@ -571,6 +586,7 @@ export function CourseSession({
         </section>
       </aside>
     </div>
+    </ExplanationContext.Provider>
   );
 }
 
@@ -690,7 +706,7 @@ function Demonstration({ watched, upNext, progress, recap, manual }: Demonstrati
           You have played these moves already — this is the line before this one, to here.
         </p>
       ) : watched?.comment ? (
-        <p>{watched.comment}</p>
+        <p><CourseExplanation text={watched.comment} /></p>
       ) : (
         <p className="muted">
           {upNext ? 'Watching the moves — you will be asked for them next.' : 'Now play it back.'}
@@ -758,7 +774,7 @@ function Prompt({ mode, node, answer, feedback, asked, done, part, fromTheTop, i
           <h3>
             The move was <strong>{answer}</strong>
           </h3>
-          {node.comment && <p>{node.comment}</p>}
+          {node.comment && <p><CourseExplanation text={node.comment} /></p>}
         </div>
       )}
 
@@ -779,11 +795,11 @@ function Feedback({ feedback }: { feedback: CourseOutcome }) {
       return (
         <div className="card card--good">
           <h3>{feedback.san}</h3>
-          {feedback.node.comment && <p>{feedback.node.comment}</p>}
+          {feedback.node.comment && <p><CourseExplanation text={feedback.node.comment} /></p>}
           {feedback.reply && (
             <p>
               <strong>{feedback.reply.san}</strong>
-              {feedback.reply.comment ? ` — ${feedback.reply.comment}` : ''}
+              {feedback.reply.comment && <> — <CourseExplanation text={feedback.reply.comment} /></>}
             </p>
           )}
         </div>
@@ -798,7 +814,7 @@ function Feedback({ feedback }: { feedback: CourseOutcome }) {
             The author shows {feedback.san} here but writes the line with{' '}
             <strong>{feedback.expected.san}</strong>, so that is what is on the board.
           </p>
-          {feedback.expected.comment && <p>{feedback.expected.comment}</p>}
+          {feedback.expected.comment && <p><CourseExplanation text={feedback.expected.comment} /></p>}
         </div>
       );
     case 'other-line':
@@ -806,14 +822,14 @@ function Feedback({ feedback }: { feedback: CourseOutcome }) {
         <div className="card card--info">
           <h3>{feedback.san}</h3>
           <p>{feedback.message}</p>
-          {feedback.node.comment && <p className="muted">{feedback.node.comment}</p>}
+          {feedback.node.comment && <p className="muted"><CourseExplanation text={feedback.node.comment} /></p>}
         </div>
       );
     case 'rejected':
       return (
         <div className="card card--bad">
           <h3>{feedback.san}</h3>
-          <p>{feedback.message}</p>
+          <p><CourseExplanation text={feedback.message} sourceComment={feedback.node.comment} /></p>
         </div>
       );
     case 'wrong':
@@ -821,7 +837,7 @@ function Feedback({ feedback }: { feedback: CourseOutcome }) {
         <div className="card card--bad">
           <h3>Not {feedback.san}</h3>
           <p>{feedback.message}</p>
-          {feedback.expected.comment && <p>{feedback.expected.comment}</p>}
+          {feedback.expected.comment && <p><CourseExplanation text={feedback.expected.comment} /></p>}
         </div>
       );
     default:

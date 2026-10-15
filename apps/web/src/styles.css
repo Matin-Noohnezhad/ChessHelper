@@ -1005,6 +1005,10 @@ button:disabled {
 
 /* -------------------------------------------------------------- engine --- */
 
+.engine-panel {
+  scroll-margin-top: 5rem;
+}
+
 .engine-eval {
   display: flex;
   align-items: baseline;
