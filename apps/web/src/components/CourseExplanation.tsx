@@ -48,7 +48,7 @@ export function CourseExplanation({ text, sourceComment = text, limit, selectabl
     const path = noteAt >= 0 ? context.path.slice(0, noteAt + 1)
       : context.roots ? commentPath(context.roots, sourceComment) ?? context.path : context.path;
     return explanationLines(text, context.startFen ?? START_FEN, path);
-  }, [text, sourceComment, context]);
+  }, [text, sourceComment, context?.startFen, context?.path, context?.roots]);
   const active = context?.preview?.sourceId === sourceId ? context.preview : null;
   const explore = (lineIndex: number, ply = 1) => context?.explore({ sourceId, lines, lineIndex, ply });
   // W/E also start exploration directly from the displayed explanation.

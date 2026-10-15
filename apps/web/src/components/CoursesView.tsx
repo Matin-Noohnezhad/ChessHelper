@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { CourseSide, SessionMode } from '@coh/course';
 import { CourseDashboard } from './CourseDashboard.js';
 import { CourseImport } from './CourseImport.js';
@@ -48,6 +48,11 @@ export function CoursesView({
 }: CoursesViewProps) {
   const library = useCourseLibrary();
   const [view, setView] = useState<View>({ kind: 'library' });
+  const pickSessionLine = useCallback((lineId: string) => {
+    setView((current) => 'id' in current
+      ? { kind: 'session', id: current.id, mode: 'learn', lineIds: [lineId] }
+      : current);
+  }, []);
 
   const entryOf = (id: string) => library.entries.find((entry) => entry.stored.id === id) ?? null;
   const openLibrary = () => setView({ kind: 'library' });
@@ -99,9 +104,7 @@ export function CoursesView({
         {...(view.chapterIds ? { chapterIds: view.chapterIds } : {})}
         {...(view.lineIds ? { lineIds: view.lineIds } : {})}
         onExit={() => setView({ kind: 'course', id: view.id })}
-        onPickLine={(lineId) =>
-          setView({ kind: 'session', id: view.id, mode: 'learn', lineIds: [lineId] })
-        }
+        onPickLine={pickSessionLine}
         onProgress={(progress) => library.commitProgress(view.id, progress)}
         {...(annotationThickness ? { annotationThickness } : {})}
         {...(watchAutoplay !== undefined ? { watchAutoplay } : {})}

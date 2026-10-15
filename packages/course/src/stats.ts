@@ -10,8 +10,8 @@
  * up, and should not: a chapter's percentage is about that chapter.
  */
 
-import { LEARNED_LEVEL, MAX_LEVEL, isDue, progressFor } from './scheduler.js';
-import { colorOf, moveKey, readingLinesOf, trainableMoves } from './tree.js';
+import { LEARNED_LEVEL, MAX_LEVEL, isDue } from './scheduler.js';
+import { colorOf, moveKey, readingLinesOf } from './tree.js';
 import type { Variation } from './tree.js';
 import type {
   Chapter,
@@ -24,16 +24,60 @@ import type {
   MoveCounts,
 } from './types.js';
 
-function countKeys(keys: Iterable<string>, progress: CourseProgress, now: number): MoveCounts {
+// Imported course trees are immutable. Index their main lines once; grading a
+// move only changes progress, so it must not walk and allocate the tree again.
+const indexes = new WeakMap<Chapter, Map<CourseSide, {
+  variations: { variation: Variation; keys: Set<string> }[];
+  keys: Set<string>;
+}>>();
+
+function chapterIndex(chapter: Chapter, side: CourseSide) {
+  let sides = indexes.get(chapter);
+  if (!sides) { sides = new Map(); indexes.set(chapter, sides); }
+  let index = sides.get(side);
+  if (!index) {
+    const keys = new Set<string>();
+    const variations = readingLinesOf(chapter).map((variation) => {
+      const lineKeys = new Set<string>();
+      for (const node of variation.line) {
+        if (node.side !== colorOf(side)) continue;
+        const key = moveKey(node);
+        lineKeys.add(key);
+        keys.add(key);
+      }
+      return { variation, keys: lineKeys };
+    });
+    index = { variations, keys };
+    sides.set(side, index);
+  }
+  return index;
+}
+
+const courseKeys = new WeakMap<Course, { side: CourseSide; keys: Set<string> }>();
+function keysForCourse(course: Course): Set<string> {
+  let cached = courseKeys.get(course);
+  if (!cached || cached.side !== course.side) {
+    cached = { side: course.side, keys: new Set(course.chapters.flatMap((chapter) => [...chapterIndex(chapter, course.side).keys])) };
+    courseKeys.set(course, cached);
+  }
+  return cached.keys;
+}
+
+function countKeys(keys: Set<string>, progress: CourseProgress, now: number, savedKeys: string[]): MoveCounts {
   const levels = new Array<number>(MAX_LEVEL + 1).fill(0);
-  let total = 0;
+  const total = keys.size;
+  levels[0] = total;
   let seen = 0;
   let learned = 0;
   let due = 0;
 
-  for (const key of keys) {
-    const entry = progressFor(progress, key, now);
-    total++;
+  // New courses may have thousands of keys and only a handful of answers.
+  // Visit the smaller set rather than looking up every unlearned move.
+  for (const key of savedKeys.length < keys.size ? savedKeys : keys) {
+    if (!keys.has(key)) continue;
+    const entry = progress[key];
+    if (!entry) continue;
+    levels[0]--;
     levels[Math.min(entry.level, MAX_LEVEL)]!++;
     if (entry.level > 0) seen++;
     if (entry.level >= LEARNED_LEVEL) learned++;
@@ -48,13 +92,14 @@ export function chapterStats(
   side: CourseSide,
   progress: CourseProgress,
   now: number = Date.now(),
+  savedKeys: string[] = Object.keys(progress),
 ): ChapterStats {
-  const moves = trainableMoves([chapter], side);
+  const index = chapterIndex(chapter, side);
   return {
     chapterId: chapter.id,
     name: chapter.name,
-    variations: readingLinesOf(chapter).length,
-    ...countKeys(moves.keys(), progress, now),
+    variations: index.variations.length,
+    ...countKeys(index.keys, progress, now, savedKeys),
   };
 }
 
@@ -63,14 +108,14 @@ export function courseStats(
   progress: CourseProgress,
   now: number = Date.now(),
 ): CourseStats {
+  const savedKeys = Object.keys(progress);
   const chapters = course.chapters.map((chapter) =>
-    chapterStats(chapter, course.side, progress, now),
+    chapterStats(chapter, course.side, progress, now, savedKeys),
   );
-  const moves = trainableMoves(course.chapters, course.side);
   return {
     chapters,
     variations: chapters.reduce((sum, chapter) => sum + chapter.variations, 0),
-    ...countKeys(moves.keys(), progress, now),
+    ...countKeys(keysForCourse(course), progress, now, savedKeys),
   };
 }
 
@@ -132,23 +177,12 @@ export interface OutlineChapter {
 
 function variationStats(
   variation: Variation,
-  side: CourseSide,
+  keys: Set<string>,
   progress: CourseProgress,
   now: number,
+  savedKeys: string[],
 ): VariationStats {
-  const userColor = colorOf(side);
-  const keys = new Set<string>();
-  for (const node of variation.line) {
-    if (node.side === userColor) keys.add(moveKey(node));
-  }
-  const counts = countKeys(keys, progress, now);
-  // Review-due, not learn-due: a move you have never met is not "due", it is
-  // unstarted, and the ring says that already.
-  let dueReview = 0;
-  for (const key of keys) {
-    const entry = progress[key];
-    if (entry && entry.level > 0 && isDue(entry, now)) dueReview++;
-  }
+  const counts = countKeys(keys, progress, now, savedKeys);
   const state: VariationState =
     counts.total > 0 && counts.learned === counts.total
       ? 'learned'
@@ -163,7 +197,7 @@ function variationStats(
     moves: counts.total,
     seen: counts.seen,
     learned: counts.learned,
-    due: dueReview,
+    due: counts.due,
     completion: counts.total ? counts.seen / counts.total : 0,
     state,
   };
@@ -180,11 +214,13 @@ export function courseOutline(
   progress: CourseProgress,
   now: number = Date.now(),
 ): OutlineChapter[] {
+  const savedKeys = Object.keys(progress);
   return course.chapters.map((chapter) => {
-    const variations = readingLinesOf(chapter).map((variation) =>
-      variationStats(variation, course.side, progress, now),
+    const index = chapterIndex(chapter, course.side);
+    const variations = index.variations.map(({ variation, keys }) =>
+      variationStats(variation, keys, progress, now, savedKeys),
     );
-    const counts = countKeys(trainableMoves([chapter], course.side).keys(), progress, now);
+    const counts = countKeys(index.keys, progress, now, savedKeys);
     return {
       chapterId: chapter.id,
       name: chapter.name,
@@ -202,9 +238,9 @@ export function courseOutline(
 /** The next time anything in the course falls due, or null when nothing has been learned. */
 export function nextDueAt(course: Course, progress: CourseProgress): number | null {
   let soonest = Infinity;
-  for (const node of trainableMoves(course.chapters, course.side).values()) {
-    const entry = progress[moveKey(node)];
-    if (!entry || entry.level === 0) continue;
+  const keys = keysForCourse(course);
+  for (const [key, entry] of Object.entries(progress)) {
+    if (entry.level === 0 || !keys.has(key)) continue;
     if (entry.dueAt < soonest) soonest = entry.dueAt;
   }
   return Number.isFinite(soonest) ? soonest : null;

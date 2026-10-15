@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import type { CourseNode, OutlineChapter } from '@coh/course';
 import { groupCourseSections } from '../courseSections.js';
 import './CourseSections.css';
@@ -30,7 +30,7 @@ interface CourseOutlineProps {
   concealMoves?: boolean;
 }
 
-export function CourseOutline({
+export const CourseOutline = memo(function CourseOutline({
   chapters,
   activeLineId,
   onPickLine,
@@ -122,7 +122,7 @@ export function CourseOutline({
           </div>
         )}
 
-        <ul className="course-outline__lines">
+        {isOpen(chapter) && <ul className="course-outline__lines">
           {chapter.variations.map((variation, index) => {
             const label = concealMoves ? `Line ${index + 1}` : sanLine(variation.line);
             return (
@@ -168,7 +168,7 @@ export function CourseOutline({
               </li>
             );
           })}
-        </ul>
+        </ul>}
       </details>
     );
   };
@@ -183,7 +183,7 @@ export function CourseOutline({
       ) : subsections.map(renderChapter))}
     </div>
   );
-}
+});
 
 /** `1.e4 c5 2.Nf3 d6` — from the nodes, so a chapter that starts mid-game still numbers right. */
 function sanLine(line: readonly CourseNode[]): string {

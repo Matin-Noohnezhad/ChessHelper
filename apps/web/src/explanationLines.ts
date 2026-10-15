@@ -27,13 +27,16 @@ const positionPly = (fen: string) => {
  * start from its exact final position. Unnumbered plans stay as text.
  */
 export function explanationLines(text: string, startFen: string, path: readonly { san: string }[]): ExplanationLine[] {
+  const tokens = [...text.matchAll(tokenPattern)];
+  // Most notes contain no numbered continuation. Avoid replaying the entire
+  // course line simply to display ordinary prose after a dropped move.
+  if (!tokens.some((token) => token[1])) return [];
   const game = new Chess(startFen);
   const positions = [game.fen()];
   for (const node of path) {
     if (!game.move(node.san)) break;
     positions.push(game.fen());
   }
-  const tokens = [...text.matchAll(tokenPattern)];
   const lines: ExplanationLine[] = [];
   for (let i = 0; i < tokens.length;) {
     const first = tokens[i]!;

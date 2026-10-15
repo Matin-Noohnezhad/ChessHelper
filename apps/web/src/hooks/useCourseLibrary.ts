@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { startTransition, useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { buildCourse, courseStats, progressKeys } from '@coh/course';
 import type { Course, CourseProgress, CourseSide, CourseStats, SectionHeader } from '@coh/course';
 import {
@@ -14,21 +14,7 @@ import {
 } from '../storage/courseStore.js';
 import type { StoredCourse } from '../storage/courseStore.js';
 
-/**
- * Built courses, keyed by everything that would change one. Rebuilding a course
- * is a replay of every line in it, which is fast but not free, and the library
- * asks for one every time you step back out of a session.
- */
-const built = new Map<string, { stored: StoredCourse; course: Course }>();
-
-function courseFor(stored: StoredCourse): Course {
-  const cached = built.get(stored.id);
-  if (cached && cached.stored.name === stored.name && cached.stored.side === stored.side &&
-      cached.stored.pgn === stored.pgn && cached.stored.sectionHeader === stored.sectionHeader) return cached.course;
-  const course = buildCourse(stored.pgn, { id: stored.id, name: stored.name, side: stored.side, sectionHeader: stored.sectionHeader ?? 'White' });
-  built.set(stored.id, { stored, course });
-  return course;
-}
+import { courseFor, forgetCourse, loadCourse } from '../courseLoader.js';
 
 export interface LibraryEntry {
   stored: StoredCourse;
@@ -69,25 +55,46 @@ export function useCourseLibrary(): CourseLibrary {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const refreshVersion = useRef(0);
+
   const refresh = useCallback(async () => {
+    const version = ++refreshVersion.current;
     setLoading(true);
     try {
       const stored = await listCourses();
-      const loaded = await Promise.allSettled(
-        stored.map(async (course) => entryFrom(course, await loadProgress(course.id))),
-      );
-      setEntries(loaded.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []));
-      const failed = loaded.flatMap((result, index) => result.status === 'rejected' ? [stored[index]!.name] : []);
+      if (version !== refreshVersion.current) return;
+      const available = new Map<string, LibraryEntry>();
+      // Let smaller courses become usable promptly; shelf order stays unchanged.
+      const loadingOrder = [...stored].sort((a, b) => a.pgn.length - b.pgn.length);
+      const loaded = await Promise.allSettled(loadingOrder.map(async (record) => {
+        const [course, progress] = await Promise.all([loadCourse(record), loadProgress(record.id)]);
+        const entry = { stored: record, course, progress, stats: courseStats(course, progress) };
+        available.set(record.id, entry);
+        if (version === refreshVersion.current) {
+          setEntries((current) => {
+            // Other courses may still be building while the user learns an
+            // already-ready course. Preserve that course's newest progress.
+            const latest = new Map(current.map((item) => [item.stored.id, item]));
+            latest.set(record.id, entry);
+            return stored.flatMap((item) => latest.has(item.id) ? [latest.get(item.id)!] : []);
+          });
+        }
+        return entry;
+      }));
+      if (version !== refreshVersion.current) return;
+      setEntries((current) => current.filter((entry) => available.has(entry.stored.id)));
+      const failed = loaded.flatMap((result, index) => result.status === 'rejected' ? [loadingOrder[index]!.name] : []);
       setError(failed.length ? `Could not open: ${failed.join(', ')}. Other courses are still available.` : null);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : String(cause));
+      if (version === refreshVersion.current) setError(cause instanceof Error ? cause.message : String(cause));
     } finally {
-      setLoading(false);
+      if (version === refreshVersion.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     void refresh();
+    return () => { refreshVersion.current++; };
   }, [refresh]);
 
   // Keep due counts current while the shelf stays open or the tab resumes.
@@ -132,7 +139,7 @@ export function useCourseLibrary(): CourseLibrary {
   const remove = useCallback(
     async (id: string) => {
       await deleteCourse(id);
-      built.delete(id);
+      forgetCourse(id);
       await refresh();
     },
     [refresh],
@@ -183,15 +190,16 @@ export function useCourseLibrary(): CourseLibrary {
     [entries, refresh],
   );
 
-  // Cheap and synchronous: a session that has just graded a move should be
-  // reflected in the counts the moment you step back out to the library, and
-  // waiting on a round trip to IndexedDB to redraw a number is silly.
+  // Paint the dropped piece first. Course-wide counters/outline updates are
+  // secondary work; persistence still happens immediately in useCourseSession.
   const commitProgress = useCallback((id: string, progress: CourseProgress) => {
-    setEntries((current) =>
-      current.map((entry) =>
-        entry.stored.id === id ? entryFrom(entry.stored, progress) : entry,
-      ),
-    );
+    startTransition(() => {
+      setEntries((current) =>
+        current.map((entry) =>
+          entry.stored.id === id ? entryFrom(entry.stored, progress) : entry,
+        ),
+      );
+    });
   }, []);
 
   return {

@@ -42,7 +42,7 @@ export function CourseLibrary({
 }: CourseLibraryProps) {
   const now = Date.now();
 
-  if (loading) {
+  if (loading && !entries.length) {
     return (
       <section className="panel panel--empty">
         <p className="muted">Opening your courses…</p>
@@ -74,6 +74,7 @@ export function CourseLibrary({
         </button>
       </div>
 
+      {loading && <p className="muted" role="status">Opening remaining courses… You can use the ready courses below.</p>}
       {entries.map((entry) => {
         const { stats, stored, course, progress } = entry;
         const percent = stats.total ? (stats.learned / stats.total) * 100 : 0;
